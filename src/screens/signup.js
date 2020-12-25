@@ -1,0 +1,200 @@
+import React from 'react';
+import {
+  StyleSheet,
+  Dimensions,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Text,
+  StatusBar,
+  ActivityIndicator,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {signup, signin} from '../actions/auth';
+import validator from 'validator';
+import SignUpTextInput from '../components/signup/textinput';
+import SignUpButton from '../components/signup/button';
+import {iconImagePicker} from '../utils/imagePicker';
+
+const {width, height} = Dimensions.get('window');
+
+class SignUp extends React.Component {
+  state = {
+    email: '',
+    password: '',
+    rePassword: '',
+    referCode: '',
+    username: '',
+    errorText: '',
+    icon: null,
+    loading: false,
+  };
+
+  onChangeText = (type, text) => {
+    if (type == 'Password') {
+      this.setState({password: text});
+    } else if (type == 'Email') {
+      this.setState({email: text.toLowerCase()});
+    } else if (type == 'RePassword') {
+      this.setState({rePassword: text});
+    } else if (type == 'Username') {
+      this.setState({username: text});
+    } else {
+      this.setState({referCode: text});
+    }
+  };
+
+  validation = () => {
+    const {email, password, rePassword, username} = this.state;
+    if (!validator.isEmail(email)) {
+      this.setState({errorText: 'Invalid email address'});
+      return false;
+    }
+
+    if (!validator.isLength(password, {min: 8})) {
+      this.setState({
+        errorText:
+          'Password must be at least 8 character long and contains numbers and characters',
+      });
+      return false;
+    }
+
+    const trimmed_username = username.trim();
+    const check_username = trimmed_username.replace(/_/g, '');
+    const last_character = trimmed_username.charAt(trimmed_username.length - 1);
+
+    if (
+      !validator.isLength(username.trim(), {min: 6, max: 30}) ||
+      !validator.isAlphanumeric(check_username) ||
+      !validator.isAlphanumeric(last_character)
+    ) {
+
+      this.setState({
+        errorText:
+          'Invalid username.  Username needs to be least 6 characters long or contains forbidden characaters',
+      });
+      return false;
+    }
+
+    if (!validator.equals(password, rePassword)) {
+      this.setState({errorText: 'Password mismatch'});
+      return false;
+    }
+    return true;
+  };
+
+  setIcon = (data, type) => {
+    this.setState({icon: data});
+  };
+
+  onPress = async () => {
+    const {email, password, referCode, username, icon} = this.state;
+
+    if (!this.validation()) {
+      return;
+    }
+
+    const data = {
+      email: email,
+      password: password,
+      username: username,
+      icon: icon,
+      refer_code: referCode,
+    };
+
+    this.setState({loading: true});
+    const signUpResult = await this.props.signUp(data);
+    this.setState({loading: false});
+    if (signUpResult.errors) {
+      this.setState({errorText: signUpResult.errors[0].message});
+      return;
+    }
+
+    this.props.navigation.navigate('Home');
+  };
+
+  render() {
+    const {
+      email,
+      password,
+      rePassword,
+      referCode,
+      errorText,
+      username,
+      icon,
+      loading,
+    } = this.state;
+    return (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView style={styles.container}>
+          <StatusBar barStyle={'dark-content'} />
+          <Text style={{color: 'red'}}>{errorText}</Text>
+          <SignUpTextInput
+            type={'Email'}
+            onChangeText={this.onChangeText}
+            value={email}
+          />
+          <SignUpTextInput
+            type={'Username'}
+            onChangeText={this.onChangeText}
+            value={username}
+          />
+          <SignUpTextInput
+            type={'Password'}
+            onChangeText={this.onChangeText}
+            value={password}
+          />
+          <SignUpTextInput
+            type={'RePassword'}
+            onChangeText={this.onChangeText}
+            value={rePassword}
+          />
+          <SignUpTextInput
+            type={'Refercode'}
+            onChangeText={this.onChangeText}
+            value={referCode}
+          />
+          {loading ? (
+            <ActivityIndicator animating={true} />
+          ) : (
+            <SignUpButton onPress={this.onPress} />
+          )}
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 5,
+    height: height,
+    width: '100%',
+    backgroundColor: '#ffffff',
+  },
+
+  imageStyle: {
+    height: 100,
+    aspectRatio: 1,
+    borderRadius: 50,
+    backgroundColor: 'white',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#718093',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    signUp: data => dispatch(signup(data)),
+    signin: data => dispatch(signin(data)),
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(SignUp);
