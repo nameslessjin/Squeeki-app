@@ -3,7 +3,7 @@ import {View, Text, TextInput, StyleSheet} from 'react-native';
 
 export default class InputContent extends React.Component {
   render() {
-    const {content, modifyInput} = this.props;
+    const {content, modifyInput, onKeyboardInputFocus} = this.props;
     return (
       <View style={styles.container}>
         {content.length == 0 ? null : (
@@ -21,6 +21,7 @@ export default class InputContent extends React.Component {
           placeholder={"What's in your mind..."}
           value={content}
           onChangeText={v => modifyInput(v, 'content')}
+          onFocus={onKeyboardInputFocus}
         />
       </View>
     );

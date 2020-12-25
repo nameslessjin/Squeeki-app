@@ -100,7 +100,7 @@ export const updateProfile = data => {
         body: iconData,
       });
       if (iconPost.status == 500) {
-        alert('Credential failed');
+        alert('uploading icon failed');
         return 1;
       }
       const iconUri = await iconPost.json();

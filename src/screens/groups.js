@@ -55,7 +55,7 @@ class Groups extends React.Component {
   loadGroups = async init => {
     const {token} = this.props.auth;
     const {findUserGroupsByUserId, navigation, userLogout} = this.props;
-
+    console.log(this.props.group.groups)
     const groupsData = await findUserGroupsByUserId({
       token: token,
       lastIndexId: init ? null : this.props.group.groups.lastIndexId,

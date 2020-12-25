@@ -7,8 +7,6 @@ import {
   View,
   ActivityIndicator,
   StatusBar,
-  TouchableOpacity,
-  Text,
 } from 'react-native';
 import {connect} from 'react-redux';
 import InputContent from '../components/postSetting/inputContent';
@@ -21,6 +19,7 @@ import {getFeedFunc, getGroupPostsFunc} from '../functions/post';
 import {userLogout} from '../actions/auth';
 import NominationButton from '../components/postSetting/nominationButton';
 import {getSundays} from '../utils/time';
+import PostSettingModal from '../components/postSetting/postSettingModal';
 
 class PostSetting extends React.Component {
   state = {
@@ -43,6 +42,7 @@ class PostSetting extends React.Component {
     searchUserList: [],
     chosenUser: {},
     nomination: {},
+    modalVisible: false,
   };
 
   componentDidMount() {
@@ -115,7 +115,7 @@ class PostSetting extends React.Component {
           loading={this.state.loading}
         />
       ),
-      headerBackTitleVisible: false
+      headerBackTitleVisible: false,
     });
   }
 
@@ -154,7 +154,7 @@ class PostSetting extends React.Component {
       allowComment,
       type,
       groupId,
-      visibility
+      visibility,
     } = postData;
     content = content.trim();
 
@@ -181,7 +181,7 @@ class PostSetting extends React.Component {
         type = null;
       }
       if (visibility == origin.visibility) {
-        visibility = null
+        visibility = null;
       }
     }
 
@@ -322,7 +322,6 @@ class PostSetting extends React.Component {
   };
 
   modifyInput = (value, type) => {
-    console.log(value, type);
     if (type == 'content') {
       this.atUser(value);
       this.setState({
@@ -363,6 +362,7 @@ class PostSetting extends React.Component {
     } else if (type == 'image') {
       this.setState({
         contentKeyboard: false,
+        modalVisible: false,
         postData: {
           ...this.state.postData,
           image: {
@@ -385,17 +385,23 @@ class PostSetting extends React.Component {
     this.setState({onToggle: true, toggleTyple: type, contentKeyboard: true});
   };
 
-  onPriorityInputFocus = () => {
+  onKeyboardInputFocus = () => {
     this.setState({contentKeyboard: true});
   };
 
   onBackdropPress = () => {
-    this.setState({onToggle: false, contentKeyboard: false});
+    this.setState({
+      onToggle: false,
+      contentKeyboard: false,
+      modalVisible: false,
+    });
+    Keyboard.dismiss();
   };
 
   onBackgroundPress = () => {
     this.setState({
       contentKeyboard: false,
+      modalVisible: false,
     });
     Keyboard.dismiss();
   };
@@ -406,6 +412,10 @@ class PostSetting extends React.Component {
       group: group.group,
       prev_route: 'PostSetting',
     });
+  };
+
+  onAddMeidaPress = () => {
+    this.setState({modalVisible: true});
   };
 
   render() {
@@ -427,6 +437,7 @@ class PostSetting extends React.Component {
       chosenUser,
       nomination,
       create,
+      modalVisible,
     } = this.state;
 
     return (
@@ -437,8 +448,9 @@ class PostSetting extends React.Component {
             modifyInput={this.modifyInput}
             image={image}
             contentKeyboard={contentKeyboard}
+            onPress={this.onAddMeidaPress}
           />
-          <InputContent content={content} modifyInput={this.modifyInput} />
+          <InputContent content={content} modifyInput={this.modifyInput} onKeyboardInputFocus={this.onKeyboardInputFocus} />
 
           {this.props.group.group.id == null ? null : (
             <InputPriority
@@ -449,7 +461,7 @@ class PostSetting extends React.Component {
               onBackdropPress={this.onBackdropPress}
               onToggle={onToggle}
               toggleTyple={toggleTyple}
-              onPriorityInputFocus={this.onPriorityInputFocus}
+              onKeyboardInputFocus={this.onKeyboardInputFocus}
               currentUserAuth={this.props.group.group.auth}
             />
           )}
@@ -495,7 +507,13 @@ class PostSetting extends React.Component {
               disabled={!create}
             />
           )}
-          <ActivityIndicator style={{marginTop: 30}} animating={loading} />
+          <ActivityIndicator animating={loading} />
+
+          <PostSettingModal
+            modalVisible={modalVisible}
+            onBackdropPress={this.onBackdropPress}
+            onChangeMedia={this.modifyInput}
+          />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

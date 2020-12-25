@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
-  StatusBar
+  StatusBar,
 } from 'react-native';
 import {updateProfile, userLogout} from '../actions/auth';
 import {iconImagePicker} from '../utils/imagePicker';
@@ -18,12 +18,14 @@ import UserTextInput from '../components/profile/textinput';
 import ProfileUpdateButton from '../components/profile/profileButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import validator from 'validator';
+import ProfileModal from '../components/profile/profileModal';
 
 class Profile extends React.Component {
   state = {
     ...this.props.auth.user,
     loading: false,
-    icon_option: 'emoticon-cool-outline'
+    icon_option: 'emoticon-cool-outline',
+    modalVisible: false,
   };
 
   componentDidMount() {
@@ -36,7 +38,7 @@ class Profile extends React.Component {
       'emoticon-wink-outline',
       'emoticon-tongue-outline',
     ];
-    this.setState({icon_option: icon_options[random]})
+    this.setState({icon_option: icon_options[random]});
     navigation.setOptions({
       headerRight: () => (
         <ProfileUpdateButton
@@ -69,7 +71,7 @@ class Profile extends React.Component {
   }
 
   setIcon = (data, type) => {
-    this.setState({icon: data});
+    this.setState({icon: data, modalVisible: false});
   };
 
   updateProfile = async () => {
@@ -165,8 +167,8 @@ class Profile extends React.Component {
       // this.setState({errorText: 'Invalid email address'});
       return false;
     }
-    const trimmed_username = username.trim()
-    const check_username = trimmed_username.replace(/_/g, "")
+    const trimmed_username = username.trim();
+    const check_username = trimmed_username.replace(/_/g, '');
 
     if (
       !validator.isLength(username.trim(), {min: 6, max: 30}) ||
@@ -189,8 +191,21 @@ class Profile extends React.Component {
     });
   };
 
+  onBackdropPress = () => {
+    this.setState({modalVisible: false})
+  }
+
   render() {
-    const {email, errorText, username, icon, loading, displayName, icon_option} = this.state;
+    const {
+      email,
+      errorText,
+      username,
+      icon,
+      loading,
+      displayName,
+      icon_option,
+      modalVisible,
+    } = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -198,7 +213,7 @@ class Profile extends React.Component {
           <StatusBar barStyle={'dark-content'} />
           <TouchableOpacity
             style={styles.imageStyle}
-            onPress={() => iconImagePicker(this.setIcon)}>
+            onPress={() => this.setState({modalVisible: true})}>
             {icon != null ? (
               <Image source={{uri: icon.uri}} style={styles.imageStyle} />
             ) : (
@@ -243,6 +258,8 @@ class Profile extends React.Component {
             onPress={this.onChangePasswordPress}>
             <Text style={{color: '#487eb0'}}>Change password</Text>
           </TouchableOpacity>
+
+          <ProfileModal  modalVisible={modalVisible} onBackdropPress={this.onBackdropPress} onChangeMedia={this.setIcon} />
 
           <ActivityIndicator animating={loading} />
           <Text style={{color: 'red'}}>{errorText}</Text>

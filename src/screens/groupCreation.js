@@ -24,6 +24,7 @@ class GroupCreation extends React.Component {
     initialize: true,
     loading: false,
     visibility: 'private',
+    tags: [],
   };
 
   componentDidMount() {
@@ -54,6 +55,7 @@ class GroupCreation extends React.Component {
       backgroundImg,
       icon,
       visibility,
+      tags
     } = this.state;
     const {token} = this.props.auth;
     const data = {
@@ -70,6 +72,7 @@ class GroupCreation extends React.Component {
       state: null,
       country: null,
       zipcode: null,
+      tags: tags
     };
 
     const {createGroup, navigation} = this.props;

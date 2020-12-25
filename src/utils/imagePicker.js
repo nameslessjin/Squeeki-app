@@ -1,115 +1,167 @@
-import ImagePicker from 'react-native-image-picker'
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 
-export const backgroundImagePicker = (setImage) => {
+export const backgroundImagePicker = (setImage, from, cancel) => {
     const options = {
         quality: 1.0,
-        maxWidth: 600,
-        maxHeight: 600,
-        storageOptions: {
-            skipBackup: true
-        }
+        maxWidth: 800,
+        maxHeight: 800,
+        includeBase64: true
     }
 
-    ImagePicker.showImagePicker(options, response => {
-
-
-        if (response.didCancel){
-            console.log('Cancelled')
-        } else if (response.error){
-            console.log('ImagePicker Error: ', response.error)
-        } else if (response.customButton){
-            console.log(response.customButton)
-        } else {
-            let name = response.uri.split('/')
-            name = name[name.length-1]
-            let source = {
-                uri: response.uri,
-                width: response.height,
-                height: response.width,
-                type: response.type,
-                filename: name,
-                data: response.data
+    if (from == 'library') {
+        launchImageLibrary(options, response => {
+            if (response.didCancel){
+                cancel()
+            } else if (response.error){
+                console.log('ImagePicker Error: ', response.error)
+            } else {
+                let name = response.uri.split('/')
+                name = name[name.length-1]
+                let source = {
+                    uri: response.uri,
+                    width: response.height,
+                    height: response.width,
+                    type: response.type,
+                    filename: name,
+                    data: response.base64
+                }
+    
+                setImage(source, 'background')
+    
             }
-
-
-            setImage(source, 'background')
-
-        }
-    })
+        })
+    } else {
+        launchCamera(options, response => {
+            if (response.didCancel){
+                cancel()
+            } else if (response.error){
+                console.log('ImagePicker Error: ', response.error)
+            } else {
+                let name = response.uri.split('/')
+                name = name[name.length-1]
+                let source = {
+                    uri: response.uri,
+                    width: response.height,
+                    height: response.width,
+                    type: response.type,
+                    filename: name,
+                    data: response.base64
+                }
+    
+                setImage(source, 'background')
+    
+            }
+        })
+    }
 }
 
-export const iconImagePicker = (setImage) => {
+export const iconImagePicker = (setImage, from, cancel) => {
     const options = {
         quality: 1.0,
-        maxWidth: 200,
-        maxHeight: 200,
-        storageOptions: {
-            skipBackup: true
-        }
+        maxWidth: 400,
+        maxHeight: 400,
+        includeBase64: true
     }
 
-    ImagePicker.showImagePicker(options, response => {
-        console.log('Response = ', response)
-
-        if (response.didCancel){
-            console.log('Cancelled')
-        } else if (response.error){
-            console.log('ImagePicker Error: ', response.error)
-        } else if (response.customButton){
-            console.log(response.customButton)
-        } else {
-            let name = response.uri.split('/')
-            name = name[name.length-1]
-            let source = {
-                uri: response.uri,
-                width: response.height,
-                height: response.width,
-                type: response.type,
-                filename: name,
-                data: response.data
+    if (from == 'library') {
+        launchImageLibrary(options, response => {
+            if (response.didCancel){
+                cancel()
+            } else if (response.error){
+                console.log('ImagePicker Error: ', response.error)
+            } else {
+                let name = response.uri.split('/')
+                name = name[name.length-1]
+                let source = {
+                    uri: response.uri,
+                    width: response.height,
+                    height: response.width,
+                    type: response.type,
+                    filename: name,
+                    data: response.base64
+                }
+    
+                setImage(source, 'icon')
+    
             }
-            console.log(response)
-
-            setImage(source, 'icon')
-
-        }
-    })
+        })
+    } else {
+        launchCamera(options, response => {
+            if (response.didCancel){
+                cancel()
+            } else if (response.error){
+                console.log('ImagePicker Error: ', response.error)
+            } else {
+                let name = response.uri.split('/')
+                name = name[name.length-1]
+                let source = {
+                    uri: response.uri,
+                    width: response.height,
+                    height: response.width,
+                    type: response.type,
+                    filename: name,
+                    data: response.base64
+                }
+    
+                setImage(source, 'icon')
+    
+            }
+        })
+    }
 }
 
-export const PostImagePicker = (setImage) => {
+export const PostImagePicker = (setImage, from, cancel) => {
     const options = {
         quality: 1.0,
-        maxWidth: 500,
-        maxHeight: 500,
-        storageOptions: {
-            skipBackup: true
-        }
+        maxWidth: 800,
+        maxHeight: 800,
+        includeBase64: true
     }
 
-    ImagePicker.showImagePicker(options, response => {
-        console.log('Response = ', response)
-
-        if (response.didCancel){
-            console.log('Cancelled')
-        } else if (response.error){
-            console.log('ImagePicker Error: ', response.error)
-        } else if (response.customButton){
-            console.log(response.customButton)
-        } else {
-            let name = response.uri.split('/')
-            name = name[name.length-1]
-            let source = {
-                uri: response.uri,
-                width: response.height,
-                height: response.width,
-                type: response.type,
-                filename: name,
-                data: response.data
+    if (from == 'library') {
+        launchImageLibrary(options, response => {
+            if (response.didCancel){
+                cancel()
+            } else if (response.error){
+                console.log('ImagePicker Error: ', response.error)
+            } else {
+                let name = response.uri.split('/')
+                name = name[name.length-1]
+                let source = {
+                    uri: response.uri,
+                    width: response.height,
+                    height: response.width,
+                    type: response.type,
+                    filename: name,
+                    data: response.base64
+                }
+    
+                setImage(source, 'image')
+    
             }
-
-
-            setImage(source, 'image')
-
-        }
-    })
+        })
+    } else {
+        launchCamera(options, response => {
+            if (response.didCancel){
+                cancel()
+            } else if (response.error){
+                console.log('ImagePicker Error: ', response.error)
+            } else {
+                let name = response.uri.split('/')
+                name = name[name.length-1]
+                let source = {
+                    uri: response.uri,
+                    width: response.height,
+                    height: response.width,
+                    type: response.type,
+                    filename: name,
+                    data: response.base64
+                }
+    
+                setImage(source, 'image')
+    
+            }
+        })
+    }
+    
 }

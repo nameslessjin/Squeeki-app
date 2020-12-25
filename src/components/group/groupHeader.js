@@ -212,7 +212,7 @@ class GroupHeader extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    maxHeight: 400,
+    maxHeight: 450,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     borderBottomWidth: 0.5,

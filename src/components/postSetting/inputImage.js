@@ -4,7 +4,7 @@ import {PostImagePicker} from '../../utils/imagePicker';
 
 export default class InputImage extends React.Component {
   render() {
-    const {modifyInput, image, contentKeyboard} = this.props;
+    const {image, contentKeyboard, onPress} = this.props;
     const imageSelected = image != null
 
     return (
@@ -14,7 +14,9 @@ export default class InputImage extends React.Component {
           imageSelected ? {backgroundColor: 'white'} : {height: 100},
           (imageSelected && contentKeyboard) ? {maxHeight: 250} : null
         ]}
-        onPress={() => PostImagePicker(modifyInput)}>
+
+        onPress={() => onPress()}
+        >
         {!imageSelected ? null : (
           <Image
             source={{uri: image.uri}}

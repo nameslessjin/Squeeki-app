@@ -41,6 +41,8 @@
 	<string>$(PRODUCT_NAME) would like to use your camera to take pictures </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>$(PRODUCT_NAME) would like to use your camera to take video </string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery to choose pictures</string>
 	<key>NSPhotoLibraryUsageDescription</key>

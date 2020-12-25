@@ -166,7 +166,7 @@ export const createPost = data => {
         body: imageData,
       });
       if (imagePost.status == 500) {
-        alert('Credential failed');
+        alert('Cannot upload image');
         return 1;
       }
       const imageUri = await imagePost.json();
@@ -235,6 +235,9 @@ export const updatePost = data => {
     let newPriorityDuration = priorityDuration
     let newAllowComment = allowComment
     let newType = type
+    let newVisibility = visibility
+
+    console.log(image)
 
     if (image != null){
       const imageData = new FormData()
@@ -251,7 +254,7 @@ export const updatePost = data => {
         body: imageData,
       });
       if (imagePost.status == 500) {
-        alert('Credential failed');
+        alert('Uploading image failed');
         return 1;
       }
       const imageUri = await imagePost.json();
@@ -287,6 +290,10 @@ export const updatePost = data => {
       newType = origin.type
     }
 
+    if (visibility == null){
+      newVisibility = origin.visibility
+    }
+
     const priority_expiration_date = new Date(Date.now() + newPriorityDuration * 24 * 60 * 60 * 1000)
 
     const postInput = {
@@ -297,7 +304,7 @@ export const updatePost = data => {
       priority: newPriority,
       allowComment: newAllowComment,
       type: newType,
-      visibility: visibility,
+      visibility: newVisibility,
       priority_expiration_date: priority_expiration_date
     }
 

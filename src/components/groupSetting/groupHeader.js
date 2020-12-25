@@ -1,17 +1,11 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  Platform,
-  YellowBox,
-} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Platform} from 'react-native';
 import {dateConversion} from '../../utils/time';
 import HeaderImageBackground from './ImageBackground';
-import {connect} from 'react-redux'
-import {leaveGroup} from '../../actions/group'
-import {userLogout} from '../../actions/auth'
+import {connect} from 'react-redux';
+import {leaveGroup} from '../../actions/group';
+import {userLogout} from '../../actions/auth';
+import GroupSettingModal from './groupSettingModal';
 
 class GroupSettingsHeader extends React.Component {
   state = {
@@ -20,11 +14,12 @@ class GroupSettingsHeader extends React.Component {
     groupname: '',
     shortDescription: '',
     initialize: true,
-    loading: false
+    loading: false,
+    modalVisible: false,
+    isBackground: true,
   };
 
   componentDidMount() {
-    YellowBox.ignoreWarnings(['source.uri should not be an empty']);
     let {
       icon,
       backgroundImg,
@@ -48,9 +43,9 @@ class GroupSettingsHeader extends React.Component {
 
   setImage = (source, type) => {
     if (type == 'background') {
-      this.setState({backgroundImg: source});
+      this.setState({backgroundImg: source, modalVisible: false});
     } else {
-      this.setState({icon: source});
+      this.setState({icon: source, modalVisible: false});
     }
   };
 
@@ -68,33 +63,39 @@ class GroupSettingsHeader extends React.Component {
     this.setState({groupname: name});
   };
 
-  leaveGroup = async() => {
-    const {data, leaveGroup, navigation} = this.props
-    const {token} = this.props.auth
-    const {id, auth} = data
+  leaveGroup = async () => {
+    const {data, leaveGroup, navigation} = this.props;
+    const {token} = this.props.auth;
+    const {id, auth} = data;
 
     const input = {
       groupId: id,
-      token: token
+      token: token,
+    };
+
+    const group = await leaveGroup(input);
+
+    if (group.errors) {
+      alert(group.errors[0].message);
+      if (group.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
     }
 
-    const group = await leaveGroup(input)
+    navigation.navigate('Groups');
+  };
 
-    if (group.errors){
-      alert(group.errors[0].message)
-        if (group.errors[0].message == "Not Authenticated"){
-          userLogout();
-              navigation.reset({
-      index: 0,
-      routes: [{ name: 'SignIn' }],
-    })
-        }
-    }
+  onBackdropPress = () => {
+    this.setState({modalVisible: false});
+  };
 
-    navigation.navigate('Groups')
-
-
-  }
+  onMediaPress = type => {
+    this.setState({modalVisible: true, isBackground: type == 'background' ? true : false });
+  };
 
   render() {
     let {
@@ -105,10 +106,11 @@ class GroupSettingsHeader extends React.Component {
       initialize,
       createdAt,
       memberCount,
-
+      modalVisible,
+      isBackground,
     } = this.state;
 
-    const {auth_rank} = this.props
+    const {auth_rank} = this.props;
 
     let date = new Date();
 
@@ -119,21 +121,18 @@ class GroupSettingsHeader extends React.Component {
       date = dateConversion(createdAt);
     }
 
-    const {
-      container,
-      underImageStyle,
-    } = styles;
+    const {container, underImageStyle} = styles;
 
     return (
       <View style={container}>
         <HeaderImageBackground
-          setImage={this.setImage}
           initialize={initialize}
           auth={this.props.data.auth}
           backgroundImg={backgroundImg}
           icon={icon}
           onLeave={this.leaveGroup}
-          auth_rank = {auth_rank}
+          auth_rank={auth_rank}
+          onMediaPress={this.onMediaPress}
         />
         <View style={underImageStyle}>
           <TextInput
@@ -167,6 +166,13 @@ class GroupSettingsHeader extends React.Component {
             editable={auth_rank <= 1}
           />
         </View>
+
+        <GroupSettingModal
+          modalVisible={modalVisible}
+          onBackdropPress={this.onBackdropPress}
+          onChangeMedia={this.setImage}
+          isBackground={isBackground}
+        />
       </View>
     );
   }
@@ -193,16 +199,17 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   const {auth, group} = state;
-  return {auth, group}
-}
-
+  return {auth, group};
+};
 
 const mapDispatchToProps = dispatch => {
   return {
     leaveGroup: data => dispatch(leaveGroup(data)),
-    userLogout: () => dispatch(userLogout())
-  }
-}
+    userLogout: () => dispatch(userLogout()),
+  };
+};
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(GroupSettingsHeader)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(GroupSettingsHeader);

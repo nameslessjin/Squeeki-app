@@ -154,7 +154,7 @@ export const createGroup = data => {
         body: iconData,
       });
       if (iconFetch.status == 500) {
-        alert('Credential failed');
+        alert('Uploading icon failed');
         return 1;
       }
 
@@ -190,7 +190,7 @@ export const createGroup = data => {
         },
       );
       if (backgroundImgFetch.status == 500) {
-        alert('Credential failed');
+        alert('Uploading background image failed');
         return 1;
       }
       const backgroundImgUrl = await backgroundImgFetch.json();
@@ -273,7 +273,7 @@ export const updateGroup = data => {
         body: iconData,
       });
       if (iconFetch.status == 500) {
-        alert('Credential failed');
+        alert('Uploading icon failed failed');
         return 1;
       }
       const iconUrl = await iconFetch.json();
@@ -307,7 +307,7 @@ export const updateGroup = data => {
         },
       );
       if (backgroundImgFetch.status == 500) {
-        alert('Credential failed');
+        alert('Uploading background image failed');
         return 1;
       }
       const backgroundImgUrl = await backgroundImgFetch.json();

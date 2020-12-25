@@ -96,6 +96,11 @@ mutation createGroup($GroupInput: GroupInput!){
             notification
             notificationPriority
         }
+        tags {
+            id
+            tag_name
+            use_count
+        }
         visibility
         memberCount
         createdAt
@@ -124,6 +129,11 @@ mutation updateGroup($GroupInput: GroupInput!){
             title
             notification
             notificationPriority
+        }
+        tags {
+            id
+            tag_name
+            use_count
         }
         visibility
         memberCount
@@ -154,6 +164,11 @@ mutation joinGroup($groupId: ID!){
                 title
                 notification
                 notificationPriority
+            }
+            tags {
+                id
+                tag_name
+                use_count
             }
             visibility
             memberCount

@@ -37,7 +37,7 @@ export default class PostMedia extends React.Component {
 
 const styles = StyleSheet.create({
   contentStyle: {
-    maxHeight: 750,
+    maxHeight: 950,
     width: '100%',
     justifyContent: 'center',
     // backgroundColor: 'orange'

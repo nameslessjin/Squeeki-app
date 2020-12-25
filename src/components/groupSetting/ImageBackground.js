@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import {backgroundImagePicker, iconImagePicker} from '../../utils/imagePicker';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LeaveButton from './leaveButton';
+
 
 export default class HeaderImageBackground extends React.Component {
 
@@ -32,13 +32,13 @@ export default class HeaderImageBackground extends React.Component {
 
   render() {
     const {
-      setImage,
       initialize,
       auth,
       backgroundImg,
       icon,
       onLeave,
       auth_rank,
+      onMediaPress
     } = this.props;
 
     const { icon_option } = this.state
@@ -72,7 +72,10 @@ export default class HeaderImageBackground extends React.Component {
         <TouchableOpacity
           style={styles.backgroundImageContainerStyle}
           disabled={auth_rank > 1}
-          onPress={() => backgroundImagePicker(setImage)}>
+          onPress={() => onMediaPress('background')}
+          // onPress={() => backgroundImagePicker(setImage)}
+          
+          >
           {backgroundImg != null ? (
             <Image
               source={{uri: backgroundImg.uri}}
@@ -89,7 +92,10 @@ export default class HeaderImageBackground extends React.Component {
           <TouchableOpacity
             style={styles.imageStyle}
             disabled={auth_rank > 1}
-            onPress={() => iconImagePicker(setImage)}>
+            onPress={() => onMediaPress('profileImg')}
+            // onPress={() => iconImagePicker(setImage)}
+            
+            >
             {iconImage}
           </TouchableOpacity>
           {!initialize ? <LeaveButton auth={auth} onPress={onLeave} /> : null}

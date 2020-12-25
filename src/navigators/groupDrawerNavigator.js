@@ -95,7 +95,7 @@ function CustomDrawerContent(props) {
       />
       <DrawerItem
         label="Settings"
-        icon={() => <MaterialIcons name="settings" color={'grey'} size={25} />}
+        icon={() => <MaterialIcons name="cog" color={'grey'} size={25} />}
         labelStyle={styles.labelStyle}
         onPress={() => {
           props.navigation.navigate('GroupSetting');

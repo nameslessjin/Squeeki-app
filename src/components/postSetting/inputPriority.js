@@ -14,7 +14,7 @@ export default class InputPriority extends React.Component {
       onBackdropPress,
       onToggle,
       toggleTyple,
-      onPriorityInputFocus,
+      onKeyboardInputFocus,
       currentUserAuth
     } = this.props;
 
@@ -38,7 +38,7 @@ export default class InputPriority extends React.Component {
             style={styles.textInputContainer}
             value={priorityDuration.toString()}
             onChangeText={v => modifyInput(v, 'priorityDuration')}
-            onFocus={onPriorityInputFocus}
+            onFocus={onKeyboardInputFocus}
             editable={priority != 0}
           />
         </View>
