@@ -14,7 +14,6 @@ import {signup, signin} from '../actions/auth';
 import validator from 'validator';
 import SignUpTextInput from '../components/signup/textinput';
 import SignUpButton from '../components/signup/button';
-import {iconImagePicker} from '../utils/imagePicker';
 
 const {width, height} = Dimensions.get('window');
 

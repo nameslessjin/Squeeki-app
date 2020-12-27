@@ -317,7 +317,7 @@ class PostSetting extends React.Component {
     let lastChar = str.charAt(str.length - 1);
 
     if (lastChar == '@') {
-      // console.log(true)
+
     }
   };
 

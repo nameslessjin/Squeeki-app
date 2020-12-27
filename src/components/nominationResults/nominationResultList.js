@@ -12,42 +12,18 @@ const extractNomineeName = ({nominee_name}) =>
 
 export default class NominationResultsList extends React.Component {
   renderItemNominee = i => {
-    const {nominee_name, vote, total_vote_count, max, most_recent} = i.item;
-    const percentage = vote / total_vote_count;
 
+    const {onNomineePress} = this.props
     return (
-      <View style={{justifyContent: 'center'}}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingHorizontal: 10,
-            height: 40,
-            zIndex: 1,
-          }}>
-          <Text>{nominee_name}</Text>
-          <Text>Vote: {vote}</Text>
-        </View>
-        <View
-          style={{
-            zIndex: 0,
-            backgroundColor: most_recent
-              ? max
-                ? '#ff7675'
-                : '#c7ecee'
-              : '#b8e994',
-            width: percentage * width - 23,
-            height: '100%',
-            position: 'absolute',
-          }}
-        />
-      </View>
+      <NominationResultsCard
+        onPress={onNomineePress}
+        {...i.item}
+      />
     );
   };
 
   renderItemNominationName = ({item}) => {
-    const {list, nomination_name, total_vote_count, most_recent} = item;
+    const {list, nomination_name, nominationId, total_vote_count, most_recent, time} = item;
 
     const max_vote = Math.max.apply(
       Math,
@@ -60,11 +36,17 @@ export default class NominationResultsList extends React.Component {
       l.total_vote_count = total_vote_count;
       l.most_recent = most_recent;
       l.max = l.vote == max_vote;
+      l.time = time
+      l.nominationId = nominationId
     });
+
+    // console.log(item)
 
     return (
       <View style={{padding: 5}}>
-        <Text style={{fontWeight: 'bold', marginBottom: 5}}>{nomination_name}:</Text>
+        <Text style={{fontWeight: 'bold', marginBottom: 5}}>
+          {nomination_name}:
+        </Text>
         <FlatList
           style={styles.container}
           data={item.list}
@@ -118,6 +100,7 @@ export default class NominationResultsList extends React.Component {
         modified_list.forEach(l => {
           l.total_vote_count = total_vote_count;
           l.most_recent = most_recent;
+          l.time = time
         });
       }
     }
@@ -161,9 +144,11 @@ export default class NominationResultsList extends React.Component {
       refreshing,
     } = this.props;
     const {oldResultList} = nominationResults;
-    const nominationResultList = (mostRecentNominationResults.time) ? [mostRecentNominationResults].concat(
-      oldResultList || [],
-    ) : oldResultList || [];
+    const nominationResultList = mostRecentNominationResults.time
+      ? [mostRecentNominationResults].concat(oldResultList || [])
+      : oldResultList || [];
+
+    console.log(nominationResultList)
 
     return (
       <FlatList

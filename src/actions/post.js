@@ -7,7 +7,8 @@ import {
   deletePostMutation,
   likePostMutation,
   changePostNotificationMutation,
-  reportPostMutation
+  reportPostMutation,
+  getNominationPostQuery
 } from './query/postQuery';
 
 export const getGroupPosts = data => {
@@ -236,8 +237,6 @@ export const updatePost = data => {
     let newAllowComment = allowComment
     let newType = type
     let newVisibility = visibility
-
-    console.log(image)
 
     if (image != null){
       const imageData = new FormData()
@@ -475,6 +474,46 @@ export const reportPost = data => {
       return reportResult
     }
     return 0
+
+  }
+}
+
+export const getNominationPost = request => {
+  const {token, groupId, time, nomineeId, nominationId, count} = request
+
+  return async function(dispatch){
+    const input = {
+      groupId: groupId,
+      nomineeId: nomineeId,
+      nominationId: nominationId,
+      endAt: time.next_sunday,
+      beginAt: time.last_sunday,
+      count: count
+    }
+
+    const graphql = {
+      query: getNominationPostQuery,
+      variables: {
+        nominationPostInput: input
+      }
+    }
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(graphql)
+    })
+
+    const result = await req.json()
+    if (result.errors){
+      return result
+    }
+    return result.data.getNominationPost
+
+
 
   }
 }

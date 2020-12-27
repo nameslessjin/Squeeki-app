@@ -36,6 +36,7 @@ export default class PostList extends React.Component {
             data = posts
         }
         const scrollable = count != 0
+        console.log(data)
 
         return (
             <FlatList

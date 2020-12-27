@@ -214,3 +214,58 @@ mutation reportPost($postReportInput: PostReportInput!){
     reportPost(input: $postReportInput)
 }
 `
+
+export const getNominationPostQuery = `
+query getNominationPost($nominationPostInput: NominationPostInput!){
+    getNominationPost(input: $nominationPostInput){
+        posts{
+            id
+            image{
+                uri
+                width
+                height
+            }
+            content
+            createdAt
+            updatedAt
+            user {
+                id
+                username
+                displayName
+                icon {
+                    uri
+                    width
+                    height
+                }
+            }
+            groupAuth {
+                rank
+                title
+            }
+            priority
+            visibility
+            priority_expiration_date
+            allowComment
+            type
+            commentCount
+            auth
+            groupId
+            likeCount
+            liked
+            notificationId
+            nomination{
+                postNominationId
+                nominationId
+                nomineeId
+                endAt
+                nominee_name
+                nomination_name
+                points
+                voted
+            }
+        }
+        count
+    }
+}
+
+`

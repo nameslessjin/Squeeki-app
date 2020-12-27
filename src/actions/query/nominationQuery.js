@@ -18,7 +18,9 @@ query getGroupNominationMostRecentResults($input: getGroupNominationResultsInput
         time
         list {
             nomination_name
+            nominationId
             list {
+                nomineeId
                 nominee_name
                 vote
             }
@@ -35,7 +37,9 @@ query getGroupNominationResults($input: getGroupNominationResultsInput!){
             time
             list {
                 nomination_name
+                nominationId
                 list {
+                    nomineeId
                     nominee_name
                     vote
                 }

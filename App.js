@@ -39,6 +39,7 @@ import Nomination from './src/screens/nomination'
 import NominationSetting from './src/screens/nominationSetting'
 import NominationResult from './src/screens/nominationResult'
 import Tag from './src/screens/tag'
+import NominationPost from './src/screens/nominationPost'
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -128,6 +129,7 @@ export default (App = () => {
             <Stack.Screen name="NominationSetting" component={NominationSetting} />
             <Stack.Screen name="NominationResults" component={NominationResult}/>
             <Stack.Screen name="Tags" component={Tag}/>
+            <Stack.Screen name="NominationPost" component={NominationPost} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

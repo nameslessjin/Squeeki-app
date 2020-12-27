@@ -12,7 +12,6 @@ import {
   StatusBar,
 } from 'react-native';
 import {updateProfile, userLogout} from '../actions/auth';
-import {iconImagePicker} from '../utils/imagePicker';
 import {connect} from 'react-redux';
 import UserTextInput from '../components/profile/textinput';
 import ProfileUpdateButton from '../components/profile/profileButton';

@@ -7,12 +7,12 @@ import {
   Text,
   Modal,
 } from 'react-native';
-import {PostImagePicker, PostVideoPicker} from '../../utils/imagePicker';
+import {iconImagePicker} from '../../utils/imagePicker';
 
-export default class PostSettingModal extends React.Component {
+export default class SignUpModal extends React.Component {
   onPress = type => {
     const {onBackdropPress, onChangeMedia} = this.props;
-    PostImagePicker(onChangeMedia, type, onBackdropPress);
+    iconImagePicker(onChangeMedia, type, onBackdropPress);
   };
 
 

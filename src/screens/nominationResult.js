@@ -10,6 +10,7 @@ import {getSundays} from '../utils/time';
 import {invalidAuthentication} from '../functions/auth';
 import NominationResultList from '../components/nominationResults/nominationResultList';
 import {GroupNominationResultsFormatting} from '../functions/nomination'
+import {getNominationPost} from '../actions/post'
 
 class NominationResult extends React.Component {
   state = {
@@ -95,6 +96,18 @@ class NominationResult extends React.Component {
     }
   };
 
+  onNomineePress = async(props) => {
+    let {nomineeId, time, nominationId} = props
+    const {navigation} = this.props
+
+    navigation.navigate('NominationPost', {
+      nomineeId: nomineeId,
+      time: time,
+      nominationId: nominationId
+    })
+
+  }
+
   render() {
 
     const {
@@ -103,6 +116,7 @@ class NominationResult extends React.Component {
       refreshing,
       loading
     } = this.state;
+
     return (
       <View style={styles.container}>
         <NominationResultList
@@ -111,6 +125,7 @@ class NominationResult extends React.Component {
           onRefresh={this.onRefresh}
           refreshing={refreshing}
           onEndReached={this.onEndReached}
+          onNomineePress={this.onNomineePress}
         />
         {loading ? <ActivityIndicator/> : null}
       </View>
@@ -137,6 +152,7 @@ const mapDispatchToProps = dispatch => {
     getGroupNominationResults: data =>
       dispatch(getGroupNominationResults(data)),
     userLogout: () => dispatch(userLogout()),
+    getNominationPost: data => dispatch(getNominationPost(data))
   };
 };
 
