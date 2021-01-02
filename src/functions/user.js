@@ -4,15 +4,18 @@ export const getGroupMembersFunc = async data => {
     getGroupMembers,
     navigation,
     userLogout,
-    lastIndexId,
+    count,
     groupId,
+    userIdList,
   } = data;
 
   const input = {
     token: token,
-    lastIndexId: lastIndexId,
+    count: count,
     groupId: groupId,
+    userIdList: userIdList,
   };
+
   const members = await getGroupMembers(input);
 
   if (members.errors) {
@@ -90,9 +93,12 @@ export const searchUserFunc = async data => {
     auth,
     navigation,
     userLogout,
-    lastIndexId,
+    count,
     searchTerm,
     groupId,
+    userIdList,
+    inGroup,
+    checkin_id
   } = data;
 
   if (searchTerm.length >= 3) {
@@ -100,7 +106,10 @@ export const searchUserFunc = async data => {
       searchTerm: searchTerm,
       token: auth.token,
       groupId: groupId,
-      lastIndexId: lastIndexId,
+      count: count,
+      userIdList: userIdList,
+      inGroup: inGroup,
+      checkin_id: checkin_id
     };
 
     const searchResult = await searchUser(input);

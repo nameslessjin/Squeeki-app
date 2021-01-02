@@ -1,6 +1,6 @@
 export const getGroupMembersQuery = `
-query getGroupMembers($groupId: ID!, $lastIndexId: String){
-    getGroupMembers(groupId: $groupId, lastIndexId: $lastIndexId){
+query getGroupMembers($input: GetGroupMembersInput!){
+    getGroupMembers(input: $input){
         members{
             id
             username
@@ -17,7 +17,7 @@ query getGroupMembers($groupId: ID!, $lastIndexId: String){
             createdAt
             lastLoginAt
         }
-        lastIndexId
+        count
     }
 }
 `
@@ -76,8 +76,9 @@ query searchUser($searchUserInput: SearchUserInput!){
                 height
             }
             in_group
+            checked
         }
-        lastIndexId
+        count
     }
 }
 `

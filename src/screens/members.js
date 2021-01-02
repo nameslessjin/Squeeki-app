@@ -19,7 +19,7 @@ class Users extends React.Component {
     const {navigation, group} = this.props;
     navigation.navigate('SearchUser', {
       group: group.group,
-      route: 'members'
+      prev_route: 'members'
     });
   };
 
@@ -46,7 +46,7 @@ class Users extends React.Component {
       getGroupMembers: getGroupMembers,
       navigation: navigation,
       userLogout: userLogout,
-      lastIndexId: init ? null : user.members.lastIndexId,
+      count: init ? 0 : user.members.count,
     };
     getGroupMembersFunc(data);
   };

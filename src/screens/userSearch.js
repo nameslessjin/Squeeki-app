@@ -13,6 +13,7 @@ import {userLogout} from '../actions/auth';
 import UserSearchBar from '../components/users/userSearch/searchBar';
 import DoneButton from '../components/users/userSearch/doneButton';
 import {searchUser, addMembers, getGroupMembers} from '../actions/user';
+import {userCheckInBatch, getGroupCheckInResult} from '../actions/checkin';
 import {searchUserFunc, getGroupMembersFunc} from '../functions/user';
 import UserList from '../components/users/userList';
 import DisplayNameList from '../components/users/userSearch/displayNameList';
@@ -22,7 +23,6 @@ class UserSearch extends React.Component {
     searchTerm: '',
     usersData: [],
     count: 0,
-    lastIndexId: null,
     chosenUser: [],
   };
 
@@ -36,14 +36,16 @@ class UserSearch extends React.Component {
         this.loadGroupMembers(true);
       }
     }
-    const button = params.prev_route == 'PostSetting' ? null : (
-      <DoneButton
-        disabled={chosenUser.length == 0}
-        onPress={this.onAddMembers}
-      />
-    );
+    const button =
+      params.prev_route == 'PostSetting' ? null : (
+        <DoneButton
+          disabled={chosenUser.length == 0}
+          onPress={this.onAddMembers}
+        />
+      );
     navigation.setOptions({
-      headerTitle: params.prev_route == 'PostSetting' ? 'Pick nominee' : 'Search User',
+      headerTitle:
+        params.prev_route == 'PostSetting' ? 'Pick nominee' : 'Search User',
       headerRight: () => button,
     });
   }
@@ -51,12 +53,13 @@ class UserSearch extends React.Component {
   componentDidUpdate() {
     const {navigation} = this.props;
     const {chosenUser, prev_route} = this.state;
-    const button = prev_route == 'PostSetting' ? null : (
-      <DoneButton
-        disabled={chosenUser.length == 0}
-        onPress={this.onAddMembers}
-      />
-    );
+    const button =
+      prev_route == 'PostSetting' ? null : (
+        <DoneButton
+          disabled={chosenUser.length == 0}
+          onPress={this.onAddMembers}
+        />
+      );
     navigation.setOptions({
       headerRight: () => button,
     });
@@ -67,16 +70,29 @@ class UserSearch extends React.Component {
     if (prev_route == 'PostSetting') {
     } else if (prev_route == 'members') {
       this.loadGroupMembers(true);
+    } else if (prev_route == 'CheckInResult') {
+      this.loadCheckInResult(true);
     }
   }
 
   loadGroupMembers = init => {
-    const {navigation, auth, userLogout, getGroupMembers, route, user} = this.props;
+    const {
+      navigation,
+      auth,
+      userLogout,
+      getGroupMembers,
+      route,
+      user,
+    } = this.props;
     let group = this.state.group;
+
+    let userIdList = [];
     if (route.params) {
-      if (route.params.prev_route == 'PostSetting') {
+      const {prev_route} = route.params;
+      if (prev_route == 'PostSetting' || prev_route == 'CheckInResult') {
         group = route.params.group;
       }
+      userIdList = userIdList || [];
     }
 
     const data = {
@@ -84,27 +100,83 @@ class UserSearch extends React.Component {
       groupId: group.id,
       navigation: navigation,
       userLogout: userLogout,
-      lastIndexId: init ? null : user.members.lastIndexId,
+      // count: init ? 0 : user.members.count,
+      count: init ? 0 : user.members.count,
       getGroupMembers: getGroupMembers,
+      userIdList: userIdList,
     };
     getGroupMembersFunc(data);
+  };
+
+  loadCheckInResult = async init => {
+    const {
+      userLogout,
+      getGroupCheckInResult,
+      auth,
+      route,
+      navigation,
+      checkin,
+    } = this.props;
+    console.log(checkin);
+    const count = checkin.attendee_count;
+    const request = {
+      token: auth.token,
+      count: init ? 0 : count,
+      checkin_id: route.params.checkin_id,
+    };
+
+    const req = await getGroupCheckInResult(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
   };
 
   onAddMembers = async () => {
     const {chosenUser, group} = this.state;
     const chosenUserIds = chosenUser.map(u => u.id);
-    const {auth, navigation, userLogout, addMembers} = this.props;
+    const {
+      auth,
+      navigation,
+      userLogout,
+      addMembers,
+      route,
+      userCheckInBatch,
+    } = this.props;
+    let request = {};
+    let req = 0;
 
-    const data = {
-      token: auth.token,
-      chosenUserIds: chosenUserIds,
-      groupId: group.id,
-    };
+    // only for previous route member and checkin
+    if (route.params) {
+      const {prev_route, checkin_id} = route.params;
+      if (prev_route == 'CheckInResult') {
+        request = {
+          token: auth.token,
+          userId: chosenUserIds,
+          checkin_id: checkin_id,
+          groupId: group.id,
+        };
+        req = await userCheckInBatch(request);
+      } else if (prev_route == 'members') {
+        request = {
+          token: auth.token,
+          chosenUserIds: chosenUserIds,
+          groupId: group.id,
+        };
+        req = await addMembers(request);
+      }
+    }
 
-    const addResult = await addMembers(data);
-    if (addResult.errors) {
-      alert(addResult.errors[0].message);
-      if (addResult.errors[0].message == 'Not Authenticated') {
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
           index: 0,
@@ -120,32 +192,51 @@ class UserSearch extends React.Component {
   };
 
   onSearchChange = async text => {
-
-    const term = text.trim()
+    const term = text.trim();
 
     this.setState({searchTerm: text});
 
     if (term.length < 3) {
-      this.setState({usersData: [], count: 0, lastIndexId: null});
+      this.setState({usersData: [], count: 0});
       return;
     }
 
-    const {searchUser, auth, navigation, userLogout} = this.props;
+    const {searchUser, auth, navigation, userLogout, route} = this.props;
     const {group} = this.state;
     const groupId = group ? group.id : 'null';
+
+    let userIdList = [];
+    let inGroup = false;
+    let checkin_id = null;
+    if (route.params) {
+      const {prev_route} = route.params;
+      userIdList = route.params.userIdList || [];
+      if (prev_route == 'PostSetting' || prev_route == 'CheckInResult') {
+        inGroup = true;
+      }
+
+      if (prev_route == 'CheckInResult') {
+        checkin_id = route.params.checkin_id;
+      }
+    }
+
     const data = {
       searchUser: searchUser,
       auth: auth,
       navigation: navigation,
       userLogout: userLogout,
-      lastIndexId: null,
+      count: 0,
       searchTerm: term,
       groupId: groupId,
+      userIdList: userIdList,
+      inGroup: inGroup,
+      checkin_id: checkin_id,
     };
 
     const searchResult = await searchUserFunc(data);
+
     if (searchResult != 0) {
-      const {users, lastIndexId} = searchResult;
+      const {users, count} = searchResult;
       this.setState({
         usersData: users.map(u => {
           return {
@@ -153,7 +244,7 @@ class UserSearch extends React.Component {
             chosen: false,
           };
         }),
-        lastIndexId: lastIndexId,
+        count: count,
       });
     }
 
@@ -161,32 +252,56 @@ class UserSearch extends React.Component {
   };
 
   onEndReached = async () => {
-    const {searchTerm, lastIndexId, usersData, prev_route} = this.state;
-    const {searchUser, auth, navigation, userLogout} = this.props;
+    const {searchTerm, count, usersData, prev_route} = this.state;
+    const {searchUser, auth, navigation, userLogout, route} = this.props;
     const {group} = this.state;
     const groupId = group ? group.id : 'null';
 
-    if (prev_route == 'PostSetting' && usersData.length == 0){
-      this.loadGroupMembers(false)
+    let userIdList = [];
+
+    if (route.params) {
+      userIdList = route.params.userIdList || [];
+    }
+
+    // perform load group members when it is not searching
+    if (prev_route == 'PostSetting' && usersData.length == 0) {
+      this.loadGroupMembers(false);
+      return
     }
 
     if (searchTerm < 3) {
-      this.setState({usersData: [], lastIndexId: null});
+      this.setState({usersData: [], count: null});
       return;
     }
+
+    let inGroup = false;
+    let checkin_id = null;
+
+    // under specific condition, only search within the group
+    if (prev_route == 'PostSetting' || prev_route == 'CheckInResult') {
+      inGroup = true;
+    }
+
+    if (prev_route == 'CheckInResult') {
+      checkin_id = route.params.checkin_id;
+    }
+
     const data = {
       searchUser: searchUser,
       auth: auth,
       navigation: navigation,
       userLogout: userLogout,
-      lastIndexId: lastIndexId,
+      count: count,
       searchTerm: searchTerm,
       groupId: groupId,
+      userIdList: userIdList,
+      inGroup: inGroup,
+      checkin_id: checkin_id,
     };
 
     const searchResult = await searchUserFunc(data);
     if (searchResult != 0) {
-      const {users, lastIndexId} = searchResult;
+      const {users, count} = searchResult;
       const newUsers = usersData.concat(
         users.map(u => {
           return {
@@ -197,20 +312,20 @@ class UserSearch extends React.Component {
       );
       this.setState({
         usersData: newUsers,
-        lastIndexId: lastIndexId,
+        count: count,
       });
     }
   };
 
   onChooseUser = user => {
     let {chosenUser, usersData, prev_route, group} = this.state;
-    const { navigation } = this.props
+    const {navigation} = this.props;
 
     let newChosenUser = [];
     let newUsersData = [];
 
-    if (prev_route == 'PostSetting' && chosenUser.length != 0){
-      chosenUser = []
+    if (prev_route == 'PostSetting' && chosenUser.length != 0) {
+      chosenUser = [];
     }
 
     if (chosenUser.find(u => u.id == user.id)) {
@@ -238,18 +353,22 @@ class UserSearch extends React.Component {
       });
     }
     this.setState({chosenUser: newChosenUser, usersData: newUsersData});
-    if (prev_route == 'PostSetting' && newChosenUser.length == 1){
-      navigation.navigate('Nomination', {chosenUser: newChosenUser[0], prev_route: 'PostSetting', groupId: group.id})
+    if (prev_route == 'PostSetting' && newChosenUser.length == 1) {
+      navigation.navigate('Nomination', {
+        chosenUser: newChosenUser[0],
+        prev_route: 'PostSetting',
+        groupId: group.id,
+      });
     }
   };
 
   render() {
     const {searchTerm, usersData, chosenUser, prev_route} = this.state;
     const {navigation, user} = this.props;
-    let userList = usersData
+    let userList = usersData;
 
-    if (prev_route == 'PostSetting' && usersData.length == 0){
-      userList = user.members.members
+    if (prev_route == 'PostSetting' && usersData.length == 0) {
+      userList = user.members.members;
     }
 
     let search_view = (
@@ -258,7 +377,7 @@ class UserSearch extends React.Component {
         <View style={styles.optionArea}>
           <UserSearchBar onChange={this.onSearchChange} value={searchTerm} />
         </View>
-        {(chosenUser.length == 0 || prev_route == 'PostSetting') ? null : (
+        {chosenUser.length == 0 || prev_route == 'PostSetting' ? null : (
           <View style={styles.chosenList}>
             <DisplayNameList
               chosenUser={chosenUser}
@@ -275,13 +394,11 @@ class UserSearch extends React.Component {
           chosenUser={chosenUser}
         />
       </KeyboardAvoidingView>
-    )
+    );
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-
         {search_view}
-
       </TouchableWithoutFeedback>
     );
   }
@@ -320,8 +437,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {auth, group, user} = state;
-  return {auth, group, user};
+  const {auth, group, user, checkin} = state;
+  return {auth, group, user, checkin};
 };
 
 const mapDispatchToProps = dispatch => {
@@ -330,6 +447,8 @@ const mapDispatchToProps = dispatch => {
     searchUser: data => dispatch(searchUser(data)),
     addMembers: data => dispatch(addMembers(data)),
     getGroupMembers: data => dispatch(getGroupMembers(data)),
+    userCheckInBatch: data => dispatch(userCheckInBatch(data)),
+    getGroupCheckInResult: data => dispatch(getGroupCheckInResult(data)),
   };
 };
 

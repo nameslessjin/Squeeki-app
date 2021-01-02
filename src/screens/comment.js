@@ -14,21 +14,29 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {getPost} from '../actions/post';
-import {getComments, createComment, cleanComment} from '../actions/comment';
+import {
+  getComments,
+  createComment,
+  cleanComment,
+  deleteComment,
+  reportComment,
+  likeComment,
+} from '../actions/comment';
 import {userLogout} from '../actions/auth';
 import {getCommentsFunc} from '../functions/comment';
 import CommentList from '../components/comment/commentList';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import CommentModal from '../components/comment/commentModal';
 
 class Comment extends React.Component {
   componentDidMount() {
     this.getPostComment();
     this.inputHeight = 35;
-    const {navigation} = this.props
+    const {navigation} = this.props;
 
     navigation.setOptions({
-        headerBackTitleVisible: false
-    })
+      headerBackTitleVisible: false,
+    });
   }
 
   componentWillUnmount() {
@@ -44,16 +52,20 @@ class Comment extends React.Component {
     comments: [],
     inputHeight: 35,
     sent: false,
+    modalVisible: false,
+    comment_uid: '',
+    commentId: ''
   };
 
-  getPostComment = async () => {
+  getPostComment = async init => {
     const {getPost, getComments, navigation, userLogout} = this.props;
     const {postId} = this.props.route.params;
+    const {count} = this.props.comment.comments;
     const {token} = this.props.auth;
     const data = {
       token: token,
       postId: postId,
-      lastIndexId: null,
+      count: count,
     };
     const postData = await getPost(data);
     if (postData.errors) {
@@ -70,20 +82,9 @@ class Comment extends React.Component {
 
     const post = postData.data.getPost;
 
-    this.setState(prevState => ({
-      post: post,
-    }));
+    this.setState({post: post});
 
     Keyboard.dismiss();
-
-    const input = {
-      data: data,
-      getComments: getComments,
-      navigation: navigation,
-      userLogout: userLogout,
-    };
-
-    getCommentsFunc(input);
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -96,16 +97,86 @@ class Comment extends React.Component {
     }
   }
 
+  onCommentLike = async commentId => {
+    const {navigation, auth, likeComment} = this.props;
+    const request = {
+      token: auth.token,
+      commentId: commentId,
+    };
+
+    const req = await likeComment(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+  };
+
+  onCommentDelete = async () => {
+    const {navigation, auth, deleteComment} = this.props;
+    const {commentId} = this.state
+    const request = {
+      token: auth.token,
+      commentId: commentId
+    }
+
+    const req = await deleteComment(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+
+    this.onBackdropPress()
+
+  }
+
+  onCommentReport = async (content) => {
+    const {navigation, auth, reportComment} = this.props
+    const {commentId} = this.state
+    const request = {
+      token: auth.token,
+      commentId: commentId,
+      content: content.trim()
+    }
+
+    const req = await reportComment(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+
+  }
+
   onEndReached = () => {
     this.setState({loading: true});
-    const {lastIndexId} = this.props.comment.comments;
+    const {count} = this.props.comment.comments;
     const {token} = this.props.auth;
     const {postId} = this.props.route.params;
     const {getComments, navigation, userLogout} = this.props;
     const data = {
       token: token,
       postId: postId,
-      lastIndexId: lastIndexId,
+      count: count,
     };
 
     const input = {
@@ -122,6 +193,7 @@ class Comment extends React.Component {
   updateComment = data => {
     this.setState({newComment: data});
   };
+
   onSend = async () => {
     const {navigation, userLogout} = this.props;
     const {newComment} = this.state;
@@ -131,7 +203,7 @@ class Comment extends React.Component {
       comment: newComment,
       token: token,
       postId: postId,
-      lastIndexId: null,
+      count: 0,
     };
     this.setState({sent: true});
     Keyboard.dismiss();
@@ -151,63 +223,96 @@ class Comment extends React.Component {
     this.setState({newComment: '', sent: false});
   };
 
+  onOptionToggle = data => {
+    const {commentId, userId} = data
+    this.setState({
+      modalVisible: true,
+      comment_uid: userId,
+      commentId: commentId
+    });
+    Keyboard.dismiss();
+  };
+
+  onBackdropPress = () => {
+    this.setState({
+      modalVisible: false,
+    });
+    Keyboard.dismiss();
+  };
+
   render() {
     const {container} = styles;
-    const {token} = this.props.auth;
-    const {comments, post, inputHeight, newComment, sent} = this.state;
+    const {
+      comments,
+      post,
+      inputHeight,
+      newComment,
+      sent,
+      modalVisible,
+      comment_uid
+    } = this.state;
     const disabled = newComment.trim().length == 0;
     return (
-      <KeyboardAvoidingView
-        style={container}
-        behavior={Platform.OS == 'ios' ? 'padding' : 'overflow'}
-        keyboardVerticalOffset={35}>
-        <StatusBar barStyle={'dark-content'} />
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={{flex: 1}}>
-            <CommentList
-              post={post}
-              comments={comments}
-              onEndReached={this.onEndReached}
-              sent={sent}
-            />
-            {post.allowComment ? (
-              <View style={styles.textInputContainer}>
-                <TextInput
-                  style={[
-                    styles.textInput,
-                    {height: Math.max(35, inputHeight + 10)},
-                  ]}
-                  placeholder={'Add a comment ...'}
-                  multiline={true}
-                  maxLength={250}
-                  onContentSizeChange={e =>
-                    this.setState({
-                      inputHeight: e.nativeEvent.contentSize.height,
-                    })
-                  }
-                  onChangeText={text => this.setState({newComment: text})}
-                  value={newComment}
-                />
-                {sent ? (
-                  <ActivityIndicator animating={true}/>
-                ) : (
-                  <TouchableOpacity disabled={disabled} onPress={this.onSend}>
-                    <MaterialIcons
-                      name={
-                        disabled
-                          ? 'arrow-up-drop-circle-outline'
-                          : 'arrow-up-drop-circle'
-                      }
-                      size={30}
-                      color={disabled ? '#718093' : '#273c75'}
-                    />
-                  </TouchableOpacity>
-                )}
-              </View>
-            ) : null}
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView
+          style={container}
+          behavior={Platform.OS == 'ios' ? 'padding' : 'overflow'}
+          keyboardVerticalOffset={35}>
+          <StatusBar barStyle={'dark-content'} />
+          <CommentList
+            post={post}
+            comments={comments}
+            onEndReached={this.onEndReached}
+            sent={sent}
+            onCommentLike={this.onCommentLike}
+            onOptionToggle={this.onOptionToggle}
+          />
+          {post.allowComment ? (
+            <View style={styles.textInputContainer}>
+              <TextInput
+                style={[
+                  styles.textInput,
+                  {height: Math.max(35, inputHeight + 10)},
+                ]}
+                placeholder={'Add a comment ...'}
+                multiline={true}
+                maxLength={250}
+                onContentSizeChange={e =>
+                  this.setState({
+                    inputHeight: e.nativeEvent.contentSize.height,
+                  })
+                }
+                onChangeText={text => this.setState({newComment: text})}
+                value={newComment}
+              />
+              {sent ? (
+                <ActivityIndicator animating={true} />
+              ) : (
+                <TouchableOpacity disabled={disabled} onPress={this.onSend}>
+                  <MaterialIcons
+                    name={
+                      disabled
+                        ? 'arrow-up-drop-circle-outline'
+                        : 'arrow-up-drop-circle'
+                    }
+                    size={30}
+                    color={disabled ? '#718093' : '#273c75'}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          ) : null}
+
+          <CommentModal
+            modalVisible={modalVisible}
+            onBackdropPress={this.onBackdropPress}
+            comment_uid={comment_uid}
+            userId = {this.props.auth.user.id}
+            onCommentDelete={this.onCommentDelete}
+            onCommentReport={this.onCommentReport}
+          />
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -250,6 +355,9 @@ const mapDispatchToProps = dispatch => {
     createComment: data => dispatch(createComment(data)),
     userLogout: () => dispatch(userLogout()),
     cleanComment: () => dispatch(cleanComment()),
+    likeComment: data => dispatch(likeComment(data)),
+    deleteComment: data => dispatch(deleteComment(data)),
+    reportComment: data => dispatch(reportComment(data)),
   };
 };
 

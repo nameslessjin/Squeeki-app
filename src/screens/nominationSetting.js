@@ -9,6 +9,7 @@ import {
   Keyboard,
   TextInput,
   ActivityIndicator,
+  StatusBar
 } from 'react-native';
 import {connect} from 'react-redux';
 import HeaderRightButton from '../components/nominationSetting/headerRightButton';
@@ -256,6 +257,7 @@ class NominationSetting extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
+        <StatusBar barStyle={'dark-content'} />
           <Input
             type={'name'}
             value={nomination_name}

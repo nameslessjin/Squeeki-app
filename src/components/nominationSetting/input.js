@@ -4,8 +4,6 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
   Platform,
 } from 'react-native';
 import {Picker} from '@react-native-community/picker';

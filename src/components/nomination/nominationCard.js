@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     height: 120,
     backgroundColor: 'white',
     alignItems: 'center',
-    margin: 8,
+    margin: 10,
   },
   textContainer: {
     width: '100%',

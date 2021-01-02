@@ -1,6 +1,6 @@
 export const getCommentQuery = `
-query getPostComments($postId: ID!, $lastIndexId: String){
-    getPostComments(postId: $postId, lastIndexId: $lastIndexId){
+query getPostComments($postId: ID!, $count: Int!){
+    getPostComments(postId: $postId, count: $count){
         comments{
             id
             content
@@ -16,14 +16,15 @@ query getPostComments($postId: ID!, $lastIndexId: String){
                     height
                 }
             }
+            likeCount
+            liked
         }
         count
-        lastIndexId
     }
 }
 `
 
-export const createCommentQuery = `
+export const createCommentMutation = `
 mutation createComment($commentInput: CommentInput!){
     createComment(input: $commentInput){
         comments{
@@ -43,7 +44,23 @@ mutation createComment($commentInput: CommentInput!){
             }
         }
         count
-        lastIndexId
     }
+}
+`
+export const deleteCommentMutation = `
+mutation deleteComment($commentId: ID!){
+    deleteComment(commentId: $commentId)
+}
+`
+
+export const likeCommentMutation = `
+mutation likeComment($commentId: ID!) {
+    likeComment(commentId: $commentId)
+}
+`
+
+export const reportCommentMutation = `
+mutation reportComment($commentReportInput: CommentReportInput!){
+    reportComment(input: $commentReportInput)
 }
 `

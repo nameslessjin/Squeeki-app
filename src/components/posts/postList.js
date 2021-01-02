@@ -1,65 +1,76 @@
-import React from 'react'
-import {FlatList, StyleSheet} from 'react-native'
-import GroupHeader from '../group/groupHeader'
-import PostCard from './postCard'
+import React from 'react';
+import {FlatList, StyleSheet} from 'react-native';
+import GroupHeader from '../group/groupHeader';
+import PostCard from './postCard';
 
 const extractKey = ({id}) => id;
 
-
 export default class PostList extends React.Component {
-    renderItem = ({item}) => {
-        const {navigation, onAddPost} = this.props;
-        if (item.groupname){
-            return <GroupHeader item = {item} navigation = {navigation} onAddPost={onAddPost} />
-             
-        } 
-
-        return <PostCard item = {item} navigation = {navigation} commentTouchable={true} option={true}/>
+  renderItem = ({item}) => {
+    const {navigation, onAddPost, onPostSelect, selectionMode} = this.props;
+    if (item.groupname) {
+      return (
+        <GroupHeader
+          item={item}
+          navigation={navigation}
+          onAddPost={onAddPost}
+        />
+      );
     }
 
-    render() {
-        const {group, onEndReached, onRefresh, refreshing} = this.props
-        const {posts, count} = this.props.posts;
-        let data = []
+    return (
+      <PostCard
+        item={item}
+        navigation={navigation}
+        // commentTouchable={true}
+        // option={true}
+        onPostSelect={onPostSelect}
+        selectionMode={selectionMode}
+      />
+    );
+  };
 
-        if (group != null){
-            const groupHeader = {
-                ...group,
-                id: 'group ' + group.id
-            }
+  render() {
+    const {group, onEndReached, onRefresh, refreshing} = this.props;
+    const {posts, count} = this.props.posts;
+    let data = [];
 
-            data = [groupHeader]
-            if (group.visibility == 'public' || group.auth != null){
-                data = data.concat(posts)
-            }
-        } else {
-            data = posts
-        }
-        const scrollable = count != 0
-        console.log(data)
+    if (group != null) {
+      const groupHeader = {
+        ...group,
+        id: 'group ' + group.id,
+      };
 
-        return (
-            <FlatList
-                style={styles.container}
-                data = {data}
-                renderItem={this.renderItem}
-                keyExtractor={extractKey}
-                alwaysBounceHorizontal={false}
-                scrollEnabled={scrollable}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps={'handled'}
-                onEndReached={() => onEndReached()}
-                onEndReachedThreshold={0.1}
-                onRefresh={onRefresh}
-                refreshing={refreshing}
-            />
-        )
-
+      data = [groupHeader];
+      if (group.visibility == 'public' || group.auth != null) {
+        data = data.concat(posts);
+      }
+    } else {
+      data = posts;
     }
+    const scrollable = count != 0;
+
+    return (
+      <FlatList
+        style={styles.container}
+        data={data}
+        renderItem={this.renderItem}
+        keyExtractor={extractKey}
+        alwaysBounceHorizontal={false}
+        scrollEnabled={scrollable}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps={'handled'}
+        onEndReached={() => onEndReached()}
+        onEndReachedThreshold={0.1}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+      />
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        width: "100%",
-    },
-})
+  container: {
+    width: '100%',
+  },
+});

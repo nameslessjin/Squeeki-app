@@ -89,9 +89,9 @@ function CustomDrawerContent(props) {
           <MaterialIcons name="check-bold" color={'grey'} size={25} />
         )}
         labelStyle={styles.labelStyle}
-        // onPress={() => {
-        //     props.navigation.navigate('NominationResults')
-        // }}
+        onPress={() => {
+            props.navigation.navigate('CheckIn')
+        }}
       />
       <DrawerItem
         label="Settings"

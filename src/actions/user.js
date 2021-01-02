@@ -11,16 +11,23 @@ import {
 import {getGroup} from './group';
 
 export const getGroupMembers = data => {
-  const {groupId, token, lastIndexId} = data;
+  const {groupId, token, count, userIdList} = data;
 
   return async function(dispatch) {
+
+    const input = {
+      groupId: groupId,
+      count: count,
+      userIdList: userIdList
+    }
+
     const graphql = {
       query: getGroupMembersQuery,
       variables: {
-        groupId: groupId,
-        lastIndexId: lastIndexId,
+        input: input
       },
     };
+
 
     const groupMembers = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
@@ -36,7 +43,7 @@ export const getGroupMembers = data => {
       return membersData;
     }
 
-    if (lastIndexId == null) {
+    if (count == 0) {
       dispatch(getGroupMembersToReducer(membersData.data.getGroupMembers));
     } else {
       dispatch(loadMoreGroupMembers(membersData.data.getGroupMembers));
@@ -173,15 +180,18 @@ export const registerDeviceForNotification = data => {
 };
 
 export const searchUser = data => {
-  const {searchTerm, token, lastIndexId, groupId} = data;
+  const {searchTerm, token, count, groupId, userIdList, inGroup, checkin_id} = data;
 
   return async function(dispatch) {
     const searchUserInput = {
       searchTerm: searchTerm.trim(),
-      lastIndexId: lastIndexId,
+      count: count,
       groupId: groupId,
+      userIdList: userIdList,
+      inGroup: inGroup,
+      checkin_id: checkin_id
     };
-
+    
     const graphql = {
       query: searchUserQuery,
       variables: {

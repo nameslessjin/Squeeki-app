@@ -1,52 +1,51 @@
 const INITIAL_STATE = {
-    comments: {
-        comments: [],
-        count: 0,
-        lastIndexId: null,
-    }
-}
+  comments: {
+    comments: [],
+    count: 0,
+  },
+};
 
-export default commentReducer = (state = INITIAL_STATE, action) => {
-    let comments = state.comments
+export default (commentReducer = (state = INITIAL_STATE, action) => {
+  let comments = state.comments;
 
-    switch (action.type){
-        case 'getComments':
-            return {
-                ...state,
-                comments: {
-                    ...action.comments
-                }
-            }
-        case 'loadMoreComments':
-  
-            comments = state.comments.comments.concat(action.comments.comments)
-            return {
-                ...state,
-                comments:{
-                    comments: comments,
-                    count: state.comments.count,
-                    lastIndexId: action.comments.lastIndexId
-                }
-            }
-        case 'createComment':
-            return {
-                ...state,
-                comments:{
-                    ...action.comments
-                }
-            }
+  switch (action.type) {
+    case 'loadComments':
+      return {
+        ...state,
+        comments: {
+          comments: state.comments.comments.concat(action.comments.comments),
+          count: action.comments.count,
+        },
+      };
 
-        case 'cleanComment':
-            return {
-                ...INITIAL_STATE
-            }
+    case 'createComment':
+      return {
+        ...state,
+        comments: {
+          ...action.comments,
+        },
+      };
 
-        case 'logout':
-            return {
-                ...INITIAL_STATE
-            }
+    case 'deleteComment':
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          comments: state.comments.comments.filter(comment => comment.id != action.commentId)
+        }
+      }
 
-        default:
-            return state
-    }
-}
+    case 'cleanComment':
+      return {
+        ...INITIAL_STATE,
+      };
+
+    case 'logout':
+      return {
+        ...INITIAL_STATE,
+      };
+
+    default:
+      return state;
+  }
+});

@@ -1,6 +1,6 @@
 
 const INITIAL_STATE = {
-    members: { members: [], lastIndexId: null}
+    members: { members: [], count: 0}
 }
 
 export default userReducer = (state = INITIAL_STATE, action) => {
@@ -19,7 +19,7 @@ export default userReducer = (state = INITIAL_STATE, action) => {
             ...state,
             members: {
                 members: members,
-                lastIndexId: action.moreGroupMembers.lastIndexId
+                count: action.moreGroupMembers.count
             }
 
         }

@@ -40,8 +40,6 @@ export default class NominationResultsList extends React.Component {
       l.nominationId = nominationId
     });
 
-    // console.log(item)
-
     return (
       <View style={{padding: 5}}>
         <Text style={{fontWeight: 'bold', marginBottom: 5}}>
@@ -147,8 +145,6 @@ export default class NominationResultsList extends React.Component {
     const nominationResultList = mostRecentNominationResults.time
       ? [mostRecentNominationResults].concat(oldResultList || [])
       : oldResultList || [];
-
-    console.log(nominationResultList)
 
     return (
       <FlatList

@@ -41,9 +41,20 @@ export default class UserCard extends React.Component {
   };
 
   render() {
-    const {username, displayName, icon, in_group, chosen, prev_route} = this.props;
+    const {username, displayName, icon, in_group, chosen, prev_route, onPress, checked} = this.props;
     const { icon_option } = this.state
-    const in_group_message = (in_group == 1 && prev_route != 'PostSetting') ? 'In your group' : null;
+
+    let disable = false
+
+    let in_group_message = null
+    if (in_group == 1 && prev_route != 'PostSetting' && prev_route != 'CheckInResult'){
+      in_group_message = 'In your group'
+      disable = true
+    } else if (checked && prev_route == 'CheckInResult'){
+      in_group_message = 'Checked in'
+      disable = true
+    }
+
 
     let displayNameSize = 16;
     if (displayName.length > 20) {
@@ -59,7 +70,7 @@ export default class UserCard extends React.Component {
     }
 
     return (
-      <TouchableWithoutFeedback disabled={(in_group && prev_route != 'PostSetting')} onPress={this.OnUserPress}>
+      <TouchableWithoutFeedback disabled={disable} onPress={onPress ? this.OnUserPress : null}>
         <View
           style={[
             styles.container,

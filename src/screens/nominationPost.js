@@ -39,7 +39,6 @@ class NominationPost extends React.Component {
   }
 
   loadNominationPost = async props => {
-    console.log(props);
 
     let {nomineeId, time, nominationId, count} = props;
     const {navigation, group, auth, getNominationPost} = this.props;
@@ -82,7 +81,7 @@ class NominationPost extends React.Component {
   render() {
     const {posts, count} = this.state;
     const {group, navigation} = this.props;
-    console.log(posts);
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, StyleSheet, View, Text, Dimensions} from 'react-native';
+import {FlatList, StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback} from 'react-native';
 import CommentCard from './commentCard';
 import CommentPost from './commentPost';
 
@@ -7,11 +7,14 @@ const extractKey = ({id}) => id;
 
 export default class CommentList extends React.Component {
   renderItem = ({item}) => {
+
+    const {onCommentLike, onOptionToggle} = this.props
+
     if (item.id) {
       if (item.type) {
         return <CommentPost post={item} option={false} />;
       }
-      return <CommentCard comment={item} />;
+      return <CommentCard comment={item} onCommentLike={onCommentLike} onOptionToggle={onOptionToggle} />;
     }
     return;
   };

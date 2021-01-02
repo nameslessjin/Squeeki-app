@@ -14,7 +14,7 @@ export default class PostMedia extends React.Component {
   render() {
     const {image, content} = this.props;
     return (
-      <TouchableWithoutFeedback>
+      // <TouchableWithoutFeedback>
         <View style={styles.contentStyle}>
           <Text style={styles.textStyle}>{content}</Text>
           {image != null ? (
@@ -30,7 +30,7 @@ export default class PostMedia extends React.Component {
             </View>
           ) : null}
         </View>
-      </TouchableWithoutFeedback>
+      // </TouchableWithoutFeedback>
     );
   }
 }

@@ -107,3 +107,25 @@ export const getNominationTime = (time) => {
     return {year: year, month: month, date: date}
 
 }
+
+export const calculateTimeAddition = (time) => {
+    return new Date(Date.now() + time * 60 * 1000)
+}
+
+export const timeDifferentInMandS = (time) => {
+    const current = Date.now()
+    let diff = time - current
+
+    if (diff <= 0){
+        return false
+    }
+
+    diff = diff / 1000
+
+    const day =  Math.floor(diff / (60 * 60 * 24))
+    const hour = Math.floor((diff - day * (60 * 60 * 24)) / (60 * 60) )
+    const minute = Math.floor( (diff - day * (60 * 60 * 24) - hour * (60 * 60)) / 60 )  
+    const second = Math.floor(diff - day * (60 * 60 * 24) - hour * (60 * 60) - minute * 60)
+    
+    return {day: day, hour: hour, minute: minute, second: second}
+}

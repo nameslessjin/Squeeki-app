@@ -84,7 +84,7 @@ class Member extends React.Component {
       getGroupMembers: getGroupMembers,
       navigation: navigation,
       userLogout: userLogout,
-      lastIndexId: null,
+      count: 0,
     };
     getGroupMembersFunc(data);
   };

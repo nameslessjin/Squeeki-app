@@ -19,6 +19,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {createLogger} from 'redux-logger';
 import commentReducer from './src/reducers/commentReducer';
 import userReducer from './src/reducers/userReducer';
+import checkinReducer from './src/reducers/checkinReducer'
 
 import SignIn from './src/screens/signin';
 import SignUp from './src/screens/signup';
@@ -40,6 +41,11 @@ import NominationSetting from './src/screens/nominationSetting'
 import NominationResult from './src/screens/nominationResult'
 import Tag from './src/screens/tag'
 import NominationPost from './src/screens/nominationPost'
+import CheckIn from './src/screens/checkin'
+import CheckInSetting from './src/screens/checkinSetting'
+import Post from './src/screens/post'
+import CheckInResult from './src/screens/checkinResult'
+
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -51,13 +57,14 @@ const rootReducer = combineReducers({
   post: postReducer,
   comment: commentReducer,
   user: userReducer,
+  checkin: checkinReducer
 });
 
 const persistConfig = {
   storage: AsyncStorage,
   key: 'root',
   whitelist: ['auth'],
-  blacklist: ['currentScreen', 'group', 'post', 'comment', 'user'],
+  blacklist: ['currentScreen', 'group', 'post', 'comment', 'user', 'checkin'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -130,6 +137,11 @@ export default (App = () => {
             <Stack.Screen name="NominationResults" component={NominationResult}/>
             <Stack.Screen name="Tags" component={Tag}/>
             <Stack.Screen name="NominationPost" component={NominationPost} />
+            <Stack.Screen name="CheckIn" component={CheckIn} />
+            <Stack.Screen name="CheckInSetting" component={CheckInSetting} />
+            <Stack.Screen name="Post" component={Post} />
+            <Stack.Screen name="CheckInResult" component={CheckInResult} />
+            
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

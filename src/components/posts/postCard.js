@@ -31,7 +31,8 @@ class PostCard extends React.Component {
     is_report_toggled: false,
     report: '',
     onReport: false,
-    voting: false
+    voting: false,
+    selected: false
   };
 
   onPostDelete = () => {
@@ -221,17 +222,17 @@ class PostCard extends React.Component {
   };
 
   onVotePress = async () => {
-    const {nomination} = this.state
+    const {nomination} = this.state;
     const {auth, voteNominee, navigation, item} = this.props;
     const data = {
       token: auth.token,
       nomination: nomination,
-      groupId: item.groupId
-    }
+      groupId: item.groupId,
+    };
 
-    this.setState({voting: true})
-    const vote = await voteNominee(data)
-    this.setState({voting: false})
+    this.setState({voting: true});
+    const vote = await voteNominee(data);
+    this.setState({voting: false});
 
     if (vote.errors) {
       alert(vote.errors[0].message);
@@ -244,18 +245,17 @@ class PostCard extends React.Component {
       }
     }
 
-    if (nomination.voted == false){
+    if (nomination.voted == false) {
       this.setState(prevState => {
         return {
           ...prevState,
           nomination: {
             ...prevState.nomination,
-            voted: true
-          }
-        }
-      })
+            voted: true,
+          },
+        };
+      });
     }
-
   };
 
   render() {
@@ -279,10 +279,10 @@ class PostCard extends React.Component {
       onReport,
       loading,
       nomination,
-      voting
+      voting,
+      selected,
     } = this.state;
-    const {option} = this.props;
-    const {commentTouchable} = this.props;
+    const {option, commentTouchable, selectionMode, onPostSelect} = this.props;
     const {username, icon, displayName} = user;
     const date = dateConversion(createdAt);
 
@@ -296,7 +296,7 @@ class PostCard extends React.Component {
     }
 
     return (
-      <TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={() => selectionMode ? onPostSelect({...this.props.item}) : null}>
         <View style={[styles.container, {backgroundColor: backgroundColor}]}>
           <PostHeader
             icon={icon}
@@ -312,7 +312,7 @@ class PostCard extends React.Component {
             modalToggled={modalToggled}
             toggleModal={this.toggleModal}
             onBackDropPress={this.onBackDropPress}
-            option={option}
+            // option={option}
             type={type}
             priority={priority}
             notificationId={notificationId}
@@ -323,27 +323,30 @@ class PostCard extends React.Component {
             onReportInput={this.onReportInput}
             onSubmitReport={this.onSubmitReport}
             onReport={onReport}
+            selectionMode={selectionMode}
           />
 
           <PostMedia image={image} content={content} />
 
-          <PostFooter
-            commentCount={commentCount}
-            likeCount={0}
-            navigation={this.props.navigation}
-            postId={id}
-            commentTouchable={commentTouchable}
-            onLikePress={this.onLikePress}
-            likeCount={likeCount}
-            liked={liked}
-            loading={loading}
-          />
-          {nomination == null ? null : (
+          {selectionMode ? null : (
+            <PostFooter
+              commentCount={commentCount}
+              likeCount={0}
+              navigation={this.props.navigation}
+              postId={id}
+              commentTouchable={commentTouchable}
+              onLikePress={this.onLikePress}
+              likeCount={likeCount}
+              liked={liked}
+              loading={loading}
+            />
+          )}
+          {(nomination == null || selectionMode) ? null : (
             <PostNomination
               nomination={nomination}
               onPress={this.onVotePress}
               voting={voting}
-              voted = {nomination.voted}
+              voted={nomination.voted}
             />
           )}
         </View>
@@ -375,7 +378,7 @@ const mapDispatchToProps = dispatch => {
     likePost: data => dispatch(likePost(data)),
     changePostNotification: data => dispatch(changePostNotification(data)),
     reportPost: data => dispatch(reportPost(data)),
-    voteNominee: data => dispatch(voteNominee(data))
+    voteNominee: data => dispatch(voteNominee(data)),
   };
 };
 

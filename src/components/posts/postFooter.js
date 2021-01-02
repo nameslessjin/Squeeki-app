@@ -21,7 +21,7 @@ export default class PostFooter extends React.Component {
     const {
       commentCount,
       likeCount,
-      commentTouchable,
+      // commentTouchable,
       onLikePress,
       liked,
       loading,
@@ -31,7 +31,8 @@ export default class PostFooter extends React.Component {
       <View style={footerContainer}>
         <TouchableOpacity
           onPress={this.onCommentPress}
-          disabled={!commentTouchable}>
+          // disabled={!commentTouchable}
+          >
           <View style={IconContainer}>
             <MaterialIcons name="comment-outline" size={25} />
             <Text style={IconText}>{commentCount}</Text>

@@ -56,7 +56,8 @@ export default class PostHeader extends React.Component {
       report,
       onReportInput,
       onSubmitReport,
-      onReport
+      onReport,
+      selectionMode
     } = this.props;
 
     const {icon_option} = this.state
@@ -225,8 +226,8 @@ export default class PostHeader extends React.Component {
               </Text>
             </View>
           ) : null}
-          <Text style={styles.timeStyle}>{date}</Text>
-          {option ? (
+          <Text style={[styles.timeStyle, {marginRight: selectionMode ? 5 : 0}]}>{date}</Text>
+          {!selectionMode ? (
             <TouchableOpacity
               onPress={toggleModal}
               style={styles.verticalDotStyle}>

@@ -1,13 +1,13 @@
-import {getCommentQuery, createCommentQuery} from './query/commentQuery';
+import {getCommentQuery, createCommentMutation, deleteCommentMutation, likeCommentMutation, reportCommentMutation} from './query/commentQuery';
 
 export const getComments = data => {
-  const {postId, token, lastIndexId} = data;
+  const {postId, token, count} = data;
   return async function(dispatch) {
     const graphql = {
       query: getCommentQuery,
       variables: {
         postId: postId,
-        lastIndexId: lastIndexId
+        count: count || 0
       },
     };
 
@@ -27,41 +27,30 @@ export const getComments = data => {
       return comments;
     }
 
-    if (lastIndexId == null){
+    dispatch(loadComments(comments.data.getPostComments));
 
-      dispatch(getCommentsToReducer(comments.data.getPostComments));
-    } else {
-      dispatch(loadMoreComments(comments.data.getPostComments));
-    }
     return 0
   };
 };
 
-const getCommentsToReducer = data => {
+const loadComments = data => {
   return {
-    type: 'getComments',
-    comments: data,
-  };
-};
-
-const loadMoreComments = data => {
-  return {
-    type: 'loadMoreComments',
+    type: 'loadComments',
     comments: data
   }
 }
 
 export const createComment = data => {
-  const {token, postId, comment, lastIndexId} = data;
+  const {token, postId, comment, count} = data;
 
   return async function(dispatch) {
       const commentInput = {
           postId: postId,
           content: comment,
-          lastIndexId: lastIndexId
+          count: count
       }
       const graphQl = {
-          query: createCommentQuery,
+          query: createCommentMutation,
           variables: {
               commentInput: commentInput
           }
@@ -83,7 +72,6 @@ export const createComment = data => {
 
       dispatch(createCommentToReducer(commentData.data.createComment));
 
-      // dispatch(createCommentToReducer(commentData.data.createComment))
       return 0
   };
 };
@@ -94,6 +82,115 @@ const createCommentToReducer = data => {
         comments: data
     }
 }
+
+export const likeComment = request => {
+  const {commentId, token} = request
+
+  return async function(dispatch){
+    const graphql = {
+      query: likeCommentMutation,
+      variables: {
+        commentId: commentId
+      }
+    }
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    return 0
+
+  }
+}
+
+
+export const deleteComment = request => {
+  const {commentId, token} = request
+
+  return async function(dispatch){
+    const graphql = {
+      query: deleteCommentMutation,
+      variables: {
+        commentId: commentId
+      }
+    }
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(deleteCommentReducer(commentId))
+
+    return 0
+  }
+
+}
+
+const deleteCommentReducer = data => {
+  return {
+    type: 'deleteComment',
+    commentId: data
+  }
+}
+
+export const reportComment = request => {
+  const { token, commentId, content } = request
+
+  return async function(dispatch){
+    const input = {
+      commentId: commentId,
+      content: content
+    }
+
+    const graphql = {
+      query: reportCommentMutation,
+      variables: {
+        commentReportInput: input
+      }
+    }
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    return 0
+
+  }
+}
+
 
 export const cleanComment = () => {
   return {

@@ -34,7 +34,7 @@ export default class UserList extends React.Component {
     const users = usersData.map(u => {
       return {
         ...u,
-        chosen: chosenUser.findIndex(c => c.id == u.id) != -1 ? true : false,
+        chosen: chosenUser ? chosenUser.findIndex(c => c.id == u.id) != -1 ? true : false : false,
       };
     });
 
@@ -58,5 +58,7 @@ export default class UserList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    height: '100%'
+    
   },
 });
