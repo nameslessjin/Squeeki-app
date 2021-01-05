@@ -8,7 +8,7 @@ import {
   StatusBar,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {getGroupPosts} from '../actions/post';
+import {getGroupPosts, getGroupPostForCheckIn} from '../actions/post';
 import PostList from '../components/posts/postList';
 import {getGroupPostsFunc} from '../functions/post';
 import {userLogout} from '../actions/auth';
@@ -17,6 +17,8 @@ class Post extends React.Component {
   state = {
     loading: false,
     refreshing: false,
+    post: [],
+    count: 0
   };
 
   componentDidMount() {
@@ -28,14 +30,16 @@ class Post extends React.Component {
       headerBackTitleVisible: false,
     });
 
+
     if (visibility == 'public' || auth != null) {
       this.setState({loading: true});
-      this.loadGroupPosts(true);
+      this.loadPosts(true)
       this.setState({loading: false});
     }
 
     Keyboard.dismiss();
   }
+
 
   onPostSelect = (post) => {
     const {navigation} = this.props;
@@ -48,7 +52,7 @@ class Post extends React.Component {
     const {visibility, auth} = this.props.group.group;
     if (visibility == 'public' || auth != null) {
       this.setState({loading: true});
-      this.loadGroupPosts(false);
+      this.loadPosts(false)
       this.setState({loading: false});
     }
   };
@@ -57,35 +61,49 @@ class Post extends React.Component {
     const {visibility, auth} = this.props.group.group;
     if (visibility == 'public' || auth != null) {
     this.setState({refreshing: true});
-    this.loadGroupPosts(true);
+    this.loadPosts(true)
     this.setState({refreshing: false});
     }
   };
 
-  loadGroupPosts = init => {
-    const {token} = this.props.auth;
-    const {navigation, getGroupPosts, userLogout} = this.props;
-    const {id} = this.props.group.group;
-    const data = {
-      token: token,
-      groupId: id,
-      getGroupPosts: getGroupPosts,
-      navigation: navigation,
-      userLogout: userLogout,
-      lastIndexId: init ? null : this.props.post.groupPosts.lastIndexId,
-    };
-    getGroupPostsFunc(data);
-  };
+  loadPosts = async init => {
+    const {userLogout, group, auth, navigation, getGroupPostForCheckIn} = this.props
+    const {count, post} = this.state
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+      count: init ? 0 : count
+    }
+
+    const req = await getGroupPostForCheckIn(request)
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+
+    this.setState({post: init ? req.posts : post.concat(req.posts), count: req.count})
+
+  }
 
   render() {
-    const {post} = this.props;
-
+    const {post, count} = this.state
+    const posts = {
+      posts: post,
+      count: count,
+    }
     return (
       <TouchableWithoutFeedback>
         <KeyboardAvoidingView>
           <StatusBar barStyle={'dark-content'} />
           <PostList
-            posts={post.groupPosts}
+            posts={posts}
             group={null}
             onEndReached={this.onEndReached}
             onRefresh={this.onRefresh}
@@ -108,6 +126,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getGroupPosts: data => dispatch(getGroupPosts(data)),
     userLogout: () => dispatch(userLogout()),
+    getGroupPostForCheckIn: data => dispatch(getGroupPostForCheckIn(data))
   };
 };
 

@@ -143,7 +143,7 @@ class CheckInSetting extends React.Component {
     const request = {
       groupId: group.group.id,
       postId: post.id,
-      point: 0,
+      point: 50,
       name: name.trim(),
       isLocal: isLocal,
       password: password.trim(),

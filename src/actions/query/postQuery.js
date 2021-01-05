@@ -27,6 +27,7 @@ query getGroupPosts($groupId: ID!, $lastIndexId: String){
             }
             priority
             visibility
+            checked
             priority_expiration_date
             allowComment
             type
@@ -79,6 +80,7 @@ query getFeed($lastIndexId: String){
             }
             priority
             visibility
+            checked
             priority_expiration_date
             allowComment
             type
@@ -213,7 +215,7 @@ export const reportPostMutation = `
 mutation reportPost($postReportInput: PostReportInput!){
     reportPost(input: $postReportInput)
 }
-`
+`;
 
 export const getNominationPostQuery = `
 query getNominationPost($nominationPostInput: NominationPostInput!){
@@ -268,4 +270,60 @@ query getNominationPost($nominationPostInput: NominationPostInput!){
     }
 }
 
-`
+`;
+
+export const getGroupPostForCheckInQuery = `
+query getGroupPostForCheckIn($input: GetPostInput!){
+    getGroupPostForCheckIn(input: $input){
+        posts{
+            id
+            image{
+                uri
+                width
+                height
+            }
+            content
+            createdAt
+            updatedAt
+            user {
+                id
+                username
+                displayName
+                icon {
+                    uri
+                    width
+                    height
+                }
+            }
+            groupAuth {
+                rank
+                title
+            }
+            checked
+            priority
+            visibility
+            priority_expiration_date
+            allowComment
+            type
+            commentCount
+            auth
+            groupId
+            likeCount
+            liked
+            notificationId
+            nomination{
+                postNominationId
+                nominationId
+                nomineeId
+                endAt
+                nominee_name
+                nomination_name
+                points
+                voted
+            }
+        }
+        count
+        lastIndexId
+    }
+}
+`;

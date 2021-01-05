@@ -59,42 +59,20 @@ export const dateConversion = (time) => {
 export const getSundays = (time) => {
     const input = time ||  Date.now()
     const today = new Date(input);
-    const year = today.getFullYear();
     const day = today.getDay();
-    const month = today.getMonth();
     const hour = today.getHours();
     const minute = today.getMinutes();
     const seconds = today.getSeconds();
-    const date = today.getDate();
 
-    let last_diff_time = 0
-    if (day == 0 && hour <= 18){
-        last_diff_time = (((7 * 24 + hour - 18) * 60 + minute) * 60 + seconds) * 1000;
-    } else {
-        last_diff_time = (((day * 24 + hour - 18) * 60 + minute) * 60 + seconds) * 1000;
-    }
-    const last_sunday = new Date((input) - last_diff_time);
-    // const last_sunday_year = last_sunday.getFullYear();
-    // const last_sunday_month = last_sunday.getMonth();
-    // const last_sunday_hour = last_sunday.getHours();
-    // const last_sunday_date = last_sunday.getDate();
-    // const last_sunday_UTC = Date.UTC(last_sunday_year, last_sunday_month, last_sunday_date, last_sunday_hour)
-    
-    let next_diff_time = 0
-    if (day  == 0 && hour <= 18){
-        next_diff_time = (((18 - hour) * 60 - minute) * 60 - seconds) * 1000
-    } else {
-        next_diff_time = (((24 * (7 - day) + (18 - hour)) * 60 - minute) * 60 - seconds) * 1000
-    }
+    // UTC 1 am (ETS 8 pm PTS 5 pm)
+    const diff_to_begin = ((((day)  * 24) + hour) * 60 + minute) * 60 + seconds
+    const diff_to_end = 7 * 24 * 60 * 60 - diff_to_begin
+    const offset = 20 * 60 * 60
+    const begin = new Date((Math.floor(input / 1000) - diff_to_begin + offset) * 1000);
+    const end = new Date((Math.floor(input / 1000) + diff_to_end + offset) * 1000);
 
-    const next_sunday = new Date((input) + next_diff_time)
-    // const next_sunday_year = next_sunday.getFullYear();
-    // const next_sunday_month = next_sunday.getMonth();
-    // const next_sunday_hour = next_sunday.getHours();
-    // const next_sunday_date = next_sunday.getDate();
-    // const next_sunday_UTC = Date.UTC(next_sunday_year, next_sunday_month, next_sunday_date, next_sunday_hour)
 
-    return {last_sunday: last_sunday, next_sunday: next_sunday }
+    return {last_sunday: begin, next_sunday: end }
 
 }
 

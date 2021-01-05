@@ -117,7 +117,7 @@ class UserSearch extends React.Component {
       navigation,
       checkin,
     } = this.props;
-    console.log(checkin);
+
     const count = checkin.attendee_count;
     const request = {
       token: auth.token,

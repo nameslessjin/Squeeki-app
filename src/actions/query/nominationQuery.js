@@ -1,6 +1,6 @@
 export const getGroupNominationsQuery = `
-query getGroupNominations($groupId: ID!, $lastIndexId: String){
-    getGroupNominations(groupId: $groupId, lastIndexId: $lastIndexId){
+query getGroupNominations($groupId: ID!){
+    getGroupNominations(groupId: $groupId){
         id
         groupId
         points
@@ -8,6 +8,7 @@ query getGroupNominations($groupId: ID!, $lastIndexId: String){
         name
         createdAt
         on
+        type
     }
 }
 `;

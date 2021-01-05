@@ -72,6 +72,7 @@ export default class CommentList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    height: '100%'
   },
   postOnlyContainer: {
     width: '100%',

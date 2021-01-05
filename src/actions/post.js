@@ -8,7 +8,8 @@ import {
   likePostMutation,
   changePostNotificationMutation,
   reportPostMutation,
-  getNominationPostQuery
+  getNominationPostQuery,
+  getGroupPostForCheckInQuery
 } from './query/postQuery';
 
 export const getGroupPosts = data => {
@@ -516,4 +517,41 @@ export const getNominationPost = request => {
 
 
   }
+}
+
+export const getGroupPostForCheckIn = request => {
+
+  const {token, groupId, count} = request
+  console.log(request)
+  return async function(dispatch){
+    const input = {
+      groupId: groupId,
+      count: count
+    }
+
+    const graphql = {
+      query: getGroupPostForCheckInQuery,
+      variables: {
+        input: input
+      }
+    }
+    console.log(graphql)
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.getGroupPostForCheckIn;
+
+  }
+
 }

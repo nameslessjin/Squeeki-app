@@ -32,7 +32,7 @@ class PostCard extends React.Component {
     report: '',
     onReport: false,
     voting: false,
-    selected: false
+    selected: false,
   };
 
   onPostDelete = () => {
@@ -281,6 +281,7 @@ class PostCard extends React.Component {
       nomination,
       voting,
       selected,
+      checked,
     } = this.state;
     const {option, commentTouchable, selectionMode, onPostSelect} = this.props;
     const {username, icon, displayName} = user;
@@ -296,7 +297,10 @@ class PostCard extends React.Component {
     }
 
     return (
-      <TouchableWithoutFeedback onPress={() => selectionMode ? onPostSelect({...this.props.item}) : null}>
+      <TouchableWithoutFeedback
+        onPress={() =>
+          selectionMode && !checked ? onPostSelect({...this.props.item}) : null
+        }>
         <View style={[styles.container, {backgroundColor: backgroundColor}]}>
           <PostHeader
             icon={icon}
@@ -328,7 +332,13 @@ class PostCard extends React.Component {
 
           <PostMedia image={image} content={content} />
 
-          {selectionMode ? null : (
+          {selectionMode ? (
+            checked ? (
+              <View style={styles.footer}>
+                <Text style={{color: 'grey'}}>Checked</Text>
+              </View>
+            ) : null
+          ) : (
             <PostFooter
               commentCount={commentCount}
               likeCount={0}
@@ -341,7 +351,7 @@ class PostCard extends React.Component {
               loading={loading}
             />
           )}
-          {(nomination == null || selectionMode) ? null : (
+          {nomination == null || selectionMode ? null : (
             <PostNomination
               nomination={nomination}
               onPress={this.onVotePress}
@@ -364,6 +374,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#576889',
   },
+  footer: {
+    marginBottom: 5,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
 
 const mapStateToProps = state => {

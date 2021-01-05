@@ -5,6 +5,7 @@ import {
   TextInput,
   StyleSheet,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import Modal from 'react-native-modal';
@@ -27,12 +28,12 @@ export default class Input extends React.Component {
       backdrop,
     } = this.props;
 
-    let title = 'Nomination Name';
+    let title = 'Name';
     let placeholder = 'Best of the week (at least 6 chars)';
     let selectedValue = value;
     if (type == 'point') {
       title = 'Reward Points';
-      placeholder = '1000';
+      placeholder = '50';
     } else if (type == 'period') {
       title = 'Period';
       placeholder = 'Once Every Week';
@@ -46,6 +47,9 @@ export default class Input extends React.Component {
       } else if (value == 0) {
         value = 'Once';
       }
+    } else if (type == 'type') {
+      title = 'Type';
+      value = value == 'reward' ? 'Reward' : 'Penalty';
     }
 
     const disabled = type == 'period' ? false : true;
@@ -53,13 +57,21 @@ export default class Input extends React.Component {
     return (
       <View style={styles.container}>
         <Text>{title}</Text>
-        <TextInput
-          style={styles.textInputStyle}
-          value={value}
-          placeholder={placeholder}
-          onChangeText={t => onInputChange(type, t)}
-          onFocus={!disabled ? moddleToggled : null}
-        />
+        {type == 'type' ? (
+          <TouchableOpacity onPress={() => onInputChange(type)}>
+            <View style={{marginLeft: 20}}>
+              <Text style={{color: 'grey'}}>{value}</Text>
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <TextInput
+            style={styles.textInputStyle}
+            value={value}
+            placeholder={placeholder}
+            onChangeText={t => onInputChange(type, t)}
+            onFocus={!disabled ? moddleToggled : null}
+          />
+        )}
 
         {!disabled ? (
           <Modal
@@ -109,7 +121,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginLeft: 20,
     color: 'grey',
-    height: 50
+    height: 50,
   },
   Modal: {
     flex: 1,

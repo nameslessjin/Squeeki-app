@@ -27,6 +27,7 @@ import {getCommentsFunc} from '../functions/comment';
 import CommentList from '../components/comment/commentList';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommentModal from '../components/comment/commentModal';
+import { getSundays } from '../utils/time'
 
 class Comment extends React.Component {
   componentDidMount() {
@@ -252,6 +253,8 @@ class Comment extends React.Component {
       comment_uid
     } = this.state;
     const disabled = newComment.trim().length == 0;
+
+    getSundays()
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
@@ -341,6 +344,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
     paddingTop: 10,
+    
   },
 });
 

@@ -27,7 +27,8 @@ class NominationSetting extends React.Component {
   state = {
     nomination_name: '',
     period: 7,
-    points: 0,
+    points: 50,
+    type: 'reward' ,
     moddleToggled: false,
     backdrop: false,
     create: true,
@@ -44,6 +45,7 @@ class NominationSetting extends React.Component {
         points,
         period,
         groupId,
+        type
       } = this.props.route.params.nomination;
       this.setState({
         nomination_name: name,
@@ -51,6 +53,7 @@ class NominationSetting extends React.Component {
         points: points,
         period: period,
         groupId: groupId,
+        type: type,
         create: this.props.route.params.create,
       });
       headerTitle = 'Edit nomination';
@@ -110,6 +113,13 @@ class NominationSetting extends React.Component {
       this.setState({points: parseInt(text) || 0});
     } else if (type == 'period') {
       this.setState({period: parseInt(text) || 0});
+    } else if (type == 'type'){
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          type: prevState.type == 'reward' ? 'penalty' : 'reward'
+        }
+      })
     }
   };
 
@@ -123,7 +133,7 @@ class NominationSetting extends React.Component {
   };
 
   validation = () => {
-    let {nomination_name, period, points} = this.state;
+    let {nomination_name, period, points, type} = this.state;
 
     if (
       nomination_name.trim().length < 6 ||
@@ -135,7 +145,7 @@ class NominationSetting extends React.Component {
       return false;
     }
 
-    if (points < 0 || points > 1000000) {
+    if (points < 0 || points > 500) {
       return false;
     }
 
@@ -143,7 +153,7 @@ class NominationSetting extends React.Component {
   };
 
   extractData = () => {
-    let {nomination_name, period, points, create, id, groupId} = this.state;
+    let {nomination_name, period, points, create, id, groupId, type} = this.state;
     nomination_name = nomination_name.trim();
     let origin = null;
     if (!create) {
@@ -159,16 +169,21 @@ class NominationSetting extends React.Component {
       if (origin.period == period) {
         period = null;
       }
+      if (origin.type == type) {
+        type = null
+      }
     }
 
-    if (nomination_name != null || points != null || period != null) {
-      let {nomination_name, period, points} = this.state;
+    if (nomination_name != null || points != null || period != null || type != null) {
+      console.log('Here')
+      let {nomination_name, period, points, type} = this.state;
       const updateData = {
         id: create ? null : id,
         groupId: groupId,
         name: nomination_name,
-        points: points,
+        points: type == 'reward' ? Math.abs(points) : Math.abs(points) * -1,
         period: period,
+        type: type,
         token: this.props.auth.token,
       };
 
@@ -252,6 +267,7 @@ class NominationSetting extends React.Component {
       backdrop,
       loading,
       create,
+      type,
     } = this.state;
 
     return (
@@ -270,6 +286,11 @@ class NominationSetting extends React.Component {
             moddleToggled={this.onPeriodPress}
             onBackdropPress={this.onBackdropPress}
             backdrop={backdrop}
+          />
+          <Input
+            type={'type'}
+            value={type}
+            onInputChange={this.onInputChange}
           />
           {/* <Input type={'point'} value={points.toString()} onInputChange={this.onInputChange}  /> */}
           {!create ? (

@@ -10,14 +10,13 @@ import {
 } from './query/nominationQuery';
 
 export const getGroupNominations = data => {
-  const {groupId, token, lastIndexId} = data;
+  const {groupId, token} = data;
 
   return async function(dispatch) {
     const graphql = {
       query: getGroupNominationsQuery,
       variables: {
         groupId: groupId,
-        lastIndexId: lastIndexId,
       },
     };
 
@@ -48,7 +47,7 @@ const getGroupNominationsReducer = data => {
 };
 
 export const createNomination = data => {
-  const {id, groupId, name, points, period, token} = data;
+  const {id, groupId, name, points, period, token, type} = data;
 
   return async function(dispatch) {
     const input = {
@@ -56,6 +55,7 @@ export const createNomination = data => {
       name: name,
       points: points,
       period: period,
+      type: type
     };
 
     const graphql = {
@@ -84,7 +84,7 @@ export const createNomination = data => {
 };
 
 export const updateNomination = data => {
-  const {id, groupId, name, points, period, token} = data;
+  const {id, groupId, name, points, period, token, type} = data;
 
   return async function(dispatch) {
     const input = {
@@ -93,6 +93,7 @@ export const updateNomination = data => {
       name: name,
       points: points,
       period: period,
+      type: type
     };
 
     const graphql = {
@@ -226,7 +227,7 @@ export const voteNominee = data => {
 export const getGroupNominationMostRecentResults = data => {
   const {groupId, token, endAt} = data;
   return async function(dispatch) {
-    input = {
+    const input = {
       groupId: groupId,
       endAt: endAt,
     };
@@ -257,7 +258,7 @@ export const getGroupNominationMostRecentResults = data => {
 export const getGroupNominationResults = data => {
   const {groupId, count, token, endAt} = data;
   return async function(dispatch) {
-    input = {
+    const input = {
       groupId: groupId,
       endAt: endAt,
       count: count

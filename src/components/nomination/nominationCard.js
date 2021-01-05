@@ -71,15 +71,18 @@ class NominationCard extends React.Component {
 
   render() {
     let {item, loading} = this.state;
-    let {name, period, points, on, selected} = item;
+    let {name, period, points, on, selected, type} = item;
     const {prev_route} = this.props;
     const value = this.options.filter(i => i.key == period)[0].value;
-
+    const type_display = type == 'reward' ? "Reward" : 'Penalty'
+    
     return (
       <TouchableWithoutFeedback onPress={this.onSelected}>
         <View style={[styles.container, {backgroundColor: selected ? '#c7ecee' : 'white'}]}>
           <View style={styles.textContainer}>
             <Text style={styles.name}>{name}</Text>
+            <Text style={styles.period}>{type_display + ': ' + points} points</Text>
+            <Text style={styles.period}>Multiplier: 5x</Text>
             <Text style={styles.period}>{value}</Text>
           </View>
 
@@ -109,14 +112,14 @@ class NominationCard extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: 120,
+    height: 165,
     backgroundColor: 'white',
     alignItems: 'center',
     margin: 10,
   },
   textContainer: {
-    width: '100%',
-    height: 90,
+    width: '150%',
+    height: 135,
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   period: {
-    marginTop: 10,
+    marginTop: 7,
   },
   options: {
     width: '100%',

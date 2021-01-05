@@ -52,7 +52,7 @@ export default class Input extends React.Component {
       display = (
         <View style={[styles.container, {justifyContent: 'space-between'}]}>
           <Text>{title}</Text>
-          <TouchableWithoutFeedback onPress={() => onInputChange(type)}>
+          <TouchableWithoutFeedback disabled={true} onPress={() => onInputChange(type)}>
             <MaterialIcons
               name={value ? 'toggle-switch' : 'toggle-switch-off-outline'}
               size={45}
