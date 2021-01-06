@@ -20,6 +20,7 @@ import {createLogger} from 'redux-logger';
 import commentReducer from './src/reducers/commentReducer';
 import userReducer from './src/reducers/userReducer';
 import checkinReducer from './src/reducers/checkinReducer'
+import pointReducer from './src/reducers/pointReducer'
 
 import SignIn from './src/screens/signin';
 import SignUp from './src/screens/signup';
@@ -57,14 +58,15 @@ const rootReducer = combineReducers({
   post: postReducer,
   comment: commentReducer,
   user: userReducer,
-  checkin: checkinReducer
+  checkin: checkinReducer,
+  point: pointReducer
 });
 
 const persistConfig = {
   storage: AsyncStorage,
   key: 'root',
   whitelist: ['auth'],
-  blacklist: ['currentScreen', 'group', 'post', 'comment', 'user', 'checkin'],
+  blacklist: ['currentScreen', 'group', 'post', 'comment', 'user', 'checkin', 'pointReducer'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

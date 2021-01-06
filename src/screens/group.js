@@ -15,6 +15,7 @@ import PostList from '../components/posts/postList';
 import {getGroupPostsFunc} from '../functions/post';
 import {userLogout} from '../actions/auth';
 import {cleanGroup, findUserGroupsByUserId} from '../actions/group';
+import { getUserGroupPoint } from '../actions/point'
 import {invalidAuthentication} from '../functions/auth';
 
 class Group extends React.Component {
@@ -91,7 +92,7 @@ class Group extends React.Component {
 
   loadGroupPosts = init => {
     const {token} = this.props.auth;
-    const {navigation, getGroupPosts, userLogout} = this.props;
+    const {navigation, getGroupPosts, userLogout, getUserGroupPoint} = this.props;
     const {id} = this.props.group.group;
     const data = {
       token: token,
@@ -99,13 +100,15 @@ class Group extends React.Component {
       getGroupPosts: getGroupPosts,
       navigation: navigation,
       userLogout: userLogout,
+      getUserGroupPoint: getUserGroupPoint,
       lastIndexId: init ? null : this.props.post.groupPosts.lastIndexId,
+      init: init
     };
     getGroupPostsFunc(data);
   };
 
   render() {
-    const {group, post, navigation} = this.props;
+    const {group, post, navigation, point} = this.props;
     const {visibility, auth} = group.group;
 
     return (
@@ -116,6 +119,7 @@ class Group extends React.Component {
             <PostList
               posts={post.groupPosts}
               group={group.group}
+              point={point}
               navigation={navigation}
               onEndReached={this.onEndReached}
               onRefresh={this.onRefresh}
@@ -148,8 +152,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group, auth, post} = state;
-  return {group, auth, post};
+  const {group, auth, post, point} = state;
+  return {group, auth, post, point};
 };
 
 const mapDispatchToProps = dispatch => {
@@ -158,6 +162,7 @@ const mapDispatchToProps = dispatch => {
     userLogout: () => dispatch(userLogout()),
     cleanGroup: () => dispatch(cleanGroup()),
     findUserGroupsByUserId: data => dispatch(findUserGroupsByUserId(data)),
+    getUserGroupPoint: data => dispatch(getUserGroupPoint(data))
   };
 };
 

@@ -16,7 +16,8 @@ import {connect} from 'react-redux';
 import {joinGroup} from '../../actions/group';
 import {changeGroupNotification} from '../../actions/user';
 import {userLogout} from '../../actions/auth';
-import TagList from '../tags/tagList'
+import TagList from '../tags/tagList';
+import {pointFormat} from '../../utils/point';
 
 const extractKey = ({key}) => key;
 class GroupHeader extends React.Component {
@@ -125,13 +126,27 @@ class GroupHeader extends React.Component {
       backgroundImg,
       auth,
       visibility,
-      tags
+      tags,
     } = this.props.item;
-    const {container, underImageStyle} = styles;
+    const {point} = this.props;
+    const {container, underImageStyle, component} = styles;
 
     const {notificationToggled} = this.state;
 
     const date = dateConversion(createdAt);
+
+    let total_point_semester = 0;
+    let bonus_point_semester = 0;
+
+    if (point != null) {
+      total_point_semester = point.total_point_semester;
+      bonus_point_semester = point.bonus_point_semester;
+    }
+
+    const total_point_semester_display = pointFormat(total_point_semester);
+    const base_point_semester_display = pointFormat(
+      total_point_semester - bonus_point_semester,
+    );
 
     return (
       <TouchableWithoutFeedback>
@@ -149,32 +164,71 @@ class GroupHeader extends React.Component {
               onAddPost={this.props.onAddPost}
             />
 
-            <View style={[underImageStyle]}>
-              <Text style={{fontWeight: 'bold', fontSize: 20, width: '100%'}}>
-                {groupname}
-              </Text>
+            <View style={underImageStyle}>
+              <View style={{width: '75%'}}>
+                <View style={[component]}>
+                  <Text style={{fontWeight: 'bold', fontSize: 20}}>
+                    {groupname}
+                  </Text>
+                </View>
+                <View style={[component, {marginTop: 1}]}>
+                  <Text style={{color: '#95a5a6'}}>Since {date}</Text>
+                </View>
+                <View style={[component, {marginTop: 1}]}>
+                  <Text style={{color: '#95a5a6'}}>Member: {memberCount}</Text>
+                </View>
+              </View>
+              {auth ? (
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '25%',
+                  }}>
+                  <Text
+                    style={{fontSize: 19, fontWeight: '600', color: '#53535f'}}>
+                    {total_point_semester_display}
+                  </Text>
+                  <Text style={{fontSize: 10, color: 'grey'}}>
+                    Base: {base_point_semester_display}
+                  </Text>
+                </View>
+              ) : null}
             </View>
-            <View style={[underImageStyle, {marginTop: 1}]}>
-              <Text style={{color: '#95a5a6'}}>Since {date}</Text>
-              <Text style={{marginLeft: 7, color: '#95a5a6'}}>
-                Member: {memberCount}
-              </Text>
-            </View>
+
             <View
               style={[
-                underImageStyle,
-                {paddingTop: 1, marginTop: 5, marginBottom: 3, width: '95%'},
+                component,
+                {
+                  paddingTop: 1,
+                  marginTop: 5,
+                  marginBottom: 3,
+                  width: '95%',
+                  paddingHorizontal: 10,
+                },
               ]}>
               <Text numberOfLines={8}>{shortDescription}</Text>
             </View>
-            {tags.length == 0 ? null :
-            <View
-              style={[
-                underImageStyle,
-                {paddingTop: 1, marginTop: 1, marginBottom: 5},
-              ]}>
-              <TagList groupTags={tags || []} isSearch={false} isGroupHeader={true} />
-            </View>}
+
+            {tags.length == 0 ? null : (
+              <View
+                style={[
+                  component,
+                  {
+                    paddingTop: 1,
+                    marginTop: 1,
+                    marginBottom: 5,
+                    paddingHorizontal: 5,
+                  },
+                ]}>
+                <TagList
+                  groupTags={tags || []}
+                  isSearch={false}
+                  isGroupHeader={true}
+                />
+              </View>
+            )}
+
             <Modal
               isVisible={notificationToggled}
               style={styles.modal}
@@ -225,6 +279,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginTop: Platform.OS == 'ios' ? 30 : 0,
+  },
+  component: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   modal: {
     justifyContent: 'center',

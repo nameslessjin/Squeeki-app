@@ -7,13 +7,14 @@ const extractKey = ({id}) => id;
 
 export default class PostList extends React.Component {
   renderItem = ({item}) => {
-    const {navigation, onAddPost, onPostSelect, selectionMode} = this.props;
+    const {navigation, onAddPost, onPostSelect, selectionMode, point} = this.props;
     if (item.groupname) {
       return (
         <GroupHeader
           item={item}
           navigation={navigation}
           onAddPost={onAddPost}
+          point={point || null}
         />
       );
     }

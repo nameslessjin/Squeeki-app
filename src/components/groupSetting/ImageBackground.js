@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   noBackgroundImageStyle: {},
   backgroundImageStyle: {
     width: '100%',
-    height: Platform.OS == 'android' ? 230 : 200,
+    height: Platform.OS == 'android' ? 230 : 220,
   },
   backgroundImageContainerStyle: {
     height: 170,

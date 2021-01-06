@@ -12,18 +12,19 @@ const extractNomineeName = ({nominee_name}) =>
 
 export default class NominationResultsList extends React.Component {
   renderItemNominee = i => {
-
-    const {onNomineePress} = this.props
-    return (
-      <NominationResultsCard
-        onPress={onNomineePress}
-        {...i.item}
-      />
-    );
+    const {onNomineePress} = this.props;
+    return <NominationResultsCard onPress={onNomineePress} {...i.item} />;
   };
 
   renderItemNominationName = ({item}) => {
-    const {list, nomination_name, nominationId, total_vote_count, most_recent, time} = item;
+    const {
+      list,
+      nomination_name,
+      nominationId,
+      total_vote_count,
+      most_recent,
+      time,
+    } = item;
 
     const max_vote = Math.max.apply(
       Math,
@@ -36,8 +37,8 @@ export default class NominationResultsList extends React.Component {
       l.total_vote_count = total_vote_count;
       l.most_recent = most_recent;
       l.max = l.vote == max_vote;
-      l.time = time
-      l.nominationId = nominationId
+      l.time = time;
+      l.nominationId = nominationId;
     });
 
     return (
@@ -58,10 +59,14 @@ export default class NominationResultsList extends React.Component {
 
   renderItemTime = ({item}) => {
     const {time} = item;
+
     const {year, month, date} = getNominationTime(parseInt(time) * 1000000);
+    // console.log(time)
     const {last_sunday, next_sunday} = getSundays(parseInt(time) * 1000000);
     const this_sunday = getSundays().next_sunday;
     const {list} = item;
+
+    // console.log(next_sunday)
     const most_recent =
       Math.floor(this_sunday.getTime() / 1000) ==
       Math.floor(next_sunday.getTime() / 1000);
@@ -98,7 +103,7 @@ export default class NominationResultsList extends React.Component {
         modified_list.forEach(l => {
           l.total_vote_count = total_vote_count;
           l.most_recent = most_recent;
-          l.time = time
+          l.time = time;
         });
       }
     }

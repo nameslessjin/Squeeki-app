@@ -3,7 +3,7 @@ const INITIAL_STATE = {
   group: {},
 };
 
-export default (groupReducer = (state = INITIAL_STATE, action) => {
+export default groupReducer = (state = INITIAL_STATE, action) => {
   let groups = state.groups;
   let group = state.group;
   switch (action.type) {
@@ -118,4 +118,4 @@ export default (groupReducer = (state = INITIAL_STATE, action) => {
     default:
       return state;
   }
-});
+};

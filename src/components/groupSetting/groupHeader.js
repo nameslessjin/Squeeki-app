@@ -94,7 +94,10 @@ class GroupSettingsHeader extends React.Component {
   };
 
   onMediaPress = type => {
-    this.setState({modalVisible: true, isBackground: type == 'background' ? true : false });
+    this.setState({
+      modalVisible: true,
+      isBackground: type == 'background' ? true : false,
+    });
   };
 
   render() {
@@ -121,7 +124,7 @@ class GroupSettingsHeader extends React.Component {
       date = dateConversion(createdAt);
     }
 
-    const {container, underImageStyle} = styles;
+    const {container, underImageStyle, component} = styles;
 
     return (
       <View style={container}>
@@ -135,36 +138,40 @@ class GroupSettingsHeader extends React.Component {
           onMediaPress={this.onMediaPress}
         />
         <View style={underImageStyle}>
-          <TextInput
-            style={{fontWeight: 'bold', fontSize: 20, width: '100%'}}
-            maxLength={60}
-            multiline={true}
-            placeholder={'group name (min 6 chars)'}
-            onChangeText={text => this.updateGroupname(text)}
-            value={groupname}
-            editable={auth_rank <= 1}
-          />
-        </View>
-        <View style={[underImageStyle, {marginTop: 1}]}>
-          <Text style={{color: '#95a5a6'}}>Since {date}</Text>
-          <Text style={{marginLeft: 7, color: '#95a5a6'}}>
-            Member: {memberCount}
-          </Text>
-        </View>
-        <View
-          style={[
-            underImageStyle,
-            {paddingTop: 1, marginTop: 5, marginBottom: 5},
-          ]}>
-          <TextInput
-            multiline={true}
-            maxLength={120}
-            placeholder={'Short description (min 20 chars) ...'}
-            onChangeText={text => this.updateShortDescription(text)}
-            value={shortDescription}
-            style={{width: '100%'}}
-            editable={auth_rank <= 1}
-          />
+          <View style={component}>
+            <TextInput
+              style={{fontWeight: 'bold', fontSize: 20, width: '100%', paddingLeft: -1}}
+              maxLength={60}
+              multiline={true}
+              placeholder={'group name (min 6 chars)'}
+              onChangeText={text => this.updateGroupname(text)}
+              value={groupname}
+              editable={auth_rank <= 1}
+            />
+          </View>
+          <View style={[component, {marginTop: 1}]}>
+            <Text style={{color: '#95a5a6'}}>Since {date}</Text>
+          </View>
+          <View style={[component, {marginTop: 1}]}>
+            <Text style={{color: '#95a5a6'}}>
+              Member: {memberCount}
+            </Text>
+          </View>
+          <View
+            style={[
+              component,
+              {paddingTop: 1, marginTop: 5, marginBottom: 5},
+            ]}>
+            <TextInput
+              multiline={true}
+              maxLength={120}
+              placeholder={'Short description (min 20 chars) ...'}
+              onChangeText={text => this.updateShortDescription(text)}
+              value={shortDescription}
+              style={{width: '100%', paddingLeft: -1}}
+              editable={auth_rank <= 1}
+            />
+          </View>
         </View>
 
         <GroupSettingModal
@@ -190,11 +197,17 @@ const styles = StyleSheet.create({
   underImageStyle: {
     width: '100%',
     paddingHorizontal: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: Platform.OS == 'ios' ? 10 : 0,
+  },
+  component: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: Platform.OS == 'ios' ? 30 : 0,
-  },
+    // backgroundColor: 'yellow',
+  }
 });
 
 const mapStateToProps = state => {

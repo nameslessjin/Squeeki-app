@@ -59,17 +59,23 @@ export const dateConversion = (time) => {
 export const getSundays = (time) => {
     const input = time ||  Date.now()
     const today = new Date(input);
-    const day = today.getDay();
-    const hour = today.getHours();
-    const minute = today.getMinutes();
-    const seconds = today.getSeconds();
+    const day = today.getUTCDay();
+    const hour = today.getUTCHours();
+    const minute = today.getUTCMinutes();
+    const seconds = today.getUTCSeconds();
 
     // UTC 1 am (ETS 8 pm PTS 5 pm)
-    const diff_to_begin = ((((day)  * 24) + hour) * 60 + minute) * 60 + seconds
-    const diff_to_end = 7 * 24 * 60 * 60 - diff_to_begin
-    const offset = 20 * 60 * 60
-    const begin = new Date((Math.floor(input / 1000) - diff_to_begin + offset) * 1000);
-    const end = new Date((Math.floor(input / 1000) + diff_to_end + offset) * 1000);
+    const offset = 1 * 60 * 60
+    const diff_to_begin = ((((day - 1)  * 24) + hour) * 60 + minute) * 60 + seconds
+    let begin = null
+    let end = null
+    if (diff_to_begin < offset){
+         begin = new Date((Math.floor(input / 1000) - diff_to_begin + offset - 7 * 24 * 60 * 60) * 1000)
+         end = new Date((Math.floor(input / 1000) - diff_to_begin + offset) * 1000);
+    } else {
+         begin = new Date((Math.floor(input / 1000) - diff_to_begin + offset) * 1000);
+         end = new Date((Math.floor(input / 1000) - diff_to_begin + offset +  7 * 24 * 60 * 60) * 1000);
+    }
 
 
     return {last_sunday: begin, next_sunday: end }
