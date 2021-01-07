@@ -82,7 +82,7 @@ class NominationCard extends React.Component {
           <View style={styles.textContainer}>
             <Text style={styles.name}>{name}</Text>
             <Text style={styles.period}>{type_display + ': ' + points} points</Text>
-            <Text style={styles.period}>Multiplier: 5x</Text>
+            <Text style={styles.period}>Multiplier: 3x</Text>
             <Text style={styles.period}>{value}</Text>
           </View>
 

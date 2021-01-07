@@ -335,7 +335,7 @@ class PostCard extends React.Component {
           {selectionMode ? (
             checked ? (
               <View style={styles.footer}>
-                <Text style={{color: 'grey'}}>Checked</Text>
+                <Text style={{color: 'grey', marginVertical: 5}}>Checked</Text>
               </View>
             ) : null
           ) : (
@@ -368,7 +368,7 @@ class PostCard extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    maxHeight: 770,
+    maxHeight: 1100,
     justifyContent: 'flex-start',
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -394,7 +394,7 @@ const mapDispatchToProps = dispatch => {
     likePost: data => dispatch(likePost(data)),
     changePostNotification: data => dispatch(changePostNotification(data)),
     reportPost: data => dispatch(reportPost(data)),
-    voteNominee: data => dispatch(voteNominee(data)),
+    voteNominee: data => dispatch(voteNominee(data))
   };
 };
 

@@ -94,6 +94,14 @@ function CustomDrawerContent(props) {
         }}
       />
       <DrawerItem
+        label="Reward"
+        icon={() => <MaterialIcons name="treasure-chest" color={'grey'} size={25} />}
+        labelStyle={styles.labelStyle}
+        // onPress={() => {
+        //   props.navigation.navigate('GroupSetting');
+        // }}
+      />
+      <DrawerItem
         label="Settings"
         icon={() => <MaterialIcons name="cog" color={'grey'} size={25} />}
         labelStyle={styles.labelStyle}

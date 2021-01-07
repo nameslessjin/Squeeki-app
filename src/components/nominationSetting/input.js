@@ -49,7 +49,13 @@ export default class Input extends React.Component {
       }
     } else if (type == 'type') {
       title = 'Type';
-      value = value == 'reward' ? 'Reward' : 'Penalty';
+      if (value == 'reward'){
+        value = 'Reward'
+      } else if (value == 'neutral'){
+        value = 'Neutral'
+      } else if (value == 'penalty') {
+        value = 'Penalty'
+      }
     }
 
     const disabled = type == 'period' ? false : true;

@@ -28,6 +28,7 @@ import CommentList from '../components/comment/commentList';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommentModal from '../components/comment/commentModal';
 import { getSundays } from '../utils/time'
+import { getUserGroupPoint } from '../actions/point'
 
 class Comment extends React.Component {
   componentDidMount() {
@@ -41,6 +42,10 @@ class Comment extends React.Component {
   }
 
   componentWillUnmount() {
+    const {group} = this.props.group
+    if (group.id != null){
+      this.getUserGroupPoint()
+    }
     this.props.cleanComment();
   }
 
@@ -57,6 +62,29 @@ class Comment extends React.Component {
     comment_uid: '',
     commentId: ''
   };
+
+  getUserGroupPoint = async() => {
+    const {group, auth, getUserGroupPoint, navigation, userLogout } = this.props
+
+    const request = {
+      token: auth.token,
+      groupId: group.group.id
+    }
+
+    const req = await getUserGroupPoint(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+
+  }
 
   getPostComment = async init => {
     const {getPost, getComments, navigation, userLogout} = this.props;
@@ -349,8 +377,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {auth, post, comment} = state;
-  return {auth, post, comment};
+  const {auth, post, comment, group} = state;
+  return {auth, post, comment, group};
 };
 const mapDispatchToProps = dispatch => {
   return {
@@ -362,6 +390,7 @@ const mapDispatchToProps = dispatch => {
     likeComment: data => dispatch(likeComment(data)),
     deleteComment: data => dispatch(deleteComment(data)),
     reportComment: data => dispatch(reportComment(data)),
+    getUserGroupPoint: data => dispatch(getUserGroupPoint(data))
   };
 };
 

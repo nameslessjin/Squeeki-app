@@ -13,9 +13,10 @@ import {connect} from 'react-redux';
 import {getGroupPosts} from '../actions/post';
 import PostList from '../components/posts/postList';
 import {getGroupPostsFunc} from '../functions/post';
+import {loadLeaderBoardFunc} from '../functions/point';
 import {userLogout} from '../actions/auth';
 import {cleanGroup, findUserGroupsByUserId} from '../actions/group';
-import { getUserGroupPoint } from '../actions/point'
+import { getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point'
 import {invalidAuthentication} from '../functions/auth';
 
 class Group extends React.Component {
@@ -37,6 +38,7 @@ class Group extends React.Component {
     if (visibility == 'public' || auth != null) {
       this.setState({loading: true});
       this.loadGroupPosts(true);
+      this.loadLeaderBoard()
       this.setState({loading: false});
     }
 
@@ -62,6 +64,23 @@ class Group extends React.Component {
       navigation: navigation,
     });
   };
+
+  loadLeaderBoard = () => {
+    const { userLogout, auth, getGroupPointLeaderBoard, navigation, group } = this.props
+    const data = {
+      userLogout: userLogout,
+      auth: auth,
+      getGroupPointLeaderBoard: getGroupPointLeaderBoard,
+      navigation: navigation,
+      group: group,
+      count: 0,
+      limit: 3,
+      period: 'month'
+    }
+
+    loadLeaderBoardFunc(data)
+
+  }
 
   onAddPost = () => {
     const {navigation} = this.props;
@@ -162,7 +181,8 @@ const mapDispatchToProps = dispatch => {
     userLogout: () => dispatch(userLogout()),
     cleanGroup: () => dispatch(cleanGroup()),
     findUserGroupsByUserId: data => dispatch(findUserGroupsByUserId(data)),
-    getUserGroupPoint: data => dispatch(getUserGroupPoint(data))
+    getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
+    getGroupPointLeaderBoard: data => dispatch(getGroupPointLeaderBoard(data)),
   };
 };
 

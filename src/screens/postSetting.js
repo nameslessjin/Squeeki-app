@@ -20,6 +20,7 @@ import {userLogout} from '../actions/auth';
 import NominationButton from '../components/postSetting/nominationButton';
 import {getSundays} from '../utils/time';
 import PostSettingModal from '../components/postSetting/postSettingModal';
+import {getUserGroupPoint} from '../actions/point';
 
 class PostSetting extends React.Component {
   state = {
@@ -140,8 +141,40 @@ class PostSetting extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this.state.create) {
+      const {group} = this.props.group;
+      if (group.id != null) {
+        this.getUserGroupPoint();
+      }
+    }
+  }
+
+  getUserGroupPoint = async () => {
+    const {group, auth, getUserGroupPoint, navigation, userLogout} = this.props;
+
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+    };
+
+    const req = await getUserGroupPoint(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+  };
+
   extractData = () => {
-    const {postData, create, chosenUser, nomination} = this.state;
+    const {postData, create, chosenUser} = this.state;
+    let {nomination} = this.state
     const {token} = this.props.auth;
     const {last_sunday, next_sunday} = getSundays();
     let origin = null;
@@ -192,7 +225,7 @@ class PostSetting extends React.Component {
       priorityDuration != null ||
       allowComment != null ||
       type != null ||
-      visibility != null
+      visibility != null 
     ) {
       const updateData = {
         id: create ? null : postId,
@@ -317,7 +350,6 @@ class PostSetting extends React.Component {
     let lastChar = str.charAt(str.length - 1);
 
     if (lastChar == '@') {
-
     }
   };
 
@@ -449,8 +481,13 @@ class PostSetting extends React.Component {
             image={image}
             contentKeyboard={contentKeyboard}
             onPress={this.onAddMeidaPress}
+            create={create}
           />
-          <InputContent content={content} modifyInput={this.modifyInput} onKeyboardInputFocus={this.onKeyboardInputFocus} />
+          <InputContent
+            content={content}
+            modifyInput={this.modifyInput}
+            onKeyboardInputFocus={this.onKeyboardInputFocus}
+          />
 
           {this.props.group.group.id == null ? null : (
             <InputPriority
@@ -548,6 +585,7 @@ const mapDispatchToProps = dispatch => {
     getGroupPosts: data => dispatch(getGroupPosts(data)),
     updatePost: data => dispatch(updatePost(data)),
     userLogout: () => dispatch(userLogout()),
+    getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
   };
 };
 

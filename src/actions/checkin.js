@@ -256,8 +256,6 @@ export const userCheckInBatch = request => {
       },
     };
 
-    console.log(graphql)
-
     const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {

@@ -168,7 +168,7 @@ export const createPost = data => {
         body: imageData,
       });
       if (imagePost.status == 500) {
-        alert('Cannot upload image');
+        alert('Cannot upload image.  Try again later.');
         return 1;
       }
       const imageUri = await imagePost.json();
@@ -254,7 +254,7 @@ export const updatePost = data => {
         body: imageData,
       });
       if (imagePost.status == 500) {
-        alert('Uploading image failed');
+        alert('Uploading image failed.  Try again later');
         return 1;
       }
       const imageUri = await imagePost.json();
@@ -522,7 +522,7 @@ export const getNominationPost = request => {
 export const getGroupPostForCheckIn = request => {
 
   const {token, groupId, count} = request
-  console.log(request)
+
   return async function(dispatch){
     const input = {
       groupId: groupId,
@@ -535,7 +535,7 @@ export const getGroupPostForCheckIn = request => {
         input: input
       }
     }
-    console.log(graphql)
+
     const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {

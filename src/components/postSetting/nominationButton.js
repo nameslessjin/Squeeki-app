@@ -6,10 +6,10 @@ export default class NominationButon extends React.Component{
 
     render(){
 
-        const { onPress, chosenUser, nomination, disabled } = this.props
-
+        const { onPress, chosenUser, nomination, disabled} = this.props
         let text = 'Nominee'
 
+        // const disabled = nomination.id == null ? false : true
         if (chosenUser.id != null && nomination.id != null){
             text = 'Nominate ' + chosenUser.displayName + ' for ' + nomination.name
         }

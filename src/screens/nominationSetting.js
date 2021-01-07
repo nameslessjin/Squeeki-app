@@ -27,7 +27,7 @@ class NominationSetting extends React.Component {
   state = {
     nomination_name: '',
     period: 7,
-    points: 50,
+    points: 100,
     type: 'reward' ,
     moddleToggled: false,
     backdrop: false,
@@ -114,12 +114,16 @@ class NominationSetting extends React.Component {
     } else if (type == 'period') {
       this.setState({period: parseInt(text) || 0});
     } else if (type == 'type'){
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          type: prevState.type == 'reward' ? 'penalty' : 'reward'
-        }
-      })
+      const {type} = this.state
+      let value = 'reward'
+      if (type == 'reward'){
+        value = 'neutral'
+      } else if (type == 'neutral'){
+        value = 'penalty'
+      } else if (type == 'penalty'){
+        value = 'reward'
+      }
+      this.setState({type: value})
     }
   };
 
@@ -145,9 +149,9 @@ class NominationSetting extends React.Component {
       return false;
     }
 
-    if (points < 0 || points > 500) {
-      return false;
-    }
+    // if (points < 0 || points > 500) {
+    //   return false;
+    // }
 
     return true;
   };
@@ -174,14 +178,23 @@ class NominationSetting extends React.Component {
       }
     }
 
+    console.log(type)
+
+
     if (nomination_name != null || points != null || period != null || type != null) {
-      console.log('Here')
+      console.log('here')
+      let reward_point = 100
       let {nomination_name, period, points, type} = this.state;
+      if (type == 'neutral'){
+        reward_point = 0
+      } else if (type == 'penalty'){
+        reward_point = -100
+      }
       const updateData = {
         id: create ? null : id,
         groupId: groupId,
         name: nomination_name,
-        points: type == 'reward' ? Math.abs(points) : Math.abs(points) * -1,
+        points: reward_point,
         period: period,
         type: type,
         token: this.props.auth.token,

@@ -15,7 +15,7 @@ export default class NominationList extends React.Component {
 
   renderItem = ({item}) => {
     const {navigation, onEditPress, prev_route, onNominationSelect} = this.props;
-    return (
+    return (prev_route =='PostSetting' && !item.on) ? null : (
       <NominationCard item={item} onEditPress={onEditPress} navigation={navigation} onNominationSelect={onNominationSelect} prev_route={prev_route} />
     );
   };

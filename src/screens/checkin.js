@@ -17,6 +17,7 @@ import {
 import {userLogout} from '../actions/auth';
 import CheckinList from '../components/checkin/checkinList';
 import CheckinModal from '../components/checkin/checkinModal';
+import { getUserGroupPoint } from '../actions/point'
 
 class CheckIn extends React.Component {
   state = {
@@ -47,7 +48,32 @@ class CheckIn extends React.Component {
   }
 
   componentWillUnmount() {
+    this.getUserGroupPoint()
     this.props.cleanCheckIn();
+
+  }
+
+  getUserGroupPoint = async() => {
+    const {group, auth, getUserGroupPoint, navigation, userLogout } = this.props
+
+    const request = {
+      token: auth.token,
+      groupId: group.group.id
+    }
+
+    const req = await getUserGroupPoint(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+
   }
 
   onHeaderRightButtonPress = () => {
@@ -211,6 +237,7 @@ const mapDispatchToProps = dispatch => {
     cleanCheckIn: () => dispatch(cleanCheckIn()),
     userCheckIn: data => dispatch(userCheckIn(data)),
     deleteCheckIn: data => dispatch(deleteCheckIn(data)),
+    getUserGroupPoint: data => dispatch(getUserGroupPoint(data))
   };
 };
 

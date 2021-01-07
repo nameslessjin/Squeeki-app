@@ -23,7 +23,7 @@ class CheckInSetting extends React.Component {
     isLocal: false,
     password: '',
     duration: '5',
-    point: 0,
+    point: 100,
     lat: null,
     long: null,
   };
@@ -143,7 +143,7 @@ class CheckInSetting extends React.Component {
     const request = {
       groupId: group.group.id,
       postId: post.id,
-      point: 50,
+      point: 100,
       name: name.trim(),
       isLocal: isLocal,
       password: password.trim(),

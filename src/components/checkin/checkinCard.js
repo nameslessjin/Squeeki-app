@@ -29,7 +29,7 @@ export default class CheckinCard extends React.Component {
       }
     }
     if (!time) {
-      timeDisplay = '0 s';
+      timeDisplay = 'Ended';
     }
     return timeDisplay;
   };

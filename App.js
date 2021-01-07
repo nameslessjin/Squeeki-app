@@ -46,6 +46,7 @@ import CheckIn from './src/screens/checkin'
 import CheckInSetting from './src/screens/checkinSetting'
 import Post from './src/screens/post'
 import CheckInResult from './src/screens/checkinResult'
+import Leaderboard from './src/screens/leaderboard'
 
 
 import messaging from '@react-native-firebase/messaging';
@@ -143,6 +144,7 @@ export default (App = () => {
             <Stack.Screen name="CheckInSetting" component={CheckInSetting} />
             <Stack.Screen name="Post" component={Post} />
             <Stack.Screen name="CheckInResult" component={CheckInResult} />
+            <Stack.Screen name="Leaderboard" component={Leaderboard} />
             
           </Stack.Navigator>
         </NavigationContainer>

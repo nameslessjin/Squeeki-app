@@ -3,8 +3,8 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 export const backgroundImagePicker = (setImage, from, cancel) => {
     const options = {
         quality: 1.0,
-        maxWidth: 800,
-        maxHeight: 800,
+        maxWidth: 900,
+        maxHeight: 900,
         includeBase64: true
     }
 
@@ -137,6 +137,7 @@ export const PostImagePicker = (setImage, from, cancel) => {
                     data: response.base64,
                     mediaType: 'photo'
                 }
+                console.log(response.fileSize)
                 setImage(source, 'image')
     
             }

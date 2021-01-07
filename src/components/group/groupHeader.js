@@ -12,12 +12,14 @@ import {
 import Modal from 'react-native-modal';
 import {dateConversion} from '../../utils/time';
 import HeaderImageBackground from './imageBackground';
+import Leaderboard from './leaderboard';
 import {connect} from 'react-redux';
 import {joinGroup} from '../../actions/group';
 import {changeGroupNotification} from '../../actions/user';
 import {userLogout} from '../../actions/auth';
 import TagList from '../tags/tagList';
 import {pointFormat} from '../../utils/point';
+import { cleanLeaderboard } from '../../actions/point'
 
 const extractKey = ({key}) => key;
 class GroupHeader extends React.Component {
@@ -116,6 +118,12 @@ class GroupHeader extends React.Component {
     );
   };
 
+  onLeaderboardPress = () => {
+    const {cleanLeaderboard, navigation} = this.props
+    cleanLeaderboard()
+    navigation.navigate('Leaderboard')
+  }
+
   render() {
     const {
       icon,
@@ -129,24 +137,14 @@ class GroupHeader extends React.Component {
       tags,
     } = this.props.item;
     const {point} = this.props;
+    let {total_point_semester, base_point_semester, leaderboard} = point;
+    const {users} = leaderboard;
     const {container, underImageStyle, component} = styles;
-
     const {notificationToggled} = this.state;
-
     const date = dateConversion(createdAt);
 
-    let total_point_semester = 0;
-    let bonus_point_semester = 0;
-
-    if (point != null) {
-      total_point_semester = point.total_point_semester;
-      bonus_point_semester = point.bonus_point_semester;
-    }
-
     const total_point_semester_display = pointFormat(total_point_semester);
-    const base_point_semester_display = pointFormat(
-      total_point_semester - bonus_point_semester,
-    );
+    const base_point_semester_display = pointFormat(base_point_semester);
 
     return (
       <TouchableWithoutFeedback>
@@ -257,6 +255,18 @@ class GroupHeader extends React.Component {
               </Text>
             </View>
           ) : null}
+          {auth && users.length > 0 ? (
+            <TouchableWithoutFeedback onPress={this.onLeaderboardPress}>
+              <View style={styles.leaderboard}>
+                <View style={{height: 20}}>
+                  <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                    Monthly Leaderboard:
+                  </Text>
+                </View>
+                <Leaderboard users={users} />
+              </View>
+            </TouchableWithoutFeedback>
+          ) : null}
         </View>
       </TouchableWithoutFeedback>
     );
@@ -266,7 +276,7 @@ class GroupHeader extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    maxHeight: 450,
+    maxHeight: 570,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     borderBottomWidth: 0.5,
@@ -320,11 +330,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: 'grey',
   },
+  leaderboard: {
+    padding: 7,
+    width: '100%',
+    maxHeight: 120,
+    backgroundColor: '#ecf0f1',
+  },
 });
 
 const mapStateToProps = state => {
-  const {group, auth} = state;
-  return {group, auth};
+  const {group, auth, point} = state;
+  return {group, auth, point};
 };
 
 const mapDispatchToProps = dispatch => {
@@ -332,6 +348,7 @@ const mapDispatchToProps = dispatch => {
     userLogout: () => dispatch(userLogout()),
     joinGroup: data => dispatch(joinGroup(data)),
     changeGroupNotification: data => dispatch(changeGroupNotification(data)),
+    cleanLeaderboard: () => dispatch(cleanLeaderboard())
   };
 };
 
