@@ -10,7 +10,7 @@ export default class addButton extends React.Component {
                 style={styles.headerRightButton}
                 onPress={onPress}
             >
-                <MaterialIcons name="plus" size={30} />
+                <MaterialIcons name="plus" size={30} color={ '#EA2027'}/>
             </TouchableOpacity>
         )
     }

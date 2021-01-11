@@ -19,38 +19,39 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {createLogger} from 'redux-logger';
 import commentReducer from './src/reducers/commentReducer';
 import userReducer from './src/reducers/userReducer';
-import checkinReducer from './src/reducers/checkinReducer'
-import pointReducer from './src/reducers/pointReducer'
+import checkinReducer from './src/reducers/checkinReducer';
+import pointReducer from './src/reducers/pointReducer';
+import rewardReducer from './src/reducers/rewardReducer'
 
 import SignIn from './src/screens/signin';
 import SignUp from './src/screens/signup';
 import HomeDrawerNavigator from './src/navigators/homeDrawerNavigator';
-import GroupDrawerNavigator from './src/navigators/groupDrawerNavigator'
+import GroupDrawerNavigator from './src/navigators/groupDrawerNavigator';
 import GroupsSearch from './src/screens/groupsSearch';
 import GroupCreation from './src/screens/groupCreation';
-import Group from './src/screens/group';
 import Comment from './src/screens/comment';
 import PostSetting from './src/screens/postSetting';
 import GroupSetting from './src/screens/groupSetting';
 import ChangePassword from './src/screens/changePassword';
 import Members from './src/screens/members';
 import Member from './src/screens/member';
-import UserSearch from './src/screens/userSearch'
-import ForgetPassword from './src/screens/forgetPassword'
-import Nomination from './src/screens/nomination'
-import NominationSetting from './src/screens/nominationSetting'
-import NominationResult from './src/screens/nominationResult'
-import Tag from './src/screens/tag'
-import NominationPost from './src/screens/nominationPost'
-import CheckIn from './src/screens/checkin'
-import CheckInSetting from './src/screens/checkinSetting'
-import Post from './src/screens/post'
-import CheckInResult from './src/screens/checkinResult'
-import Leaderboard from './src/screens/leaderboard'
-
+import UserSearch from './src/screens/userSearch';
+import ForgetPassword from './src/screens/forgetPassword';
+import Nomination from './src/screens/nomination';
+import NominationSetting from './src/screens/nominationSetting';
+import NominationResult from './src/screens/nominationResult';
+import Tag from './src/screens/tag';
+import NominationPost from './src/screens/nominationPost';
+import CheckIn from './src/screens/checkin';
+import CheckInSetting from './src/screens/checkinSetting';
+import Post from './src/screens/post';
+import CheckInResult from './src/screens/checkinResult';
+import Leaderboard from './src/screens/leaderboard';
+import RewardTabNavigator from './src/navigators/rewardTabNavigator';
+import RewardSetting from './src/screens/rewardSetting'
+import RewardHistory from './src/screens/rewardHistory'
 
 import messaging from '@react-native-firebase/messaging';
-
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -60,14 +61,24 @@ const rootReducer = combineReducers({
   comment: commentReducer,
   user: userReducer,
   checkin: checkinReducer,
-  point: pointReducer
+  point: pointReducer,
+  reward: rewardReducer
 });
 
 const persistConfig = {
   storage: AsyncStorage,
   key: 'root',
   whitelist: ['auth'],
-  blacklist: ['currentScreen', 'group', 'post', 'comment', 'user', 'checkin', 'pointReducer'],
+  blacklist: [
+    'currentScreen',
+    'group',
+    'post',
+    'comment',
+    'user',
+    'checkin',
+    'point',
+    'reward'
+  ],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -91,13 +102,12 @@ function getHeaderTitle(route) {
 }
 
 export default (App = () => {
-  
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log(JSON.stringify(remoteMessage))
+      console.log(JSON.stringify(remoteMessage));
     });
 
-    return unsubscribe; 
+    return unsubscribe;
   }, []);
 
   return (
@@ -122,11 +132,6 @@ export default (App = () => {
               name="GroupNavigator"
               component={GroupDrawerNavigator}
             />
-            {/* <Stack.Screen
-              name="Group"
-              component={Group}
-              options={{headerBackTitleVisible: false}}
-            /> */}
             <Stack.Screen name="Comment" component={Comment} />
             <Stack.Screen name="PostSetting" component={PostSetting} />
             <Stack.Screen name="GroupSetting" component={GroupSetting} />
@@ -134,18 +139,29 @@ export default (App = () => {
             <Stack.Screen name="Members" component={Members} />
             <Stack.Screen name="Member" component={Member} />
             <Stack.Screen name="SearchUser" component={UserSearch} />
-            <Stack.Screen name="ForgetPassword" component={ForgetPassword}/>
+            <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
             <Stack.Screen name="Nomination" component={Nomination} />
-            <Stack.Screen name="NominationSetting" component={NominationSetting} />
-            <Stack.Screen name="NominationResults" component={NominationResult}/>
-            <Stack.Screen name="Tags" component={Tag}/>
+            <Stack.Screen
+              name="NominationSetting"
+              component={NominationSetting}
+            />
+            <Stack.Screen
+              name="NominationResults"
+              component={NominationResult}
+            />
+            <Stack.Screen name="Tags" component={Tag} />
             <Stack.Screen name="NominationPost" component={NominationPost} />
             <Stack.Screen name="CheckIn" component={CheckIn} />
             <Stack.Screen name="CheckInSetting" component={CheckInSetting} />
             <Stack.Screen name="Post" component={Post} />
             <Stack.Screen name="CheckInResult" component={CheckInResult} />
             <Stack.Screen name="Leaderboard" component={Leaderboard} />
-            
+            <Stack.Screen
+              name="RewardNavigator"
+              component={RewardTabNavigator}
+            />
+            <Stack.Screen name="RewardSetting" component={RewardSetting}/>
+            <Stack.Screen name="RewardHistory" component={RewardHistory}/>
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

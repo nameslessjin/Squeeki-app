@@ -137,13 +137,13 @@ class GroupHeader extends React.Component {
       tags,
     } = this.props.item;
     const {point} = this.props;
-    let {total_point_semester, base_point_semester, leaderboard} = point;
+    let {total_point, base_point_semester, leaderboard} = point;
     const {users} = leaderboard;
     const {container, underImageStyle, component} = styles;
     const {notificationToggled} = this.state;
     const date = dateConversion(createdAt);
 
-    const total_point_semester_display = pointFormat(total_point_semester);
+    const total_point_display = pointFormat(total_point);
     const base_point_semester_display = pointFormat(base_point_semester);
 
     return (
@@ -163,7 +163,7 @@ class GroupHeader extends React.Component {
             />
 
             <View style={underImageStyle}>
-              <View style={{width: '75%'}}>
+              <View style={{width: '70%'}}>
                 <View style={[component]}>
                   <Text style={{fontWeight: 'bold', fontSize: 20}}>
                     {groupname}
@@ -181,14 +181,14 @@ class GroupHeader extends React.Component {
                   style={{
                     justifyContent: 'center',
                     alignItems: 'center',
-                    width: '25%',
+                    width: '30%',
                   }}>
                   <Text
                     style={{fontSize: 19, fontWeight: '600', color: '#53535f'}}>
-                    {total_point_semester_display}
+                    {total_point_display}
                   </Text>
-                  <Text style={{fontSize: 10, color: 'grey'}}>
-                    Base: {base_point_semester_display}
+                  <Text style={{fontSize: 9, color: 'grey'}}>
+                    Semester Base: {base_point_semester_display}
                   </Text>
                 </View>
               ) : null}

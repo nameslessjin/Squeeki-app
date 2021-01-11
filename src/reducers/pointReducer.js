@@ -1,5 +1,5 @@
 const INITIAL_STATE = {
-  total_point_semester: 0,
+  total_point: 0,
   base_point_semester: 0,
   leaderboard: {
     users: [],

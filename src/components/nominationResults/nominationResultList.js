@@ -1,7 +1,7 @@
 import React from 'react';
 import {FlatList, StyleSheet, View, Text, Dimensions} from 'react-native';
 import NominationResultsCard from './nominationResultsCard';
-import {getNominationTime, getSundays} from '../../utils/time';
+import {getFormalTime, getSundays} from '../../utils/time';
 
 const {width} = Dimensions.get('window');
 
@@ -60,7 +60,7 @@ export default class NominationResultsList extends React.Component {
   renderItemTime = ({item}) => {
     const {time} = item;
 
-    const {year, month, date} = getNominationTime(parseInt(time) * 1000000);
+    const {year, month, date} = getFormalTime(parseInt(time) * 1000000);
     // console.log(time)
     const {last_sunday, next_sunday} = getSundays(parseInt(time) * 1000000);
     const this_sunday = getSundays().next_sunday;

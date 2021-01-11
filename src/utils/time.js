@@ -82,11 +82,11 @@ export const getSundays = (time) => {
 
 }
 
-export const getNominationTime = (time) => {
-    const nomination_time = new Date(time)
-    const year = nomination_time.getFullYear()
-    const month = nomination_time.getMonth()
-    const date = nomination_time.getDate()
+export const getFormalTime = (time) => {
+    const formalTime = new Date(time)
+    const year = formalTime.getFullYear()
+    const month = formalTime.getMonth()
+    const date = formalTime.getDate()
     
     return {year: year, month: month, date: date}
 

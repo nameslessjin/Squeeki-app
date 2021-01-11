@@ -9,7 +9,7 @@ export default class HeaderRightButton extends React.Component {
     return (
       <TouchableOpacity style={styles.container} onPress={onPress} disabled={disabled} >
         {type == 'create' ? (
-          <MaterialIcons name={'plus'} size={30} />
+          <MaterialIcons name={'plus'} size={30} color={ '#EA2027'}/>
         ) : (
           <Text style={{color: disabled ? '#95a5a6' : null}} >Done</Text>
         )}

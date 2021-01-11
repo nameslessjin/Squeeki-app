@@ -26,6 +26,7 @@ class CheckInSetting extends React.Component {
     point: 100,
     lat: null,
     long: null,
+    loading: false
   };
 
   componentDidMount() {
@@ -118,10 +119,6 @@ class CheckInSetting extends React.Component {
       this.setState({post: route.params.post});
     }
 
-    if (isLocal != previsLocal && isLocal) {
-      console.log('get location');
-    }
-
     if (prevState != this.state) {
       const disable = !this.validation();
       navigation.setOptions({
@@ -153,6 +150,7 @@ class CheckInSetting extends React.Component {
       token: auth.token,
     };
 
+    this.setState({loading: true})
     const req = await createCheckIn(request);
     if (req.errors) {
       alert(req.errors[0].message);
@@ -165,7 +163,7 @@ class CheckInSetting extends React.Component {
       }
       return;
     }
-
+    this.setState({loading: false})
     navigation.navigate('CheckIn');
   };
 
@@ -181,6 +179,7 @@ class CheckInSetting extends React.Component {
           isLocal: !prevState.isLocal,
         };
       });
+      // get location here
     } else if (type == 'password') {
       this.setState({password: value.trim()});
     } else if (type == 'duration') {
@@ -189,7 +188,7 @@ class CheckInSetting extends React.Component {
   };
 
   render() {
-    const {name, isLocal, password, duration, point, post} = this.state;
+    const {name, isLocal, password, duration, point, post, loading} = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -220,6 +219,7 @@ class CheckInSetting extends React.Component {
             value={duration}
             onInputChange={this.onInputChange}
           />
+          <ActivityIndicator animating={loading} />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

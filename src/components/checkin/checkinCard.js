@@ -11,9 +11,6 @@ import {timeDifferentInMandS} from '../../utils/time';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class CheckinCard extends React.Component {
-  state = {
-    ...this.props.item,
-  };
 
   timeFormat = time => {
     const {day, hour, minute, second} = time;
@@ -148,7 +145,7 @@ export default class CheckinCard extends React.Component {
 const styles = StyleSheet.create({
   card: {
     // width: '100%',
-    margin: 10,
+    margin: 8,
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     padding: 10,

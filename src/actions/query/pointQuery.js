@@ -1,7 +1,7 @@
 export const getUserGroupPointQuery = `
 query getUserGroupPoint($input: ID!){
     getUserGroupPoint(groupId: $input){
-        total_point_semester
+        total_point
         base_point_semester
     }
 }

@@ -74,7 +74,7 @@ class HomeDrawerNavigator extends React.Component {
       navigation.setOptions({
         headerRight: null,
       });
-    } else {
+    } else if (name == 'Groups') {
       navigation.setOptions({
         headerRight: () => (
           <GroupRightButton onPress={this.onToggleGroupsRightButton} />

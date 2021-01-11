@@ -104,6 +104,7 @@ class Group extends React.Component {
     const {visibility, auth} = this.props.group.group;
     if (visibility == 'public' || auth != null) {
     this.setState({refreshing: true});
+    this.loadLeaderBoard()
     this.loadGroupPosts(true);
     this.setState({refreshing: false});
     }

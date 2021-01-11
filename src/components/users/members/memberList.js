@@ -46,6 +46,7 @@ export default class MemberList extends React.Component {
         scrollEnabled={true}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.1}
+        stickySectionHeadersEnabled={false}
 
       />
     );
