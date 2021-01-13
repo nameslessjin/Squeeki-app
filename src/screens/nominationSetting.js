@@ -82,7 +82,6 @@ class NominationSetting extends React.Component {
       getGroupNominations: getGroupNominations,
       navigation: navigation,
       userLogout: userLogout,
-      lastIndexId: null,
       groupId: groupId,
     };
 

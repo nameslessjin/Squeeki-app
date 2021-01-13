@@ -1,6 +1,6 @@
 export const getFeedFunc = async data => {
-  const {token, getFeed, navigation, userLogout, lastIndexId} = data;
-  const feedData = await getFeed({token: token, lastIndexId: lastIndexId});
+  const {token, getFeed, navigation, userLogout, count} = data;
+  const feedData = await getFeed({token: token, count: count});
   if (feedData.errors) {
     alert(feedData.errors[0].message);
     if (feedData.errors[0].message == 'Not Authenticated') {
@@ -22,14 +22,14 @@ export const getGroupPostsFunc = async data => {
     userLogout,
     groupId,
     getUserGroupPoint,
-    lastIndexId,
+    count,
     init,
   } = data;
 
   const inputData = {
     groupId: groupId,
     token: token,
-    lastIndexId: lastIndexId,
+    count: count,
   };
 
   const groupPosts = await getGroupPosts(inputData);

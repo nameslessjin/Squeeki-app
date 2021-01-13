@@ -1,6 +1,8 @@
 const INITIAL_STATE = {
     rewards: [],
-    count: 0
+    count: 0,
+    history: [],
+    history_count: 0
   };
   
   export default (pointReducer = (state = INITIAL_STATE, action) => {
@@ -16,6 +18,13 @@ const INITIAL_STATE = {
         return {
           ...state,
           rewards: state.rewards.filter(r => r.id != action.rewardId)
+        }
+
+      case 'getUserGroupRewardHistory':
+        return {
+          ...state,
+          history_count: action.data.count,
+          history: action.data.count == 10 ? action.data.rewards : state.history.concat(action.data.rewards)
         }
   
       case 'logout':

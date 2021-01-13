@@ -107,7 +107,7 @@ class EditTag extends React.Component {
         return;
       }
       this.setState({create: false});
-      const {searchTag, group} = this.props;
+      const {searchTag, group, userLogout, navigation} = this.props;
       const current_tags_id = group.group.tags.map(t => t.id);
       const req = await searchTag({
         term: term,
@@ -130,7 +130,7 @@ class EditTag extends React.Component {
 
   onloadMoreTags = async () => {
     const {searchTerm, tags, search_count} = this.state;
-    const {searchTag, group} = this.props;
+    const {searchTag, group, userLogout, navigation} = this.props;
     const current_tags_id = group.group.tags.map(t => t.id);
     const req = await searchTag({
       term: searchTerm,
@@ -159,7 +159,7 @@ class EditTag extends React.Component {
   };
 
   addTagToGroup = async tag => {
-    const {addTagToGroup, auth, group} = this.props;
+    const {addTagToGroup, auth, group, userLogout, navigation} = this.props;
 
     if (group.group.tags.length >= 5) {
       this.setState({warning: 'Every group can have max 5 tags'});
@@ -187,7 +187,7 @@ class EditTag extends React.Component {
   };
 
   removeTagFromGroup = async tag => {
-    const {removeTagFromGroup, auth, group} = this.props;
+    const {removeTagFromGroup, auth, group, userLogout, navigation} = this.props;
     const request = {
       groupId: group.group.id,
       tag: tag,

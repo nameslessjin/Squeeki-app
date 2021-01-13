@@ -1,6 +1,6 @@
 export const findUserGroupsByUserIdQuery = `
-query getMyGroups($lastIndexId: String){
-    getMyGroups(lastIndexId: $lastIndexId){
+query getMyGroups($count: Int!){
+    getMyGroups(count: $count){
         groups{
             id
             groupname
@@ -14,7 +14,6 @@ query getMyGroups($lastIndexId: String){
             createdAt
         }
         count
-        lastIndexId
     }
 }
 `;
@@ -54,8 +53,8 @@ query getGroup($groupId: ID!){
 `;
 
 export const searchGroupQuery = `
-query searchGroup($name: String!, $lastIndexId: String){
-    searchGroup(name: $name, lastIndexId: $lastIndexId){
+query searchGroup($input: searchGroupInput!){
+    searchGroup(input: $input){
         groups{
             id
             groupname
@@ -69,7 +68,6 @@ query searchGroup($name: String!, $lastIndexId: String){
             createdAt
         }
         count
-        lastIndexId
     }
 }
 `;

@@ -3,8 +3,6 @@ import {FlatList, StyleSheet, View, Text, Dimensions} from 'react-native';
 import NominationResultsCard from './nominationResultsCard';
 import {getFormalTime, getSundays} from '../../utils/time';
 
-const {width} = Dimensions.get('window');
-
 const extractTime = ({time}) => time;
 const extractNominationName = ({nomination_name}) => nomination_name;
 const extractNomineeName = ({nominee_name}) =>
@@ -52,6 +50,7 @@ export default class NominationResultsList extends React.Component {
           keyExtractor={extractNomineeName}
           renderItem={this.renderItemNominee}
           alwaysBounceHorizontal={false}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     );
@@ -131,6 +130,7 @@ export default class NominationResultsList extends React.Component {
               keyExtractor={extractNominationName}
               renderItem={this.renderItemNominationName}
               alwaysBounceHorizontal={false}
+              showsVerticalScrollIndicator={false}
             />
           )
         ) : null}
@@ -162,6 +162,7 @@ export default class NominationResultsList extends React.Component {
         onEndReached={onEndReached}
         onRefresh={onRefresh}
         refreshing={refreshing}
+        showsVerticalScrollIndicator={false}
       />
     );
   }

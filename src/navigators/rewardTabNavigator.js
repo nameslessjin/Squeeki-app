@@ -34,7 +34,7 @@ class RewardTabNavigator extends React.Component {
 
   componentDidUpdate() {
     const routeName = this.getRouteName();
-    const {navigation} = this.props;
+    const {navigation, group} = this.props;
     if (routeName == 'Reward') {
       navigation.setOptions({
         headerTitle: 'Reward',
@@ -50,9 +50,9 @@ class RewardTabNavigator extends React.Component {
       navigation.setOptions({
         headerTitle: 'Reward List',
         headerBackTitleVisible: false,
-        headerRight: () => (
+        headerRight: () => group.group.auth.rank <= 1 ? (
           <TopRightButton type={'add'} onPress={this.onTopRightButtonPress} />
-        ),
+        ) : null,
       });
     }
   }
@@ -83,9 +83,9 @@ class RewardTabNavigator extends React.Component {
   onTopRightButtonPress = () => {
     const {navigation} = this.props;
     const routeName = this.getRouteName();
-    if (routeName == 'Reward') {
-      console.log('History');
-    } else if (routeName == 'List') {
+    if (routeName.toLowerCase() == 'reward') {
+      navigation.navigate('RewardHistory')
+    } else if (routeName.toLowerCase() == 'list') {
       navigation.navigate('RewardSetting');
     }
   };

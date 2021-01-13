@@ -10,12 +10,12 @@ import {
 } from './query/groupQuery';
 
 export const findUserGroupsByUserId = data => {
-  const {token, lastIndexId} = data;
+  const {token, count} = data;
   return async function(dispatch) {
     const graphQl = {
       query: findUserGroupsByUserIdQuery,
       variables: {
-        lastIndexId: lastIndexId
+        count: count
       }
     };
     // api request
@@ -33,11 +33,8 @@ export const findUserGroupsByUserId = data => {
       return groupsData;
     }
 
-    if (lastIndexId == null){
-      dispatch(getUserGroups(groupsData.data.getMyGroups));
-    } else {
-      dispatch(loadMoreUserGroups(groupsData.data.getMyGroups));
-    }
+    dispatch(getUserGroups(groupsData.data.getMyGroups));
+
 
     return 0;
   };
@@ -46,16 +43,9 @@ export const findUserGroupsByUserId = data => {
 const getUserGroups = data => {
   return {
     type: 'getUserGroups',
-    groups: data,
+    data: data,
   };
 };
-
-const loadMoreUserGroups = data => {
-  return {
-    type: 'loadMoreUserGroups',
-    groups: data
-  }
-}
 
 export const getSingleGroupById = data => {
   const {id, token} = data;
@@ -96,13 +86,18 @@ export const getGroup = data => {
 };
 
 export const searchGroup = data => {
-  const {name, token, lastIndexId} = data;
+  const {name, token, count} = data;
   return async function(dispatch) {
+
+    const input = {
+      name: name,
+      count: count
+    }
+
     const graphQl = {
       query: searchGroupQuery,
       variables: {
-        name: name,
-        lastIndexId: lastIndexId
+        input: input
       },
     };
 
@@ -485,7 +480,7 @@ const LeaveGroup = data => {
 const getPosts = data => {
   return {
     type: 'getGroupPosts',
-    posts: data,
+    data: data,
   };
 };
 

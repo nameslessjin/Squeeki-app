@@ -243,6 +243,7 @@ class GroupHeader extends React.Component {
                   alwaysBounceVertical={false}
                   scrollEnabled={false}
                   renderItem={this.renderItem}
+                  showsVerticalScrollIndicator={false}
                 />
               </View>
             </Modal>

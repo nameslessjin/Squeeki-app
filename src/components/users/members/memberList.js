@@ -33,7 +33,7 @@ export default class MemberList extends React.Component {
 
   render() {
     const {onEndReached, navigation, group} = this.props;
-    const {members, lastIndexId} = this.props.members;
+    const {members} = this.props.members;
     const sections = extractMembersWithRank(members, group.auth.rank);
 
     return (
@@ -47,7 +47,7 @@ export default class MemberList extends React.Component {
         onEndReached={onEndReached}
         onEndReachedThreshold={0.1}
         stickySectionHeadersEnabled={false}
-
+        showsVerticalScrollIndicator={false}
       />
     );
   }

@@ -4,13 +4,11 @@ export const getGroupNominationsFunc = async data => {
     getGroupNominations,
     navigation,
     userLogout,
-    lastIndexId,
     groupId,
   } = data;
   const input = {
     groupId: groupId,
     token: token,
-    lastIndexId: lastIndexId,
   };
   const nominations = await getGroupNominations(input);
   if (nominations.errors) {

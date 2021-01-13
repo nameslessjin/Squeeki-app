@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('screen');
 
 export default class PostMedia extends React.Component {
   render() {

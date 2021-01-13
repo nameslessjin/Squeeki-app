@@ -27,6 +27,7 @@ export default class GroupList extends React.Component {
         onRefresh={onRefresh}
         refreshing={refreshing}
         keyboardShouldPersistTaps={'handled'}
+        showsVerticalScrollIndicator={false}
       />
     );
   }

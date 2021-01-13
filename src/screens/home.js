@@ -86,14 +86,13 @@ class Home extends React.Component {
   };
 
   loadFeed = init => {
-    const {token} = this.props.auth;
-    const {getFeed, navigation, userLogout} = this.props;
+    const {getFeed, navigation, userLogout, auth, post} = this.props;
     const data = {
-      token: token,
+      token: auth.token,
       getFeed: getFeed,
       navigation: navigation,
       userLogout: userLogout,
-      lastIndexId: init ? null : this.props.post.feed.lastIndexId,
+      count: init ? 0 : post.feed.count
     };
 
     getFeedFunc(data);

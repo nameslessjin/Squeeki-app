@@ -8,8 +8,7 @@ export const groupsExtractorWOBackground = (raw) => {
 
     const groupsData = {
         groups: groups,
-        count: raw.count,
-        lastIndexId: raw.lastIndexId
+        count: raw.count
     }
 
     return groupsData

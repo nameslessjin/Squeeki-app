@@ -35,7 +35,6 @@ class Nomination extends React.Component {
         getGroupNominations: getGroupNominations,
         navigation: navigation,
         userLogout: userLogout,
-        lastIndexId: null,
         groupId: params.groupId,
       };
       getGroupNominationsFunc(input);

@@ -2,6 +2,9 @@ import {
   createGroupRewardMutation,
   getGroupRewardQuery,
   deleteGroupRewardMutation,
+  getUserGroupRewardHistoryQuery,
+  getMonthlyGiftCardCountQuery,
+  lootRewardMutation
 } from './query/rewardQuery';
 
 export const createGroupReward = request => {
@@ -51,7 +54,7 @@ export const getGroupReward = request => {
     const input = {
       groupId: groupId,
       count: count,
-      redeemed: redeemed
+      redeemed: redeemed,
     };
 
     const graphql = {
@@ -75,14 +78,14 @@ export const getGroupReward = request => {
     if (result.errors) {
       return result;
     }
-    dispatch(getGroupRewardReducer(result.data.getGroupReward));
+    dispatch(getGroupRewardReducer(result.data.getGroupReward, 'list'));
     return 0;
   };
 };
 
-const getGroupRewardReducer = data => {
+const getGroupRewardReducer = (data, type) => {
   return {
-    type: 'getGroupReward',
+    type: type == 'list' ? 'getGroupReward' : 'getUserGroupRewardHistory',
     data: data,
   };
 };
@@ -97,7 +100,7 @@ export const deleteGroupReward = request => {
         rewardId: rewardId,
       },
     };
-    console.log(graphql)
+
     const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
@@ -113,7 +116,7 @@ export const deleteGroupReward = request => {
       return result;
     }
 
-    dispatch(deleteGroupRewardReducer(rewardId))
+    dispatch(deleteGroupRewardReducer(rewardId));
 
     return 0;
   };
@@ -122,6 +125,105 @@ export const deleteGroupReward = request => {
 const deleteGroupRewardReducer = data => {
   return {
     type: 'deleteGroupReward',
-    rewardId: data 
+    rewardId: data,
+  };
+};
+
+export const getUserGroupRewardHistory = request => {
+  const {token, groupId, count} = request;
+
+  return async function(dispatch) {
+    const input = {
+      groupId: groupId,
+      count: count,
+    };
+
+    const graphql = {
+      query: getUserGroupRewardHistoryQuery,
+      variables: {
+        input: input,
+      },
+    };
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(
+      getGroupRewardReducer(result.data.getUserGroupRewardHistory, 'history'),
+    );
+
+    return 0;
+  };
+};
+
+export const getMonthlyGiftCardCount = request => {
+  const {token, groupId} = request;
+
+  return async function(dispatch) {
+    const graphql = {
+      query: getMonthlyGiftCardCountQuery,
+      variables: {
+        groupId: groupId,
+      },
+    };
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.getMonthlyGiftCardCount;
+  };
+};
+
+export const lootReward = request => {
+  const {token, groupId} = request
+
+  return async function(dispatch) {
+    const graphql = {
+      query: lootRewardMutation,
+      variables: {
+        groupId: groupId
+      }
+    }
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+    console.log(result.data)
+    return result.data.lootReward;
   }
 }

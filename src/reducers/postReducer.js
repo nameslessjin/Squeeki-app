@@ -4,71 +4,37 @@ const INITIAL_STATE = {
   groupPosts: {
     posts: [],
     count: 0,
-    lastIndexId: null,
   },
   feed: {
     posts: [],
     count: 0,
-    lastIndexId: null,
   },
 };
 
 export default (postReducer = (state = INITIAL_STATE, action) => {
   let feed = state.feed;
   let groupPosts = state.groupPosts;
-  let posts = [];
   let reconstructed_posts = [];
   switch (action.type) {
     case 'getGroupPosts':
-      reconstructed_posts = {
-        ...action.posts,
-        posts: reconstructPostsInReducer(action.posts.posts),
-      };
+      reconstructed_posts = reconstructPostsInReducer(action.data.posts)
       return {
         ...state,
         groupPosts: {
-          ...reconstructed_posts,
-        },
-      };
-
-    case 'loadMoreGroupPosts':
-      reconstructed_posts = reconstructPostsInReducer(
-        action.moreGroupPosts.posts,
-      );
-      posts = groupPosts.posts.concat(reconstructed_posts);
-      return {
-        ...state,
-        groupPosts: {
-          posts: posts,
-          count: posts.length,
-          lastIndexId: action.moreGroupPosts.lastIndexId,
-        },
-      };
+          count: action.data.count,
+          posts: action.data.count == 10? reconstructed_posts: groupPosts.posts.concat(reconstructed_posts)
+        }
+      }
 
     case 'getFeed':
-      reconstructed_posts = {
-        ...action.feed,
-        posts: reconstructPostsInReducer(action.feed.posts),
-      };
-
+      reconstructed_posts = reconstructPostsInReducer(action.data.posts)
       return {
         ...state,
         feed: {
-          ...reconstructed_posts,
-        },
-      };
-    case 'loadMoreFeed':
-      reconstructed_posts = reconstructPostsInReducer(action.moreFeed.posts);
-
-      posts = feed.posts.concat(reconstructed_posts);
-      return {
-        ...state,
-        feed: {
-          posts: posts,
-          count: posts.length,
-          lastIndexId: action.moreFeed.lastIndexId,
-        },
-      };
+          count: action.data.count,
+          posts: action.data.count == 10 ? reconstructed_posts : feed.posts.concat(reconstructed_posts)
+        }
+      }
 
     case 'updatePost':
       feedPost = feed.posts.map(post => {
@@ -88,12 +54,12 @@ export default (postReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         groupPosts: {
+          ...groupPosts,
           posts: groupPostsPost,
-          count: groupPostsPost.length,
         },
         feed: {
+          ...feed,
           posts: feedPost,
-          count: feedPost.length,
         },
       };
 
@@ -105,12 +71,12 @@ export default (postReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         groupPosts: {
+          ...groupPosts,
           posts: groupPostsPost,
-          count: groupPostsPost.length,
         },
         feed: {
+          ...feed,
           posts: feedPost,
-          count: feedPost.length,
         },
       };
     case 'cleanGroup':

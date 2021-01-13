@@ -10,15 +10,12 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const {width, height} = Dimensions.get('window');
-
 export default class UserCard extends React.Component {
-
   state = {
-    icon_option: 'emoticon-cool-outline'
-  }
+    icon_option: 'emoticon-cool-outline',
+  };
 
-  componentDidMount(){
+  componentDidMount() {
     const random = Math.floor(Math.random() * 5);
     const icon_options = [
       'emoticon-cool-outline',
@@ -27,11 +24,10 @@ export default class UserCard extends React.Component {
       'emoticon-wink-outline',
       'emoticon-tongue-outline',
     ];
-    this.setState({icon_option: icon_options[random]})
+    this.setState({icon_option: icon_options[random]});
   }
 
   OnUserPress = () => {
-
     const {id, displayName, onPress} = this.props;
     const user = {
       id: id,
@@ -41,20 +37,32 @@ export default class UserCard extends React.Component {
   };
 
   render() {
-    const {username, displayName, icon, in_group, chosen, prev_route, onPress, checked} = this.props;
-    const { icon_option } = this.state
+    const {
+      username,
+      displayName,
+      icon,
+      in_group,
+      chosen,
+      prev_route,
+      onPress,
+      checked,
+    } = this.props;
+    const {icon_option} = this.state;
 
-    let disable = false
+    let disable = false;
 
-    let in_group_message = null
-    if (in_group == 1 && prev_route != 'PostSetting' && prev_route != 'CheckInResult'){
-      in_group_message = 'In your group'
-      disable = true
-    } else if (checked && prev_route == 'CheckInResult'){
-      in_group_message = 'Checked in'
-      disable = true
+    let in_group_message = null;
+    if (
+      in_group == 1 &&
+      prev_route != 'PostSetting' &&
+      prev_route != 'CheckInResult'
+    ) {
+      in_group_message = 'In your group';
+      disable = true;
+    } else if (checked && prev_route == 'CheckInResult') {
+      in_group_message = 'Checked in';
+      disable = true;
     }
-
 
     let displayNameSize = 16;
     if (displayName.length > 20) {
@@ -70,30 +78,33 @@ export default class UserCard extends React.Component {
     }
 
     return (
-      <TouchableWithoutFeedback disabled={disable} onPress={onPress ? this.OnUserPress : null}>
+      <TouchableWithoutFeedback
+        disabled={disable}
+        onPress={onPress ? this.OnUserPress : null}>
         <View
           style={[
             styles.container,
             chosen ? {backgroundColor: '#c7ecee'} : null,
           ]}>
-          <View style={styles.imgHolder}>
-            {icon != null ? (
-              <Image source={{uri: icon.uri}} style={styles.imageStyle} />
-            ) : (
-              <MaterialIcons name={icon_option} size={70} />
-            )}
-          </View>
-          <View style={[styles.nameStyle, {width: (width - 70) * 0.7}]}>
-            <Text style={{fontSize: displayNameSize}}>{displayName}</Text>
-            <Text style={[styles.usernameStyle, {fontSize: userNameSize}]}>
-              {username}
-            </Text>
+          <View style={{width: '80%', flexDirection: 'row'}}>
+
+            <View style={styles.imgHolder}>
+              {icon != null ? (
+                <Image source={{uri: icon.uri}} style={styles.imageStyle} />
+              ) : (
+                <MaterialIcons name={icon_option} size={70} />
+              )}
+            </View>
+            <View style={styles.nameStyle}>
+              <Text style={{fontSize: displayNameSize}}>{displayName}</Text>
+              <Text style={[styles.usernameStyle, {fontSize: userNameSize}]}>
+                {username}
+              </Text>
+            </View>
+
           </View>
           <View
-            style={[
-              styles.inGroupMessageContainer,
-              {width: (width - 70) * 0.3},
-            ]}>
+            style={styles.inGroupMessageContainer}>
             <Text style={styles.inGroupMessage}>{in_group_message}</Text>
           </View>
         </View>
@@ -134,6 +145,7 @@ const styles = StyleSheet.create({
   nameStyle: {
     paddingLeft: 8,
     height: '100%',
+    width: '75%',
     justifyContent: 'center',
   },
   inGroupMessageContainer: {
@@ -141,5 +153,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
     paddingRight: 5,
+    width: '20%'
   },
 });

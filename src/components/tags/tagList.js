@@ -36,6 +36,7 @@ export default class TagList extends React.Component {
         horizontal={true}
         alwaysBounceVertical={false}
         keyboardShouldPersistTaps={'handled'}
+        showsVerticalScrollIndicator={false}
       />
     );
   };

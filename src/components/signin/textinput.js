@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Dimensions, TextInput} from 'react-native';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('screen');
 
 export default class SignInTextInput extends React.Component {
   onChangeText = text => {

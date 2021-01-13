@@ -1,27 +1,16 @@
 const INITIAL_STATE = {
-  groups: {groups: [], count: 0, lastIndexId: null},
+  groups: {groups: [], count: 0},
   group: {},
 };
 
 export default groupReducer = (state = INITIAL_STATE, action) => {
-  let groups = state.groups;
-  let group = state.group;
   switch (action.type) {
     case 'getUserGroups':
       return {
         ...state,
         groups: {
-          ...action.groups,
-        },
-      };
-    case 'loadMoreUserGroups':
-      groups = state.groups.groups.concat(action.groups.groups);
-      return {
-        ...state,
-        groups: {
-          groups: groups,
-          count: groups.length,
-          lastIndexId: action.groups.lastIndexId,
+          count: action.data.count,
+          groups: action.data.count == 10 ? action.data.groups : state.groups.groups.concat(action.data.groups)
         },
       };
 
@@ -42,15 +31,13 @@ export default groupReducer = (state = INITIAL_STATE, action) => {
         },
       };
     case 'joinGroup':
-      group = action.data.joinedGroup;
-      groups = action.data.groups;
       return {
         ...state,
         group: {
-          ...group,
+          ...action.data.joinedGroup,
         },
         groups: {
-          ...groups,
+          ...action.data.groups,
         },
       };
     case 'changeGroupVisibility':

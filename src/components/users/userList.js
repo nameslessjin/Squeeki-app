@@ -29,6 +29,7 @@ export default class UserList extends React.Component {
       onRefresh,
       refreshing,
       chosenUser,
+      currentUserId
     } = this.props;
 
     const users = usersData.map(u => {
@@ -36,7 +37,7 @@ export default class UserList extends React.Component {
         ...u,
         chosen: chosenUser ? chosenUser.findIndex(c => c.id == u.id) != -1 ? true : false : false,
       };
-    });
+    }).filter(u => u.id != currentUserId);
 
     return (
       <FlatList
@@ -50,6 +51,7 @@ export default class UserList extends React.Component {
         onRefresh={onRefresh}
         refreshing={refreshing}
         keyboardShouldPersistTaps={'handled'}
+        showsVerticalScrollIndicator={false}
       />
     );
   }

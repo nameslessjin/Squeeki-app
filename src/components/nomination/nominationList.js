@@ -30,6 +30,7 @@ export default class NominationList extends React.Component {
         keyExtractor={extractKey}
         alwaysBounceHorizontal={false}
         keyboardShouldPersistTaps={'handled'}
+        showsVerticalScrollIndicator={false}
       />
     );
   }

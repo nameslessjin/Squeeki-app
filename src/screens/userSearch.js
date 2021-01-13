@@ -364,12 +364,14 @@ class UserSearch extends React.Component {
 
   render() {
     const {searchTerm, usersData, chosenUser, prev_route} = this.state;
-    const {navigation, user} = this.props;
+    const {navigation, user, auth} = this.props;
     let userList = usersData;
 
     if (prev_route == 'PostSetting' && usersData.length == 0) {
       userList = user.members.members;
     }
+
+    console.log(prev_route)
 
     let search_view = (
       <KeyboardAvoidingView style={styles.container}>
@@ -392,6 +394,7 @@ class UserSearch extends React.Component {
           onChooseUser={this.onChooseUser}
           prev_route={prev_route}
           chosenUser={chosenUser}
+          currentUserId={auth.user.id}
         />
       </KeyboardAvoidingView>
     );

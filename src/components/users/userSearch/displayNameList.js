@@ -44,6 +44,7 @@ export default class disPlayNameList extends React.Component {
         style={styles.container}
         keyExtractor={extractKey}
         renderItem={this.renderItem}
+        showsVerticalScrollIndicator={false}
       />
     );
   }

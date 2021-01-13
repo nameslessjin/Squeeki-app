@@ -18,7 +18,7 @@ import validator from 'validator';
 import {connect} from 'react-redux';
 import {signin} from '../actions/auth';
 
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('screen');
 
 class SignIn extends React.Component {
   state = {

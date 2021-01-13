@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const {width} = Dimensions.get('window');
+const {width} = Dimensions.get('screen');
 
 export default class NominationResultsCard extends React.Component {
   render() {
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   bar: {
     zIndex: 0,
-    height: '100%',
+    height: 40,
     position: 'absolute',
   },
 });

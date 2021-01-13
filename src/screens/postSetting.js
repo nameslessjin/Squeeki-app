@@ -327,7 +327,7 @@ class PostSetting extends React.Component {
         getFeed: getFeed,
         navigation: navigation,
         userLogout: userLogout,
-        lastIndexId: null,
+        count: 0,
       };
       getFeedFunc(data);
     } else {
@@ -337,7 +337,7 @@ class PostSetting extends React.Component {
         getGroupPosts: getGroupPosts,
         navigation: navigation,
         userLogout: userLogout,
-        lastIndexId: null,
+        count: 0,
       };
 
       getGroupPostsFunc(data);

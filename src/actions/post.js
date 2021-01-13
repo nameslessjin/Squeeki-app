@@ -13,13 +13,17 @@ import {
 } from './query/postQuery';
 
 export const getGroupPosts = data => {
-  const {groupId, token, lastIndexId} = data;
+  const {groupId, token, count} = data;
   return async function(dispatch) {
+    const input = {
+      groupId: groupId,
+      count: count
+    }
+    console.log(input)
     const graphql = {
       query: getGroupPostsQuery,
       variables: {
-        groupId: groupId,
-        lastIndexId: lastIndexId,
+        input: input
       },
     };
 
@@ -36,12 +40,7 @@ export const getGroupPosts = data => {
       return postsData;
     }
 
-    if (lastIndexId == null){
-      dispatch(getGroupPostsData(postsData.data.getGroupPosts));
-    } else {
-
-      dispatch(loadMoreGroupPosts(postsData.data.getGroupPosts))
-    }
+    dispatch(getGroupPostsData(postsData.data.getGroupPosts))
 
     return 0;
   };
@@ -50,25 +49,17 @@ export const getGroupPosts = data => {
 const getGroupPostsData = data => {
   return {
     type: 'getGroupPosts',
-    posts: data,
+    data: data,
   };
 };
 
-
-const loadMoreGroupPosts = data => {
-  return {
-    type: 'loadMoreGroupPosts',
-    moreGroupPosts: data
-  }
-}
-
 export const getFeed = data => {
-  const {token, lastIndexId} = data;
+  const {token, count} = data;
   return async function(dispatch) {
     const graphql = {
       query: getFeedQuery,
       variables: {
-        lastIndexId: lastIndexId
+        count: count
       }
     };
 
@@ -86,28 +77,17 @@ export const getFeed = data => {
       return feedData;
     }
 
-    if (lastIndexId == null){
-      dispatch(getFeedData(feedData.data.getFeed));
-    } else {
-
-      dispatch(loadMoreFeedData(feedData.data.getFeed))
-    }
+    console.log(getFeedData(feedData.data.getFeed))
+    dispatch(getFeedData(feedData.data.getFeed));
 
     return 0;
   };
 };
 
-const loadMoreFeedData = data => {
-  return {
-    type: 'loadMoreFeed',
-    moreFeed: data
-  }
-}
-
 const getFeedData = data => {
   return {
     type: 'getFeed',
-    feed: data,
+    data: data,
   };
 };
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import {StyleSheet, Dimensions, TouchableOpacity, Text} from 'react-native';
 
-const {width, height} = Dimensions.get('window');
-
 export default class SignInButton extends React.Component {
   render() {
     const {type, onPress} = this.props;

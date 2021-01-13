@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StatusBar,
-  Text,
 } from 'react-native';
 import {connect} from 'react-redux';
 import TopRightButton from '../components/reward/topRightButton';
@@ -14,6 +13,7 @@ import Input from '../components/reward/settingInput';
 import {createGroupReward, getGroupReward} from '../actions/reward';
 import {loadGroupRewardsFunc} from '../functions/reward';
 import {userLogout} from '../actions/auth';
+import RewardModal from '../components/reward/rewardModal'
 
 class RewardSetting extends React.Component {
   state = {
@@ -22,6 +22,7 @@ class RewardSetting extends React.Component {
     content: '',
     chance: '',
     hide: false,
+    modalVisible: false
   };
 
   componentDidMount() {
@@ -35,6 +36,7 @@ class RewardSetting extends React.Component {
           disabled={true}
         />
       ),
+      headerTitle: 'Settings'
     });
   }
 
@@ -158,8 +160,17 @@ class RewardSetting extends React.Component {
     }
   };
 
+  onBackdropPress = () => {
+    Keyboard.dismiss()
+    this.setState({modalVisible: false})
+  }
+
+  onQuestionMarkPress = () => {
+    this.setState({modalVisible: true})
+  }
+
   render() {
-    const {loading, name, content, chance, hide} = this.state;
+    const {loading, name, content, chance, hide, modalVisible} = this.state;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
@@ -183,8 +194,10 @@ class RewardSetting extends React.Component {
             type={'chance'}
             value={chance}
             onInputChange={this.onInputChange}
+            onQuestionMarkPress={this.onQuestionMarkPress}
           />
           <ActivityIndicator animating={loading} />
+          <RewardModal modalVisible={modalVisible} onBackdropPress={this.onBackdropPress} />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

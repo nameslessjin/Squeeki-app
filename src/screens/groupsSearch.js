@@ -17,14 +17,11 @@ import GroupList from '../components/groups/groupList';
 import {userLogout} from '../actions/auth';
 import {searchGroupFunc} from '../functions/group';
 
-const {width, height} = Dimensions.get('window');
-
 class GroupsSearch extends React.Component {
   state = {
     searchTerm: '',
     groupsData: [],
     count: 0,
-    lastIndexId: null,
   };
 
   componentDidMount() {
@@ -41,7 +38,7 @@ class GroupsSearch extends React.Component {
     this.setState({searchTerm: text});
 
     if (term.length < 3) {
-      this.setState({groupsData: [], count: 0, lastIndexId: null});
+      this.setState({groupsData: [], count: 0});
       return;
     }
 
@@ -52,18 +49,17 @@ class GroupsSearch extends React.Component {
       auth: auth,
       navigation: navigation,
       userLogout: userLogout,
-      lastIndexId: null,
+      count: 0,
       searchTerm: text,
     };
 
     const searchResult = await searchGroupFunc(data);
 
     if (searchResult != 0) {
-      const {groups, lastIndexId} = searchResult;
+      const {groups, count} = searchResult;
       this.setState({
         groupsData: groups,
-        count: groups.length,
-        lastIndexId: lastIndexId,
+        count: count,
       });
     }
 
@@ -71,11 +67,11 @@ class GroupsSearch extends React.Component {
   };
 
   onEndReached = async () => {
-    const {searchTerm, lastIndexId, groupsData} = this.state;
+    const {searchTerm, count, groupsData} = this.state;
     const {searchGroup, auth, navigation, userLogout} = this.props;
 
     if (searchTerm.length < 3) {
-      this.setState({groupsData: [], count: 0, lastIndexId: null});
+      this.setState({groupsData: [], count: 0});
       return;
     }
 
@@ -84,19 +80,19 @@ class GroupsSearch extends React.Component {
       auth: auth,
       navigation: navigation,
       userLogout: userLogout,
-      lastIndexId: lastIndexId,
+      count: count,
       searchTerm: searchTerm,
     };
 
     const searchResult = await searchGroupFunc(data);
 
     if (searchResult != 0) {
-      const {groups, lastIndexId} = searchResult;
+      const {groups, count} = searchResult;
       const newGroups = groupsData.concat(groups);
       this.setState({
         groupsData: newGroups,
         count: newGroups.length,
-        lastIndexId: lastIndexId,
+        count: count,
       });
     }
   };

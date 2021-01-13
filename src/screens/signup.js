@@ -15,7 +15,7 @@ import validator from 'validator';
 import SignUpTextInput from '../components/signup/textinput';
 import SignUpButton from '../components/signup/button';
 
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('screen');
 
 class SignUp extends React.Component {
   state = {

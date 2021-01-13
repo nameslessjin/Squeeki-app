@@ -2,7 +2,7 @@ export const createGroupRewardMutation = `
 mutation createGroupReward($input: CreateGroupRewardInput!){
     createGroupReward(input: $input)
 }
-`
+`;
 
 export const getGroupRewardQuery = `
 query getGroupReward($input: GroupRewardInput!){
@@ -31,13 +31,13 @@ query getGroupReward($input: GroupRewardInput!){
 
     }
 }
-`
+`;
 
 export const deleteGroupRewardMutation = `
 mutation deleteGroupReward($rewardId: ID!){
     deleteGroupReward(rewardId: $rewardId)
 }
-`
+`;
 
 export const getUserGroupRewardHistoryQuery = `
 query getUserGroupRewardHistory($input: GroupRewardInput!){
@@ -56,4 +56,27 @@ query getUserGroupRewardHistory($input: GroupRewardInput!){
 
     }
 }
-`
+`;
+
+export const getMonthlyGiftCardCountQuery = `
+query getMonthlyGiftCardCount($groupId: ID!){
+    getMonthlyGiftCardCount(groupId: $groupId)
+}
+`;
+
+export const lootRewardMutation = `
+mutation lootReward($groupId: ID!){
+    lootReward(groupId: $groupId){
+        reward {
+            id
+            from
+            type
+            content
+            name
+            chance
+            hide
+        }
+        total_point
+    }
+}
+`;

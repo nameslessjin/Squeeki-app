@@ -16,8 +16,6 @@ import GroupList from '../components/groups/groupList';
 import {findUserGroupsByUserId} from '../actions/group';
 import {userLogout} from '../actions/auth';
 
-const {width, height} = Dimensions.get('window');
-
 class Groups extends React.Component {
   state = {
     loading: false,
@@ -53,12 +51,11 @@ class Groups extends React.Component {
   };
 
   loadGroups = async init => {
-    const {token} = this.props.auth;
-    const {findUserGroupsByUserId, navigation, userLogout} = this.props;
+    const {findUserGroupsByUserId, navigation, userLogout, group, auth} = this.props;
 
     const groupsData = await findUserGroupsByUserId({
-      token: token,
-      lastIndexId: init ? null : this.props.group.groups.lastIndexId,
+      token: auth.token,
+      count: init ? 0 : group.groups.count,
     });
 
     if (groupsData.errors) {

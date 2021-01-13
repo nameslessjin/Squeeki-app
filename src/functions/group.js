@@ -4,7 +4,7 @@ export const searchGroupFunc = async data => {
     auth,
     navigation,
     userLogout,
-    lastIndexId,
+    count,
     searchTerm,
   } = data;
 
@@ -12,7 +12,7 @@ export const searchGroupFunc = async data => {
     const input = {
       name: searchTerm,
       token: auth.token,
-      lastIndexId: lastIndexId,
+      count: count,
     };
 
     const searchResult = await searchGroup(input);

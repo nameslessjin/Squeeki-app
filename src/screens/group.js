@@ -51,11 +51,10 @@ class Group extends React.Component {
   }
 
   loadGroups = async init => {
-    const {token} = this.props.auth;
-    const {findUserGroupsByUserId, navigation, userLogout} = this.props;
+    const {findUserGroupsByUserId, navigation, userLogout, auth, group} = this.props;
     const groupsData = await findUserGroupsByUserId({
-      token: token,
-      lastIndexId: init ? null : this.props.group.groups.lastIndexId,
+      token: auth.token,
+      count: init ? 0 : group.groups.count,
     });
 
     invalidAuthentication({
@@ -111,17 +110,15 @@ class Group extends React.Component {
   };
 
   loadGroupPosts = init => {
-    const {token} = this.props.auth;
-    const {navigation, getGroupPosts, userLogout, getUserGroupPoint} = this.props;
-    const {id} = this.props.group.group;
+    const {navigation, getGroupPosts, userLogout, getUserGroupPoint, auth, group, post} = this.props;
     const data = {
-      token: token,
-      groupId: id,
+      token: auth.token,
+      groupId: group.group.id,
       getGroupPosts: getGroupPosts,
       navigation: navigation,
       userLogout: userLogout,
       getUserGroupPoint: getUserGroupPoint,
-      lastIndexId: init ? null : this.props.post.groupPosts.lastIndexId,
+      count: init ? 0 : post.groupPosts.count,
       init: init
     };
     getGroupPostsFunc(data);

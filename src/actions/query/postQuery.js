@@ -1,6 +1,6 @@
 export const getGroupPostsQuery = `
-query getGroupPosts($groupId: ID!, $lastIndexId: String){
-    getGroupPosts(groupId: $groupId, lastIndexId: $lastIndexId){
+query getGroupPosts($input: GetPostInput!){
+    getGroupPosts(input: $input){
         posts{
             id
             image{
@@ -49,15 +49,14 @@ query getGroupPosts($groupId: ID!, $lastIndexId: String){
             }
         }
         count
-        lastIndexId
     }
 }
 
 `;
 
 export const getFeedQuery = `
-query getFeed($lastIndexId: String){
-    getFeed(lastIndexId: $lastIndexId){
+query getFeed($count: Int!){
+    getFeed(count: $count){
         posts{
             id
             image{
@@ -102,7 +101,6 @@ query getFeed($lastIndexId: String){
             }
         }
         count
-        lastIndexId
     }
 }
 `;
@@ -323,7 +321,6 @@ query getGroupPostForCheckIn($input: GetPostInput!){
             }
         }
         count
-        lastIndexId
     }
 }
 `;
