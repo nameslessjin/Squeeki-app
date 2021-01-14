@@ -8,6 +8,8 @@ import {
   Text,
   StatusBar,
   ActivityIndicator,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {signup, signin} from '../actions/auth';
@@ -28,6 +30,14 @@ class SignUp extends React.Component {
     icon: null,
     loading: false,
   };
+
+  componentDidMount() {
+    const {navigation} = this.props
+    navigation.setOptions({
+      headerBackTitleVisible: false,
+      headerTitle: 'Sign Up'
+    })
+  }
 
   onChangeText = (type, text) => {
     if (type == 'Password') {
@@ -67,7 +77,6 @@ class SignUp extends React.Component {
       !validator.isAlphanumeric(check_username) ||
       !validator.isAlphanumeric(last_character)
     ) {
-
       this.setState({
         errorText:
           'Invalid username.  Username needs to be least 6 characters long or contains forbidden characaters',
@@ -112,6 +121,11 @@ class SignUp extends React.Component {
     this.props.navigation.navigate('Home');
   };
 
+  onTermsPressed = () => {
+    const {navigation} = this.props
+    navigation.navigate("Terms")
+  }
+
   render() {
     const {
       email,
@@ -148,16 +162,21 @@ class SignUp extends React.Component {
             onChangeText={this.onChangeText}
             value={rePassword}
           />
-          <SignUpTextInput
+          {/* <SignUpTextInput
             type={'Refercode'}
             onChangeText={this.onChangeText}
             value={referCode}
-          />
+          /> */}
           {loading ? (
             <ActivityIndicator animating={true} />
           ) : (
             <SignUpButton onPress={this.onPress} />
           )}
+          <View style={styles.term}>
+            <TouchableOpacity style={styles.termButton} onPress={this.onTermsPressed}>
+              <Text style={styles.text}>Terms and Conditions</Text>
+            </TouchableOpacity>
+          </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );
@@ -183,6 +202,16 @@ const styles = StyleSheet.create({
     borderColor: '#718093',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  term: {
+    marginTop: 30,
+  },
+  text: {
+    color: '#b2bec3',
+  },
+  termButton: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#b2bec3',
   },
 });
 

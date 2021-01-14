@@ -101,7 +101,7 @@ export default class CheckinCard extends React.Component {
             style={[styles.text, {color: 'grey'}]}>
             {content.slice(0, 100)} {content.length > 100 ? '...' : null}
           </Text>
-          <Text style={styles.text}>Local: {location ? 'On' : 'Off'}</Text>
+          <Text style={styles.text}>Local: {location ? 'ON' : 'OFF'}</Text>
           <Text style={styles.text}>Attended: {count}</Text>
           <Text style={styles.text}>Points: {point}</Text>
           <Text style={styles.text}>End At: {timeDisplay}</Text>

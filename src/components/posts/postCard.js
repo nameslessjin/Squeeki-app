@@ -335,7 +335,7 @@ class PostCard extends React.Component {
           {selectionMode ? (
             checked ? (
               <View style={styles.footer}>
-                <Text style={{color: 'grey', marginVertical: 5}}>Checked</Text>
+                <Text style={{color: 'red', marginVertical: 5}}>Checked</Text>
               </View>
             ) : null
           ) : (

@@ -14,6 +14,8 @@ import {connect} from 'react-redux';
 import GroupHeader from '../components/groupSetting/groupHeader';
 import {userLogout} from '../actions/auth';
 import VisibilitySetting from '../components/groupSetting/visibilitySetting';
+import SettingEdition from '../components/groupSetting/settingEdition'
+
 
 class GroupCreation extends React.Component {
   state = {
@@ -102,6 +104,13 @@ class GroupCreation extends React.Component {
     }
   };
 
+  onEditTagPress = () => {
+    const {navigation} = this.props
+    navigation.navigate('Tags', {
+      prev_route: 'GroupCreation'
+    })
+  }
+
   render() {
     const {groupname, shortDescription, visibility, loading} = this.state;
 
@@ -124,6 +133,7 @@ class GroupCreation extends React.Component {
             onVisibilitySwitchToggle={this.onVisibilitySwitchToggle}
             disabled={false}
           />
+          {/* <SettingEdition onPress={this.onEditTagPress} name={"Edit tags"}/> */}
           {loading == true ? (
             <ActivityIndicator
               style={{marginTop: 30}}

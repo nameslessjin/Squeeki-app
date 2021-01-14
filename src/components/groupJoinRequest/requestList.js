@@ -5,12 +5,15 @@ import {
   Text,
   StyleSheet,
   Image,
+  TouchableOpacity,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const extractKey = ({user}) => user.id;
-export default class Leaderboard extends React.Component {
+const extractKey = ({id}) => id;
+
+export default class RequestList extends React.Component {
   state = {
     icon_option: 'emoticon-cool-outline',
   };
@@ -28,30 +31,14 @@ export default class Leaderboard extends React.Component {
   }
 
   renderItem = i => {
-    const {index, item} = i;
-    const {base_point, user} = item;
-    const {username, id, displayName, icon} = user;
+    const {item} = i;
+    const {username, displayName, id, icon, loading} = item;
     const {icon_option} = this.state;
-
-    const trophyColors = ['#f1bc12', '#bdc3c7', '#cd6133'];
-
+    const {onRespond} = this.props;
     return (
       <TouchableWithoutFeedback>
         <View style={styles.user}>
-          <View style={[styles.user, {paddingVertical: 0, width: '80%'}]}>
-            {index <= 2 ? (
-              <View style={styles.trophy}>
-                <MaterialIcons
-                  name={index == 0 ? 'trophy' : 'trophy-variant'}
-                  color={trophyColors[index]}
-                  size={40}
-                />
-              </View>
-            ) : (
-              <View style={[styles.trophy]}>
-                <Text>{index + 1}</Text>
-              </View>
-            )}
+          <View style={[styles.user, {paddingVertical: 0, width: '65%'}]}>
             <View style={styles.imgHolder}>
               {icon != null ? (
                 <Image source={{uri: icon.uri}} style={styles.icon} />
@@ -63,9 +50,38 @@ export default class Leaderboard extends React.Component {
               <Text style={{marginLeft: 4}}>{displayName}</Text>
             </View>
           </View>
-          <View
-            style={styles.pointContainer}>
-            <Text>{base_point}</Text>
+          <View style={styles.buttonsContainer}>
+            {loading == 'deny' ? (
+              <ActivityIndicator animating={true} />
+            ) : (
+              <TouchableOpacity onPress={() => onRespond(id, 'deny')}>
+                <View
+                  style={[
+                    styles.button,
+                    {
+                      borderWidth: StyleSheet.hairlineWidth,
+                      borderColor: 'grey',
+                    },
+                  ]}>
+                  <Text style={styles.buttonText}>Deny</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+            {loading == 'confirm' ? (
+              <ActivityIndicator animating={true} />
+            ) : (
+              <TouchableOpacity onPress={() => onRespond(id, 'confirm')}>
+                <View
+                  style={[
+                    styles.button,
+                    {backgroundColor: '#EA2027', marginRight: 10},
+                  ]}>
+                  <Text style={[styles.buttonText, {color: 'white'}]}>
+                    Confirm
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -73,8 +89,8 @@ export default class Leaderboard extends React.Component {
   };
 
   render() {
-    const {users, onEndReached} = this.props;
-
+    const {users, onEndReached, refreshing, onRefresh} = this.props;
+    console.log(users);
     return (
       <FlatList
         data={users}
@@ -84,6 +100,8 @@ export default class Leaderboard extends React.Component {
         renderItem={this.renderItem}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.1}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     );
   }
@@ -98,7 +116,7 @@ const styles = StyleSheet.create({
   },
   imgHolder: {
     aspectRatio: 1,
-    height: 40,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -110,16 +128,23 @@ const styles = StyleSheet.create({
   nameStyle: {
     justifyContent: 'center',
   },
-  trophy: {
-    width: 40,
-    height: 40,
-    marginRight: 5,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  pointContainer:{
-    width: '20%',
+  buttonsContainer: {
+    width: '35%',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+    flexDirection: 'row',
+  },
+  button: {
+    width: 60,
+    margin: 5,
+    borderRadius: 5,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    padding: 5,
+    fontWeight: '500',
+    fontSize: 13,
+  },
 });

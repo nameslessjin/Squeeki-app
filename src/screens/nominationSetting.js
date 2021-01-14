@@ -177,11 +177,9 @@ class NominationSetting extends React.Component {
       }
     }
 
-    console.log(type)
-
 
     if (nomination_name != null || points != null || period != null || type != null) {
-      console.log('here')
+
       let reward_point = 100
       let {nomination_name, period, points, type} = this.state;
       if (type == 'neutral'){

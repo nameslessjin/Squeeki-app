@@ -27,11 +27,14 @@ class EditTag extends React.Component {
     warning: '',
     create: false,
     tags: [],
+    prev_route: 'GroupSetting',
+    addedTags: []
   };
 
   componentDidMount() {
     const {navigation, route} = this.props;
     const {prev_route} = route.params;
+    this.setState({prev_route: prev_route});
 
     navigation.setOptions({
       headerBackTitleVisible: false,
@@ -44,8 +47,21 @@ class EditTag extends React.Component {
     const tag_name = searchTerm.substring(1).trim();
 
     // validation
-    const regex = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
+    if (group.group.tags.length >= 5) {
+      this.setState({warning: 'Every group can have max 5 tags'});
+      return;
+    }
+
+    const regex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
+
+    // had to add another else if for regex or it will just skip if there are two special characters
     if (tag_name.length < 3 || tag_name.length > 20 || regex.test(tag_name)) {
+      this.setState({
+        warning:
+          'Tag name must be length from 3 to 20 characters and does not contain special characters',
+      });
+      return;
+    } else if (regex.test(tag_name)) {
       this.setState({
         warning:
           'Tag name must be length from 3 to 20 characters and does not contain special characters',
@@ -187,7 +203,13 @@ class EditTag extends React.Component {
   };
 
   removeTagFromGroup = async tag => {
-    const {removeTagFromGroup, auth, group, userLogout, navigation} = this.props;
+    const {
+      removeTagFromGroup,
+      auth,
+      group,
+      userLogout,
+      navigation,
+    } = this.props;
     const request = {
       groupId: group.group.id,
       tag: tag,
@@ -209,8 +231,14 @@ class EditTag extends React.Component {
   };
 
   render() {
-    const {searchTerm, warning, create, tags} = this.state;
+    const {searchTerm, warning, create, tags, prev_route, addedTags} = this.state;
+    let tagList = []
     const {group} = this.props;
+    if (prev_route == 'GroupSetting'){
+      tagList = group.group.tags
+    } else {
+      tagList = addedTags
+    }
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -221,13 +249,15 @@ class EditTag extends React.Component {
           ) : null}
           <View style={styles.optionArea}>
             <TagSearchBar onChange={this.onSearchChange} value={searchTerm} />
-            <CreateTagButton onPress={this.onTagCreate} create={create} />
+            {prev_route == 'GroupSetting' ? (
+              <CreateTagButton onPress={this.onTagCreate} create={create} />
+            ) : null}
           </View>
 
-          {group.group.tags.length != 0 ? (
+          {tagList.length != 0 ? (
             <View style={{height: 45, width: '95%', justifyContent: 'center'}}>
               <TagList
-                groupTags={group.group.tags || []}
+                groupTags={tagList || []}
                 isSearch={false}
                 isGroupHeader={false}
                 onPress={this.removeTagFromGroup}
@@ -245,7 +275,7 @@ class EditTag extends React.Component {
               onEndReached={this.onloadMoreTags}
               isSearch={true}
               isGroupHeader={false}
-              groupTags={group.group.tags}
+              groupTags={tagList}
               onPress={this.addTagToGroup}
             />
           )}

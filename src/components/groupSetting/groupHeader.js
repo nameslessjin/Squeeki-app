@@ -144,6 +144,7 @@ class GroupSettingsHeader extends React.Component {
               maxLength={60}
               multiline={true}
               placeholder={'group name (min 6 chars)'}
+              placeholderTextColor={'#7f8fa6'}
               onChangeText={text => this.updateGroupname(text)}
               value={groupname}
               editable={auth_rank <= 1}
@@ -166,6 +167,7 @@ class GroupSettingsHeader extends React.Component {
               multiline={true}
               maxLength={120}
               placeholder={'Short description (min 20 chars) ...'}
+              placeholderTextColor={'#7f8fa6'}
               onChangeText={text => this.updateShortDescription(text)}
               value={shortDescription}
               style={{width: '100%', paddingLeft: -1}}

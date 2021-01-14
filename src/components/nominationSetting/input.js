@@ -74,6 +74,7 @@ export default class Input extends React.Component {
             style={styles.textInputStyle}
             value={value}
             placeholder={placeholder}
+            placeholderTextColor={'#7f8fa6'}
             onChangeText={t => onInputChange(type, t)}
             onFocus={!disabled ? moddleToggled : null}
           />

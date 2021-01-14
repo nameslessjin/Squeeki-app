@@ -61,7 +61,7 @@ export default class RewardSettingInput extends React.Component {
             onChangeText={t => onInputChange(type, t)}
             maxLength={type == 'chance' ? 3 : ( type == 'content' ? 100 : 40)}
             multiline={type == 'content'}
-
+            placeholderTextColor={'#7f8fa6'}
             placeholder={type == 'chance' ? '1, 4, 10, 15, 30 or 40' : null}
           />
           {type == 'chance' ? question_mark : null}

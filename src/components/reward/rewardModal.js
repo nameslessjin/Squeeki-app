@@ -8,8 +8,11 @@ import {
   Modal,
   KeyboardAvoidingView,
   Keyboard,
+  FlatList
 } from 'react-native';
 
+
+const extractKey = ({id}) => id;
 export default class RewardModal extends React.Component {
   state = {};
 
@@ -18,10 +21,10 @@ export default class RewardModal extends React.Component {
     onBackdropPress();
   };
 
-  showList = reward => {
-    const {name, rate} = reward;
+  renderItem = i => {
+    const {name, rate} = i.item;
     return (
-      <View style={[styles.reward, {marginTop: name == 'Diamond' ? 30 : 0}]}>
+      <View style={[styles.reward, {marginTop: name == 'Bronze' ? 30 : 0}]}>
         <Text style={{width: 100}}>{name}:</Text>
         <Text>{rate}</Text>
       </View>
@@ -31,12 +34,12 @@ export default class RewardModal extends React.Component {
   render() {
     const {modalVisible, onBackdropPress} = this.props;
     const reward_rate = [
-      {name: 'Diamond', rate: '1%'},
-      {name: 'Sapphire', rate: '4%'},
-      {name: 'Emerald', rate: '10%'},
-      {name: 'Gold', rate: '15%'},
-      {name: 'Silver', rate: '30%'},
-      {name: 'Bronze', rate: '40%'},
+      {id: '1', name: 'Bronze', rate: '40%'},
+      {id: '2', name: 'Silver', rate: '30%'},
+      {id: '3', name: 'Gold', rate: '15%'},
+      {id: '4', name: 'Emerald', rate: '10%'},
+      {id: '5', name: 'Sapphire', rate: '4%'},
+      {id: '6', name: 'Diamond', rate: '1%'},
     ];
 
     return (
@@ -47,7 +50,14 @@ export default class RewardModal extends React.Component {
               <TouchableWithoutFeedback>
                 <KeyboardAvoidingView style={styles.view}>
                   <View style={styles.reward_display}>
-                    {reward_rate.map(r => this.showList(r))}
+                    <FlatList
+                      data={reward_rate}
+                      renderItem={this.renderItem}
+                      alwaysBounceVertical={false}
+                      alwaysBounceHorizontal={false}
+                      showsVerticalScrollIndicator={false}
+                      keyExtractor={extractKey}
+                    />
                   </View>
                   <View style={styles.footer}>
                     <TouchableOpacity

@@ -116,6 +116,7 @@ export default class PostHeader extends React.Component {
           <View style={styles.reportTextInput}>
             <TextInput
               placeholder={'Reason to report ...'}
+              placeholderTextColor={'#7f8fa6'}
               style={{width: '100%'}}
               multiline={true}
               maxLength={100}

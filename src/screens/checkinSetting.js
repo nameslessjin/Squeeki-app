@@ -204,11 +204,11 @@ class CheckInSetting extends React.Component {
             value={post}
             onInputChange={this.onInputChange}
           />
-          <Input
+          {/* <Input
             type={'local'}
             value={isLocal}
             onInputChange={this.onInputChange}
-          />
+          /> */}
           <Input
             type={'password'}
             value={password}

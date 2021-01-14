@@ -306,6 +306,7 @@ class Comment extends React.Component {
                   {height: Math.max(35, inputHeight + 10)},
                 ]}
                 placeholder={'Add a comment ...'}
+                placeholderTextColor={'#7f8fa6'}
                 multiline={true}
                 maxLength={250}
                 onContentSizeChange={e =>

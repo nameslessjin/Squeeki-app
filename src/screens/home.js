@@ -106,8 +106,8 @@ class Home extends React.Component {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
-          {feed.count == 0 ? (
-            <Text style={styles.noPostStyle}>There are not any post yet</Text>
+          {feed.posts.length == 0 ? (
+            <Text style={styles.noPostStyle}>There is not any post yet</Text>
           ) : (
             <PostList
               posts={feed}

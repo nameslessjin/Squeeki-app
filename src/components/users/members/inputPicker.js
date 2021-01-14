@@ -32,6 +32,7 @@ export default class InputRankTitle extends React.Component {
         <TextInput
           style={styles.textInputContainer}
           placeholder={'rank'}
+          placeholderTextColor={'#7f8fa6'}
           value={rank.toString()}
           editable={allowToChangeRank}
           onFocus={() => onFocus()}

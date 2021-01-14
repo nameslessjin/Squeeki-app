@@ -6,7 +6,9 @@ import {
   updateGroupMutation,
   joinGroupMutation,
   leaveGroupMutation,
-  setGroupVisibilityMutation
+  setGroupVisibilityMutation,
+  getGroupJoinRequestQuery,
+  onRespondJoinRequestMutation
 } from './query/groupQuery';
 
 export const findUserGroupsByUserId = data => {
@@ -19,7 +21,7 @@ export const findUserGroupsByUserId = data => {
       }
     };
     // api request
-    const groups = await fetch('http://192.168.86.24:8080/graphql', {
+    const groups = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -58,7 +60,7 @@ export const getSingleGroupById = data => {
     };
 
     // api request
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -101,7 +103,7 @@ export const searchGroup = data => {
       },
     };
 
-    let groups = await fetch('http://192.168.86.24:8080/graphql', {
+    let groups = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -140,7 +142,7 @@ export const createGroup = data => {
       iconData.append('fileData', icon.data);
       iconData.append('fileCategory', 'icons');
 
-      const iconFetch = await fetch('http://192.168.86.24:8080/uploadImage', {
+      const iconFetch = await fetch('http://squeeki.appspot.com/uploadImage', {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
@@ -174,7 +176,7 @@ export const createGroup = data => {
       backgroundImgData.append('fileCategory', 'backgroundImgs');
 
       const backgroundImgFetch = await fetch(
-        'http://192.168.86.24:8080/uploadImage',
+        'http://squeeki.appspot.com/uploadImage',
         {
           method: 'POST',
           headers: {
@@ -217,7 +219,7 @@ export const createGroup = data => {
     };
 
     // api request
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -259,7 +261,7 @@ export const updateGroup = data => {
       iconData.append('fileData', icon.data);
       iconData.append('fileCategory', 'icons');
 
-      const iconFetch = await fetch('http://192.168.86.24:8080/uploadImage', {
+      const iconFetch = await fetch('http://squeeki.appspot.com/uploadImage', {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
@@ -291,7 +293,7 @@ export const updateGroup = data => {
       backgroundImgData.append('fileCategory', 'backgroundImgs');
 
       const backgroundImgFetch = await fetch(
-        'http://192.168.86.24:8080/uploadImage',
+        'http://squeeki.appspot.com/uploadImage',
         {
           method: 'POST',
           headers: {
@@ -342,7 +344,7 @@ export const updateGroup = data => {
     };
 
     // api request
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -374,7 +376,7 @@ export const joinGroup = data => {
       },
     };
 
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -413,7 +415,7 @@ export const leaveGroup = data => {
       },
     };
 
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -444,7 +446,7 @@ export const setGroupVisibility = data => {
       }
     }
 
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -461,6 +463,38 @@ export const setGroupVisibility = data => {
 
     dispatch(changeGroupVisibility());
     return 0
+  }
+}
+
+export const getGroupJoinRequest = data => {
+  const {token, groupId, count} = data
+  return async function(dispatch){
+    const input = {
+      count: count,
+      groupId: groupId
+    }
+    const graphql = {
+      query: getGroupJoinRequestQuery,
+      variables: {
+        input: input
+      }
+    }
+
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+    return result.data.getGroupJoinRequest;
   }
 }
 
@@ -487,5 +521,42 @@ const getPosts = data => {
 export const cleanGroup = () => {
   return {
     type: 'cleanGroup'
+  }
+}
+
+export const onRespondJoinRequest = data => {
+  const {token, groupId, requesterId, type} = data
+
+  return async function(dispatch) {
+    const input = {
+      groupId: groupId,
+      requesterId: requesterId,
+      type: type
+    }
+
+    const graphql = {
+      query: onRespondJoinRequestMutation,
+      variables: {
+        input: input
+      }
+    }
+
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    return 0;
+
   }
 }

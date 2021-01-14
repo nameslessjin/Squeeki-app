@@ -100,7 +100,6 @@ class UserSearch extends React.Component {
       groupId: group.id,
       navigation: navigation,
       userLogout: userLogout,
-      // count: init ? 0 : user.members.count,
       count: init ? 0 : user.members.count,
       getGroupMembers: getGroupMembers,
       userIdList: userIdList,
@@ -370,8 +369,6 @@ class UserSearch extends React.Component {
     if (prev_route == 'PostSetting' && usersData.length == 0) {
       userList = user.members.members;
     }
-
-    console.log(prev_route)
 
     let search_view = (
       <KeyboardAvoidingView style={styles.container}>

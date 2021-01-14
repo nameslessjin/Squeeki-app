@@ -1,6 +1,9 @@
 export const createTagMutation = `
 mutation createTag($CreateTagInput: CreateTagInput!){
-    createTag(input: $CreateTagInput)
+    createTag(input: $CreateTagInput){
+        id
+        tag_name
+    }
 }
 
 `;

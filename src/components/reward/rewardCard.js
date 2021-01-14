@@ -114,7 +114,7 @@ export default class RewardCard extends React.Component {
               style={{
                 marginVertical: 3,
                 backgroundColor:
-                  route == 'history' ? null : hide ? 'black' : null,
+                  (route == 'history' || route == 'reward') ? null : (hide ? 'black' : null),
               }}>
               {content}
             </Text>

@@ -19,6 +19,7 @@ export default class InputContent extends React.Component {
           multiline={true}
           maxLength={250}
           placeholder={"What's in your mind..."}
+          placeholderTextColor={'#7f8fa6'}
           value={content}
           onChangeText={v => modifyInput(v, 'content')}
           onFocus={onKeyboardInputFocus}

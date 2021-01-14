@@ -10,6 +10,7 @@ export default class GroupCreationTextInput extends React.Component {
         return(
             <TextInput
                 placeholder={placeholder}
+                placeholderTextColor={'#7f8fa6'}
                 value={value}
                 multiline={multiline}
                 maxLength={maxLength}

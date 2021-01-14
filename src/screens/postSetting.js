@@ -21,6 +21,7 @@ import NominationButton from '../components/postSetting/nominationButton';
 import {getSundays} from '../utils/time';
 import PostSettingModal from '../components/postSetting/postSettingModal';
 import {getUserGroupPoint} from '../actions/point';
+import {getSingleGroupById} from '../actions/group'
 
 class PostSetting extends React.Component {
   state = {
@@ -148,6 +149,28 @@ class PostSetting extends React.Component {
         this.getUserGroupPoint();
       }
     }
+  }
+
+  getGroup = async () => {
+    const {group, auth, getSingleGroupById, navigation, userLogout} = this.props
+    const request = {
+      token: auth.token,
+      id: group.group.id
+    }
+
+    const req = await getSingleGroupById(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+
   }
 
   getUserGroupPoint = async () => {
@@ -586,6 +609,7 @@ const mapDispatchToProps = dispatch => {
     updatePost: data => dispatch(updatePost(data)),
     userLogout: () => dispatch(userLogout()),
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
+    getSingleGroupById: data => dispatch(getSingleGroupById(data))
   };
 };
 

@@ -10,6 +10,7 @@ import {TouchableOpacity, StyleSheet, Text} from 'react-native';
 import {DrawerActions} from '@react-navigation/native';
 import HeaderLeftButton from '../components/home/headerLeft';
 import Groups from '../screens/groups';
+import Terms from '../screens/terms'
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {connect} from 'react-redux';
 import {changeScreen} from '../actions/screen';
@@ -103,6 +104,7 @@ class HomeDrawerNavigator extends React.Component {
         <Drawer.Screen name="Home" component={Home}/>
         <Drawer.Screen name="Groups" component={Groups}/>
         <Drawer.Screen name="Profile" component={Profile}/>
+        <Drawer.Screen name="Terms" component={Terms}/>
       </Drawer.Navigator>
     );
   }

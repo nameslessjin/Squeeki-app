@@ -19,7 +19,7 @@ export const getGroupPosts = data => {
       groupId: groupId,
       count: count
     }
-    console.log(input)
+
     const graphql = {
       query: getGroupPostsQuery,
       variables: {
@@ -27,7 +27,7 @@ export const getGroupPosts = data => {
       },
     };
 
-    const groupPosts = await fetch('http://192.168.86.24:8080/graphql', {
+    const groupPosts = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -63,7 +63,7 @@ export const getFeed = data => {
       }
     };
 
-    const feed = await fetch('http://192.168.86.24:8080/graphql', {
+    const feed = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -77,7 +77,7 @@ export const getFeed = data => {
       return feedData;
     }
 
-    console.log(getFeedData(feedData.data.getFeed))
+
     dispatch(getFeedData(feedData.data.getFeed));
 
     return 0;
@@ -101,7 +101,7 @@ export const getPost = data => {
       },
     };
 
-    const post = await fetch('http://192.168.86.24:8080/graphql', {
+    const post = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -139,7 +139,7 @@ export const createPost = data => {
       imageData.append('fileData', image.data);
       imageData.append('fileCategory', 'postImgs');
 
-      const imagePost = await fetch('http://192.168.86.24:8080/uploadImage', {
+      const imagePost = await fetch('http://squeeki.appspot.com/uploadImage', {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
@@ -186,7 +186,7 @@ export const createPost = data => {
       },
     };
 
-    const post = await fetch('http://192.168.86.24:8080/graphql', {
+    const post = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -225,7 +225,7 @@ export const updatePost = data => {
       imageData.append('fileData', image.data);
       imageData.append('fileCategory', 'postImgs');
 
-      const imagePost = await fetch('http://192.168.86.24:8080/uploadImage', {
+      const imagePost = await fetch('http://squeeki.appspot.com/uploadImage', {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
@@ -297,7 +297,7 @@ export const updatePost = data => {
     }
 
 
-    const post = await fetch('http://192.168.86.24:8080/graphql', {
+    const post = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -334,7 +334,7 @@ export const deletePost = data => {
       }
     }
 
-    const post = await fetch('http://192.168.86.24:8080/graphql', {
+    const post = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -374,7 +374,7 @@ export const likePost = data => {
       }
     }
 
-    const post = await fetch('http://192.168.86.24:8080/graphql', {
+    const post = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -405,7 +405,7 @@ export const changePostNotification = data => {
       }
     }
 
-    const notification = await fetch('http://192.168.86.24:8080/graphql', {
+    const notification = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -441,7 +441,7 @@ export const reportPost = data => {
       }
     }
 
-    const report = await fetch('http://192.168.86.24:8080/graphql', {
+    const report = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -479,7 +479,7 @@ export const getNominationPost = request => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -516,7 +516,7 @@ export const getGroupPostForCheckIn = request => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

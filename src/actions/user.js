@@ -6,7 +6,7 @@ import {
   searchUserQuery,
   addMembersMutation,
   deleteMemberMutation,
-  makeOwnerMutation
+  makeOwnerMutation,
 } from './query/userQuery';
 import {getGroup} from './group';
 
@@ -29,7 +29,7 @@ export const getGroupMembers = data => {
     };
 
 
-    const groupMembers = await fetch('http://192.168.86.24:8080/graphql', {
+    const groupMembers = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -92,7 +92,7 @@ export const updateMember = data => {
       },
     };
 
-    const updateMember = await fetch('http://192.168.86.24:8080/graphql', {
+    const updateMember = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -125,7 +125,7 @@ export const changeGroupNotification = data => {
       },
     };
 
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -161,7 +161,7 @@ export const registerDeviceForNotification = data => {
       },
     };
 
-    const userNotification = await fetch('http://192.168.86.24:8080/graphql', {
+    const userNotification = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -198,7 +198,7 @@ export const searchUser = data => {
         searchUserInput: searchUserInput,
       },
     };
-    let users = await fetch('http://192.168.86.24:8080/graphql', {
+    let users = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -233,7 +233,7 @@ export const addMembers = data => {
       },
     };
 
-    let users = await fetch('http://192.168.86.24:8080/graphql', {
+    let users = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -261,7 +261,7 @@ export const deleteMember = data => {
       },
     };
 
-    let users = await fetch('http://192.168.86.24:8080/graphql', {
+    let users = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -291,7 +291,7 @@ export const makeOwner = data => {
     }
 
 
-    let mutation = await fetch('http://192.168.86.24:8080/graphql', {
+    let mutation = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

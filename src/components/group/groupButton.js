@@ -4,7 +4,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class groupButton extends React.Component {
   render() {
-    const {auth, method, onNotificationPress, onAddPost} = this.props;
+    const {
+      auth,
+      method,
+      onNotificationPress,
+      onAddPost,
+      join_requested
+    } = this.props;
 
     const joinButton = (
       <TouchableOpacity style={styles.joinButton} onPress={method}>
@@ -12,18 +18,20 @@ export default class groupButton extends React.Component {
       </TouchableOpacity>
     );
 
+    const request_send = (
+      <TouchableOpacity style={[styles.joinButton, {backgroundColor: 'grey', width: 100}]} disabled={true}>
+        <Text style={[styles.text, {fontSize: 13}]}>Request sent</Text>
+      </TouchableOpacity>
+    );
+
     const createButton = (
       <TouchableOpacity onPress={onAddPost}>
-        <MaterialIcons
-          name={'plus'}
-          size={50}
-          color={'#EA2027'}
-        />
+        <MaterialIcons name={'plus'} size={50} color={'#EA2027'} />
       </TouchableOpacity>
     );
 
     const button =
-      auth == null ? (
+      auth == null ? join_requested ? (request_send) : (
         joinButton
       ) : (
         <View style={styles.authorizedUserButton}>

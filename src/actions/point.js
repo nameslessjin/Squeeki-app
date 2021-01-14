@@ -11,7 +11,7 @@ export const getUserGroupPoint = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -58,7 +58,7 @@ export const getGroupPointLeaderBoard = request => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -72,7 +72,7 @@ export const getGroupPointLeaderBoard = request => {
     if (result.errors) {
       return result;
     }
-    console.log(result.data.getGroupPointLeaderBoard)
+
     dispatch(getGroupPointLeaderBoardReducer(result.data.getGroupPointLeaderBoard))
 
     return 0;

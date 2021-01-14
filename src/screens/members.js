@@ -23,11 +23,17 @@ class Users extends React.Component {
     });
   };
 
+  onJoinRequestPress = () => {
+    const {navigation} = this.props
+    // go to join request page
+    navigation.navigate('GroupJoinRequest')
+  }
+
   componentDidMount() {
     const {navigation, group} = this.props;
     const button =
       group.group.auth.rank <= 2 ? (
-        <AddButton onPress={this.onPress} />
+        <AddButton onPress={this.onPress} onJoinRequestPress={this.onJoinRequestPress} />
       ) : null;
     navigation.setOptions({
       headerRight: () => button,

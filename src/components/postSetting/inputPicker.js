@@ -100,6 +100,7 @@ export default class InputPicker extends React.Component {
         <Text style={styles.header}>{header}</Text>
         <TextInput
           style={styles.textInputContainer}
+          placeholderTextColor={'#7f8fa6'}
           placeholder={header}
           value={display_text}
           onFocus={() => onInputFocus(type)}

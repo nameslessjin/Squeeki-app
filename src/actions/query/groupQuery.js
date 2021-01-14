@@ -46,6 +46,7 @@ query getGroup($groupId: ID!){
             use_count
         }
         memberCount
+        join_requested
         visibility
         createdAt
     }
@@ -169,6 +170,7 @@ mutation joinGroup($groupId: ID!){
                 use_count
             }
             visibility
+            join_requested
             memberCount
             createdAt
         }
@@ -214,5 +216,29 @@ mutation leaveGroup($groupId: ID!){
 export const setGroupVisibilityMutation = `
 mutation setGroupVisibility($groupId: ID!){
     setGroupVisibility(groupId: $groupId)
+}
+`
+
+export const getGroupJoinRequestQuery = `
+query getGroupJoinRequest($input: joinRequestInput!){
+    getGroupJoinRequest(input: $input){
+        users {
+            id
+            username
+            displayName
+            icon{
+                uri
+                width
+                height
+            }
+        }
+        count
+    }
+}
+`
+
+export const onRespondJoinRequestMutation = `
+mutation onRespondJoinRequest($input: RespondJoinRequestInput!){
+    onRespondJoinRequest(input: $input)
 }
 `

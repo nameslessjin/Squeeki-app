@@ -144,8 +144,8 @@ class Group extends React.Component {
               onAddPost={this.onAddPost}
             />
           ) : null}
-          {this.props.post.groupPosts.count == 0 && auth != null ? (
-            <Text style={styles.noPostStyle}>There are not any post yet</Text>
+          {post.groupPosts.posts.length == 0 && auth != null ? (
+            <Text style={styles.noPostStyle}>There is not any post yet</Text>
           ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

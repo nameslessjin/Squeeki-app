@@ -52,7 +52,6 @@ class Leaderboard extends React.Component {
       period: period,
     };
 
-    console.log(data)
     loadLeaderBoardFunc(data);
   };
 
@@ -69,9 +68,6 @@ class Leaderboard extends React.Component {
       <TouchableWithoutFeedback>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
-          {/* <View>
-              <Text>Button 1</Text>
-          </View> */}
           <View style={styles.leaderboard}>
             <LeaderboardList users={users} onEndReached={this.onEndReached} />
           </View>

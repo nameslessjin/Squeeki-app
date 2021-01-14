@@ -68,7 +68,9 @@ export default class HeaderImageBackground extends React.Component {
       groupMethod,
       loading,
       onNotificationPress,
-      onAddPost
+      onAddPost,
+      visibility,
+      join_requested
     } = this.props;
 
     const {background_text_sequence, material_icon} = this.state;
@@ -125,6 +127,8 @@ export default class HeaderImageBackground extends React.Component {
               method={groupMethod}
               onNotificationPress={onNotificationPress}
               onAddPost={onAddPost}
+              join_requested={join_requested}
+
             />
           )}
         </View>

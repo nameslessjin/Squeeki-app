@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux'
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { dateConversion } from '../../../utils/time'
 
 class MemberCard extends React.Component {
 
@@ -37,7 +38,8 @@ class MemberCard extends React.Component {
 
   render() {
     const {item, navigation} = this.props;
-    const {id, username, displayName, auth, icon} = item;
+    const {id, username, displayName, auth, icon, lastActiveAt} = item;
+    const time = dateConversion(lastActiveAt)
     const { icon_option} = this.state
     let displayNameSize = 14;
     if (displayName.length > 20) {
@@ -66,6 +68,7 @@ class MemberCard extends React.Component {
             {displayName}
           </Text>
           <Text numberOfLines={2} style={styles.title}>{"<" + auth.title.charAt(0).toUpperCase() + auth.title.slice(1) + '>'}</Text>
+          <Text style={{color: 'grey', fontSize: 11, marginTop: 3}} >Last seen: {time}</Text>
         </View>
       </TouchableWithoutFeedback>
     );

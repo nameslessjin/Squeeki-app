@@ -30,7 +30,7 @@ export const loadGroupRewardsFunc = async data => {
     }
 }
 
-export const extractReward = (rewards, redeemed_gift_card_count) => {
+export const extractReward = (rewards, remaining_gift_card_count) => {
 
     const rarity1 = rewards.filter(r => r.chance == 1)
     const rarity4 = rewards.filter(r => r.chance == 4)
@@ -38,7 +38,7 @@ export const extractReward = (rewards, redeemed_gift_card_count) => {
     const rarity15 = rewards.filter(r => r.chance == 15)
     const rarity30 = rewards.filter(r => r.chance == 30)
     const rarity40 = rewards.filter(r => r.chance == 40)
-
+    // console.log(redeemed_gift_card_count)
     const sys_reward = [
         {
             id: 'point_4',
@@ -106,7 +106,7 @@ export const extractReward = (rewards, redeemed_gift_card_count) => {
         {
             title: 'Diamond',
             id: '1',
-            data: (redeemed_gift_card_count > 0) ? [sys_reward[5]] : rarity1.concat([sys_reward[5]])
+            data: (remaining_gift_card_count > 0) ? rarity1.concat([sys_reward[5]]) : rarity1
         },
         {
             title: 'Sapphire',

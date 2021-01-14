@@ -71,6 +71,7 @@ export default class Input extends React.Component {
             keyboardType={type == 'duration' ? 'numeric' : null}
             onChangeText={t => onInputChange(type, t)}
             placeholder={type == 'password' ? 'Optional' : type == 'duration' ? '1 to 3000' : 'Check-in name'}
+            placeholderTextColor={'#7f8fa6'}
             maxLength={type == 'name' ? 40 : 30}
           />
         </View>

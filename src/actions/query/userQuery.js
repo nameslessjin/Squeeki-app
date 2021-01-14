@@ -15,7 +15,7 @@ query getGroupMembers($input: GetGroupMembersInput!){
                 height
             }
             createdAt
-            lastLoginAt
+            lastActiveAt
         }
         count
     }

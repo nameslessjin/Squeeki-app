@@ -158,10 +158,12 @@ export default class RewardList extends React.Component {
   };
 
   render() {
-    const {rewards, onEndReached, route, redeemed_gift_card_count} = this.props;
+    const {rewards, onEndReached, route, remaining_gift_card_count} = this.props;
     const {option} = this.state;
     const redeemed = option == 'redeemed';
-    let sections = extractReward(rewards, redeemed_gift_card_count);
+ 
+    console.log(this.props)
+    let sections = extractReward(rewards, remaining_gift_card_count);
     const options = {
       title: 'options',
       id: '0',

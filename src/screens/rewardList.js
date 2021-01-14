@@ -60,7 +60,6 @@ class RewardList extends React.Component {
       }
       return;
     }
-
     this.setState({remaining_gift_card_count: req})
   }
 
@@ -101,6 +100,7 @@ class RewardList extends React.Component {
     const {reward, group} = this.props;
     const {rewards} = reward;
     const {modalVisible, remaining_gift_card_count} = this.state
+    // console.log(remaining_gift_card_count)
 
     return (
       <View>

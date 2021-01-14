@@ -22,7 +22,7 @@ export const searchTag = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const createTag = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -71,6 +71,11 @@ export const createTag = request => {
       return result;
     }
 
+    const tag = {
+      ...result.data.createTag,
+      use_count: 1,
+    };
+    dispatch(addTagToGroupReducer(tag));
     return 0;
   };
 };
@@ -91,7 +96,7 @@ export const addTagToGroup = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -139,7 +144,7 @@ export const removeTagFromGroup = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

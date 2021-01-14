@@ -50,6 +50,11 @@ import Leaderboard from './src/screens/leaderboard';
 import RewardTabNavigator from './src/navigators/rewardTabNavigator';
 import RewardSetting from './src/screens/rewardSetting'
 import RewardHistory from './src/screens/rewardHistory'
+import GroupJoinRequest from './src/screens/groupJoinRequest'
+import TermDisplay from './src/screens/termDisplay'
+import Terms from './src/screens/terms'
+
+
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -162,6 +167,9 @@ export default (App = () => {
             />
             <Stack.Screen name="RewardSetting" component={RewardSetting}/>
             <Stack.Screen name="RewardHistory" component={RewardHistory}/>
+            <Stack.Screen name="GroupJoinRequest" component={GroupJoinRequest}/>
+            <Stack.Screen name="Terms" component={Terms}/>
+            <Stack.Screen name="TermDisplay" component={TermDisplay}/>
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

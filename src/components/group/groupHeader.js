@@ -25,7 +25,7 @@ const extractKey = ({key}) => key;
 class GroupHeader extends React.Component {
   state = {
     loading: false,
-    notificationToggled: false,
+    notificationToggled: false
   };
 
   // join button method / setting method
@@ -70,6 +70,7 @@ class GroupHeader extends React.Component {
   ];
 
   joinGroup = async () => {
+    // check if group is private or not.  If not join right away.  If yes, request to join
     const {id} = this.props.group.group;
     const {token} = this.props.auth;
     const {joinGroup, navigation} = this.props;
@@ -89,7 +90,13 @@ class GroupHeader extends React.Component {
         });
       }
     }
-    navigation.navigate('GroupNavigator');
+
+    // if joined result is true then navigate to group page or change button to requested
+    if (result){
+      navigation.navigate('GroupNavigator');
+    } else {
+      // nothing
+    }
   };
 
   onBackdropPress = () => {
@@ -135,8 +142,9 @@ class GroupHeader extends React.Component {
       auth,
       visibility,
       tags,
+      join_requested
     } = this.props.item;
-    const {point} = this.props;
+    const {point, onAddPost} = this.props;
     let {total_point, base_point_semester, leaderboard} = point;
     const {users} = leaderboard;
     const {container, underImageStyle, component} = styles;
@@ -159,7 +167,9 @@ class GroupHeader extends React.Component {
               onBackdropPress={this.onBackdropPress}
               onNotificationPress={this.onNotificationPress}
               user={this.props.auth.user}
-              onAddPost={this.props.onAddPost}
+              onAddPost={onAddPost}
+              visibility={visibility}
+              join_requested={join_requested}
             />
 
             <View style={underImageStyle}>

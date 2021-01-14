@@ -41,7 +41,7 @@ export const createCheckIn = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -76,7 +76,7 @@ export const getGroupCheckIn = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -127,7 +127,7 @@ export const userCheckIn = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -166,7 +166,7 @@ export const deleteCheckIn = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -211,7 +211,7 @@ export const getGroupCheckInResult = request => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -256,7 +256,7 @@ export const userCheckInBatch = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch('http://squeeki.appspot.com/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

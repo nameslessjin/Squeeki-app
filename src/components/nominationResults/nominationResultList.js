@@ -60,12 +60,11 @@ export default class NominationResultsList extends React.Component {
     const {time} = item;
 
     const {year, month, date} = getFormalTime(parseInt(time) * 1000000);
-    // console.log(time)
+
     const {last_sunday, next_sunday} = getSundays(parseInt(time) * 1000000);
     const this_sunday = getSundays().next_sunday;
     const {list} = item;
 
-    // console.log(next_sunday)
     const most_recent =
       Math.floor(this_sunday.getTime() / 1000) ==
       Math.floor(next_sunday.getTime() / 1000);
