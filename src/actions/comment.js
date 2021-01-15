@@ -12,7 +12,7 @@ export const getComments = data => {
     };
 
 
-    const commentData = await fetch('http://squeeki.appspot.com/graphql', {
+    const commentData = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -56,7 +56,7 @@ export const createComment = data => {
           }
       }
 
-      const commentPost = await fetch('http://squeeki.appspot.com/graphql', {
+      const commentPost = await fetch('http://192.168.86.24:8080/graphql', {
           method: 'POST',
           headers: {
               Authorization: 'Bearer ' + token,
@@ -94,7 +94,7 @@ export const likeComment = request => {
       }
     }
 
-    const req = await fetch('http://squeeki.appspot.com/graphql', {
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -126,7 +126,7 @@ export const deleteComment = request => {
       }
     }
 
-    const req = await fetch('http://squeeki.appspot.com/graphql', {
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -171,7 +171,7 @@ export const reportComment = request => {
       }
     }
 
-    const req = await fetch('http://squeeki.appspot.com/graphql', {
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
