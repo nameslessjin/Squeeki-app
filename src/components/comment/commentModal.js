@@ -47,9 +47,10 @@ export default class CommentModal extends React.Component {
   };
 
   render() {
-    const {modalVisible, comment_uid, userId} = this.props;
+    const {modalVisible, comment_uid, userId, postOwner} = this.props;
     const {is_report_toggled, report_content, onReport} = this.state;
     const owner = comment_uid == userId;
+    const post_owner = postOwner.id == userId
 
     const report_interface = (
       <TouchableWithoutFeedback>
@@ -112,7 +113,8 @@ export default class CommentModal extends React.Component {
                       </View>
                     </TouchableOpacity>
                   )}
-                  {owner ? (
+                  {post_owner ? <View style={styles.underline} /> : null}
+                  {owner || post_owner ? (
                     <TouchableOpacity onPress={() => this.onPress('delete')}>
                       <View style={styles.button}>
                         <Text>Delete</Text>
@@ -166,6 +168,7 @@ const styles = StyleSheet.create({
   underline: {
     width: 300,
     borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'silver'
   },
   button: {
     width: 300,

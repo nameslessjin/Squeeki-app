@@ -9,12 +9,12 @@ export default class CommentList extends React.Component {
   renderItem = ({item}) => {
 
     const {onCommentLike, onOptionToggle} = this.props
-
+  
     if (item.id) {
       if (item.type) {
         return <CommentPost post={item} option={false} />;
       }
-      return <CommentCard comment={item} onCommentLike={onCommentLike} onOptionToggle={onOptionToggle} />;
+      return <CommentCard comment={item} onCommentLike={onCommentLike} onOptionToggle={onOptionToggle}/>;
     }
     return;
   };

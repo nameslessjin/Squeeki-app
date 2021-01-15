@@ -339,6 +339,7 @@ class Comment extends React.Component {
             modalVisible={modalVisible}
             onBackdropPress={this.onBackdropPress}
             comment_uid={comment_uid}
+            postOwner={post.user}
             userId = {this.props.auth.user.id}
             onCommentDelete={this.onCommentDelete}
             onCommentReport={this.onCommentReport}
