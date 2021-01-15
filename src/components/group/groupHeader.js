@@ -118,7 +118,7 @@ class GroupHeader extends React.Component {
           },
         ]}
         onPress={() => this.changeNotification(item.value)}>
-        <Text style={{color: item.key == '-1' ? 'red' : null}}>
+        <Text style={{color: item.key == '-1' ? 'red' : 'black'}}>
           {item.label}
         </Text>
       </TouchableOpacity>
