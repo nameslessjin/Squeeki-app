@@ -6,14 +6,12 @@ const INITIAL_STATE = {
 };
 
 export default (commentReducer = (state = INITIAL_STATE, action) => {
-  let comments = state.comments;
-
   switch (action.type) {
     case 'loadComments':
       return {
         ...state,
         comments: {
-          comments: state.comments.comments.concat(action.comments.comments),
+          comments: action.comments.count == 10 ? action.comments.comments : state.comments.comments.concat(action.comments.comments),
           count: action.comments.count,
         },
       };

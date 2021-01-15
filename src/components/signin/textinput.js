@@ -26,6 +26,7 @@ export default class SignInTextInput extends React.Component {
         onChangeText={this.onChangeText}
         placeholderTextColor={'#7f8fa6'}
         secureTextEntry={secureTextEntry}
+        autoCorrect={false}
         autoCapitalize={'none'}
       />
     );

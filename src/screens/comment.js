@@ -27,8 +27,8 @@ import {getCommentsFunc} from '../functions/comment';
 import CommentList from '../components/comment/commentList';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommentModal from '../components/comment/commentModal';
-import { getSundays } from '../utils/time'
-import { getUserGroupPoint } from '../actions/point'
+import {getSundays} from '../utils/time';
+import {getUserGroupPoint} from '../actions/point';
 
 class Comment extends React.Component {
   componentDidMount() {
@@ -42,9 +42,9 @@ class Comment extends React.Component {
   }
 
   componentWillUnmount() {
-    const {group} = this.props.group
-    if (group.id != null){
-      this.getUserGroupPoint()
+    const {group} = this.props.group;
+    if (group.id != null) {
+      this.getUserGroupPoint();
     }
     this.props.cleanComment();
   }
@@ -60,16 +60,16 @@ class Comment extends React.Component {
     sent: false,
     modalVisible: false,
     comment_uid: '',
-    commentId: ''
+    commentId: '',
   };
 
-  getUserGroupPoint = async() => {
-    const {group, auth, getUserGroupPoint, navigation, userLogout } = this.props
+  getUserGroupPoint = async () => {
+    const {group, auth, getUserGroupPoint, navigation, userLogout} = this.props;
 
     const request = {
       token: auth.token,
-      groupId: group.group.id
-    }
+      groupId: group.group.id,
+    };
 
     const req = await getUserGroupPoint(request);
     if (req.errors) {
@@ -83,8 +83,7 @@ class Comment extends React.Component {
       }
       return;
     }
-
-  }
+  };
 
   getPostComment = async init => {
     const {getPost, getComments, navigation, userLogout} = this.props;
@@ -149,11 +148,11 @@ class Comment extends React.Component {
 
   onCommentDelete = async () => {
     const {navigation, auth, deleteComment} = this.props;
-    const {commentId} = this.state
+    const {commentId} = this.state;
     const request = {
       token: auth.token,
-      commentId: commentId
-    }
+      commentId: commentId,
+    };
 
     const req = await deleteComment(request);
     if (req.errors) {
@@ -168,18 +167,17 @@ class Comment extends React.Component {
       return;
     }
 
-    this.onBackdropPress()
+    this.onBackdropPress();
+  };
 
-  }
-
-  onCommentReport = async (content) => {
-    const {navigation, auth, reportComment} = this.props
-    const {commentId} = this.state
+  onCommentReport = async content => {
+    const {navigation, auth, reportComment} = this.props;
+    const {commentId} = this.state;
     const request = {
       token: auth.token,
       commentId: commentId,
-      content: content.trim()
-    }
+      content: content.trim(),
+    };
 
     const req = await reportComment(request);
     if (req.errors) {
@@ -193,8 +191,7 @@ class Comment extends React.Component {
       }
       return;
     }
-
-  }
+  };
 
   onEndReached = () => {
     this.setState({loading: true});
@@ -253,11 +250,11 @@ class Comment extends React.Component {
   };
 
   onOptionToggle = data => {
-    const {commentId, userId} = data
+    const {commentId, userId} = data;
     this.setState({
       modalVisible: true,
       comment_uid: userId,
-      commentId: commentId
+      commentId: commentId,
     });
     Keyboard.dismiss();
   };
@@ -278,11 +275,11 @@ class Comment extends React.Component {
       newComment,
       sent,
       modalVisible,
-      comment_uid
+      comment_uid,
     } = this.state;
     const disabled = newComment.trim().length == 0;
 
-    getSundays()
+    getSundays();
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
@@ -334,16 +331,17 @@ class Comment extends React.Component {
               )}
             </View>
           ) : null}
-
-          <CommentModal
-            modalVisible={modalVisible}
-            onBackdropPress={this.onBackdropPress}
-            comment_uid={comment_uid}
-            postOwner={post.user}
-            userId = {this.props.auth.user.id}
-            onCommentDelete={this.onCommentDelete}
-            onCommentReport={this.onCommentReport}
-          />
+          {modalVisible ? (
+            <CommentModal
+              modalVisible={modalVisible}
+              onBackdropPress={this.onBackdropPress}
+              comment_uid={comment_uid}
+              postOwner={post.user}
+              userId={this.props.auth.user.id}
+              onCommentDelete={this.onCommentDelete}
+              onCommentReport={this.onCommentReport}
+            />
+          ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );
@@ -374,7 +372,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
     paddingTop: 10,
-    
   },
 });
 
@@ -392,7 +389,7 @@ const mapDispatchToProps = dispatch => {
     likeComment: data => dispatch(likeComment(data)),
     deleteComment: data => dispatch(deleteComment(data)),
     reportComment: data => dispatch(reportComment(data)),
-    getUserGroupPoint: data => dispatch(getUserGroupPoint(data))
+    getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
   };
 };
 

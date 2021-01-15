@@ -38,15 +38,15 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>You can use your camera to take a photo and attach it to a post</string>
+	<string>You can use your camera to take a photo and attach it to a post or set it to icon and background</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>You can use your camera to take a video and attach it to a post</string>
+	<string>You can use your camera to take a video and attach it to a post or set it to icon and background</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery to choose pictures</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>You can chhose a photo from your library and attach it to a post</string>
+	<string>You can chhose a photo from your library and attach it to a post or set it to icon and background</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Jellee-Roman.ttf</string>

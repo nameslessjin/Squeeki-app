@@ -206,11 +206,14 @@ class PostCard extends React.Component {
       }
     }
 
-    if (liked == true) {
-      this.setState({liked: false, likeCount: likeCount - 1});
-    } else {
-      this.setState({liked: true, likeCount: likeCount + 1});
-    }
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        liked: !prevState.liked,
+        likeCount: prevState.liked ? prevState.likeCount - 1 : prevState.likeCount + 1
+      }
+    })
+
   };
 
   toggleModal = () => {

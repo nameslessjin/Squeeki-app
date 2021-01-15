@@ -42,6 +42,8 @@ mutation createComment($commentInput: CommentInput!){
                     height
                 }
             }
+            likeCount
+            liked
         }
         count
     }

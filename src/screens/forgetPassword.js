@@ -75,6 +75,7 @@ class ForgetPassword extends React.Component {
     navigation.setOptions({
       headerTitle: 'Forget Password',
       headerRight: () => button,
+      headerBackTitleVisible: false
     });
   }
 

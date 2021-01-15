@@ -16,8 +16,9 @@ export default class CommentCard extends React.Component {
     icon_option: 'emoticon-cool-outline',
     comment: this.props.comment,
     loading: false,
-    likeCount: this.props.comment.likeCount,
-    liked: this.props.comment.liked,
+    // likeCount: this.props.comment.likeCount,
+    // liked: this.props.comment.liked,
+    ...this.props.comment
   };
 
   componentDidMount() {
@@ -40,18 +41,20 @@ export default class CommentCard extends React.Component {
     await onCommentLike(comment.id);
     this.setState({loading: false});
 
-    if (liked) {
-      this.setState({liked: false, likeCount: likeCount - 1});
-    } else {
-      this.setState({liked: true, likeCount: likeCount + 1});
-    }
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        liked: !prevState.liked,
+        likeCount: prevState.liked ? prevState.likeCount - 1 : prevState.likeCount + 1
+      }
+    })
   };
 
   onOptionToggle = () => {
-    const {user, id} = this.state.comment
-    const {onOptionToggle} = this.props
-    onOptionToggle({commentId: id, userId: user.id})
-  }
+    const {user, id} = this.state.comment;
+    const {onOptionToggle} = this.props;
+    onOptionToggle({commentId: id, userId: user.id});
+  };
 
   render() {
     const {comment, icon_option, loading, liked, likeCount} = this.state;
@@ -186,5 +189,5 @@ const styles = StyleSheet.create({
   },
   iconSeparation: {
     marginLeft: 10,
-  }
+  },
 });
