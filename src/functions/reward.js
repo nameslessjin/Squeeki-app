@@ -94,7 +94,7 @@ export const extractReward = (rewards, remaining_gift_card_count) => {
             id: 'giftcard',
             from: 'system',
             type: 'giftcard',
-            content: 'Win a giftcard from Chipotle, Panera, Starbuck, Dokin Donut or Chick fil a.  Limited quanlity per month.',
+            content: 'Win a giftcard from Chipotle, Panera, Starbuck, Dunkin Donuts or Chick fil a.  Limited quanlity per month.',
             name: 'Monthly giftcard',
             chance: 1,
             hide: false,

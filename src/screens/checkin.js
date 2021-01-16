@@ -17,7 +17,7 @@ import {
 import {userLogout} from '../actions/auth';
 import CheckinList from '../components/checkin/checkinList';
 import CheckinModal from '../components/checkin/checkinModal';
-import { getUserGroupPoint } from '../actions/point'
+import {getUserGroupPoint} from '../actions/point';
 
 class CheckIn extends React.Component {
   state = {
@@ -48,18 +48,17 @@ class CheckIn extends React.Component {
   }
 
   componentWillUnmount() {
-    this.getUserGroupPoint()
+    this.getUserGroupPoint();
     this.props.cleanCheckIn();
-
   }
 
-  getUserGroupPoint = async() => {
-    const {group, auth, getUserGroupPoint, navigation, userLogout } = this.props
+  getUserGroupPoint = async () => {
+    const {group, auth, getUserGroupPoint, navigation, userLogout} = this.props;
 
     const request = {
       token: auth.token,
-      groupId: group.group.id
-    }
+      groupId: group.group.id,
+    };
 
     const req = await getUserGroupPoint(request);
     if (req.errors) {
@@ -73,8 +72,7 @@ class CheckIn extends React.Component {
       }
       return;
     }
-
-  }
+  };
 
   onHeaderRightButtonPress = () => {
     const {navigation} = this.props;
@@ -160,6 +158,14 @@ class CheckIn extends React.Component {
           routes: [{name: 'SignIn'}],
         });
       }
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          checkin: prevState.checkin.map(c =>
+            c.id == checkin_id ? {...c, checked: false} : c,
+          ),
+        };
+      });
       return;
     }
   };
@@ -185,15 +191,14 @@ class CheckIn extends React.Component {
     }
   };
 
-  onResultPress = (data) => {
-      const { checkin_id, userId } = data
-      const {navigation} = this.props
-      navigation.navigate('CheckInResult', {
-          checkin_id: checkin_id,
-          userId: userId
-
-      })
-  }
+  onResultPress = data => {
+    const {checkin_id, userId} = data;
+    const {navigation} = this.props;
+    navigation.navigate('CheckInResult', {
+      checkin_id: checkin_id,
+      userId: userId,
+    });
+  };
 
   render() {
     const {checkin, modalVisible, refresh, checkin_id} = this.state;
@@ -237,7 +242,7 @@ const mapDispatchToProps = dispatch => {
     cleanCheckIn: () => dispatch(cleanCheckIn()),
     userCheckIn: data => dispatch(userCheckIn(data)),
     deleteCheckIn: data => dispatch(deleteCheckIn(data)),
-    getUserGroupPoint: data => dispatch(getUserGroupPoint(data))
+    getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
   };
 };
 
