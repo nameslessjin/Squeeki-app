@@ -55,7 +55,7 @@ export default class Leaderboard extends React.Component {
         showsVerticalScrollIndicator={false}
         renderItem={this.renderItem}
         onEndReached={() => onEndReached(option)}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0}
       />
     );
   }

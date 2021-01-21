@@ -19,7 +19,8 @@ import {changeGroupNotification} from '../../actions/user';
 import {userLogout} from '../../actions/auth';
 import TagList from '../tags/tagList';
 import {pointFormat} from '../../utils/point';
-import { cleanLeaderboard } from '../../actions/point'
+import { getGroupPointLeaderBoard } from '../../actions/point'
+import { loadLeaderBoardFunc } from '../../functions/point'
 import { getSemester, getFormalTime } from '../../utils/time'
 
 const extractKey = ({key}) => key;
@@ -128,9 +129,31 @@ class GroupHeader extends React.Component {
 
   onLeaderboardPress = () => {
     const {cleanLeaderboard, navigation} = this.props
-    cleanLeaderboard()
+
     navigation.navigate('Leaderboard')
   }
+
+  loadLeaderBoard = (period) => {
+    const {
+      userLogout,
+      auth,
+      getGroupPointLeaderBoard,
+      navigation,
+      group,
+    } = this.props;
+    const data = {
+      userLogout: userLogout,
+      auth: auth,
+      getGroupPointLeaderBoard: getGroupPointLeaderBoard,
+      navigation: navigation,
+      group: group,
+      count: 0,
+      limit: 20,
+      period: period,
+    };
+
+    loadLeaderBoardFunc(data);
+  };
 
   render() {
     const {
@@ -368,7 +391,8 @@ const mapDispatchToProps = dispatch => {
     userLogout: () => dispatch(userLogout()),
     joinGroup: data => dispatch(joinGroup(data)),
     changeGroupNotification: data => dispatch(changeGroupNotification(data)),
-    cleanLeaderboard: () => dispatch(cleanLeaderboard())
+    cleanLeaderboard: () => dispatch(cleanLeaderboard()),
+    getGroupPointLeaderBoard: data => dispatch(getGroupPointLeaderBoard(data)),
   };
 };
 

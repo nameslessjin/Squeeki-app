@@ -18,13 +18,14 @@ class Leaderboard extends React.Component {
     loading: false,
   };
 
+
+
   componentDidMount() {
     const {navigation} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
     });
 
-    this.loadLeaderBoard(true, 'month');
   }
 
   componentWillUnmount() {
@@ -57,7 +58,6 @@ class Leaderboard extends React.Component {
 
   onEndReached = (period) => {
     this.setState({loading: true});
-    console.log(period)
     this.loadLeaderBoard(false, period);
     this.setState({loading: false});
   };
