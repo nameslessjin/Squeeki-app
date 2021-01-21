@@ -66,6 +66,16 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
       <DrawerItem
+        label="Rules"
+        icon={() => (
+          <MaterialIcons name="script-text" color={'grey'} size={25} />
+        )}
+        labelStyle={styles.labelStyle}
+        // onPress={() => {
+        //   props.navigation.navigate('Members');
+        // }}
+      />
+      <DrawerItem
         label="Members"
         icon={() => (
           <MaterialIcons name="account-group" color={'grey'} size={25} />

@@ -17,24 +17,36 @@ export default (postReducer = (state = INITIAL_STATE, action) => {
   let reconstructed_posts = [];
   switch (action.type) {
     case 'getGroupPosts':
-      reconstructed_posts = reconstructPostsInReducer(action.data.posts)
+      reconstructed_posts = reconstructPostsInReducer(action.data.posts);
+      console.log(action.data.count);
       return {
         ...state,
         groupPosts: {
           count: action.data.count,
-          posts: action.data.count == 10? reconstructed_posts: groupPosts.posts.concat(reconstructed_posts)
-        }
-      }
+          posts:
+            action.data.count > 10 &&
+            action.data.count == state.groupPosts.count
+              ? state.groupPosts.posts
+              : action.data.count == 10
+              ? reconstructed_posts
+              : groupPosts.posts.concat(reconstructed_posts),
+        },
+      };
 
     case 'getFeed':
-      reconstructed_posts = reconstructPostsInReducer(action.data.posts)
+      reconstructed_posts = reconstructPostsInReducer(action.data.posts);
       return {
         ...state,
         feed: {
           count: action.data.count,
-          posts: action.data.count == 10 ? reconstructed_posts : feed.posts.concat(reconstructed_posts)
-        }
-      }
+          posts:
+            action.data.count > 10 && action.data.count == state.feed.count
+              ? state.feed.posts
+              : action.data.count == 10
+              ? reconstructed_posts
+              : feed.posts.concat(reconstructed_posts),
+        },
+      };
 
     case 'updatePost':
       feedPost = feed.posts.map(post => {
@@ -83,8 +95,8 @@ export default (postReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         groupPosts: {
-            ...INITIAL_STATE.groupPosts
-        }
+          ...INITIAL_STATE.groupPosts,
+        },
       };
     case 'logout':
       return {

@@ -16,7 +16,7 @@ import {getGroupPostsFunc} from '../functions/post';
 import {loadLeaderBoardFunc} from '../functions/point';
 import {userLogout} from '../actions/auth';
 import {cleanGroup, findUserGroupsByUserId} from '../actions/group';
-import { getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point'
+import {getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point';
 import {invalidAuthentication} from '../functions/auth';
 
 class Group extends React.Component {
@@ -29,17 +29,14 @@ class Group extends React.Component {
     const {groupname, visibility, auth} = this.props.group.group;
     const {navigation, group} = this.props;
 
-
     navigation.setOptions({
       headerTitle: groupname,
-      headerBackTitleVisible: false
+      headerBackTitleVisible: false,
     });
 
     if (visibility == 'public' || auth != null) {
-      this.setState({loading: true});
       this.loadGroupPosts(true);
-      this.loadLeaderBoard()
-      this.setState({loading: false});
+      this.loadLeaderBoard();
     }
 
     Keyboard.dismiss();
@@ -51,7 +48,13 @@ class Group extends React.Component {
   }
 
   loadGroups = async init => {
-    const {findUserGroupsByUserId, navigation, userLogout, auth, group} = this.props;
+    const {
+      findUserGroupsByUserId,
+      navigation,
+      userLogout,
+      auth,
+      group,
+    } = this.props;
     const groupsData = await findUserGroupsByUserId({
       token: auth.token,
       count: init ? 0 : group.groups.count,
@@ -65,7 +68,13 @@ class Group extends React.Component {
   };
 
   loadLeaderBoard = () => {
-    const { userLogout, auth, getGroupPointLeaderBoard, navigation, group } = this.props
+    const {
+      userLogout,
+      auth,
+      getGroupPointLeaderBoard,
+      navigation,
+      group,
+    } = this.props;
     const data = {
       userLogout: userLogout,
       auth: auth,
@@ -74,12 +83,11 @@ class Group extends React.Component {
       group: group,
       count: 0,
       limit: 3,
-      period: 'month'
-    }
+      period: 'month',
+    };
 
-    loadLeaderBoardFunc(data)
-
-  }
+    loadLeaderBoardFunc(data);
+  };
 
   onAddPost = () => {
     const {navigation} = this.props;
@@ -93,24 +101,30 @@ class Group extends React.Component {
   onEndReached = () => {
     const {visibility, auth} = this.props.group.group;
     if (visibility == 'public' || auth != null) {
-      this.setState({loading: true});
       this.loadGroupPosts(false);
-      this.setState({loading: false});
     }
   };
 
   onRefresh = () => {
     const {visibility, auth} = this.props.group.group;
     if (visibility == 'public' || auth != null) {
-    this.setState({refreshing: true});
-    this.loadLeaderBoard()
-    this.loadGroupPosts(true);
-    this.setState({refreshing: false});
+      this.setState({refreshing: true});
+      this.loadLeaderBoard();
+      this.loadGroupPosts(true);
+      this.setState({refreshing: false});
     }
   };
 
-  loadGroupPosts = init => {
-    const {navigation, getGroupPosts, userLogout, getUserGroupPoint, auth, group, post} = this.props;
+  loadGroupPosts = async init => {
+    const {
+      navigation,
+      getGroupPosts,
+      userLogout,
+      getUserGroupPoint,
+      auth,
+      group,
+      post,
+    } = this.props;
     const data = {
       token: auth.token,
       groupId: group.group.id,
@@ -119,14 +133,18 @@ class Group extends React.Component {
       userLogout: userLogout,
       getUserGroupPoint: getUserGroupPoint,
       count: init ? 0 : post.groupPosts.count,
-      init: init
+      init: init,
     };
-    getGroupPostsFunc(data);
+    console.log(post.groupPosts.count);
+    this.setState({loading: true});
+    await getGroupPostsFunc(data);
+    this.setState({loading: false});
   };
 
   render() {
     const {group, post, navigation, point} = this.props;
     const {visibility, auth} = group.group;
+    const {loading, refreshing} = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -140,13 +158,14 @@ class Group extends React.Component {
               navigation={navigation}
               onEndReached={this.onEndReached}
               onRefresh={this.onRefresh}
-              refreshing={this.state.refreshing}
+              refreshing={refreshing}
               onAddPost={this.onAddPost}
             />
           ) : null}
           {post.groupPosts.posts.length == 0 && auth != null ? (
             <Text style={styles.noPostStyle}>There is not any post yet</Text>
           ) : null}
+          {loading ? <ActivityIndicator animating={loading} /> : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

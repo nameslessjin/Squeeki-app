@@ -4,6 +4,7 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   FlatList,
+  StatusBar,
   Text,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -15,10 +16,10 @@ export default class Terms extends React.Component {
   };
 
   componentDidMount() {
-    const {navigation} = this.props
+    const {navigation} = this.props;
     navigation.setOptions({
-      headerBackTitleVisible: false
-    })
+      headerBackTitleVisible: false,
+    });
   }
 
   renderItem = i => {
@@ -35,18 +36,19 @@ export default class Terms extends React.Component {
     );
   };
 
-  loadTerm = (name) => {
-    const {navigation} = this.props
-    navigation.navigate("TermDisplay", {
-        name: name
-    })
-  }
+  loadTerm = name => {
+    const {navigation} = this.props;
+    navigation.navigate('TermDisplay', {
+      name: name,
+    });
+  };
 
   render() {
     const {terms} = this.state;
     return (
       <TouchableWithoutFeedback>
         <View style={styles.container}>
+          <StatusBar barStyle={'dark-content'} />
           <FlatList
             data={terms}
             alwaysBounceHorizontal={false}
@@ -75,7 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 50,
     alignItems: 'center',
-    borderBottomColor: 'silver'
+    borderBottomColor: 'silver',
   },
   text: {
     fontSize: 15,

@@ -11,7 +11,13 @@ export default (commentReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         comments: {
-          comments: action.comments.count == 10 ? action.comments.comments : state.comments.comments.concat(action.comments.comments),
+          comments:
+            action.comments.count > 10 &&
+            action.comments.count == state.comments.count
+              ? state.comments.comments
+              : action.comments.count == 10
+              ? action.comments.comments
+              : state.comments.comments.concat(action.comments.comments),
           count: action.comments.count,
         },
       };
@@ -29,9 +35,11 @@ export default (commentReducer = (state = INITIAL_STATE, action) => {
         ...state,
         comments: {
           ...state.comments,
-          comments: state.comments.comments.filter(comment => comment.id != action.commentId)
-        }
-      }
+          comments: state.comments.comments.filter(
+            comment => comment.id != action.commentId,
+          ),
+        },
+      };
 
     case 'cleanComment':
       return {

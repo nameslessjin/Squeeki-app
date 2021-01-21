@@ -20,6 +20,7 @@ import {userLogout} from '../../actions/auth';
 import TagList from '../tags/tagList';
 import {pointFormat} from '../../utils/point';
 import { cleanLeaderboard } from '../../actions/point'
+import { getSemester, getFormalTime } from '../../utils/time'
 
 const extractKey = ({key}) => key;
 class GroupHeader extends React.Component {
@@ -29,11 +30,11 @@ class GroupHeader extends React.Component {
   };
 
   // join button method / setting method
-  groupMethod = () => {
+  groupMethod = async() => {
     const {auth} = this.props.item;
     if (auth == null) {
       this.setState({loading: true});
-      this.joinGroup();
+      await this.joinGroup();
       this.setState({loading: false});
     }
   };
@@ -153,6 +154,11 @@ class GroupHeader extends React.Component {
 
     const total_point_display = pointFormat(total_point);
     const base_point_semester_display = pointFormat(base_point_semester);
+    const { semester_begin, semester_end } = getSemester()
+    const begin_month = semester_begin.getMonth() + 1
+    const begin_date = semester_begin.getDate()
+    const end_month = semester_end.getMonth() + 1
+    const end_date = semester_end.getDate()
 
     return (
       <TouchableWithoutFeedback>
@@ -199,6 +205,9 @@ class GroupHeader extends React.Component {
                   </Text>
                   <Text style={{fontSize: 9, color: 'grey'}}>
                     Semester Base: {base_point_semester_display}
+                  </Text>
+                  <Text style={{fontSize: 9, color: 'grey'}}>
+                    {begin_month + '/' + begin_date + '-' + end_month + '/' + end_date}
                   </Text>
                 </View>
               ) : null}

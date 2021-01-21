@@ -8,7 +8,8 @@ import {
   leaveGroupMutation,
   setGroupVisibilityMutation,
   getGroupJoinRequestQuery,
-  onRespondJoinRequestMutation
+  onRespondJoinRequestMutation,
+  setGroupRequestToJoinMutation
 } from './query/groupQuery';
 
 export const findUserGroupsByUserId = data => {
@@ -130,7 +131,7 @@ export const searchGroup = data => {
 // };
 
 export const createGroup = data => {
-  const {groupname, shortDescription, backgroundImg, icon, token, visibility} = data;
+  const {groupname, shortDescription, backgroundImg, icon, token, visibility, request_to_join} = data;
 
   return async function(dispatch) {
     let groupIcon = null;
@@ -208,7 +209,8 @@ export const createGroup = data => {
       shortDescription: shortDescription,
       backgroundImg: groupBackgroundImg,
       icon: groupIcon,
-      visibility: visibility
+      visibility: visibility,
+      request_to_join
     };
 
     const graphQl = {
@@ -466,6 +468,37 @@ export const setGroupVisibility = data => {
   }
 }
 
+
+export const setGroupRequestToJoin = data => {
+  const {groupId, token} = data;
+  return async function(dispatch){
+    const graphql = {
+      query: setGroupRequestToJoinMutation,
+      variables: {
+        groupId: groupId,
+      }
+    }
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors){
+      return result;
+    }
+
+    dispatch(changeGroupRequestToJoin());
+    return 0
+  }
+}
+
 export const getGroupJoinRequest = data => {
   const {token, groupId, count} = data
   return async function(dispatch){
@@ -501,6 +534,12 @@ export const getGroupJoinRequest = data => {
 const changeGroupVisibility = () => {
   return {
     type: 'changeGroupVisibility',
+  }
+}
+
+const changeGroupRequestToJoin = () => {
+  return {
+    type: 'changeGroupRequestToJoin',
   }
 }
 

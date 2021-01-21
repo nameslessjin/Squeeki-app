@@ -3,14 +3,19 @@ const INITIAL_STATE = {
   group: {},
 };
 
-export default groupReducer = (state = INITIAL_STATE, action) => {
+export default (groupReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case 'getUserGroups':
       return {
         ...state,
         groups: {
           count: action.data.count,
-          groups: action.data.count == 10 ? action.data.groups : state.groups.groups.concat(action.data.groups)
+          groups:
+            action.data.count > 10 && action.data.count == state.groups.count
+              ? state.groups.groups
+              : action.data.count == 10
+              ? action.data.groups
+              : state.groups.groups.concat(action.data.groups),
         },
       };
 
@@ -46,6 +51,14 @@ export default groupReducer = (state = INITIAL_STATE, action) => {
         group: {
           ...state.group,
           visibility: state.group.visibility == 'public' ? 'private' : 'public',
+        },
+      };
+    case 'changeGroupRequestToJoin':
+      return {
+        ...state,
+        group: {
+          ...state.group,
+          request_to_join: state.group.request_to_join ? false : true,
         },
       };
     case 'cleanGroup':
@@ -87,10 +100,10 @@ export default groupReducer = (state = INITIAL_STATE, action) => {
     case 'addTagToGroup':
       return {
         ...state,
-        group:{
+        group: {
           ...state.group,
-          tags: state.group.tags.concat(action.tag)
-        }
+          tags: state.group.tags.concat(action.tag),
+        },
       };
 
     case 'removeTagFromGroup':
@@ -98,11 +111,11 @@ export default groupReducer = (state = INITIAL_STATE, action) => {
         ...state,
         group: {
           ...state.group,
-          tags: state.group.tags.filter(t => t.id != action.tag.id)
-        }
+          tags: state.group.tags.filter(t => t.id != action.tag.id),
+        },
       };
 
     default:
       return state;
   }
-};
+});

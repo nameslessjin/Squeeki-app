@@ -20,7 +20,9 @@ export default (pointReducer = (state = INITIAL_STATE, action) => {
         ...state,
         leaderboard: {
           users:
-            action.i.count == 3
+            action.i.count > 20 && action.i.count == state.leaderboard.count
+              ? state.leaderboard.users
+              : action.i.count == 3 || action.i.count == 20
               ? action.i.users
               : state.leaderboard.users.concat(action.i.users),
           count: action.i.count,
@@ -29,10 +31,10 @@ export default (pointReducer = (state = INITIAL_STATE, action) => {
     case 'cleanLeaderboard':
       return {
         ...state,
-        leaderboard:{
-          ...INITIAL_STATE.leaderboard
-        }
-      }
+        leaderboard: {
+          ...INITIAL_STATE.leaderboard,
+        },
+      };
 
     case 'logout':
       return {

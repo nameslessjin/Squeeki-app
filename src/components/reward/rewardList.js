@@ -162,7 +162,6 @@ export default class RewardList extends React.Component {
     const {option} = this.state;
     const redeemed = option == 'redeemed';
  
-    console.log(this.props)
     let sections = extractReward(rewards, remaining_gift_card_count);
     const options = {
       title: 'options',

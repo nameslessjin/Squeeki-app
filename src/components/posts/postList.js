@@ -62,7 +62,7 @@ export default class PostList extends React.Component {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps={'handled'}
         onEndReached={() => onEndReached()}
-        onEndReachedThreshold={0.2}
+        onEndReachedThreshold={0.3}
         onRefresh={onRefresh}
         refreshing={refreshing}
       />

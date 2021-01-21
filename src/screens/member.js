@@ -15,6 +15,7 @@ import {connect} from 'react-redux';
 import InputRankTitle from '../components/users/members/inputRankTitle';
 import ModifyButton from '../components/users/members/modifyButton';
 import {updateMember, deleteMember, makeOwner} from '../actions/user';
+import {getSingleGroupById} from '../actions/group';
 import {userLogout} from '../actions/auth';
 import {getGroupMembers} from '../actions/user';
 import {getGroupMembersFunc} from '../functions/user';
@@ -48,9 +49,8 @@ class Member extends React.Component {
           loading={false}
         />
       ),
-      headerBackTitleVisible: false
+      headerBackTitleVisible: false,
     });
-
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -72,7 +72,35 @@ class Member extends React.Component {
 
   componentWillUnmount() {
     this.loadGroupMembers();
+    this.getGroup()
   }
+
+  getGroup = async () => {
+    const {
+      group,
+      auth,
+      userLogout,
+      navigation,
+      getSingleGroupById,
+    } = this.props;
+    const request = {
+      token: auth.token,
+      id: group.group.id,
+    };
+
+    const req = await getSingleGroupById(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+  };
 
   loadGroupMembers = () => {
     const {navigation, getGroupMembers, auth, group, userLogout} = this.props;
@@ -371,6 +399,7 @@ const mapDispatchToProps = dispatch => {
     userLogout: () => dispatch(userLogout()),
     deleteMember: data => dispatch(deleteMember(data)),
     makeOwner: data => dispatch(makeOwner(data)),
+    getSingleGroupById: data => dispatch(getSingleGroupById(data))
   };
 };
 

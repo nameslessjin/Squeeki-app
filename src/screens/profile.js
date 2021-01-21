@@ -10,6 +10,7 @@ import {
   Image,
   ActivityIndicator,
   StatusBar,
+  View
 } from 'react-native';
 import {updateProfile, userLogout} from '../actions/auth';
 import {connect} from 'react-redux';
@@ -219,6 +220,9 @@ class Profile extends React.Component {
               <MaterialIcons name={icon_option} size={100} />
             )}
           </TouchableOpacity>
+          <View style={{marginTop: 10}}>
+            <Text style={{color: 'grey'}}>{username}</Text>
+          </View>
 
           <UserTextInput
             type={'DisplayName'}

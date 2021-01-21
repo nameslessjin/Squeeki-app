@@ -113,3 +113,78 @@ export const timeDifferentInMandS = (time) => {
     
     return {day: day, hour: hour, minute: minute, second: second}
 }
+
+export const getSemester = (time) => {
+    let input = time || Date.now();
+    const today = new Date(input);
+    const year = today.getUTCFullYear();
+    const prev_year = year - 1;
+  
+    let period = new Date();
+    period.setUTCFullYear(year);
+    period.setUTCMonth(0);
+    period.setUTCDate(0);
+    period.setUTCHours(0);
+    period.setUTCMinutes(0);
+    period.setUTCSeconds(0);
+    period.setUTCMilliseconds(0);
+    input = new Date(input);
+    input.setUTCHours(1);
+    input.setUTCMinutes(0);
+    input.setUTCSeconds(0);
+    input.setUTCMilliseconds(0);
+    input = input.getTime();
+  
+    // 1-15 to 8-15 then 8-15 to 1-15
+    let begin = null;
+    let end = null;
+  
+    // 1-15
+    let offset = 16 * 24 * 60 * 60;
+    const prev_year_time = (prev_year % 4 == 0 ? 366 : 365) * 24 * 60 * 60;
+    const current_year_time = (year % 4 == 0 ? 366 : 365) * 24 * 60 * 60;
+    const diff_to_begin = Math.floor((today - period) / 1000);
+  
+  
+    // 8-15
+    const begin_offset =
+      ((prev_year % 4 == 0 ? 366 : 365) - 15 - 30 - 31 - 30 - 31) * 24 * 60 * 60;
+  
+    if (diff_to_begin < offset) {
+      begin = new Date(
+        (Math.floor(input / 1000) -
+          diff_to_begin -
+          prev_year_time +
+          begin_offset) *
+          1000
+      );
+      end = new Date((Math.floor(input / 1000) - diff_to_begin + offset) * 1000);
+    } else if (diff_to_begin >= offset  &&  diff_to_begin < begin_offset){
+      begin = new Date(
+        (Math.floor(input / 1000) - diff_to_begin + offset) * 1000
+      );
+      end = new Date(
+        (Math.floor(input / 1000) - diff_to_begin + begin_offset) *
+          1000
+      );
+    } else if (diff_to_begin >= begin_offset){
+      begin = new Date(
+        (Math.floor(input / 1000) - diff_to_begin + begin_offset) * 1000
+      );
+      end = new Date(
+        (Math.floor(input / 1000) - diff_to_begin + current_year_time + offset) *
+          1000
+      );
+    }
+    
+    begin.setUTCHours(1);
+    begin.setUTCMinutes(0);
+    begin.setUTCSeconds(0);
+    begin.setUTCMilliseconds(0);
+    end.setUTCHours(1);
+    end.setUTCMinutes(0);
+    end.setUTCSeconds(0);
+    end.setUTCMilliseconds(0);
+  
+    return { semester_begin: begin, semester_end: end };
+  };

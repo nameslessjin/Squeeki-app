@@ -29,30 +29,23 @@ class Groups extends React.Component {
       currentScreen.currentScreen == 'Groups' &&
       prevScreen.currentScreen != 'Groups'
     ) {
-      // this.findGroups(null);
-      this.setState({loading: true})
       this.loadGroups(true);
-      this.setState({loading: false})
     }
     Keyboard.dismiss();
   }
 
   onEndReached = async () => {
-    this.setState({loading: true});
-
     this.loadGroups(false);
-    this.setState({loading: false});
   };
 
   onRefresh = () => {
-    this.setState({refreshing: true});
     this.loadGroups(true);
-    this.setState({refreshing: false});
   };
 
   loadGroups = async init => {
     const {findUserGroupsByUserId, navigation, userLogout, group, auth} = this.props;
 
+    this.setState({loading: true})
     const groupsData = await findUserGroupsByUserId({
       token: auth.token,
       count: init ? 0 : group.groups.count,
@@ -69,6 +62,7 @@ class Groups extends React.Component {
       }
       return;
     }
+    this.setState({loading: false})
   };
 
   render() {
@@ -94,7 +88,7 @@ class Groups extends React.Component {
               refreshing={this.state.refreshing}
             />
           )}
-          {loading ? <ActivityIndicator animating={true} /> : null}
+          {loading ? <ActivityIndicator animating={loading} /> : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

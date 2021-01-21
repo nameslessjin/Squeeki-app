@@ -23,7 +23,7 @@ export default class GroupList extends React.Component {
         keyExtractor={extractKey}
         alwaysBounceHorizontal={false}
         onEndReached= {onEndReached}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0.5}
         onRefresh={onRefresh}
         refreshing={refreshing}
         keyboardShouldPersistTaps={'handled'}

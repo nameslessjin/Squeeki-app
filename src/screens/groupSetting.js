@@ -14,11 +14,15 @@ import {connect} from 'react-redux';
 import GroupHeader from '../components/groupSetting/groupHeader';
 import UpdateButton from '../components/groupSetting/updateButton';
 import validator from 'validator';
-import {updateGroup, setGroupVisibility} from '../actions/group';
+import {
+  updateGroup,
+  setGroupVisibility,
+  setGroupRequestToJoin,
+  getSingleGroupById,
+} from '../actions/group';
 import {userLogout} from '../actions/auth';
-import VisibilitySetting from '../components/groupSetting/visibilitySetting';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import SettingEdition from '../components/groupSetting/settingEdition'
+import ToggleSetting from '../components/groupSetting/toggleSetting';
+import SettingEdition from '../components/groupSetting/settingEdition';
 
 class GroupSetting extends React.Component {
   state = {
@@ -26,6 +30,7 @@ class GroupSetting extends React.Component {
     ...this.props.group.group,
     updateData: {},
     loading: false,
+    type: 'visibility',
   };
 
   componentDidMount() {
@@ -39,7 +44,7 @@ class GroupSetting extends React.Component {
           loading={this.state.loading}
         />
       ),
-      headerBackTitleVisible: false
+      headerBackTitleVisible: false,
     });
   }
 
@@ -124,6 +129,37 @@ class GroupSetting extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.getGroup();
+  }
+
+  getGroup = async () => {
+    const {
+      group,
+      auth,
+      userLogout,
+      navigation,
+      getSingleGroupById,
+    } = this.props;
+    const request = {
+      token: auth.token,
+      id: group.group.id,
+    };
+
+    const req = await getSingleGroupById(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+  };
+
   updateGroupSettings = async () => {
     const {updateData, origin} = this.extractData();
     const {navigation, userLogout} = this.props;
@@ -160,18 +196,30 @@ class GroupSetting extends React.Component {
     });
   };
 
-  onVisibilitySwitchToggle = async () => {
-    const {visibility, id} = this.state;
-    const {navigation, userLogout} = this.props;
-    const data = {
+  onSwitchToggle = async type => {
+    const {id} = this.state;
+    const {
+      navigation,
+      userLogout,
+      setGroupRequestToJoin,
+      setGroupVisibility,
+    } = this.props;
+    const request = {
       groupId: id,
       token: this.props.auth.token,
     };
 
-    const updateVisibility = await this.props.setGroupVisibility(data);
-    if (updateVisibility.errors) {
-      alert(updateVisibility.errors[0].message);
-      if (updateGroup.errors[0].message == 'Not Authenticated') {
+    this.setState({loading: true, type: type});
+    let req = 0;
+    if (type == 'visibility') {
+      req = await setGroupVisibility(request);
+    } else if (type == 'request_to_join') {
+      req = await setGroupRequestToJoin(request);
+    }
+
+    if (req.errors) {
+      alert(req.errors[0].message);
+      if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
           index: 0,
@@ -180,31 +228,45 @@ class GroupSetting extends React.Component {
       }
       return;
     }
-    if (visibility == 'public') {
-      this.setState({visibility: 'private'});
-    } else {
-      this.setState({visibility: 'public'});
-    }
+
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        loading: false,
+        visibility:
+          type == 'visibility'
+            ? prevState.visibility == 'public'
+              ? 'private'
+              : 'public'
+            : prevState.visibility,
+        request_to_join:
+          type == 'request_to_join'
+            ? prevState.request_to_join
+              ? false
+              : true
+            : prevState.request_to_join,
+      };
+    });
   };
 
   onNominationCreationPress = () => {
-    const {navigation} = this.props
-    const { id } = this.state
+    const {navigation} = this.props;
+    const {id} = this.state;
     navigation.navigate('Nomination', {
       prev_route: 'GroupSetting',
       groupId: id,
-    })
-  }
+    });
+  };
 
   onEditTagPress = () => {
-    const {navigation} = this.props
+    const {navigation} = this.props;
     navigation.navigate('Tags', {
-      prev_route: 'GroupSetting'
-    })
-  }
+      prev_route: 'GroupSetting',
+    });
+  };
 
   render() {
-    const {visibility} = this.state;
+    const {visibility, loading, request_to_join, type} = this.state;
     const auth_in_group = this.props.group.group.auth;
     const auth_rank = auth_in_group ? auth_in_group.rank : 7;
 
@@ -219,14 +281,27 @@ class GroupSetting extends React.Component {
             auth_rank={auth_rank}
           />
 
-          <VisibilitySetting
-            visibility={visibility}
-            onVisibilitySwitchToggle={this.onVisibilitySwitchToggle}
+          <ToggleSetting
+            on={visibility}
             disabled={auth_rank > 1}
+            loading={type == 'visibility' ? loading : false}
+            onToggle={this.onSwitchToggle}
+            type={'visibility'}
           />
 
-          <SettingEdition onPress={this.onNominationCreationPress} name={"Edit nominations"}/>
-          <SettingEdition onPress={this.onEditTagPress} name={"Edit tags"}/>
+          <ToggleSetting
+            on={request_to_join}
+            disabled={auth_rank > 1}
+            loading={type == 'request_to_join' ? loading : false}
+            onToggle={this.onSwitchToggle}
+            type={'request_to_join'}
+          />
+
+          <SettingEdition
+            onPress={this.onNominationCreationPress}
+            name={'Edit nominations'}
+          />
+          <SettingEdition onPress={this.onEditTagPress} name={'Edit tags'} />
 
           <ActivityIndicator
             style={{marginTop: 30}}
@@ -257,6 +332,8 @@ const mapDispatchToProps = dispatch => {
     updateGroup: data => dispatch(updateGroup(data)),
     userLogout: () => dispatch(userLogout()),
     setGroupVisibility: data => dispatch(setGroupVisibility(data)),
+    setGroupRequestToJoin: data => dispatch(setGroupRequestToJoin(data)),
+    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
   };
 };
 

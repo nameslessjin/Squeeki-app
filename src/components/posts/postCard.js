@@ -36,6 +36,7 @@ class PostCard extends React.Component {
   };
 
   onPostDelete = () => {
+    // this.setState({modalToggled: false})
     Alert.alert('Delete post', 'Do you want to delete this post?', [
       {
         text: 'Cancel',

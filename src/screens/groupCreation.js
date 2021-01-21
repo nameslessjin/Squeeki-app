@@ -6,16 +6,15 @@ import {
   ActivityIndicator,
   Keyboard,
   Platform,
-  StatusBar
+  StatusBar,
 } from 'react-native';
 import GroupCreationButton from '../components/groupSetting/createButton';
 import {createGroup} from '../actions/group';
 import {connect} from 'react-redux';
 import GroupHeader from '../components/groupSetting/groupHeader';
 import {userLogout} from '../actions/auth';
-import VisibilitySetting from '../components/groupSetting/visibilitySetting';
-import SettingEdition from '../components/groupSetting/settingEdition'
-
+import ToggleSetting from '../components/groupSetting/toggleSetting';
+import SettingEdition from '../components/groupSetting/settingEdition';
 
 class GroupCreation extends React.Component {
   state = {
@@ -25,17 +24,18 @@ class GroupCreation extends React.Component {
     shortDescription: '',
     initialize: true,
     loading: false,
-    visibility: 'private',
+    visibility: 'public',
+    request_to_join: false,
     tags: [],
   };
 
   componentDidMount() {
     Keyboard.dismiss();
-    const {navigation} = this.props
+    const {navigation} = this.props;
 
     navigation.setOptions({
-        headerBackTitleVisible: false
-    })
+      headerBackTitleVisible: false,
+    });
   }
 
   setGroupHeader = data => {
@@ -57,7 +57,8 @@ class GroupCreation extends React.Component {
       backgroundImg,
       icon,
       visibility,
-      tags
+      tags,
+      request_to_join
     } = this.state;
     const {token} = this.props.auth;
     const data = {
@@ -68,13 +69,8 @@ class GroupCreation extends React.Component {
       token: token,
       visibility: visibility,
       capacity: 200,
-      description: null,
-      street: null,
-      city: null,
-      state: null,
-      country: null,
-      zipcode: null,
-      tags: tags
+      request_to_join,
+      tags: tags,
     };
 
     const {createGroup, navigation} = this.props;
@@ -95,24 +91,37 @@ class GroupCreation extends React.Component {
     }
   };
 
-  onVisibilitySwitchToggle = () => {
-    const {visibility} = this.state;
-    if (visibility == 'public') {
-      this.setState({visibility: 'private'});
-    } else {
-      this.setState({visibility: 'public'});
-    }
+  onSwitchToggle = type => {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        loading: false,
+        visibility:
+          type == 'visibility'
+            ? prevState.visibility == 'public'
+              ? 'private'
+              : 'public'
+            : prevState.visibility,
+        request_to_join:
+          type == 'request_to_join'
+            ? prevState.request_to_join
+              ? false
+              : true
+            : prevState.request_to_join,
+      };
+    });
+
   };
 
   onEditTagPress = () => {
-    const {navigation} = this.props
+    const {navigation} = this.props;
     navigation.navigate('Tags', {
-      prev_route: 'GroupCreation'
-    })
-  }
+      prev_route: 'GroupCreation',
+    });
+  };
 
   render() {
-    const {groupname, shortDescription, visibility, loading} = this.state;
+    const {groupname, shortDescription, visibility, loading, request_to_join} = this.state;
 
     let createGroupButtonActive =
       groupname.length >= 6 && shortDescription.length >= 20;
@@ -128,11 +137,20 @@ class GroupCreation extends React.Component {
             data={this.state}
             auth_rank={1}
           />
-          <VisibilitySetting
-            visibility={visibility}
-            onVisibilitySwitchToggle={this.onVisibilitySwitchToggle}
+          <ToggleSetting
+            on={visibility}
+            onToggle={this.onSwitchToggle}
             disabled={false}
+            type={'visibility'}
           />
+
+          <ToggleSetting
+            on={request_to_join}
+            onToggle={this.onSwitchToggle}
+            disabled={false}
+            type={'request_to_join'}
+          />
+
           {/* <SettingEdition onPress={this.onEditTagPress} name={"Edit tags"}/> */}
           {loading == true ? (
             <ActivityIndicator
