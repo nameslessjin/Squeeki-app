@@ -251,3 +251,16 @@ mutation onRespondJoinRequest($input: RespondJoinRequestInput!){
     onRespondJoinRequest(input: $input)
 }
 `
+
+export const onGroupRulesUpdateMutation = `
+mutation onGroupRulesUpdate($input: GroupRulesInput!){
+    onGroupRulesUpdate(input: $input)
+}
+`
+
+export const getGroupRulesQuery = `
+query getGroupRules($groupId: ID!){
+    getGroupRules(groupId: $groupId)
+}
+
+`

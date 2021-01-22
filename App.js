@@ -53,6 +53,7 @@ import RewardHistory from './src/screens/rewardHistory'
 import GroupJoinRequest from './src/screens/groupJoinRequest'
 import TermDisplay from './src/screens/termDisplay'
 import Terms from './src/screens/terms'
+import GroupRules from './src/screens/groupRules'
 
 
 
@@ -170,6 +171,7 @@ export default (App = () => {
             <Stack.Screen name="GroupJoinRequest" component={GroupJoinRequest}/>
             <Stack.Screen name="Terms" component={Terms}/>
             <Stack.Screen name="TermDisplay" component={TermDisplay}/>
+            <Stack.Screen name="GroupRules" component={GroupRules} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

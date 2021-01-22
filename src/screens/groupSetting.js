@@ -34,16 +34,18 @@ class GroupSetting extends React.Component {
   };
 
   componentDidMount() {
+    const {auth} = this.props.group.group;
     const {navigation} = this.props;
     navigation.setOptions({
       headerTitle: 'Group Settings',
-      headerRight: () => (
-        <UpdateButton
-          update={false}
-          onPress={this.updateGroupSettings}
-          loading={this.state.loading}
-        />
-      ),
+      headerRight: () =>
+        auth.rank <= 2 ? (
+          <UpdateButton
+            update={false}
+            onPress={this.updateGroupSettings}
+            loading={this.state.loading}
+          />
+        ) : null,
       headerBackTitleVisible: false,
     });
   }
@@ -117,14 +119,16 @@ class GroupSetting extends React.Component {
       let update = false;
       update = this.extractData().update;
       const {navigation} = this.props;
+      const {auth} = this.props.group.group;
       navigation.setOptions({
-        headerRight: () => (
-          <UpdateButton
-            update={update}
-            onPress={this.updateGroupSettings}
-            loading={this.state.loading}
-          />
-        ),
+        headerRight: () =>
+          auth.rank <= 2 ? (
+            <UpdateButton
+              update={update}
+              onPress={this.updateGroupSettings}
+              loading={this.state.loading}
+            />
+          ) : null,
       });
     }
   }
@@ -300,8 +304,13 @@ class GroupSetting extends React.Component {
           <SettingEdition
             onPress={this.onNominationCreationPress}
             name={'Edit nominations'}
+            disabled={auth_rank > 2}
           />
-          <SettingEdition onPress={this.onEditTagPress} name={'Edit tags'} />
+          <SettingEdition
+            onPress={this.onEditTagPress}
+            name={'Edit tags'}
+            disabled={auth_rank > 2}
+          />
 
           <ActivityIndicator
             style={{marginTop: 30}}

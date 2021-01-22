@@ -9,7 +9,9 @@ import {
   setGroupVisibilityMutation,
   getGroupJoinRequestQuery,
   onRespondJoinRequestMutation,
-  setGroupRequestToJoinMutation
+  setGroupRequestToJoinMutation,
+  onGroupRulesUpdateMutation,
+  getGroupRulesQuery
 } from './query/groupQuery';
 
 export const findUserGroupsByUserId = data => {
@@ -596,6 +598,71 @@ export const onRespondJoinRequest = data => {
     }
 
     return 0;
+
+  }
+}
+
+export const onGroupRulesUpdate = data => {
+  const {token, groupId, rules} = data
+
+  return async function(dispatch){
+    const input = {
+      groupId: groupId,
+      rules: rules
+    }
+
+    const graphql = {
+      query: onGroupRulesUpdateMutation,
+      variables: {
+        input: input
+      }
+    }
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    return 0;
+
+  }
+}
+
+export const getGroupRules = data => {
+  const {token, groupId} = data
+
+  return async function(dispatch){
+    const graphql = {
+      query: getGroupRulesQuery,
+      variables: {
+        groupId: groupId
+      }
+    }
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+    if (result.errors) {
+      return result;
+    }
+    return result.data.getGroupRules ? result.data.getGroupRules : 0
 
   }
 }

@@ -71,9 +71,9 @@ function CustomDrawerContent(props) {
           <MaterialIcons name="script-text" color={'grey'} size={25} />
         )}
         labelStyle={styles.labelStyle}
-        // onPress={() => {
-        //   props.navigation.navigate('Members');
-        // }}
+        onPress={() => {
+          props.navigation.navigate('GroupRules');
+        }}
       />
       <DrawerItem
         label="Members"

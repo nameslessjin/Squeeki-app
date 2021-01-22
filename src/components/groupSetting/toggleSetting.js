@@ -24,7 +24,7 @@ export default class ToggleSetting extends React.Component {
           color={on == 'public' ? 'grey' : 'green'}
         />
       );
-    } else if (type == 'request_to_join'){
+    } else if (type == 'request_to_join') {
       icon = (
         <MaterialIcons
           name={on ? 'toggle-switch' : 'toggle-switch-off-outline'}
@@ -34,11 +34,9 @@ export default class ToggleSetting extends React.Component {
       );
     }
 
-
-
     return (
       <View style={styles.container}>
-        <Text>{title}</Text>
+        <Text style={{color: disabled ? 'grey' : 'black'}}>{title}</Text>
         {loading ? (
           <ActivityIndicator loading={loading} />
         ) : (
