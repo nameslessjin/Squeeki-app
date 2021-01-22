@@ -28,10 +28,10 @@ export default class UserCard extends React.Component {
   }
 
   OnUserPress = () => {
-    const {id, displayName, onPress} = this.props;
+    const {id, displayName, onPress, group_username} = this.props;
     const user = {
       id: id,
-      displayName: displayName,
+      displayName: group_username != null ? group_username : displayName,
     };
     onPress(user);
   };
@@ -46,6 +46,7 @@ export default class UserCard extends React.Component {
       prev_route,
       onPress,
       checked,
+      group_username,
     } = this.props;
     const {icon_option} = this.state;
 
@@ -72,6 +73,16 @@ export default class UserCard extends React.Component {
       displayNameSize = 13;
     }
 
+    let group_username_size = 16;
+    if (group_username) {
+      if (group_username.length > 20) {
+        group_username_size = 15;
+      }
+      if (group_username.length > 25) {
+        group_username_size = 13;
+      }
+    }
+
     let userNameSize = 13;
     if (username.length > 25) {
       userNameSize = 12;
@@ -87,7 +98,6 @@ export default class UserCard extends React.Component {
             chosen ? {backgroundColor: '#c7ecee'} : null,
           ]}>
           <View style={{width: '80%', flexDirection: 'row'}}>
-
             <View style={styles.imgHolder}>
               {icon != null ? (
                 <Image source={{uri: icon.uri}} style={styles.imageStyle} />
@@ -96,15 +106,21 @@ export default class UserCard extends React.Component {
               )}
             </View>
             <View style={styles.nameStyle}>
-              <Text style={{fontSize: displayNameSize}}>{displayName}</Text>
+              <Text
+                style={{
+                  fontSize:
+                    group_username != null
+                      ? group_username_size
+                      : displayNameSize,
+                }}>
+                {group_username != null ? group_username : displayName}
+              </Text>
               <Text style={[styles.usernameStyle, {fontSize: userNameSize}]}>
                 {username}
               </Text>
             </View>
-
           </View>
-          <View
-            style={styles.inGroupMessageContainer}>
+          <View style={styles.inGroupMessageContainer}>
             <Text style={styles.inGroupMessage}>{in_group_message}</Text>
           </View>
         </View>
@@ -153,6 +169,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
     paddingRight: 5,
-    width: '20%'
+    width: '20%',
   },
 });

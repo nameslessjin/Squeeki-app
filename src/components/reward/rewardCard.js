@@ -60,6 +60,7 @@ export default class RewardCard extends React.Component {
     const {icon_option} = this.state;
     let id = null;
     let displayName = null;
+    let group_username = null
     let username = null;
     let icon = null;
     if (user != null) {
@@ -67,6 +68,7 @@ export default class RewardCard extends React.Component {
       displayName = user.displayName;
       username = user.username;
       icon = user.icon;
+      group_username = user.group_username
     }
 
     const reward_rank = this.reward_rate.find(r => r.rate == chance);
@@ -135,7 +137,7 @@ export default class RewardCard extends React.Component {
                 </View>
                 <View style={styles.usernameStyle}>
                   <Text style={{marginLeft: 4, marginVertical: 3}}>
-                    {displayName}
+                    {group_username}
                   </Text>
                 </View>
               </View>

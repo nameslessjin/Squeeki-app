@@ -45,6 +45,7 @@ query getGroupCheckInResult($input: CheckInResultInput!){
             id
             username
             displayName
+            group_username
             icon{
                 uri
                 width

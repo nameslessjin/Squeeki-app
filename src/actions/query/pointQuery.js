@@ -15,6 +15,7 @@ query getGroupPointLeaderBoard($input: getUserGroupPointInput!){
                 id
                 username
                 displayName
+                group_username
                 icon {
                     uri
                     width

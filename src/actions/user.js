@@ -69,7 +69,7 @@ const loadMoreGroupMembers = data => {
 
 export const updateMember = data => {
   const {updateData, origin} = data;
-  let {userId, groupId, auth, token} = updateData;
+  let {userId, groupId, auth, token, group_username} = updateData;
   return async function(dispatch) {
     if (auth.rank == null) {
       auth.rank = origin.rank;
@@ -79,10 +79,15 @@ export const updateMember = data => {
       auth.title = origin.title;
     }
 
+    if (group_username == null){
+      group_username = origin.group_username
+    }
+
     const memberInput = {
       memberId: userId,
       groupId: groupId,
       auth: auth,
+      group_username
     };
 
     const graphQl = {

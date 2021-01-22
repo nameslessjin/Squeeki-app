@@ -38,15 +38,16 @@ class MemberCard extends React.Component {
 
   render() {
     const {item, navigation} = this.props;
-    const {id, username, displayName, auth, icon, lastActiveAt} = item;
+    const {id, username, displayName, auth, icon, lastActiveAt, group_username} = item;
     const time = dateConversion(lastActiveAt)
     const { icon_option} = this.state
-    let displayNameSize = 14;
-    if (displayName.length > 20) {
-      displayNameSize = 13;
+
+    let group_username_size = 14;
+    if (group_username.length > 20) {
+      group_username_size = 13;
     }
-    if (displayName.length > 25) {
-      displayNameSize = 10;
+    if (group_username.length > 25) {
+      group_username_size = 10;
     }
 
     return (
@@ -64,8 +65,8 @@ class MemberCard extends React.Component {
               style={{height: 115}}
             />
           )}
-          <Text style={[styles.displayName, {fontSize: displayNameSize}]}>
-            {displayName}
+          <Text style={[styles.displayName, {fontSize: group_username_size}]}>
+            {group_username}
           </Text>
           <Text numberOfLines={2} style={styles.title}>{"<" + auth.title.charAt(0).toUpperCase() + auth.title.slice(1) + '>'}</Text>
           <Text style={{color: 'grey', fontSize: 11, marginTop: 3}} >Last seen: {time}</Text>

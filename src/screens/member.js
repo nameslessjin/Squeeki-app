@@ -20,7 +20,7 @@ import {userLogout} from '../actions/auth';
 import {getGroupMembers} from '../actions/user';
 import {getGroupMembersFunc} from '../functions/user';
 import OptionButtons from '../components/users/members/optionButtons';
-import validator from 'validator';
+import InputText from '../components/users/members/inputText';
 
 class Member extends React.Component {
   state = {
@@ -54,7 +54,10 @@ class Member extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.auth != this.state.auth) {
+    if (
+      prevState.auth != this.state.auth ||
+      prevState.group_username != this.state.group_username
+    ) {
       let update = false;
       update = this.extractData().update;
       const {navigation} = this.props;
@@ -72,7 +75,7 @@ class Member extends React.Component {
 
   componentWillUnmount() {
     this.loadGroupMembers();
-    this.getGroup()
+    this.getGroup();
   }
 
   getGroup = async () => {
@@ -168,10 +171,12 @@ class Member extends React.Component {
   };
 
   extractData = () => {
-    const {id, auth} = this.state;
+    let {id, auth, group_username} = this.state;
     let {rank, title} = auth;
     title = title.trim();
+    group_username = group_username.trim();
 
+    // compare with orign
     const origin = {
       ...this.props.route.params.auth,
     };
@@ -183,7 +188,12 @@ class Member extends React.Component {
       title = null;
     }
 
-    if (rank != null || title != null) {
+    if (group_username == origin.group_username) {
+      group_username = null;
+    }
+
+    
+    if (rank != null || title != null || group_username != null) {
       const updateData = {
         userId: id,
         groupId: this.props.group.group.id,
@@ -191,6 +201,7 @@ class Member extends React.Component {
           rank: rank,
           title: title,
         },
+        group_username: group_username,
         token: this.props.auth.token,
       };
 
@@ -206,7 +217,12 @@ class Member extends React.Component {
 
   validation = () => {
     const {rank, title} = this.state.auth;
+    const {group_username} = this.state;
     if (title.trim().length == 0) {
+      return false;
+    }
+
+    if (group_username.trim().length == 0) {
       return false;
     }
 
@@ -214,9 +230,10 @@ class Member extends React.Component {
     //   return false;
     // }
 
-    if (rank < 1 || rank > 7) {
+    if (rank < 0 || rank > 7) {
       return false;
     }
+
     return true;
   };
 
@@ -241,7 +258,11 @@ class Member extends React.Component {
       return;
     }
 
-    this.setState({loading: false, auth: updateData.auth});
+    this.setState({
+      loading: false,
+      auth: updateData.auth,
+      group_username: updateData.group_username,
+    });
     navigation.goBack();
   };
 
@@ -284,6 +305,8 @@ class Member extends React.Component {
           },
         };
       });
+    } else if (type == 'group_username') {
+      this.setState({group_username: value});
     }
   };
 
@@ -297,8 +320,8 @@ class Member extends React.Component {
       toggled,
       loading,
       icon_option,
+      group_username,
     } = this.state;
-
     //group auth is your auth in the group
     const {group} = this.props.group;
 
@@ -309,6 +332,7 @@ class Member extends React.Component {
     const allowToDeleteMember =
       auth.rank != 1 && group.auth.rank <= 2 && user.id != id;
     const allowToMakeOwner = group.auth.rank <= 1 && auth.rank > 1;
+    const allowToChangeGroupUsername = user.id == id
 
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
@@ -336,6 +360,11 @@ class Member extends React.Component {
             allowToChangeRank={allowToChangeRank}
             allowToChangeTitle={allowToChangeTitle}
             userAuth={group.auth}
+          />
+          <InputText
+            modifyInput={this.modifyInput}
+            value={group_username}
+            editable={allowToChangeGroupUsername}
           />
           {loading ? (
             <ActivityIndicator style={{marginTop: 400}} animating={loading} />
@@ -399,7 +428,7 @@ const mapDispatchToProps = dispatch => {
     userLogout: () => dispatch(userLogout()),
     deleteMember: data => dispatch(deleteMember(data)),
     makeOwner: data => dispatch(makeOwner(data)),
-    getSingleGroupById: data => dispatch(getSingleGroupById(data))
+    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
   };
 };
 

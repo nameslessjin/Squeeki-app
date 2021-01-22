@@ -288,7 +288,7 @@ class PostCard extends React.Component {
       checked,
     } = this.state;
     const {option, commentTouchable, selectionMode, onPostSelect} = this.props;
-    const {username, icon, displayName} = user;
+    const {username, icon, displayName, group_username} = user;
     const date = dateConversion(createdAt);
 
     let backgroundColor = 'white';
@@ -310,6 +310,7 @@ class PostCard extends React.Component {
             icon={icon}
             username={username}
             displayName={displayName}
+            group_username={group_username}
             date={date}
             auth={auth}
             groupAuth={groupAuth}

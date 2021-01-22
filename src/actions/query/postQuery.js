@@ -15,6 +15,7 @@ query getGroupPosts($input: GetPostInput!){
                 id
                 username
                 displayName
+                group_username
                 icon {
                     uri
                     width
@@ -43,6 +44,7 @@ query getGroupPosts($input: GetPostInput!){
                 nomineeId
                 endAt
                 nominee_name
+                username
                 nomination_name
                 points
                 voted
@@ -71,6 +73,7 @@ query getFeed($count: Int!){
                 id
                 username
                 displayName
+                group_username
                 icon {
                     uri
                     width
@@ -95,6 +98,7 @@ query getFeed($count: Int!){
                 nomineeId
                 endAt
                 nominee_name
+                username
                 nomination_name
                 points
                 voted
@@ -121,6 +125,7 @@ query getPost($postId: ID!){
                 id
                 username
                 displayName
+                group_username
                 icon {
                     uri
                     width
@@ -168,6 +173,7 @@ mutation updatePost($postInput: PostInput!){
             id
             username
             displayName
+            group_username
             icon {
                 uri
                 width
@@ -232,6 +238,7 @@ query getNominationPost($nominationPostInput: NominationPostInput!){
                 id
                 username
                 displayName
+                group_username
                 icon {
                     uri
                     width
@@ -259,6 +266,7 @@ query getNominationPost($nominationPostInput: NominationPostInput!){
                 nomineeId
                 endAt
                 nominee_name
+                username
                 nomination_name
                 points
                 voted
@@ -287,6 +295,7 @@ query getGroupPostForCheckIn($input: GetPostInput!){
                 id
                 username
                 displayName
+                group_username
                 icon {
                     uri
                     width
@@ -315,6 +324,7 @@ query getGroupPostForCheckIn($input: GetPostInput!){
                 nomineeId
                 endAt
                 nominee_name
+                username
                 nomination_name
                 points
                 voted

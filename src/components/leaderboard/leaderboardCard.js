@@ -28,7 +28,7 @@ export default class LeaderboardCard extends React.Component {
   render() {
     const {index, item} = this.props.i;
     const {base_point, user} = item;
-    const {username, id, displayName, icon} = user;
+    const {username, id, displayName, icon, group_username} = user;
     const {icon_option} = this.state;
     const trophyColors = ['#f1bc12', '#bdc3c7', '#cd6133'];
 
@@ -57,7 +57,7 @@ export default class LeaderboardCard extends React.Component {
               )}
             </View>
             <View style={styles.nameStyle}>
-              <Text style={{marginLeft: 4}}>{displayName}</Text>
+              <Text style={{marginLeft: 4}}>{group_username}</Text>
             </View>
           </View>
           <View style={styles.pointContainer}>

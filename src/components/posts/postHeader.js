@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   TextInput,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
@@ -16,10 +16,10 @@ import Modal from 'react-native-modal';
 export default class PostHeader extends React.Component {
   state = {
     modalToggled: false,
-    icon_option: 'emoticon-cool-outline'
+    icon_option: 'emoticon-cool-outline',
   };
 
-  componentDidMount(){
+  componentDidMount() {
     const random = Math.floor(Math.random() * 5);
     const icon_options = [
       'emoticon-cool-outline',
@@ -29,13 +29,14 @@ export default class PostHeader extends React.Component {
       'emoticon-tongue-outline',
     ];
 
-    this.setState({icon_option: icon_options[random]})
+    this.setState({icon_option: icon_options[random]});
   }
 
   render() {
     const {
       icon,
       username,
+      group_username,
       displayName,
       date,
       auth,
@@ -57,10 +58,10 @@ export default class PostHeader extends React.Component {
       onReportInput,
       onSubmitReport,
       onReport,
-      selectionMode
+      selectionMode,
     } = this.props;
 
-    const {icon_option} = this.state
+    const {icon_option} = this.state;
 
     let options = (
       <View style={styles.modalView}>
@@ -107,7 +108,6 @@ export default class PostHeader extends React.Component {
     }
 
     if (is_report_toggled) {
-
       options = (
         <KeyboardAvoidingView style={styles.reportView}>
           <View style={styles.reportHeader}>
@@ -132,9 +132,15 @@ export default class PostHeader extends React.Component {
                   borderRightWidth: StyleSheet.hairlineWidth,
                 },
               ]}
-              disabled={(report.length == 0 || onReport)}
+              disabled={report.length == 0 || onReport}
               onPress={onSubmitReport}>
-              <Text style={{fontSize: 15, color: report.length == 0 ? '#7f8fa6' : null}}>Submit</Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: report.length == 0 ? '#7f8fa6' : null,
+                }}>
+                Submit
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.reportButton}
@@ -160,6 +166,7 @@ export default class PostHeader extends React.Component {
       priorityColor = '#e84118';
     }
 
+    // sizing displayNmae
     let displayNameSize = 14;
     if (displayName.length > 20) {
       displayNameSize = 13;
@@ -168,17 +175,29 @@ export default class PostHeader extends React.Component {
       displayNameSize = 10;
     }
 
+    let group_username_size = 14;
+    if (group_username) {
+      if (group_username.length > 20) {
+        group_username_size = 13;
+      }
+      if (group_username.length > 25) {
+        group_username_size = 10;
+      }
+    }
+
+    // sizing username
     let userNameSize = 11;
     if (username.length > 25) {
       userNameSize = 10;
     }
 
+    // sizing title in group
     let titleSize = 14;
-    if (groupAuth){
-      if (groupAuth.title.length > 20){
+    if (groupAuth) {
+      if (groupAuth.title.length > 20) {
         titleSize = 13;
       }
-      if (groupAuth.title.length > 25){
+      if (groupAuth.title.length > 25) {
         titleSize = 10;
       }
     }
@@ -193,8 +212,16 @@ export default class PostHeader extends React.Component {
           )}
           <View style={styles.nameStyle}>
             <Text
-              style={[styles.displayNameStyle, {fontSize: displayNameSize}]}>
-              {displayName}
+              style={[
+                styles.displayNameStyle,
+                {
+                  fontSize:
+                    group_username != null
+                      ? group_username_size
+                      : displayNameSize,
+                },
+              ]}>
+              {group_username != null ? group_username : displayName}
             </Text>
             {groupAuth != null ? null : (
               <Text style={[styles.usernameStyle, {fontSize: userNameSize}]}>
@@ -202,7 +229,7 @@ export default class PostHeader extends React.Component {
               </Text>
             )}
             {groupAuth == null ? null : (
-              <Text style={{fontSize: titleSize, color: "#4a69bd"}}>
+              <Text style={{fontSize: titleSize, color: '#4a69bd'}}>
                 {'<' + groupAuth.title + '>'}
               </Text>
             )}
@@ -218,7 +245,7 @@ export default class PostHeader extends React.Component {
           </View>
         </View>
 
-        <View style={{flexDirection: 'row', alignItems: 'center',}}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
           {priority !== 0 ? (
             <View style={{flexDirection: 'row', marginRight: 5}}>
               <MaterialIcons name={'feather'} size={20} color={priorityColor} />
@@ -227,7 +254,10 @@ export default class PostHeader extends React.Component {
               </Text>
             </View>
           ) : null}
-          <Text style={[styles.timeStyle, {marginRight: selectionMode ? 5 : 0}]}>{date}</Text>
+          <Text
+            style={[styles.timeStyle, {marginRight: selectionMode ? 5 : 0}]}>
+            {date}
+          </Text>
           {!selectionMode ? (
             <TouchableOpacity
               onPress={toggleModal}
@@ -279,7 +309,7 @@ const styles = StyleSheet.create({
   timeStyle: {
     color: '#95a5a6',
     fontSize: 12,
-    paddingRight: 3
+    paddingRight: 3,
   },
   userHolder: {
     height: '100%',
@@ -356,6 +386,6 @@ const styles = StyleSheet.create({
     height: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingRight: Platform.OS == 'ios' ? 5 : 0
+    paddingRight: Platform.OS == 'ios' ? 5 : 0,
   },
 });

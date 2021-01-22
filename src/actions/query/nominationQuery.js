@@ -23,6 +23,7 @@ query getGroupNominationMostRecentResults($input: getGroupNominationResultsInput
             list {
                 nomineeId
                 nominee_name
+                username
                 vote
             }
         }
@@ -42,6 +43,7 @@ query getGroupNominationResults($input: getGroupNominationResultsInput!){
                 list {
                     nomineeId
                     nominee_name
+                    username
                     vote
                 }
             }

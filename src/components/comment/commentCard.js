@@ -89,7 +89,7 @@ export default class CommentCard extends React.Component {
           <View style={rightContainer}>
             <View style={usernameContainer}>
               <View>
-                <Text style={displayNameStyle}>{user.displayName}</Text>
+                <Text style={displayNameStyle}>{user.group_username != null ? user.group_username : user.displayName}</Text>
                 <Text style={usernameStyle}>{user.username}</Text>
               </View>
               <Text style={timeStyle}>{date}</Text>

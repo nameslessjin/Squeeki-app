@@ -10,6 +10,7 @@ query getPostComments($postId: ID!, $count: Int!){
                 id
                 username
                 displayName
+                group_username
                 icon {
                     uri
                     width
@@ -36,6 +37,7 @@ mutation createComment($commentInput: CommentInput!){
                 id
                 username
                 displayName
+                group_username
                 icon {
                     uri
                     width

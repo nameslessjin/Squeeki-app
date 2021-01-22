@@ -5,6 +5,7 @@ query getGroupMembers($input: GetGroupMembersInput!){
             id
             username
             displayName
+            group_username
             auth {
                 rank
                 title
@@ -70,6 +71,7 @@ query searchUser($searchUserInput: SearchUserInput!){
             id
             username
             displayName
+            group_username
             icon{
                 uri
                 width

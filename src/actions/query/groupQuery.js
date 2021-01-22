@@ -235,6 +235,7 @@ query getGroupJoinRequest($input: joinRequestInput!){
             id
             username
             displayName
+            group_username
             icon{
                 uri
                 width
