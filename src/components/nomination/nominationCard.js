@@ -41,7 +41,8 @@ class NominationCard extends React.Component {
     const nomination = await turnNomination(data);
     this.setState({loading: false});
     if (nomination.errors) {
-      alert(nomination.errors[0].message);
+      // alert(nomination.errors[0].message);
+      alert('Cannot turn on nomination at this time, please try again later')
       if (nomination.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({

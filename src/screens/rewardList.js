@@ -50,7 +50,7 @@ class RewardList extends React.Component {
 
     const req = await getMonthlyGiftCardCount(request);
     if (req.errors) {
-      alert('Failed to get remaining monthly giftcards')
+      alert('Failed to get remaining monthly giftcards, please try again later')
       // alert(req.errors[0].message);
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
@@ -73,7 +73,8 @@ class RewardList extends React.Component {
 
     const req = await deleteGroupReward(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot delete reward at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

@@ -53,7 +53,8 @@ class UserGroupJoinRequest extends React.Component {
 
     const req = await getGroupJoinRequest(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load quests at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -104,7 +105,8 @@ class UserGroupJoinRequest extends React.Component {
     });
     const req = await onRespondJoinRequest(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot response request at this time, please try again later')
       this.setState(prevState => {
         return {
           ...prevState,

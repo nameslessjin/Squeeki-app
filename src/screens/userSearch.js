@@ -126,7 +126,8 @@ class UserSearch extends React.Component {
 
     const req = await getGroupCheckInResult(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load users at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -174,7 +175,8 @@ class UserSearch extends React.Component {
     }
 
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot add members at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

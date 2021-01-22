@@ -96,7 +96,8 @@ class CheckInSetting extends React.Component {
 
     const req = await getGroupCheckIn(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load check in at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -153,7 +154,8 @@ class CheckInSetting extends React.Component {
     this.setState({loading: true})
     const req = await createCheckIn(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot create check in at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

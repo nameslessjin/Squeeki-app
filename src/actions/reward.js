@@ -28,7 +28,7 @@ export const createGroupReward = request => {
       },
     };
 
-    const req = await fetch('http://squeeki.appspot.com/graphql', {
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -64,7 +64,7 @@ export const getGroupReward = request => {
       },
     };
 
-    const req = await fetch('http://squeeki.appspot.com/graphql', {
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -101,7 +101,7 @@ export const deleteGroupReward = request => {
       },
     };
 
-    const req = await fetch('http://squeeki.appspot.com/graphql', {
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -145,7 +145,7 @@ export const getUserGroupRewardHistory = request => {
       },
     };
 
-    const req = await fetch('http://squeeki.appspot.com/graphql', {
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -179,7 +179,7 @@ export const getMonthlyGiftCardCount = request => {
       },
     };
 
-    const req = await fetch('http://squeeki.appspot.com/graphql', {
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -209,7 +209,7 @@ export const lootReward = request => {
       }
     }
 
-    const req = await fetch('http://squeeki.appspot.com/graphql', {
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

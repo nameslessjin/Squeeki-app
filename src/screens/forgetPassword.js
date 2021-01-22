@@ -42,7 +42,8 @@ class ForgetPassword extends React.Component {
     };
     const token = await this.props.checkVerificationCode(data);
     if (token.errors) {
-      alert(token.errors[0].message);
+      // alert(token.errors[0].message);
+      alert('Cannot verify verification code at this time, please try again later')
       return;
     }
 
@@ -61,7 +62,8 @@ class ForgetPassword extends React.Component {
     // call database to get verification code
     const verification = await this.props.requireVerificationCode(email);
     if (verification.errors) {
-      alert(verification.errors[0].message);
+      // alert(verification.errors[0].message);
+      alert('Cannot require verification code at this time, please try again later')
     }
     this.setState({message: '(sent)'})
     return;

@@ -88,7 +88,8 @@ class GroupCreation extends React.Component {
     const {createGroup, navigation} = this.props;
     const createGroupResult = await createGroup(data);
     if (createGroupResult.errors) {
-      alert(createGroupResult.errors[0].message);
+      // alert(createGroupResult.errors[0].message);
+      alert('Cannot create group at this time, please try again later')
       if (createGroupResult.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

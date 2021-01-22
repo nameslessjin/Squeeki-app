@@ -73,7 +73,8 @@ class Comment extends React.Component {
 
     const req = await getUserGroupPoint(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load points at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -97,7 +98,8 @@ class Comment extends React.Component {
     };
     const postData = await getPost(data);
     if (postData.errors) {
-      alert(postData.errors[0].message);
+      // alert(postData.errors[0].message);
+      alert('Cannot load comments at this time, please try again later')
       if (postData.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -134,7 +136,8 @@ class Comment extends React.Component {
 
     const req = await likeComment(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot like comment at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -156,7 +159,8 @@ class Comment extends React.Component {
 
     const req = await deleteComment(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot delete comment at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -181,7 +185,8 @@ class Comment extends React.Component {
 
     const req = await reportComment(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot report comment at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -235,7 +240,8 @@ class Comment extends React.Component {
     Keyboard.dismiss();
     const comment = await this.props.createComment(data);
     if (comment.errors) {
-      alert(comment.errors[0].message);
+      // alert(comment.errors[0].message);
+      alert('Cannot send comment at this time, please try again later')
       if (comment.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

@@ -49,7 +49,7 @@ class Home extends React.Component {
 
       const notificationData = await registerDeviceForNotification(data);
       if (notificationData.errors) {
-        alert(notificationData.errors[0].message);
+        // alert(notificationData.errors[0].message);
         if (notificationData.errors[0].message == 'Not Authenticated') {
           userLogout();
           navigation.reset({

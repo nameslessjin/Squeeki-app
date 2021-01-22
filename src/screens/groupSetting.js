@@ -152,7 +152,8 @@ class GroupSetting extends React.Component {
 
     const req = await getSingleGroupById(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load group at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -176,7 +177,8 @@ class GroupSetting extends React.Component {
     const updateGroup = await this.props.updateGroup(data);
 
     if (updateGroup.errors) {
-      alert(updateGroup.errors[0].message);
+      // alert(updateGroup.errors[0].message);
+      alert('Cannot update group settings at this time, please try again later')
       if (updateGroup.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -222,7 +224,8 @@ class GroupSetting extends React.Component {
     }
 
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot change group settings at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

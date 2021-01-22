@@ -228,7 +228,8 @@ class NominationSetting extends React.Component {
     this.setState({loading: false});
 
     if (nomination.errors) {
-      alert(nomination.errors[0].message);
+      // alert(nomination.errors[0].message);
+      alert('Cannot create/update nomination at this time, please try again later')
       if (nomination.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({
@@ -255,7 +256,8 @@ class NominationSetting extends React.Component {
     this.setState({loading: false});
 
     if (nomination.errors) {
-      alert(nomination.errors[0].message);
+      // alert(nomination.errors[0].message);
+      alert('Cannot delete nomination at this time, please try again later')
       if (nomination.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({

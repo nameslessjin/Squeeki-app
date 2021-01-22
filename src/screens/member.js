@@ -93,7 +93,8 @@ class Member extends React.Component {
 
     const req = await getSingleGroupById(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load group at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -132,7 +133,8 @@ class Member extends React.Component {
 
     const deletionResult = await deleteMember(data);
     if (deletionResult.errors) {
-      alert(deletionResult.errors[0].message);
+      // alert(deletionResult.errors[0].message);
+      alert('Cannot delete member at this time, please try again later')
       if (deletionResult.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({
@@ -157,7 +159,8 @@ class Member extends React.Component {
 
     const result = await makeOwner(data);
     if (result.errors) {
-      alert(result.errors[0].message);
+      // alert(result.errors[0].message);
+      alert('Cannot transfer ownership at this time, please try again later')
       if (result.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({
@@ -247,7 +250,8 @@ class Member extends React.Component {
     const updateMember = await this.props.updateMember({updateData, origin});
 
     if (updateMember.errors) {
-      alert(updateMember.errors[0].message);
+      // alert(updateMember.errors[0].message);
+      alert('Cannot modify member status at this time, please try again later')
       if (updateMember.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({
@@ -367,9 +371,9 @@ class Member extends React.Component {
             editable={allowToChangeGroupUsername}
           />
           {loading ? (
-            <ActivityIndicator style={{marginTop: 400}} animating={loading} />
+            <ActivityIndicator style={{marginTop: 300}} animating={loading} />
           ) : (
-            <View style={{marginTop: 400}}>
+            <View style={{marginTop: 300}}>
               <OptionButtons
                 onDeleteMember={this.onDeleteMember}
                 allowToDeleteMember={allowToDeleteMember}

@@ -129,7 +129,8 @@ class RewardSetting extends React.Component {
     this.setState({loading: true});
     const req = await createGroupReward(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot add reward at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

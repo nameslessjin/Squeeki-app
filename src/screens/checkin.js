@@ -62,7 +62,8 @@ class CheckIn extends React.Component {
 
     const req = await getUserGroupPoint(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load points at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -100,7 +101,8 @@ class CheckIn extends React.Component {
     this.setState({loading: true});
     const req = await getGroupCheckIn(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load check in at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -150,7 +152,8 @@ class CheckIn extends React.Component {
 
     const req = await userCheckIn(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot check in at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -179,7 +182,8 @@ class CheckIn extends React.Component {
 
     const req = await deleteCheckIn(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot delete check in at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

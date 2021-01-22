@@ -29,7 +29,8 @@ class GroupCard extends React.Component {
     const {token} = this.props.auth;
     const groupData = await getSingleGroupById({id: id, token: token});
     if (groupData.errors) {
-      alert(groupData.errors[0].message);
+      // alert(groupData.errors[0].message);
+      alert('Cannot load group at this time, please try again later')
       if (groupData.errors[0].message == "Not Authenticated"){
         userLogout()
             navigation.reset({

@@ -51,7 +51,8 @@ class ChangePassword extends React.Component {
     if (user.errors) {
       this.setState({errorText: user.errors[0].message});
       if (user.errors[0].message == 'Not Authenticated') {
-        alert(user.errors[0].message);
+        // alert(user.errors[0].message);
+        alert('Cannot change password at this time, please try again later')
         userLogout();
         navigation.reset({
           index: 0,
@@ -80,7 +81,9 @@ class ChangePassword extends React.Component {
     const reset = await resetPassword(data);
 
     if (reset.errors) {
-      alert(reset.errors[0].message);
+
+      // alert(reset.errors[0].message);
+      alert('Cannot reset password at this time, please try again later')
       return;
     }
 

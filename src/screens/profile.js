@@ -85,7 +85,8 @@ class Profile extends React.Component {
     this.setState({loading: true});
     const profile = await updateProfile(data);
     if (profile.errors) {
-      alert(profile.errors[0].message);
+      // alert(profile.errors[0].message);
+      alert('Cannot update profile at this time, please try again later')
       if (profile.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

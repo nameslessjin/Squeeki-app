@@ -69,7 +69,7 @@ class GroupRules extends React.Component {
     if (req.errors) {
 
       // alert(req.errors[0].message);
-      alert('Get group rules error');
+      alert('Cannot get group rules at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -101,7 +101,7 @@ class GroupRules extends React.Component {
     const req = await onGroupRulesUpdate(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Update error');
+      alert('Cannot update group rules at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

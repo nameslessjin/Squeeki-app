@@ -93,7 +93,7 @@ class EditTag extends React.Component {
 
     const req = await createTag(request);
     if (req.errors) {
-      alert('create tags failed');
+      alert('create tags failed, please try again later');
       // alert(req.errors[0].message);
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
@@ -152,7 +152,7 @@ class EditTag extends React.Component {
       const req = await searchTag(request);
       if (req.errors) {
         // alert(req.errors[0].message);
-        alert('Search tags failed');
+        alert('Search tags failed, please try again later');
         if (req.errors[0].message == 'Not Authenticated') {
           userLogout();
           navigation.reset({
@@ -176,7 +176,7 @@ class EditTag extends React.Component {
     });
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Load tags failed');
+      alert('Load tags failed, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -218,7 +218,8 @@ class EditTag extends React.Component {
 
       const req = await addTagToGroup(request);
       if (req.errors) {
-        alert(req.errors[0].message);
+        // alert(req.errors[0].message);
+        alert('Cannot add tag at this time, please try again later')
         if (req.errors[0].message == 'Not Authenticated') {
           userLogout();
           navigation.reset({
@@ -264,7 +265,8 @@ class EditTag extends React.Component {
 
       const req = await removeTagFromGroup(request);
       if (req.errors) {
-        alert(req.errors[0].message);
+        // alert(req.errors[0].message);
+        alert('Cannot remove tag at this time, please try again later')
         if (req.errors[0].message == 'Not Authenticated') {
           userLogout();
           navigation.reset({

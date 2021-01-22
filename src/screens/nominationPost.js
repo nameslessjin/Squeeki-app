@@ -54,7 +54,8 @@ class NominationPost extends React.Component {
 
     const req = await getNominationPost(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load nomination posts at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

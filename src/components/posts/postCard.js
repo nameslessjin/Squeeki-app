@@ -71,7 +71,8 @@ class PostCard extends React.Component {
     const reportResult = await reportPost(data);
     this.setState({onReport: false});
     if (reportResult.errors) {
-      alert(reportResult.errors[0].message);
+      // alert(reportResult.errors[0].message);
+      alert('Cannot report post at this time, please try again later')
       if (reportResult.errors[0].message == 'Not Authenticated') {
         userLogout;
         navigation.reset({
@@ -94,7 +95,8 @@ class PostCard extends React.Component {
     const notificationResult = await changePostNotification(data);
 
     if (notificationResult.errors) {
-      alert(notificationResult.errors[0].message);
+      // alert(notificationResult.errors[0].message);
+      alert('Cannot change notification at this time, please try again later')
       if (notificationResult.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -144,7 +146,8 @@ class PostCard extends React.Component {
     if (auth || currentUserAuthQualified) {
       const post = await this.props.deletePost(data);
       if (post.errors) {
-        alert(post.errors[0].message);
+        // alert(post.errors[0].message);
+        alert('Cannot delete post at this time, please try again later')
         if (post.errors[0].message == 'Not Authenticated') {
           userLogout();
           navigation.reset({
@@ -197,7 +200,8 @@ class PostCard extends React.Component {
     const like = await likePost(data);
     this.setState({loading: false});
     if (like.errors) {
-      alert(like.errors[0].message);
+      // alert(like.errors[0].message);
+      alert('Cannot like post at this time, please try again later')
       if (like.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -239,7 +243,8 @@ class PostCard extends React.Component {
     this.setState({voting: false});
 
     if (vote.errors) {
-      alert(vote.errors[0].message);
+      // alert(vote.errors[0].message);
+      alert('Cannot vote nominee at this time, please try again later')
       if (vote.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

@@ -76,7 +76,8 @@ class GroupSettingsHeader extends React.Component {
     const group = await leaveGroup(input);
 
     if (group.errors) {
-      alert(group.errors[0].message);
+      // alert(group.errors[0].message);
+      alert('Cannot leave group at this time, please try again later')
       if (group.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

@@ -160,7 +160,8 @@ class PostSetting extends React.Component {
 
     const req = await getSingleGroupById(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load group at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -183,7 +184,8 @@ class PostSetting extends React.Component {
 
     const req = await getUserGroupPoint(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Cannot load points at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -313,7 +315,8 @@ class PostSetting extends React.Component {
     if (this.state.create) {
       const post = await createPost(updateData);
       if (post.errors) {
-        alert(post.errors[0].message);
+        // alert(post.errors[0].message);
+        alert('Cannot create post at this time, please try again later')
         if (post.errors[0].message == 'Not authenticated') {
           userLogout();
           navigation.reset({
@@ -331,7 +334,8 @@ class PostSetting extends React.Component {
 
       const updatePost = await this.props.updatePost(data);
       if (updatePost.errors) {
-        alert(updatePost.errors[0].message);
+        // alert(updatePost.errors[0].message);
+        alert('Cannot update post at this time, please try again later')
         if (updatePost.errors[0].message == 'Not authenticated') {
           userLogout();
           navigation.reset({

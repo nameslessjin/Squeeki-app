@@ -52,7 +52,8 @@ class GroupHeader extends React.Component {
     this.onBackdropPress();
     const result = await changeGroupNotification(data);
     if (result.errors) {
-      alert(result.errors[0].message);
+      // alert(result.errors[0].message);
+      alert('Cannot change notification at this time, please try again later')
       if (result.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -83,7 +84,8 @@ class GroupHeader extends React.Component {
 
     const result = await joinGroup(data);
     if (result.errors) {
-      alert(result.errors[0].message);
+      // alert(result.errors[0].message);
+      alert('Cannot join group at this time, please try again later')
       if (result.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

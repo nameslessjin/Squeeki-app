@@ -27,7 +27,7 @@ export const signup = data => {
       },
     };
 
-    const user = await fetch('http://squeeki.appspot.com/graphql', {
+    const user = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const signin = data => {
       },
     };
 
-    const user = await fetch('http://squeeki.appspot.com/graphql', {
+    const user = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export const updateProfile = data => {
       iconData.append('fileData', icon.data);
       iconData.append('fileCategory', 'userIcons');
 
-      const iconPost = await fetch('http://squeeki.appspot.com/uploadImage', {
+      const iconPost = await fetch('http://192.168.86.24:8080/uploadImage', {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
@@ -142,7 +142,7 @@ export const updateProfile = data => {
       },
     };
 
-    const user = await fetch('http://squeeki.appspot.com/graphql', {
+    const user = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -189,7 +189,7 @@ export const changePassword = data => {
       },
     };
 
-    const user = await fetch('http://squeeki.appspot.com/graphql', {
+    const user = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -218,7 +218,7 @@ export const requireVerificationCode = data => {
       },
     };
 
-    const verificationFetch = await fetch('http://squeeki.appspot.com/graphql', {
+    const verificationFetch = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -245,7 +245,7 @@ export const checkVerificationCode = data => {
       },
     };
 
-    const verificationFetch = await fetch('http://squeeki.appspot.com/graphql', {
+    const verificationFetch = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -272,7 +272,7 @@ export const resetPassword = data => {
       },
     };
   
-    const resetFetch = await fetch('http://squeeki.appspot.com/graphql', {
+    const resetFetch = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
