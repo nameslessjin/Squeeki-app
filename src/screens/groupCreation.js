@@ -35,7 +35,18 @@ class GroupCreation extends React.Component {
 
     navigation.setOptions({
       headerBackTitleVisible: false,
+      headerTitle: 'Create Group'
     });
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if (prevProps !== this.props){
+      const {params} = this.props.route
+      if (params){
+        this.setState({tags: params.tags})
+      }
+    }
+    
   }
 
   setGroupHeader = data => {
@@ -58,7 +69,7 @@ class GroupCreation extends React.Component {
       icon,
       visibility,
       tags,
-      request_to_join
+      request_to_join,
     } = this.state;
     const {token} = this.props.auth;
     const data = {
@@ -70,8 +81,9 @@ class GroupCreation extends React.Component {
       visibility: visibility,
       capacity: 200,
       request_to_join,
-      tags: tags,
+      tagIds: tags.map(t => t.id),
     };
+
 
     const {createGroup, navigation} = this.props;
     const createGroupResult = await createGroup(data);
@@ -151,7 +163,8 @@ class GroupCreation extends React.Component {
             type={'request_to_join'}
           />
 
-          {/* <SettingEdition onPress={this.onEditTagPress} name={"Edit tags"}/> */}
+          <SettingEdition onPress={this.onEditTagPress} name={"Edit tags"}/>
+
           {loading == true ? (
             <ActivityIndicator
               style={{marginTop: 30}}

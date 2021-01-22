@@ -99,7 +99,7 @@ class GroupsSearch extends React.Component {
 
   onCreateGroupButtonPress = () => {
     const {navigation} = this.props;
-    navigation.navigate('Create Group');
+    navigation.navigate('GroupCreation');
   };
 
   render() {

@@ -6,13 +6,12 @@ import {
 } from './query/tagQuery';
 
 export const searchTag = request => {
-  const {term, count, current_tags_id} = request;
+  const {term, count} = request;
 
   return async function(dispatch) {
     const input = {
       searchTerm: term,
       count: count || 0,
-      current_tags_id: current_tags_id,
     };
 
     const graphql = {

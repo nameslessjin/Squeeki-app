@@ -18,7 +18,7 @@ export default (postReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case 'getGroupPosts':
       reconstructed_posts = reconstructPostsInReducer(action.data.posts);
-      console.log(action.data.count);
+
       return {
         ...state,
         groupPosts: {

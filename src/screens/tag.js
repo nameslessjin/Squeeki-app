@@ -27,8 +27,9 @@ class EditTag extends React.Component {
     warning: '',
     create: false,
     tags: [],
+    search_count: 0,
     prev_route: 'GroupSetting',
-    addedTags: []
+    addedTags: [],
   };
 
   componentDidMount() {
@@ -39,6 +40,19 @@ class EditTag extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
     });
+    this.onloadMoreTags(true)
+  }
+
+  componentWillUnmount() {
+    const {navigation} = this.props
+    const {prev_route, addedTags} = this.state
+
+    if (prev_route == 'GroupCreation'){
+      navigation.navigate('GroupCreation', {
+        tags: addedTags
+      })
+    }
+
   }
 
   onTagCreate = async () => {
@@ -79,7 +93,8 @@ class EditTag extends React.Component {
 
     const req = await createTag(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      alert('create tags failed');
+      // alert(req.errors[0].message);
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -119,18 +134,25 @@ class EditTag extends React.Component {
       }
     } else {
       if (term.length < 3) {
-        this.setState({tags: [], warning: '', create: false});
+        this.setState({tags: [], warning: '', create: false, search_count: 0});
+        
+        // when search term is empty, load most popular tags
+        if (term.length == 0){
+          this.onloadMoreTags(true)
+        }
         return;
       }
       this.setState({create: false});
       const {searchTag, group, userLogout, navigation} = this.props;
-      const current_tags_id = group.group.tags.map(t => t.id);
-      const req = await searchTag({
+
+      const request = {
         term: term,
-        current_tags_id: current_tags_id,
-      });
+      };
+
+      const req = await searchTag(request);
       if (req.errors) {
-        alert(req.errors[0].message);
+        // alert(req.errors[0].message);
+        alert('Search tags failed');
         if (req.errors[0].message == 'Not Authenticated') {
           userLogout();
           navigation.reset({
@@ -144,17 +166,17 @@ class EditTag extends React.Component {
     }
   };
 
-  onloadMoreTags = async () => {
-    const {searchTerm, tags, search_count} = this.state;
-    const {searchTag, group, userLogout, navigation} = this.props;
-    const current_tags_id = group.group.tags.map(t => t.id);
+  onloadMoreTags = async (init) => {
+    const {searchTerm, tags, search_count, } = this.state;
+    const {searchTag, userLogout, navigation} = this.props;
+
     const req = await searchTag({
       term: searchTerm,
-      count: search_count,
-      current_tags_id: current_tags_id,
+      count: init ? 0 : search_count,
     });
     if (req.errors) {
-      alert(req.errors[0].message);
+      // alert(req.errors[0].message);
+      alert('Load tags failed');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -168,37 +190,58 @@ class EditTag extends React.Component {
     this.setState(prevState => {
       return {
         ...prevState,
-        tags: tags.concat(req.tags),
+        tags: init ? req.tags : prevState.tags.concat(req.tags),
         search_count: req.search_count,
       };
     });
   };
 
+  onEndReach = () => {
+    this.onloadMoreTags(false)
+  }
+
   addTagToGroup = async tag => {
     const {addTagToGroup, auth, group, userLogout, navigation} = this.props;
+    const {prev_route, addedTags} = this.state;
 
-    if (group.group.tags.length >= 5) {
-      this.setState({warning: 'Every group can have max 5 tags'});
-      return;
-    }
-
-    const request = {
-      groupId: group.group.id,
-      tag: tag,
-      token: auth.token,
-    };
-
-    const req = await addTagToGroup(request);
-    if (req.errors) {
-      alert(req.errors[0].message);
-      if (req.errors[0].message == 'Not Authenticated') {
-        userLogout();
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'SignIn'}],
-        });
+    if (prev_route == 'GroupSetting') {
+      if (group.group.tags.length >= 5) {
+        this.setState({warning: 'Every group can have max 5 tags'});
+        return;
       }
-      return;
+
+      const request = {
+        groupId: group.group.id,
+        tag: tag,
+        token: auth.token,
+      };
+
+      const req = await addTagToGroup(request);
+      if (req.errors) {
+        alert(req.errors[0].message);
+        if (req.errors[0].message == 'Not Authenticated') {
+          userLogout();
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'SignIn'}],
+          });
+        }
+        return;
+      }
+    } else if (prev_route == 'GroupCreation') {
+
+      if (addedTags.length >= 5) {
+        this.setState({warning: 'Every group can have max 5 tags'});
+        return;
+      }
+
+
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          addedTags: prevState.addedTags.concat([tag]),
+        };
+      });
     }
   };
 
@@ -210,34 +253,46 @@ class EditTag extends React.Component {
       userLogout,
       navigation,
     } = this.props;
-    const request = {
-      groupId: group.group.id,
-      tag: tag,
-      token: auth.token,
-    };
+    const {prev_route} = this.state;
 
-    const req = await removeTagFromGroup(request);
-    if (req.errors) {
-      alert(req.errors[0].message);
-      if (req.errors[0].message == 'Not Authenticated') {
-        userLogout();
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'SignIn'}],
-        });
+    if (prev_route == 'GroupSetting') {
+      const request = {
+        groupId: group.group.id,
+        tag: tag,
+        token: auth.token,
+      };
+
+      const req = await removeTagFromGroup(request);
+      if (req.errors) {
+        alert(req.errors[0].message);
+        if (req.errors[0].message == 'Not Authenticated') {
+          userLogout();
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'SignIn'}],
+          });
+        }
+        return;
       }
-      return;
+    } else if (prev_route == 'GroupCreation'){
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          addedTags: prevState.addedTags.filter(t => t.id != tag.id),
+        };
+      });
     }
   };
 
   render() {
-    const {searchTerm, warning, create, tags, prev_route, addedTags} = this.state;
-    let tagList = []
-    const {group} = this.props;
-    if (prev_route == 'GroupSetting'){
-      tagList = group.group.tags
+    const {searchTerm, warning, create, tags, addedTags} = this.state;
+    let tagList = [];
+    const {group, route} = this.props;
+    const {prev_route} = route.params;
+    if (prev_route == 'GroupSetting') {
+      tagList = group.group.tags;
     } else {
-      tagList = addedTags
+      tagList = addedTags;
     }
 
     return (
@@ -248,7 +303,11 @@ class EditTag extends React.Component {
             <Text style={{marginTop: 5, color: 'red'}}>{warning}</Text>
           ) : null}
           <View style={styles.optionArea}>
-            <TagSearchBar onChange={this.onSearchChange} value={searchTerm} />
+            <TagSearchBar
+              onChange={this.onSearchChange}
+              value={searchTerm}
+              prev_route={prev_route}
+            />
             {prev_route == 'GroupSetting' ? (
               <CreateTagButton onPress={this.onTagCreate} create={create} />
             ) : null}

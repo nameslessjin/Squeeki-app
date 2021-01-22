@@ -90,7 +90,7 @@ export default class RequestList extends React.Component {
 
   render() {
     const {users, onEndReached, refreshing, onRefresh} = this.props;
-    console.log(users);
+
     return (
       <FlatList
         data={users}

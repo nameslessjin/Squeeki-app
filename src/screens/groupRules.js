@@ -43,9 +43,7 @@ class GroupRules extends React.Component {
     // if rules updated the button will be pressable else disabled
     const {group, navigation} = this.props
     const update = (prevState.rules != this.state.rules) && prevState.rules.length != 0;
-    console.log(prevState.rules)
-    console.log(this.state.rules)
-    console.log(update)
+
     const {auth} = group.group;
     navigation.setOptions({
       headerRight: () =>
@@ -69,7 +67,7 @@ class GroupRules extends React.Component {
     this.setState({loading: true});
     const req = await getGroupRules(request);
     if (req.errors) {
-      console.log(req);
+
       // alert(req.errors[0].message);
       alert('Get group rules error');
       if (req.errors[0].message == 'Not Authenticated') {

@@ -16,7 +16,7 @@ export default class Leaderboard extends React.Component {
   onOptionPress = option => {
     const {loadLeaderBoard} = this.props
     this.setState({option: option});
-    console.log(option)
+
     loadLeaderBoard(true, option)
   };
 

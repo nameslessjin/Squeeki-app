@@ -133,7 +133,7 @@ export default (App = () => {
               options={({route}) => ({headerTitle: getHeaderTitle(route)})}
             />
             <Stack.Screen name="Search" component={GroupsSearch} />
-            <Stack.Screen name="Create Group" component={GroupCreation} />
+            <Stack.Screen name="GroupCreation" component={GroupCreation} />
             <Stack.Screen
               name="GroupNavigator"
               component={GroupDrawerNavigator}

@@ -133,7 +133,7 @@ export const searchGroup = data => {
 // };
 
 export const createGroup = data => {
-  const {groupname, shortDescription, backgroundImg, icon, token, visibility, request_to_join} = data;
+  const {groupname, shortDescription, backgroundImg, icon, token, visibility, request_to_join, tagIds} = data;
 
   return async function(dispatch) {
     let groupIcon = null;
@@ -212,7 +212,8 @@ export const createGroup = data => {
       backgroundImg: groupBackgroundImg,
       icon: groupIcon,
       visibility: visibility,
-      request_to_join
+      request_to_join,
+      tagIds
     };
 
     const graphQl = {

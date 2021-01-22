@@ -135,7 +135,7 @@ class Group extends React.Component {
       count: init ? 0 : post.groupPosts.count,
       init: init,
     };
-    console.log(post.groupPosts.count);
+
     this.setState({loading: true});
     await getGroupPostsFunc(data);
     this.setState({loading: false});

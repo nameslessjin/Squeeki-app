@@ -38,7 +38,7 @@ export const extractReward = (rewards, remaining_gift_card_count) => {
     const rarity15 = rewards.filter(r => r.chance == 15)
     const rarity30 = rewards.filter(r => r.chance == 30)
     const rarity40 = rewards.filter(r => r.chance == 40)
-    // console.log(redeemed_gift_card_count)
+
     const sys_reward = [
         {
             id: 'point_4',

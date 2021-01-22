@@ -50,7 +50,8 @@ class RewardList extends React.Component {
 
     const req = await getMonthlyGiftCardCount(request);
     if (req.errors) {
-      alert(req.errors[0].message);
+      alert('Failed to get remaining monthly giftcards')
+      // alert(req.errors[0].message);
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -100,7 +101,7 @@ class RewardList extends React.Component {
     const {reward, group} = this.props;
     const {rewards} = reward;
     const {modalVisible, remaining_gift_card_count} = this.state
-    // console.log(remaining_gift_card_count)
+
 
     return (
       <View>
