@@ -11,7 +11,8 @@ import {
   onRespondJoinRequestMutation,
   setGroupRequestToJoinMutation,
   onGroupRulesUpdateMutation,
-  getGroupRulesQuery
+  getGroupRulesQuery,
+  getGroupJoinRequestCountQuery
 } from './query/groupQuery';
 
 export const findUserGroupsByUserId = data => {
@@ -665,5 +666,44 @@ export const getGroupRules = data => {
     }
     return result.data.getGroupRules ? result.data.getGroupRules : 0
 
+  }
+}
+
+export const getGroupJoinRequestCount = data => {
+  const {token, groupId} = data
+
+  return async function (dispatch){
+    const graphql = {
+      query: getGroupJoinRequestCountQuery,
+      variables: {
+        groupId: groupId
+      }
+    }
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(getGroupJoinRequestCountReducer(result.data.getGroupJoinRequestCount))
+
+    return 0
+    
+  }
+}
+
+const getGroupJoinRequestCountReducer = data => {
+  return {
+    type: 'getGroupJoinRequestCount',
+    data: data
   }
 }

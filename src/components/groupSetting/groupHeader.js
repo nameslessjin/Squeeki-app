@@ -166,7 +166,7 @@ class GroupSettingsHeader extends React.Component {
             ]}>
             <TextInput
               multiline={true}
-              maxLength={120}
+              maxLength={150}
               placeholder={'Short description (min 20 chars) ...'}
               placeholderTextColor={'#7f8fa6'}
               onChangeText={text => this.updateShortDescription(text)}

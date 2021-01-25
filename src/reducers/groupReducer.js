@@ -1,6 +1,7 @@
 const INITIAL_STATE = {
   groups: {groups: [], count: 0},
   group: {},
+  group_join_request_count: 0
 };
 
 export default (groupReducer = (state = INITIAL_STATE, action) => {
@@ -18,6 +19,12 @@ export default (groupReducer = (state = INITIAL_STATE, action) => {
               : state.groups.groups.concat(action.data.groups),
         },
       };
+
+    case 'getGroupJoinRequestCount':
+      return {
+        ...state,
+        group_join_request_count: action.data
+      }
 
     case 'group':
       return {

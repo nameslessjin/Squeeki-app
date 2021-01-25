@@ -4,17 +4,24 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class addButton extends React.Component {
   render() {
-    const {onPress, onJoinRequestPress} = this.props;
-
-    // when is there new people
-    // <MaterialIcons name="account-multiple" size={30} color={'#EA2027'} />
+    const {onPress, onJoinRequestPress, group_join_request_count} = this.props;
 
     return (
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <TouchableOpacity onPress={onJoinRequestPress}>
-          <View style={[styles.marginRight]}>
-            <MaterialIcons name="account-multiple-outline" size={30} color={'#EA2027'} />
-            {/* <Text style={{fontSize: 10}} >+3</Text> */}
+          <View style={{flexDirection: 'row'}}>
+            {group_join_request_count == 0 ? null : (
+              <View style={styles.notification}>
+                <Text style={styles.notificationText}>
+                  {group_join_request_count}
+                </Text>
+              </View>
+            )}
+            <MaterialIcons
+              name="account-multiple-outline"
+              size={30}
+              color={'#EA2027'}
+            />
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.headerRightButton} onPress={onPress}>
@@ -32,6 +39,7 @@ const styles = StyleSheet.create({
     height: 35,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   request: {
     marginRight: 5,
@@ -39,5 +47,19 @@ const styles = StyleSheet.create({
     height: 35,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  notification: {
+    minWidth: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#EA2027',
+    paddingHorizontal: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notificationText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 12,
   },
 });

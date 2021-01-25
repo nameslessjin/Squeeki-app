@@ -14,8 +14,13 @@ import {getGroupPosts} from '../actions/post';
 import PostList from '../components/posts/postList';
 import {getGroupPostsFunc} from '../functions/post';
 import {loadLeaderBoardFunc} from '../functions/point';
+import {getGroupJoinRequestCountFunc} from '../functions/group';
 import {userLogout} from '../actions/auth';
-import {cleanGroup, findUserGroupsByUserId} from '../actions/group';
+import {
+  cleanGroup,
+  findUserGroupsByUserId,
+  getGroupJoinRequestCount,
+} from '../actions/group';
 import {getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point';
 import {invalidAuthentication} from '../functions/auth';
 
@@ -26,7 +31,7 @@ class Group extends React.Component {
   };
 
   componentDidMount() {
-    const {groupname, visibility, auth} = this.props.group.group;
+    const {groupname, visibility, auth, id} = this.props.group.group;
     const {navigation, group} = this.props;
 
     navigation.setOptions({
@@ -37,6 +42,10 @@ class Group extends React.Component {
     if (visibility == 'public' || auth != null) {
       this.loadGroupPosts(true);
       this.loadLeaderBoard();
+
+      if (auth.rank <= 2) {
+        this.getGroupJoinRequestCount();
+      }
     }
 
     Keyboard.dismiss();
@@ -46,6 +55,24 @@ class Group extends React.Component {
     this.props.cleanGroup();
     this.loadGroups(true);
   }
+
+  getGroupJoinRequestCount = () => {
+    const {
+      getGroupJoinRequestCount,
+      auth,
+      group,
+      navigation,
+      userLogout,
+    } = this.props;
+    const data = {
+      func: getGroupJoinRequestCount,
+      auth,
+      group,
+      navigation,
+      userLogout,
+    };
+    getGroupJoinRequestCountFunc(data);
+  };
 
   loadGroups = async init => {
     const {
@@ -200,6 +227,7 @@ const mapDispatchToProps = dispatch => {
     findUserGroupsByUserId: data => dispatch(findUserGroupsByUserId(data)),
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
     getGroupPointLeaderBoard: data => dispatch(getGroupPointLeaderBoard(data)),
+    getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data)),
   };
 };
 

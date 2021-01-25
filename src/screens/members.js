@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StatusBar
-} from 'react-native';
+import {View, StatusBar} from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {getGroupMembers} from '../actions/user';
@@ -19,31 +16,60 @@ class Users extends React.Component {
     const {navigation, group} = this.props;
     navigation.navigate('SearchUser', {
       group: group.group,
-      prev_route: 'members'
+      prev_route: 'members',
     });
   };
 
   onJoinRequestPress = () => {
-    const {navigation} = this.props
+    const {navigation} = this.props;
     // go to join request page
-    navigation.navigate('GroupJoinRequest')
-  }
+    navigation.navigate('GroupJoinRequest');
+  };
 
   componentDidMount() {
     const {navigation, group} = this.props;
+    const {group_join_request_count} = group;
     const button =
       group.group.auth.rank <= 2 ? (
-        <AddButton onPress={this.onPress} onJoinRequestPress={this.onJoinRequestPress} />
+        <AddButton
+          onPress={this.onPress}
+          onJoinRequestPress={this.onJoinRequestPress}
+          group_join_request_count={group_join_request_count}
+        />
       ) : null;
     navigation.setOptions({
       headerRight: () => button,
-      headerBackTitleVisible: false
+      headerBackTitleVisible: false,
     });
     this.loadGroupMembers(true);
   }
 
+  componentDidUpdate() {
+    const {navigation, group} = this.props;
+    const {group_join_request_count} = group;
+    const button =
+      group.group.auth.rank <= 2 ? (
+        <AddButton
+          onPress={this.onPress}
+          onJoinRequestPress={this.onJoinRequestPress}
+          group_join_request_count={group_join_request_count}
+        />
+      ) : null;
+    navigation.setOptions({
+      headerRight: () => button,
+      headerBackTitleVisible: false,
+    });
+  }
+
   loadGroupMembers = init => {
-    const {navigation, getGroupMembers, auth, group, userLogout, user} = this.props;
+    const {
+      navigation,
+      getGroupMembers,
+      auth,
+      group,
+      userLogout,
+      user,
+    } = this.props;
     const {id} = group.group;
     const {token} = auth;
     const data = {

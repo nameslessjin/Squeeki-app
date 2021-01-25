@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/drawer';
 import Group from '../screens/group';
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {DrawerActions} from '@react-navigation/native';
 import HeaderRightButton from '../components/group/headerRight';
 // all screens
@@ -43,6 +43,84 @@ class GroupDrawerNavigator extends React.Component {
     });
   }
 
+  CustomDrawerContent = props => {
+    const {group, group_join_request_count} = this.props.group;
+    const {auth} = group;
+    console.log(auth);
+    return auth == null ? null : (
+      <DrawerContentScrollView {...props}>
+        <DrawerItemList {...props} />
+        <DrawerItem
+          label="Rules"
+          icon={() => (
+            <MaterialIcons name="script-text" color={'grey'} size={25} />
+          )}
+          labelStyle={styles.labelStyle}
+          onPress={() => {
+            props.navigation.navigate('GroupRules');
+          }}
+        />
+        <DrawerItem
+          label={({focused, color}) => (
+            <Text style={styles.labelStyle}>
+              Members{' '}
+              {auth.rank <= 2 && group_join_request_count > 0? (
+                <View style={styles.notification}>
+                  <Text style={styles.notificationText}>{group_join_request_count}</Text>
+                </View>
+              ) : null}
+            </Text>
+          )}
+          icon={() => (
+            <MaterialIcons name="account-group" color={'grey'} size={25} />
+          )}
+          labelStyle={styles.labelStyle}
+          onPress={() => {
+            props.navigation.navigate('Members');
+          }}
+        />
+        <DrawerItem
+          label="Nomination"
+          icon={() => (
+            <MaterialIcons name="poll-box" color={'grey'} size={25} />
+          )}
+          labelStyle={styles.labelStyle}
+          onPress={() => {
+            props.navigation.navigate('NominationResults');
+          }}
+        />
+        <DrawerItem
+          label="Check In"
+          icon={() => (
+            <MaterialIcons name="check-bold" color={'grey'} size={25} />
+          )}
+          labelStyle={styles.labelStyle}
+          onPress={() => {
+            props.navigation.navigate('CheckIn');
+          }}
+        />
+        <DrawerItem
+          label="Reward"
+          icon={() => (
+            <MaterialIcons name="treasure-chest" color={'grey'} size={25} />
+          )}
+          labelStyle={styles.labelStyle}
+          onPress={() => {
+            props.navigation.navigate('RewardNavigator');
+          }}
+        />
+        <DrawerItem
+          label="Settings"
+          icon={() => <MaterialIcons name="cog" color={'grey'} size={25} />}
+          labelStyle={styles.labelStyle}
+          onPress={() => {
+            props.navigation.navigate('GroupSetting');
+          }}
+        />
+      </DrawerContentScrollView>
+    );
+  };
+
   render() {
     const {groupname} = this.props.group.group;
 
@@ -50,77 +128,12 @@ class GroupDrawerNavigator extends React.Component {
       <Drawer.Navigator
         initialRouteName="Group"
         drawerPosition="right"
-        drawerContent={props => (
-          <CustomDrawerContent {...props} {...this.props.group} />
-        )}
+        drawerContent={props => this.CustomDrawerContent(props)}
         drawerStyle={styles.drawerStyle}>
         <Drawer.Screen name={groupname || 'Group'} component={Group} />
       </Drawer.Navigator>
     );
   }
-}
-
-function CustomDrawerContent(props) {
-  const {auth} = props.group;
-  return auth == null ? null : (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <DrawerItem
-        label="Rules"
-        icon={() => (
-          <MaterialIcons name="script-text" color={'grey'} size={25} />
-        )}
-        labelStyle={styles.labelStyle}
-        onPress={() => {
-          props.navigation.navigate('GroupRules');
-        }}
-      />
-      <DrawerItem
-        label="Members"
-        icon={() => (
-          <MaterialIcons name="account-group" color={'grey'} size={25} />
-        )}
-        labelStyle={styles.labelStyle}
-        onPress={() => {
-          props.navigation.navigate('Members');
-        }}
-      />
-      <DrawerItem
-        label="Nomination"
-        icon={() => <MaterialIcons name="poll-box" color={'grey'} size={25} />}
-        labelStyle={styles.labelStyle}
-        onPress={() => {
-          props.navigation.navigate('NominationResults');
-        }}
-      />
-      <DrawerItem
-        label="Check In"
-        icon={() => (
-          <MaterialIcons name="check-bold" color={'grey'} size={25} />
-        )}
-        labelStyle={styles.labelStyle}
-        onPress={() => {
-            props.navigation.navigate('CheckIn')
-        }}
-      />
-      <DrawerItem
-        label="Reward"
-        icon={() => <MaterialIcons name="treasure-chest" color={'grey'} size={25} />}
-        labelStyle={styles.labelStyle}
-        onPress={() => {
-          props.navigation.navigate('RewardNavigator');
-        }}
-      />
-      <DrawerItem
-        label="Settings"
-        icon={() => <MaterialIcons name="cog" color={'grey'} size={25} />}
-        labelStyle={styles.labelStyle}
-        onPress={() => {
-          props.navigation.navigate('GroupSetting');
-        }}
-      />
-    </DrawerContentScrollView>
-  );
 }
 
 const Drawer = createDrawerNavigator();
@@ -131,6 +144,22 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     marginLeft: -25,
+    color: 'grey',
+    fontWeight: '600',
+  },
+  notification: {
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    paddingHorizontal: 3,
+    backgroundColor: 'grey',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#EA2027',
+  },
+  notificationText: {
+    color: 'white',
+    fontWeight: '500',
   },
 });
 

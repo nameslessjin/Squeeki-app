@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
-import {getGroupJoinRequest, onRespondJoinRequest} from '../actions/group';
+import {getGroupJoinRequest, onRespondJoinRequest, getGroupJoinRequestCount} from '../actions/group';
+import { getGroupJoinRequestCountFunc } from '../functions/group'
 import {getGroupMembers} from '../actions/user';
 import {getGroupMembersFunc} from '../functions/user';
 import List from '../components/groupJoinRequest/requestList';
@@ -34,7 +35,27 @@ class UserGroupJoinRequest extends React.Component {
   componentWillUnmount() {
     // reload members
     this.loadGroupMembers();
+    this.getGroupJoinRequestCount()
   }
+
+  getGroupJoinRequestCount = () => {
+    const {
+      getGroupJoinRequestCount,
+      auth,
+      group,
+      navigation,
+      userLogout,
+    } = this.props;
+    const data = {
+      func: getGroupJoinRequestCount,
+      auth,
+      group,
+      navigation,
+      userLogout,
+    };
+    getGroupJoinRequestCountFunc(data);
+  };
+
 
   loadJoinRequest = async init => {
     const {
@@ -213,6 +234,7 @@ const mapDispatchToProps = dispatch => {
     getGroupJoinRequest: data => dispatch(getGroupJoinRequest(data)),
     getGroupMembers: data => dispatch(getGroupMembers(data)),
     onRespondJoinRequest: data => dispatch(onRespondJoinRequest(data)),
+    getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data))
   };
 };
 

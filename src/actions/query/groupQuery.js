@@ -265,3 +265,9 @@ query getGroupRules($groupId: ID!){
 }
 
 `
+
+export const getGroupJoinRequestCountQuery = `
+query getGroupJoinRequestCount($groupId: ID!){
+    getGroupJoinRequestCount(groupId: $groupId)
+}
+`
