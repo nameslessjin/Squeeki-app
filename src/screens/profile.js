@@ -263,10 +263,9 @@ class Profile extends React.Component {
             <Text style={{color: '#487eb0'}}>Change password</Text>
           </TouchableOpacity>
 
-          <ProfileModal  modalVisible={modalVisible} onBackdropPress={this.onBackdropPress} onChangeMedia={this.setIcon} />
-
-          <ActivityIndicator animating={loading} />
           <Text style={{color: 'red'}}>{errorText}</Text>
+          <ActivityIndicator animating={loading} />
+          <ProfileModal  modalVisible={modalVisible} onBackdropPress={this.onBackdropPress} onChangeMedia={this.setIcon} />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

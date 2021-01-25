@@ -43,6 +43,7 @@ class MemberCard extends React.Component {
     const { icon_option} = this.state
 
     let group_username_size = 14;
+    
     if (group_username.length > 20) {
       group_username_size = 13;
     }

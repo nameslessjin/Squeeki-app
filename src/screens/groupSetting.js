@@ -134,7 +134,10 @@ class GroupSetting extends React.Component {
   }
 
   componentWillUnmount() {
-    this.getGroup();
+    const {group} = this.props
+    if (group.group.id){
+      this.getGroup();
+    }
   }
 
   getGroup = async () => {
@@ -168,7 +171,7 @@ class GroupSetting extends React.Component {
   updateGroupSettings = async () => {
     const {updateData, origin} = this.extractData();
     const {navigation, userLogout} = this.props;
-    this.setState({loading: true});
+    this.setState({loading: true, type: 'general'});
     const data = {
       updateData: updateData,
       origin: origin,

@@ -31,6 +31,7 @@ class UserSearch extends React.Component {
     const {chosenUser} = this.state;
     const {params} = this.props.route;
     if (params) {
+      // group and pre_route is passed in every instance
       this.setState({group: params.group, prev_route: params.prev_route});
       if (params.prev_route == 'PostSetting') {
         this.loadGroupMembers(true);
