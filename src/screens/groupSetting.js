@@ -9,6 +9,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
 import GroupHeader from '../components/groupSetting/groupHeader';
@@ -20,6 +21,7 @@ import {
   setGroupRequestToJoin,
   getSingleGroupById,
 } from '../actions/group';
+import { getStatusInGroup } from '../actions/user'
 import {userLogout} from '../actions/auth';
 import ToggleSetting from '../components/groupSetting/toggleSetting';
 import SettingEdition from '../components/groupSetting/settingEdition';
@@ -134,8 +136,8 @@ class GroupSetting extends React.Component {
   }
 
   componentWillUnmount() {
-    const {group} = this.props
-    if (group.group.id){
+    const {group} = this.props;
+    if (group.group.id) {
       this.getGroup();
     }
   }
@@ -156,7 +158,7 @@ class GroupSetting extends React.Component {
     const req = await getSingleGroupById(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load group at this time, please try again later')
+      alert('Cannot load group at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -181,7 +183,9 @@ class GroupSetting extends React.Component {
 
     if (updateGroup.errors) {
       // alert(updateGroup.errors[0].message);
-      alert('Cannot update group settings at this time, please try again later')
+      alert(
+        'Cannot update group settings at this time, please try again later',
+      );
       if (updateGroup.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -228,7 +232,9 @@ class GroupSetting extends React.Component {
 
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot change group settings at this time, please try again later')
+      alert(
+        'Cannot change group settings at this time, please try again later',
+      );
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -275,6 +281,34 @@ class GroupSetting extends React.Component {
     });
   };
 
+  onEditProfilePress = async() => {
+    const {navigation, group, auth, userLogout, getStatusInGroup} =  this.props
+    const request = {
+      token: auth.token,
+      groupId: group.group.id
+    }
+
+
+    const req = await getStatusInGroup(request)
+    if (req.errors) {
+      console.log(req.errors)
+      // alert(req.errors[0].message);
+      alert('Load profile failed, please try again later');
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+    navigation.navigate('Member', {
+      ...req,
+      prev_route: 'GroupSetting',
+    })
+  }
+
   render() {
     const {visibility, loading, request_to_join, type} = this.state;
     const auth_in_group = this.props.group.group.auth;
@@ -308,14 +342,20 @@ class GroupSetting extends React.Component {
           />
 
           <SettingEdition
+            onPress={this.onEditProfilePress}
+            name={'Edit your profile'}
+            disabled={false}
+          />
+
+          <SettingEdition
             onPress={this.onNominationCreationPress}
             name={'Edit nominations'}
-            disabled={auth_rank > 2}
+            disabled={auth_rank >= 2}
           />
           <SettingEdition
             onPress={this.onEditTagPress}
             name={'Edit tags'}
-            disabled={auth_rank > 2}
+            disabled={auth_rank >= 2}
           />
 
           <ActivityIndicator
@@ -349,6 +389,7 @@ const mapDispatchToProps = dispatch => {
     setGroupVisibility: data => dispatch(setGroupVisibility(data)),
     setGroupRequestToJoin: data => dispatch(setGroupRequestToJoin(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
+    getStatusInGroup: data => dispatch(getStatusInGroup(data))
   };
 };
 

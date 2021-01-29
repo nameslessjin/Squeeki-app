@@ -7,6 +7,7 @@ import {
   addMembersMutation,
   deleteMemberMutation,
   makeOwnerMutation,
+  getStatusInGroupQuery
 } from './query/userQuery';
 import {getGroup} from './group';
 
@@ -310,5 +311,36 @@ export const makeOwner = data => {
       return result;
     }
     return 0
+  }
+}
+
+export const getStatusInGroup = data => {
+  const {token, groupId} = data
+
+  return async function(dispatch){
+    const graphql = {
+      query: getStatusInGroupQuery,
+      variables: {
+        groupId: groupId
+      }
+    }
+
+    const req = await fetch('http://192.168.86.24:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.getStatusInGroup
+
   }
 }

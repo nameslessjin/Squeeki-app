@@ -21,13 +21,35 @@ query getGroupMembers($input: GetGroupMembersInput!){
         count
     }
 }
-`
+`;
+
+export const getStatusInGroupQuery = `
+query getStatusInGroup($groupId: ID!){
+    getStatusInGroup(groupId: $groupId){
+        id
+        username
+        displayName
+        group_username
+        auth {
+            rank
+            title
+        }
+        icon{
+            uri
+            width
+            height
+        }
+        createdAt
+        lastActiveAt
+    }
+}
+`;
 
 export const updateMemberMutation = `
 mutation updateMember($memberInput: MemberInput!){
     updateMember(input: $memberInput)
 }
-`
+`;
 
 export const changeGroupNotificationMutation = `
 mutation changeGroupNotification($input: GroupNotificationInput!){
@@ -55,14 +77,14 @@ mutation changeGroupNotification($input: GroupNotificationInput!){
         createdAt
     }
 }
-`
+`;
 
 export const registerDeviceForNotificationMutation = `
 mutation registerDeviceForNotification($input: NotificationInput!){
     registerDeviceForNotification(input: $input)
 }
 
-`
+`;
 
 export const searchUserQuery = `
 query searchUser($searchUserInput: SearchUserInput!){
@@ -83,22 +105,22 @@ query searchUser($searchUserInput: SearchUserInput!){
         count
     }
 }
-`
+`;
 
 export const addMembersMutation = `
 mutation addMembers($input: AddMembersInput!){
     addMembers(input: $input)
 }
-`
+`;
 
 export const deleteMemberMutation = `
 mutation deleteMember($memberId: String!, $groupId: String!){
     deleteMember(memberId: $memberId, groupId: $groupId)
 }
-`
+`;
 
 export const makeOwnerMutation = `
 mutation makeMemberOwner($memberId: String!, $groupId: String!){
     makeMemberOwner(memberId: $memberId, groupId: $groupId)
 }
-`
+`;

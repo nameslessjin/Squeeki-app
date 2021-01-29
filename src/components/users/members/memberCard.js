@@ -20,7 +20,8 @@ class MemberCard extends React.Component {
       const {navigation, item} = this.props
       const {id, username, displayName, auth, icon} = item;
       navigation.navigate("Member", {
-          ...item
+          ...item,
+          prev_route: 'Members',
       })
   }
 

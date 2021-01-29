@@ -338,6 +338,8 @@ class Member extends React.Component {
     const allowToMakeOwner = group.auth.rank <= 1 && auth.rank > 1;
     const allowToChangeGroupUsername = user.id == id
 
+    console.log(this.props.route.params,)
+
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
         <KeyboardAvoidingView style={styles.container}>
