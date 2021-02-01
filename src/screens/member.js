@@ -74,7 +74,10 @@ class Member extends React.Component {
   }
 
   componentWillUnmount() {
-    this.loadGroupMembers();
+    const {prev_route} = this.state;
+    if (prev_route == 'Members') {
+      this.loadGroupMembers();
+    }
     this.getGroup();
   }
 
@@ -94,7 +97,7 @@ class Member extends React.Component {
     const req = await getSingleGroupById(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load group at this time, please try again later')
+      alert('Cannot load group at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -134,7 +137,7 @@ class Member extends React.Component {
     const deletionResult = await deleteMember(data);
     if (deletionResult.errors) {
       // alert(deletionResult.errors[0].message);
-      alert('Cannot delete member at this time, please try again later')
+      alert('Cannot delete member at this time, please try again later');
       if (deletionResult.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({
@@ -160,7 +163,7 @@ class Member extends React.Component {
     const result = await makeOwner(data);
     if (result.errors) {
       // alert(result.errors[0].message);
-      alert('Cannot transfer ownership at this time, please try again later')
+      alert('Cannot transfer ownership at this time, please try again later');
       if (result.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({
@@ -195,7 +198,6 @@ class Member extends React.Component {
       group_username = null;
     }
 
-    
     if (rank != null || title != null || group_username != null) {
       const updateData = {
         userId: id,
@@ -251,7 +253,7 @@ class Member extends React.Component {
 
     if (updateMember.errors) {
       // alert(updateMember.errors[0].message);
-      alert('Cannot modify member status at this time, please try again later')
+      alert('Cannot modify member status at this time, please try again later');
       if (updateMember.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({
@@ -336,9 +338,9 @@ class Member extends React.Component {
     const allowToDeleteMember =
       auth.rank != 1 && group.auth.rank <= 2 && user.id != id;
     const allowToMakeOwner = group.auth.rank <= 1 && auth.rank > 1;
-    const allowToChangeGroupUsername = user.id == id
+    const allowToChangeGroupUsername = user.id == id;
 
-    console.log(this.props.route.params,)
+    console.log(this.props.route.params);
 
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>

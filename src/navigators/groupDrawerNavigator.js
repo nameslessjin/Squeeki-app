@@ -64,9 +64,11 @@ class GroupDrawerNavigator extends React.Component {
           label={({focused, color}) => (
             <Text style={styles.labelStyle}>
               Members{' '}
-              {auth.rank <= 2 && group_join_request_count > 0? (
+              {auth.rank <= 2 && group_join_request_count > 0 ? (
                 <View style={styles.notification}>
-                  <Text style={styles.notificationText}>{group_join_request_count}</Text>
+                  <Text style={styles.notificationText}>
+                    {group_join_request_count}
+                  </Text>
                 </View>
               ) : null}
             </Text>
@@ -77,6 +79,16 @@ class GroupDrawerNavigator extends React.Component {
           labelStyle={styles.labelStyle}
           onPress={() => {
             props.navigation.navigate('Members');
+          }}
+        />
+        <DrawerItem
+          label="Chat"
+          icon={() => (
+            <MaterialIcons name="chat" color={'grey'} size={25} />
+          )}
+          labelStyle={styles.labelStyle}
+          onPress={() => {
+            props.navigation.navigate('NominationResults');
           }}
         />
         <DrawerItem

@@ -43,8 +43,10 @@ class Group extends React.Component {
       this.loadGroupPosts(true);
       this.loadLeaderBoard();
 
-      if (auth.rank <= 2) {
-        this.getGroupJoinRequestCount();
+      if (auth != null) {
+        if (auth.rank <= 2) {
+          this.getGroupJoinRequestCount();
+        }
       }
     }
 
