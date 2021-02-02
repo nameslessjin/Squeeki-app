@@ -28,7 +28,7 @@ export default class Input extends React.Component {
     if (type == 'post') {
       display = (
         <View style={styles.container}>
-          <Text>{title}</Text>
+          <Text style={{color: 'grey'}}>{title}</Text>
           <View style={styles.postSelection}>
             <TouchableOpacity onPress={() => onInputChange(type)}>
               <View style={styles.subContainer}>
@@ -51,8 +51,10 @@ export default class Input extends React.Component {
     } else if (type == 'local') {
       display = (
         <View style={[styles.container, {justifyContent: 'space-between'}]}>
-          <Text>{title}</Text>
-          <TouchableWithoutFeedback disabled={true} onPress={() => onInputChange(type)}>
+          <Text style={{color: 'grey'}}>{title}</Text>
+          <TouchableWithoutFeedback
+            disabled={true}
+            onPress={() => onInputChange(type)}>
             <MaterialIcons
               name={value ? 'toggle-switch' : 'toggle-switch-off-outline'}
               size={45}
@@ -70,7 +72,13 @@ export default class Input extends React.Component {
             value={value.toString()}
             keyboardType={type == 'duration' ? 'numeric' : null}
             onChangeText={t => onInputChange(type, t)}
-            placeholder={type == 'password' ? 'Optional' : type == 'duration' ? '1 to 3000' : 'Check-in name'}
+            placeholder={
+              type == 'password'
+                ? 'Optional'
+                : type == 'duration'
+                ? '1 to 3000'
+                : 'Check-in name'
+            }
             placeholderTextColor={'#7f8fa6'}
             maxLength={type == 'name' ? 40 : 30}
           />
@@ -97,7 +105,7 @@ const styles = StyleSheet.create({
   textInputStyle: {
     width: '100%',
     marginLeft: 20,
-    color: 'grey',
+    color: 'black',
     height: 50,
   },
   postSelection: {
@@ -110,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     // backgroundColor: 'orange',
-    width: '100%' ,
+    width: '100%',
     paddingLeft: 20,
   },
 });

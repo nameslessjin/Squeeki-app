@@ -66,15 +66,15 @@ class GroupSetting extends React.Component {
 
   extractData = () => {
     let {id, groupname, shortDescription, icon, backgroundImg} = this.state;
-
+    const {group} = this.props.group
     groupname = groupname.trim();
     shortDescription = shortDescription.trim();
 
     const origin = {
-      groupname: this.props.group.group.groupname,
-      shortDescription: this.props.group.group.shortDescription,
-      icon: this.props.group.group.icon,
-      backgroundImg: this.props.group.group.backgroundImg,
+      groupname: group.groupname,
+      shortDescription: group.shortDescription,
+      icon: group.icon,
+      backgroundImg: group.backgroundImg,
     };
 
     if (icon == origin.icon) {

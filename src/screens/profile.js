@@ -222,7 +222,7 @@ class Profile extends React.Component {
             )}
           </TouchableOpacity>
           <View style={{marginTop: 10}}>
-            <Text style={{color: 'grey'}}>{username}</Text>
+            <Text style={{color: 'grey'}}>@{username}</Text>
           </View>
 
           <UserTextInput

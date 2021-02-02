@@ -77,17 +77,15 @@ export default class RewardList extends React.Component {
 
   renderSectionHeader = ({section}) => {
     const {id, title} = section;
-    const {onQuestionMarkPress} = this.props
+    const {onQuestionMarkPress} = this.props;
     if (id == '0') {
       return this.optionButton();
     } else if (id == '-1') {
       return (
-        <View
-          style={styles.reward_chance}>
+        <View style={styles.reward_chance}>
           <Text>Reward Chance:</Text>
           <TouchableOpacity onPress={onQuestionMarkPress}>
-            <View
-              style={styles.question_mark}>
+            <View style={styles.question_mark}>
               <MaterialIcons name={'help'} size={15} color={'white'} />
             </View>
           </TouchableOpacity>
@@ -158,10 +156,15 @@ export default class RewardList extends React.Component {
   };
 
   render() {
-    const {rewards, onEndReached, route, remaining_gift_card_count} = this.props;
+    const {
+      rewards,
+      onEndReached,
+      route,
+      remaining_gift_card_count,
+    } = this.props;
     const {option} = this.state;
     const redeemed = option == 'redeemed';
- 
+
     let sections = extractReward(rewards, remaining_gift_card_count);
     const options = {
       title: 'options',
@@ -219,6 +222,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 10,
     marginVertical: 5,
+    textShadowColor: 'black',
+    textShadowRadius: 0.1,
+    textShadowOffset: {
+      width: 0.2, height: 0.2
+    }
   },
   button: {
     height: '100%',
@@ -241,7 +249,7 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 5
+    marginLeft: 5,
   },
   reward_chance: {
     width: '100%',
@@ -249,5 +257,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     height: 30,
-  }
+  },
 });

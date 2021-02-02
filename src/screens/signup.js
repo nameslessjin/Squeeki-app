@@ -32,11 +32,11 @@ class SignUp extends React.Component {
   };
 
   componentDidMount() {
-    const {navigation} = this.props
+    const {navigation} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
-      headerTitle: 'Sign Up'
-    })
+      headerTitle: 'Sign Up',
+    });
   }
 
   onChangeText = (type, text) => {
@@ -118,13 +118,16 @@ class SignUp extends React.Component {
       return;
     }
 
-    this.props.navigation.navigate('Home');
+    this.props.navigation.reset({
+      index: 0,
+      routes: [{name: 'Home'}],
+    });
   };
 
   onTermsPressed = () => {
-    const {navigation} = this.props
-    navigation.navigate("Terms")
-  }
+    const {navigation} = this.props;
+    navigation.navigate('Terms');
+  };
 
   render() {
     const {
@@ -168,12 +171,14 @@ class SignUp extends React.Component {
             value={referCode}
           /> */}
           {loading ? (
-            <ActivityIndicator animating={true} />
+            <ActivityIndicator animating={true} style={{marginTop: 20}} />
           ) : (
             <SignUpButton onPress={this.onPress} />
           )}
           <View style={styles.term}>
-            <TouchableOpacity style={styles.termButton} onPress={this.onTermsPressed}>
+            <TouchableOpacity
+              style={styles.termButton}
+              onPress={this.onTermsPressed}>
               <Text style={styles.text}>Terms and Conditions</Text>
             </TouchableOpacity>
           </View>

@@ -50,7 +50,7 @@ export default class RewardSettingInput extends React.Component {
     } else {
       display = (
         <View style={[styles.container, {height: type=='content' ? 80 : 45}]}>
-          <Text>{title}</Text>
+          <Text style={{color: 'grey'}} >{title}</Text>
           <TextInput
             style={[
               styles.textInputStyle,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   textInputStyle: {
     width: '100%',
     marginLeft: 10,
-    color: 'grey',
+    color: 'black',
     height: 50,
   },
   question_mark: {

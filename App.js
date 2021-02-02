@@ -54,6 +54,8 @@ import GroupJoinRequest from './src/screens/groupJoinRequest'
 import TermDisplay from './src/screens/termDisplay'
 import Terms from './src/screens/terms'
 import GroupRules from './src/screens/groupRules'
+import Chats from './src/screens/chats'
+import ChatSetting from './src/screens/ChatSetting'
 
 
 
@@ -172,6 +174,8 @@ export default (App = () => {
             <Stack.Screen name="Terms" component={Terms}/>
             <Stack.Screen name="TermDisplay" component={TermDisplay}/>
             <Stack.Screen name="GroupRules" component={GroupRules} />
+            <Stack.Screen name="Chats" component={Chats}/>
+            <Stack.Screen name="ChatSetting" component={ChatSetting}/>
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

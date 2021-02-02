@@ -357,7 +357,7 @@ class Member extends React.Component {
           )}
 
           <Text style={styles.displayName}>{displayName}</Text>
-          <Text style={styles.username}>{username}</Text>
+          <Text style={styles.username}>@{username}</Text>
           <InputRankTitle
             auth={auth}
             onRankInputFocus={this.onRankInputFocus}

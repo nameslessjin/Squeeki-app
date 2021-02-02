@@ -51,30 +51,4 @@ const styles = StyleSheet.create({
     // backgroundColor: 'white'
     height: '100%',
   },
-  card: {
-    // width: '100%',
-    margin: 10,
-    justifyContent: 'flex-start',
-    backgroundColor: 'white',
-    padding: 10,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  text: {
-    marginVertical: 3,
-  },
-  checkin: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 30,
-    marginTop: 5,
-  },
-  checkinText: {
-    fontWeight: 'bold',
-    color: '#74b9ff',
-  },
 });

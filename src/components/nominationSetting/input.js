@@ -62,7 +62,7 @@ export default class Input extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Text>{title}</Text>
+        <Text style={{color: 'grey'}} >{title}</Text>
         {type == 'type' ? (
           <TouchableOpacity onPress={() => onInputChange(type)}>
             <View style={{marginLeft: 20}}>
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   textInputStyle: {
     width: '100%',
     marginLeft: 20,
-    color: 'grey',
+    color: 'black',
     height: 50,
   },
   Modal: {
