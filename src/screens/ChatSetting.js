@@ -12,7 +12,8 @@ import HeaderRightButton from '../components/chat/headerRightButton';
 import {userLogout} from '../actions/auth';
 import {getChat, createChat, updateChat} from '../actions/chat';
 import {createUpdateChatFunc, getChatFunc} from '../functions/chat';
-import Input from '../components/chat/settingInput'
+import Input from '../components/chat/settingInput';
+import ChatIconModal from '../components/chat/chatIconModal';
 
 class ChatSetting extends React.Component {
   state = {
@@ -23,17 +24,17 @@ class ChatSetting extends React.Component {
     chatId: null,
     loading: false,
     origin: null,
+    modalVisible: false,
   };
 
   componentDidMount() {
     const {navigation, route} = this.props;
 
     if (route.params) {
-      const {name, type, rank_req, icon, chatId} = route.params;
+      const {name, rank_req, icon, chatId} = route.params;
       this.setState({
-        origin: route.params.chat,
+        origin: route.params,
         name,
-        type,
         rank_req,
         icon,
         chatId,
@@ -60,7 +61,7 @@ class ChatSetting extends React.Component {
         headerRight: () => (
           <HeaderRightButton
             type={'done'}
-            disabled={this.validation}
+            disabled={!this.validation()}
             onPress={this.onCreateUpdateChat}
           />
         ),
@@ -68,9 +69,21 @@ class ChatSetting extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    const {chatId, name, rank_req, icon} = this.state;
+    const {navigation} = this.props;
+    if (chatId) {
+      navigation.navigate('Chat', {
+        name,
+        rank_req,
+        icon,
+      });
+    }
+  }
+
   validation = () => {
     let {name, type, rank_req, icon, origin} = this.state;
-    if (name.length == 0) {
+    if (name.length < 3) {
       return false;
     }
 
@@ -78,14 +91,25 @@ class ChatSetting extends React.Component {
       return false;
     }
 
+    if (rank_req.length == 0) {
+      return false;
+    }
+
     if (origin) {
-      if (
-        name != origin.name ||
-        type != origin.type ||
-        rank_req != origin.rank_req ||
-        icon != origin.icon
-      ) {
-        return true;
+
+      // check icon first
+      if (icon && origin.icon) {
+
+        if (icon.uri != origin.icon.uri) {
+          return true;
+        } else {
+          // check other conditions later
+          if (name != origin.name || rank_req != origin.rank_req) {
+            return true;
+          } else {
+            return false;
+          }
+        }
       }
     }
 
@@ -101,13 +125,18 @@ class ChatSetting extends React.Component {
       createChat,
       updateChat,
     } = this.props;
-    const {name, type, rank_req, icon, chatId} = this.state;
+    const {name, type, rank_req, icon, chatId, origin} = this.state;
+
+    if (origin){
+
+    }
+
     const request = {
       groupId: group.group.id,
       type,
       name: name.trim(),
       rank_req,
-      icon,
+      icon: origin ? ( origin.icon ? (origin.icon.uri == icon.uri ? null : icon ) : icon )  : icon,
       token: auth.token,
       navigation,
       userLogout,
@@ -119,33 +148,77 @@ class ChatSetting extends React.Component {
     this.setState({loading: true});
     const req = await createUpdateChatFunc(request);
     this.setState({loading: false});
+
+    if (!chatId) {
+      navigation.navigate('Chats');
+    } else {
+      this.setState({
+        origin: {
+          name: req.name,
+          rank_req: req.rank_req,
+          icon: req.icon,
+        },
+        icon: req.icon
+      });
+    }
   };
 
   onInputChange = (type, value) => {
-    if (type == 'name'){
-      this.setState({name: value})
-    } else if (type == 'type'){
+    if (type == 'name') {
+      this.setState({name: value});
+    } else if (type == 'type') {
       this.setState(prevState => {
         return {
           ...prevState,
-          type: prevState.type == 'group' ? 'personal' : 'group'
-        }
-      })
-    } else if (type == 'rank'){
-      this.setState({rank_req: value ? parseInt(value) : ''})
-    } 
-  }
+          type: prevState.type == 'group' ? 'personal' : 'group',
+        };
+      });
+    } else if (type == 'rank') {
+      this.setState({rank_req: value ? parseInt(value) : ''});
+    } else if (type == 'icon') {
+      this.setState({modalVisible: true});
+    }
+  };
+
+  setIcon = (data, type) => {
+    this.setState({icon: data, modalVisible: false});
+  };
+
+  onBackdropPress = () => {
+    this.setState({modalVisible: false});
+  };
 
   render() {
-    const {name, type, rank_req, icon} = this.state
+    const {name, type, rank_req, icon, modalVisible, loading} = this.state;
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
-          <Input type={'icon'} value={icon} />
-          <Input type={'name'} value={name} onInputChange={this.onInputChange} />
-          <Input type={'rank'} value={rank_req.toString()} onInputChange={this.onInputChange} />
+          <Input
+            type={'icon'}
+            value={icon}
+            onInputChange={this.onInputChange}
+          />
+          <Input
+            type={'name'}
+            value={name}
+            onInputChange={this.onInputChange}
+          />
+          <Input
+            type={'rank'}
+            value={rank_req.toString()}
+            onInputChange={this.onInputChange}
+          />
           {/* <Input type={'type'} value={type} onInputChange={this.onInputChange} /> */}
+          {loading ? (
+            <ActivityIndicator animating={loading} style={{marginTop: 20}} />
+          ) : null}
+          <ChatIconModal
+            modalVisible={modalVisible}
+            onBackdropPress={this.onBackdropPress}
+            onChangeMedia={this.setIcon}
+          />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

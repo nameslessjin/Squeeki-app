@@ -39,7 +39,15 @@ export const getChat = request => {
       return result;
     }
 
-    return result.data.getChat;
+    dispatch(getChatReducer(result.data.getChat));
+    return 0;
+  };
+};
+
+const getChatReducer = data => {
+  return {
+    type: 'loadChat',
+    i: data,
   };
 };
 
@@ -47,12 +55,46 @@ export const createChat = request => {
   const {groupId, type, name, rank_req, icon, token} = request;
 
   return async function(dispatch) {
+    let iconData = null;
+
+    if (icon != null) {
+      iconData = new FormData();
+      iconData.append('fileType', icon.type);
+      iconData.append('fileData', icon.data);
+      iconData.append('fileCategory', 'chat_icons');
+
+      const upload_icon_req = await fetch(
+        'http://192.168.86.24:8080/uploadImage',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'multipart/form-data',
+          },
+          body: iconData,
+        },
+      );
+      if (upload_icon_req.status == 500) {
+        alert('Uploading icon failed');
+        return 1;
+      }
+      iconData = await upload_icon_req.json();
+      if (iconData.errors) {
+        return iconData;
+      }
+    }
+
     const input = {
       groupId,
       type,
       name,
       rank_req,
-      icon,
+      icon: iconData
+        ? {
+            name: iconData.name,
+            uri: iconData.url,
+          }
+        : null,
     };
 
     const graphql = {
@@ -112,14 +154,48 @@ export const deleteLeaveChat = request => {
 };
 
 export const updateChat = request => {
-  const {name, rank_req, icon, chatId} = request;
+  const {name, rank_req, icon, chatId, token} = request;
 
   return async function(dispatch) {
+    let iconData = null;
+
+    if (icon != null) {
+      iconData = new FormData();
+      iconData.append('fileType', icon.type);
+      iconData.append('fileData', icon.data);
+      iconData.append('fileCategory', 'chat_icons');
+
+      const upload_icon_req = await fetch(
+        'http://192.168.86.24:8080/uploadImage',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'multipart/form-data',
+          },
+          body: iconData,
+        },
+      );
+      if (upload_icon_req.status == 500) {
+        alert('Uploading icon failed');
+        return 1;
+      }
+      iconData = await upload_icon_req.json();
+      if (iconData.errors) {
+        return iconData;
+      }
+    }
+
     const input = {
       chatId,
       name,
       rank_req,
-      icon,
+      icon: iconData
+        ? {
+            name: iconData.name,
+            uri: iconData.url,
+          }
+        : null,
     };
 
     const graphql = {

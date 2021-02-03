@@ -315,7 +315,7 @@ class PostSetting extends React.Component {
     if (this.state.create) {
       const post = await createPost(updateData);
       if (post.errors) {
-        // alert(post.errors[0].message);
+        console.log(post.errors[0].message);
         alert('Cannot create post at this time, please try again later')
         if (post.errors[0].message == 'Not authenticated') {
           userLogout();

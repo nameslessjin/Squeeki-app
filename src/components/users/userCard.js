@@ -154,12 +154,11 @@ const styles = StyleSheet.create({
     color: '#95a5a6',
   },
   inGroupMessage: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#95a5a6',
-    fontStyle: 'italic',
   },
   nameStyle: {
-    paddingLeft: 8,
+    paddingLeft: 10,
     height: '100%',
     width: '75%',
     justifyContent: 'center',

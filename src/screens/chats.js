@@ -5,24 +5,25 @@ import {
   View,
   TouchableWithoutFeedback,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {getChat} from '../actions/chat';
 import {userLogout} from '../actions/auth';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import { getChatFunc } from '../functions/chat'
+import List from '../components/chat/chatList'
 
 class Chats extends React.Component {
   state = {
-    chat: [],
-    count: 0,
     loading: false,
+    refreshing: false
   };
 
   componentDidMount() {
     const {navigation, group} = this.props;
     navigation.setOptions({
-      headerRight: () => (
+      headerRight: () =>  group.group.auth.rank > 2 ? null : (
         <HeaderRightButton
           onPress={this.onHeaderRightButtonPress}
           type={'create'}
@@ -42,29 +43,21 @@ class Chats extends React.Component {
   };
 
   loadChat = async init => {
-    const {group, auth, getChat, navigation, userLogout} = this.props;
-    const {count} = this.state;
+    const {group, auth, getChat, navigation, userLogout, chat} = this.props;
 
     const request = {
       groupId: group.group.id,
-      count: init ? 0 : count,
+      count: init ? 0 : chat.count,
       token: auth.token,
       getChat: getChat,
       navigation: navigation,
       userLogout: userLogout
     };
-    console.log(request)
+
     this.setState({loading: true});
     const req = await getChatFunc(request);
+    this.setState({loading: false})
 
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        loading: false,
-        count: req.count,
-        chat: init ? req.chat : prevState.chat.concat(req.chat),
-      };
-    });
   };
 
   onEndReached = () => {
@@ -72,14 +65,37 @@ class Chats extends React.Component {
   };
 
   onRefresh = () => {
+    this.setState({refreshing: true});
     this.loadChat(true);
+    this.setState({refreshing: false});
   };
 
+  onChatPress = (chat) => {
+    const {navigation} = this.props
+    const {name, id, rank_req, icon} = chat
+
+    navigation.navigate('Chat', {
+      name,
+      chatId: id,
+      rank_req,
+      icon
+    })
+  }
+
   render() {
+    const {chat} = this.props
+    const {refreshing} = this.state
     return (
       <TouchableWithoutFeedback>
         <View>
           <StatusBar barStyle={'dark-content'} />
+          <List
+            chat={chat.chats}
+            onRefresh={this.onRefresh}
+            refreshing={refreshing}
+            onEndReached={this.onEndReached}
+            onChatPress={this.onChatPress}
+          />
         </View>
       </TouchableWithoutFeedback>
     );
@@ -87,8 +103,8 @@ class Chats extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const {auth, group} = state;
-  return {auth, group};
+  const {auth, group, chat} = state;
+  return {auth, group, chat};
 };
 
 const mapDispatchToProps = dispatch => {

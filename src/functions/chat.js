@@ -42,16 +42,18 @@ export const createUpdateChatFunc = async data => {
     groupId,
     name,
     rank_req,
-    icon,
+    icon: icon,
     token,
+    chatId
   };
+  console.log(icon)
+  console.log(request)
 
-  
   let req = 0;
   req = chatId ? await updateChat(request) : await createChat(request);
 
   if (req.errors) {
-    // alert(req.errors[0].message);
+    console.log(req.errors[0].message);
     alert('Cannot create chat in at this time, please try again later');
     if (req.errors[0].message == 'Not Authenticated') {
       userLogout();

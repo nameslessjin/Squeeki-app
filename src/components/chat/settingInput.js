@@ -38,16 +38,14 @@ export default class RewardSettingInput extends React.Component {
     }
 
     const icon = (
-      <TouchableOpacity style={styles.imageStyle}>
+      <TouchableOpacity style={styles.imageStyle} onPress={() => onInputChange('icon')}>
         {value && (type == 'icon') != null ? (
-          <Image source={{uri: value}} style={styles.imageStyle} />
+          <Image source={{uri: value.uri}} style={styles.imageStyle} />
         ) : (
           <MaterialIcons name={icon_option} size={100} />
         )}
       </TouchableOpacity>
     );
-
-    console.log(type);
 
     return type == 'icon' ? (
       icon
@@ -66,6 +64,7 @@ export default class RewardSettingInput extends React.Component {
             value={value ? value : ''}
             onChangeText={v => onInputChange(type, v)}
             keyboardType={type == 'rank' ? 'number-pad' : 'default'}
+            maxlength={type=='rank' ? 1 : 30 }
           />
         )}
       </View>

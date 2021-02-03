@@ -6,13 +6,16 @@ export default class HeaderRightButton extends React.Component {
   render() {
     const {onPress, type, disabled} = this.props;
 
+    let icon = <Text style={{color: disabled ? '#95a5a6' : null}} >Done</Text>
+    if (type == 'create'){
+      icon = <MaterialIcons name={'plus'} size={30} color={ '#EA2027'}/>
+    } else if (type == 'setting'){
+      icon = <MaterialIcons name={'cog'} size={30} color={ '#EA2027'}/>
+    }
+
     return (
       <TouchableOpacity style={styles.container} onPress={onPress} disabled={disabled} >
-        {type == 'create' ? (
-          <MaterialIcons name={'plus'} size={30} color={ '#EA2027'}/>
-        ) : (
-          <Text style={{color: disabled ? '#95a5a6' : null}} >Done</Text>
-        )}
+        {icon}
       </TouchableOpacity>
     );
   }

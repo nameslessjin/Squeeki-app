@@ -46,7 +46,7 @@ class GroupDrawerNavigator extends React.Component {
   CustomDrawerContent = props => {
     const {group, group_join_request_count} = this.props.group;
     const {auth} = group;
-    // console.log(auth);
+
     return auth == null ? null : (
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />

@@ -22,6 +22,7 @@ import userReducer from './src/reducers/userReducer';
 import checkinReducer from './src/reducers/checkinReducer';
 import pointReducer from './src/reducers/pointReducer';
 import rewardReducer from './src/reducers/rewardReducer'
+import chatReducer from './src/reducers/chatReducer'
 
 import SignIn from './src/screens/signin';
 import SignUp from './src/screens/signup';
@@ -56,7 +57,7 @@ import Terms from './src/screens/terms'
 import GroupRules from './src/screens/groupRules'
 import Chats from './src/screens/chats'
 import ChatSetting from './src/screens/ChatSetting'
-
+import Chat from './src/screens/chat'
 
 
 import messaging from '@react-native-firebase/messaging';
@@ -70,7 +71,8 @@ const rootReducer = combineReducers({
   user: userReducer,
   checkin: checkinReducer,
   point: pointReducer,
-  reward: rewardReducer
+  reward: rewardReducer,
+  chat: chatReducer
 });
 
 const persistConfig = {
@@ -176,6 +178,7 @@ export default (App = () => {
             <Stack.Screen name="GroupRules" component={GroupRules} />
             <Stack.Screen name="Chats" component={Chats}/>
             <Stack.Screen name="ChatSetting" component={ChatSetting}/>
+            <Stack.Screen name="Chat" component={Chat}/>
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

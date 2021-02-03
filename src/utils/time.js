@@ -21,31 +21,19 @@ export const dateConversion = (time) => {
 
     if (60 <= timeDifference && timeDifference < 60*60){
         const outputT = Math.floor(timeDifference / 60)
-
-        if (outputT == 1){
-            outputTime = outputT.toString() + ' m ago'
-        } else {
-            outputTime = outputT.toString() + ' ms ago'
-        }
+        outputTime = outputT.toString() + ' m ago'
     }
 
     if (60*60 <= timeDifference && timeDifference < 60*60*24){
         const outputT = Math.floor(timeDifference / (60 * 60))
-        if (outputT == 1){
-            outputTime = outputT.toString() + ' hr ago'
-        } else {
-            outputTime = outputT.toString() + ' hrs ago'
-        }
+        outputTime = outputT.toString() + ' hr ago'
     }
 
     if (60*60*24 <= timeDifference && timeDifference < 60*60*24*4){
 
         const outputT = Math.floor(timeDifference / (60*60*24))
-        if (outputT == 1){
-            outputTime = outputT.toString() + ' d ago'
-        } else {
-            outputTime = outputT.toString() + ' ds ago'
-        }
+        outputTime = outputT.toString() + ' d ago'
+
     }
 
     if (timeDifference >= 60*60*24*4){
