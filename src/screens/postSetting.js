@@ -34,7 +34,7 @@ class PostSetting extends React.Component {
       allowComment: 1,
       type: 'post',
       groupId: null,
-      visibility: 'private',
+      visibility: 'public',
     },
     onToggle: false,
     toggleTyple: 'priority',

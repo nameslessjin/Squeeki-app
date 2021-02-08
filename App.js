@@ -56,7 +56,7 @@ import TermDisplay from './src/screens/termDisplay'
 import Terms from './src/screens/terms'
 import GroupRules from './src/screens/groupRules'
 import Chats from './src/screens/chats'
-import ChatSetting from './src/screens/ChatSetting'
+import ChatSetting from './src/screens/chatSetting'
 import Chat from './src/screens/chat'
 
 

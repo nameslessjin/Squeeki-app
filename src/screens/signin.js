@@ -132,7 +132,7 @@ class SignIn extends React.Component {
           />
 
           {loading ? (
-            <View style={{marginTop: 10}}>
+            <View style={{marginTop: 15}}>
               <ActivityIndicator animating={true} />
               <Text>Connecting ...</Text>
             </View>

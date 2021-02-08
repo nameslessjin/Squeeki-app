@@ -6,25 +6,35 @@ import {
   ActivityIndicator,
   Keyboard,
   StatusBar,
+  Alert,
 } from 'react-native';
 import {connect} from 'react-redux';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import {userLogout} from '../actions/auth';
-import {getChat, createChat, updateChat} from '../actions/chat';
-import {createUpdateChatFunc, getChatFunc} from '../functions/chat';
+import {
+  getChat,
+  createChat,
+  updateChat,
+  deleteLeaveChat,
+} from '../actions/chat';
+import {
+  createUpdateChatFunc,
+  getChatFunc,
+  deleteLeaveChatFunc,
+} from '../functions/chat';
 import Input from '../components/chat/settingInput';
 import ChatIconModal from '../components/chat/chatIconModal';
 
 class ChatSetting extends React.Component {
   state = {
     name: '',
-    type: 'group',
     rank_req: 7,
     icon: null,
     chatId: null,
     loading: false,
     origin: null,
     modalVisible: false,
+    deleted: false,
   };
 
   componentDidMount() {
@@ -70,14 +80,18 @@ class ChatSetting extends React.Component {
   }
 
   componentWillUnmount() {
-    const {chatId, name, rank_req, icon} = this.state;
-    const {navigation} = this.props;
+    const {chatId, name, rank_req, icon, deleted} = this.state;
+    const {navigation, group} = this.props;
+
+    // if it is to update chat setting
     if (chatId) {
-      navigation.navigate('Chat', {
-        name,
-        rank_req,
-        icon,
-      });
+      if (!deleted) {
+        navigation.navigate('Chat', {
+          name,
+          rank_req,
+          icon,
+        });
+      }
     }
   }
 
@@ -96,10 +110,8 @@ class ChatSetting extends React.Component {
     }
 
     if (origin) {
-
       // check icon first
       if (icon && origin.icon) {
-
         if (icon.uri != origin.icon.uri) {
           return true;
         } else {
@@ -125,18 +137,19 @@ class ChatSetting extends React.Component {
       createChat,
       updateChat,
     } = this.props;
-    const {name, type, rank_req, icon, chatId, origin} = this.state;
-
-    if (origin){
-
-    }
+    const {name, rank_req, icon, chatId, origin} = this.state;
 
     const request = {
       groupId: group.group.id,
-      type,
       name: name.trim(),
       rank_req,
-      icon: origin ? ( origin.icon ? (origin.icon.uri == icon.uri ? null : icon ) : icon )  : icon,
+      icon: origin
+        ? origin.icon
+          ? origin.icon.uri == icon.uri
+            ? null
+            : icon
+          : icon
+        : icon,
       token: auth.token,
       navigation,
       userLogout,
@@ -149,19 +162,40 @@ class ChatSetting extends React.Component {
     const req = await createUpdateChatFunc(request);
     this.setState({loading: false});
 
-    if (!chatId) {
-      navigation.navigate('Chats');
-    } else {
+    if (chatId) {
       this.setState({
         origin: {
           name: req.name,
           rank_req: req.rank_req,
           icon: req.icon,
         },
-        icon: req.icon
+        icon: req.icon,
       });
+    } else {
+      this.loadChat(true)
+      navigation.navigate('Chats');
     }
   };
+
+  loadChat = async init => {
+    const {group, auth, getChat, navigation, userLogout, chat} = this.props;
+
+    const request = {
+      groupId: group.group.id,
+      count: init ? 0 : chat.count,
+      token: auth.token,
+      getChat: getChat,
+      navigation: navigation,
+      userLogout: userLogout
+    };
+
+    this.setState({loading: true});
+    const req = await getChatFunc(request);
+    this.setState({loading: false})
+
+  };
+
+
 
   onInputChange = (type, value) => {
     if (type == 'name') {
@@ -177,7 +211,30 @@ class ChatSetting extends React.Component {
       this.setState({rank_req: value ? parseInt(value) : ''});
     } else if (type == 'icon') {
       this.setState({modalVisible: true});
+    } else if (type == 'delete' || type == 'leave') {
+      Alert.alert(
+        type == 'delete' ? 'Delete the chat' : 'Leave the chat',
+        null,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Confirm',
+            onPress: this.deleteLeaveChat,
+            style: 'destructive',
+          },
+        ],
+      );
     }
+  };
+
+  deleteLeaveChat = async () => {
+    const {chatId} = this.state;
+    this.setState({loading: true, deleted: true});
+    const request = await deleteLeaveChatFunc({...this.props, chatId});
+    this.setState({loading: false});
   };
 
   setIcon = (data, type) => {
@@ -189,8 +246,18 @@ class ChatSetting extends React.Component {
   };
 
   render() {
-    const {name, type, rank_req, icon, modalVisible, loading} = this.state;
+    const {
+      name,
+      type,
+      rank_req,
+      icon,
+      modalVisible,
+      loading,
+      chatId,
+    } = this.state;
 
+    // if in group
+    const {group} = this.props.group;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
@@ -210,7 +277,9 @@ class ChatSetting extends React.Component {
             value={rank_req.toString()}
             onInputChange={this.onInputChange}
           />
-          {/* <Input type={'type'} value={type} onInputChange={this.onInputChange} /> */}
+          {group.auth.rank <= 1 && chatId ? (
+            <Input type={'delete'} onInputChange={this.onInputChange} />
+          ) : null}
           {loading ? (
             <ActivityIndicator animating={loading} style={{marginTop: 20}} />
           ) : null}
@@ -245,6 +314,7 @@ const mapDispatchToProps = dispatch => {
     userLogout: () => dispatch(userLogout()),
     updateChat: data => dispatch(updateChat(data)),
     getChat: data => dispatch(getChat(data)),
+    deleteLeaveChat: data => dispatch(deleteLeaveChat(data)),
   };
 };
 

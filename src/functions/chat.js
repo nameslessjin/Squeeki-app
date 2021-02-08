@@ -26,7 +26,6 @@ export const getChatFunc = async data => {
 export const createUpdateChatFunc = async data => {
   const {
     groupId,
-    type,
     name,
     rank_req,
     icon,
@@ -38,16 +37,13 @@ export const createUpdateChatFunc = async data => {
     chatId,
   } = data;
   const request = {
-    type,
     groupId,
     name,
     rank_req,
     icon: icon,
     token,
-    chatId
+    chatId,
   };
-  console.log(icon)
-  console.log(request)
 
   let req = 0;
   req = chatId ? await updateChat(request) : await createChat(request);
@@ -66,4 +62,34 @@ export const createUpdateChatFunc = async data => {
   }
 
   return req;
+};
+
+export const deleteLeaveChatFunc = async data => {
+  const {chatId, auth, userLogout, navigation, deleteLeaveChat} = data;
+
+  const request = {
+    chatId,
+    token: auth.token,
+  };
+
+  const req = await deleteLeaveChat(request);
+
+  if (req.errors) {
+    console.log(req.errors);
+    alert(
+      'Cannot leave or delete chat in at this time, please try again later',
+    );
+    if (req.errors[0].message == 'Not Authenticated') {
+      userLogout();
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'SignIn'}],
+      });
+    }
+    return 0;
+  }
+
+  navigation.navigate('Chats');
+
+  return 0;
 };

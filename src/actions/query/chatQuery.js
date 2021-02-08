@@ -28,8 +28,8 @@ mutation createChat($input: ChatMutation!){
 `;
 
 export const deleteLeaveChatMutation = `
-mutation  deleteLeaveChat($input: ChatMutation!){
-    deleteLeaveChat(input: $input)
+mutation  deleteLeaveChat($chatId: ID!){
+    deleteLeaveChat(chatId: $chatId)
 }
 `;
 

@@ -56,6 +56,7 @@ export const signin = data => {
       },
     };
 
+    console.log(graphQL)
     const user = await fetch('http://192.168.86.24:8080/graphql', {
       method: 'POST',
       headers: {

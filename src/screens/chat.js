@@ -5,14 +5,17 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   StatusBar,
-  Text
+  Text,
+  TouchableOpacity,
+  Animated
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {getChat} from '../actions/chat';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import {getChatFunc} from '../functions/chat';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {GiftedChat, InputToolbar, SendProps} from 'react-native-gifted-chat';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 class Chat extends React.Component {
   state = {
@@ -34,6 +37,7 @@ class Chat extends React.Component {
         image: 'https://facebook.github.io/react/img/logo_og.png',
       },
     ],
+    content: '',
   };
 
   componentDidMount() {
@@ -109,16 +113,64 @@ class Chat extends React.Component {
     });
   };
 
+  onSend = m => {
+    this.setState({content: ''});
+  };
+
+  renderSend = props => {
+    const {content} = this.state;
+    const text = content.trim();
+ 
+    return (
+      <TouchableOpacity
+        onPress={props.onSend}
+        style={{marginBottom: 10, marginRight: 10}}
+        disabled={text.length == 0 || text.length > 200}>
+        <MaterialIcons
+          size={30}
+          name={'arrow-up-drop-circle'}
+          color={text.length == 0 || text.length > 200 ? 'grey' : '#EA2027'}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  renderInputToolbar = props => {
+    return <View />;
+  };
+
+  renderMessage = props => {
+    return (
+      <TouchableOpacity>
+        <MaterialIcons size={25} name={'arrow-up-drop-circle'} />
+      </TouchableOpacity>
+    );
+  };
+
   render() {
-    const {auth, messages} = this.props;
+    const {auth} = this.props;
     const user = {
       _id: auth.user.id,
     };
+    const {content, messages} = this.state;
     return (
       <TouchableWithoutFeedback>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
-          <GiftedChat user={user} messages={messages} />
+          <GiftedChat
+            user={user}
+            messages={messages}
+            primaryStyle={{backgroundColor: 'white'}}
+            bottomOffset={0}
+            onSend={v => this.onSend(v)}
+            keyboardShouldPersistTaps={'never'}
+            alwaysShowSend={true}
+            // renderInputToolbar={props => this.renderInputToolbar(props)}
+            renderSend={props => this.renderSend(props)}
+            onInputTextChanged={v => this.setState({content: v})}
+            text={content}
+
+          />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );
@@ -131,7 +183,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     height: '100%',
     width: '100%',
+    backgroundColor: 'white',
   },
+  giftedChatPrimaryStyle: {
+    backgroundColor: 'white',
+    alignItems: 'flex-start',
+  },
+  
 });
 
 const mapStateToProps = state => {

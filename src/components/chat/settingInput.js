@@ -35,10 +35,16 @@ export default class RewardSettingInput extends React.Component {
       title = 'Type';
     } else if (type == 'rank') {
       title = 'Rank Required';
+    } else if (type == 'delete') {
+      title = 'Delete';
+    } else if (type == 'leave') {
+      title = 'Leave';
     }
 
     const icon = (
-      <TouchableOpacity style={styles.imageStyle} onPress={() => onInputChange('icon')}>
+      <TouchableOpacity
+        style={styles.imageStyle}
+        onPress={() => onInputChange('icon')}>
         {value && (type == 'icon') != null ? (
           <Image source={{uri: value.uri}} style={styles.imageStyle} />
         ) : (
@@ -47,8 +53,16 @@ export default class RewardSettingInput extends React.Component {
       </TouchableOpacity>
     );
 
+    const button = (
+      <TouchableOpacity onPress={() => onInputChange(type)} style={styles.button}>
+        <Text style={styles.leaveChatText}> {title} </Text>
+      </TouchableOpacity>
+    );
+
     return type == 'icon' ? (
       icon
+    ) : type == 'leave' || type == 'delete' ? (
+      button
     ) : (
       <View style={styles.container}>
         <Text style={{color: 'grey'}}>{title}</Text>
@@ -64,7 +78,7 @@ export default class RewardSettingInput extends React.Component {
             value={value ? value : ''}
             onChangeText={v => onInputChange(type, v)}
             keyboardType={type == 'rank' ? 'number-pad' : 'default'}
-            maxlength={type=='rank' ? 1 : 30 }
+            maxlength={type == 'rank' ? 1 : 30}
           />
         )}
       </View>
@@ -99,6 +113,12 @@ const styles = StyleSheet.create({
     borderColor: '#718093',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 15
+    marginVertical: 15,
   },
+  leaveChatText: {
+    color: 'red'
+  },
+  button:{
+    marginTop: 20
+  }
 });

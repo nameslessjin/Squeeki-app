@@ -52,7 +52,7 @@ const getChatReducer = data => {
 };
 
 export const createChat = request => {
-  const {groupId, type, name, rank_req, icon, token} = request;
+  const {groupId, name, rank_req, icon, token} = request;
 
   return async function(dispatch) {
     let iconData = null;
@@ -86,7 +86,6 @@ export const createChat = request => {
 
     const input = {
       groupId,
-      type,
       name,
       rank_req,
       icon: iconData
