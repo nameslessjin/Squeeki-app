@@ -1,4 +1,11 @@
-import {getCommentQuery, createCommentMutation, deleteCommentMutation, likeCommentMutation, reportCommentMutation} from './query/commentQuery';
+import {
+  getCommentQuery,
+  createCommentMutation,
+  deleteCommentMutation,
+  likeCommentMutation,
+  reportCommentMutation,
+} from './query/commentQuery';
+import {http} from '../../apollo'
 
 export const getComments = data => {
   const {postId, token, count} = data;
@@ -7,12 +14,11 @@ export const getComments = data => {
       query: getCommentQuery,
       variables: {
         postId: postId,
-        count: count || 0
+        count: count || 0,
       },
     };
 
-
-    const commentData = await fetch('http://192.168.86.24:8080/graphql', {
+    const commentData = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -29,72 +35,72 @@ export const getComments = data => {
 
     dispatch(loadComments(comments.data.getPostComments));
 
-    return 0
+    return 0;
   };
 };
 
 const loadComments = data => {
   return {
     type: 'loadComments',
-    comments: data
-  }
-}
+    comments: data,
+  };
+};
 
 export const createComment = data => {
   const {token, postId, comment, count} = data;
 
   return async function(dispatch) {
-      const commentInput = {
-          postId: postId,
-          content: comment,
-          count: count
-      }
-      const graphQl = {
-          query: createCommentMutation,
-          variables: {
-              commentInput: commentInput
-          }
-      }
+    const commentInput = {
+      postId: postId,
+      content: comment,
+      count: count,
+    };
+    const graphQl = {
+      query: createCommentMutation,
+      variables: {
+        commentInput: commentInput,
+      },
+    };
 
-      const commentPost = await fetch('http://192.168.86.24:8080/graphql', {
-          method: 'POST',
-          headers: {
-              Authorization: 'Bearer ' + token,
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(graphQl)
-      })
+    const commentPost = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphQl),
+    });
 
-      const commentData = await commentPost.json()
-      if (commentData.errors){
-          return commentData
-      }
+    const commentData = await commentPost.json();
+    if (commentData.errors) {
+      return commentData;
+    }
 
-      dispatch(createCommentToReducer(commentData.data.createComment));
+    dispatch(createCommentToReducer(commentData.data.createComment));
 
-      return 0
+    return 0;
   };
 };
 
 const createCommentToReducer = data => {
-    return {
-        type: 'createComment',
-        comments: data
-    }
-}
+  return {
+    type: 'createComment',
+    comments: data,
+  };
+};
 
 export const likeComment = request => {
-  const {commentId, token} = request
+  const {commentId, token} = request;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const graphql = {
       query: likeCommentMutation,
       variables: {
-        commentId: commentId
-      }
-    }
+        commentId: commentId,
+      },
+    };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -109,24 +115,22 @@ export const likeComment = request => {
       return result;
     }
 
-    return 0
-
-  }
-}
-
+    return 0;
+  };
+};
 
 export const deleteComment = request => {
-  const {commentId, token} = request
+  const {commentId, token} = request;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const graphql = {
       query: deleteCommentMutation,
       variables: {
-        commentId: commentId
-      }
-    }
+        commentId: commentId,
+      },
+    };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -141,37 +145,36 @@ export const deleteComment = request => {
       return result;
     }
 
-    dispatch(deleteCommentReducer(commentId))
+    dispatch(deleteCommentReducer(commentId));
 
-    return 0
-  }
-
-}
+    return 0;
+  };
+};
 
 const deleteCommentReducer = data => {
   return {
     type: 'deleteComment',
-    commentId: data
-  }
-}
+    commentId: data,
+  };
+};
 
 export const reportComment = request => {
-  const { token, commentId, content } = request
+  const {token, commentId, content} = request;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const input = {
       commentId: commentId,
-      content: content
-    }
+      content: content,
+    };
 
     const graphql = {
       query: reportCommentMutation,
       variables: {
-        commentReportInput: input
-      }
-    }
+        commentReportInput: input,
+      },
+    };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -186,14 +189,12 @@ export const reportComment = request => {
       return result;
     }
 
-    return 0
-
-  }
-}
-
+    return 0;
+  };
+};
 
 export const cleanComment = () => {
   return {
-    type: 'cleanComment'
-  }
-}
+    type: 'cleanComment',
+  };
+};

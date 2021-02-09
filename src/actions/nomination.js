@@ -8,6 +8,7 @@ import {
   getGroupNominationMostRecentResultsQuery,
   getGroupNominationResultsQuery
 } from './query/nominationQuery';
+import {http} from '../../apollo'
 
 export const getGroupNominations = data => {
   const {groupId, token} = data;
@@ -20,7 +21,7 @@ export const getGroupNominations = data => {
       },
     };
 
-    const nominationFetch = await fetch('http://192.168.86.24:8080/graphql', {
+    const nominationFetch = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -65,7 +66,7 @@ export const createNomination = data => {
       },
     };
 
-    const nominationFetch = await fetch('http://192.168.86.24:8080/graphql', {
+    const nominationFetch = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -103,7 +104,7 @@ export const updateNomination = data => {
       },
     };
 
-    const nominationFetch = await fetch('http://192.168.86.24:8080/graphql', {
+    const nominationFetch = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -132,7 +133,7 @@ export const deleteNomination = data => {
       },
     };
 
-    const nominationFetch = await fetch('http://192.168.86.24:8080/graphql', {
+    const nominationFetch = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -161,7 +162,7 @@ export const turnNomination = data => {
       },
     };
 
-    const nominationFetch = await fetch('http://192.168.86.24:8080/graphql', {
+    const nominationFetch = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -206,7 +207,7 @@ export const voteNominee = data => {
       },
     };
 
-    const voteFetch = await fetch('http://192.168.86.24:8080/graphql', {
+    const voteFetch = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -241,7 +242,7 @@ export const getGroupNominationMostRecentResults = data => {
 
 
 
-    const nominationFetch = await fetch('http://192.168.86.24:8080/graphql', {
+    const nominationFetch = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -271,7 +272,7 @@ export const getGroupNominationResults = data => {
       }
     }
 
-    const nominationFetch = await fetch('http://192.168.86.24:8080/graphql', {
+    const nominationFetch = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

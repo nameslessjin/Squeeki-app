@@ -7,6 +7,7 @@ import {
   deleteUserChatMutation,
   switchOwnershipMutation,
 } from './query/chatQuery';
+import {http} from '../../apollo'
 
 export const getChat = request => {
   const {groupId, count, token} = request;
@@ -24,7 +25,7 @@ export const getChat = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -103,7 +104,7 @@ export const createChat = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -133,7 +134,7 @@ export const deleteLeaveChat = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -204,7 +205,7 @@ export const updateChat = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -239,7 +240,7 @@ export const createUserChat = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -274,7 +275,7 @@ export const deleteUserChat = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -309,7 +310,7 @@ export const switchOwnership = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

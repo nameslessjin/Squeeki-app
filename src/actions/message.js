@@ -1,4 +1,6 @@
-import {getChatMessageQuery, sendMessageMutation} from './query/messageQuery';
+import {getChatMessageQuery, sendMessageMutation, chatMessageSubscription} from './query/messageQuery';
+import {http} from '../../apollo'
+// import { useSubscription, useQuery } from '@apollo/client'
 
 export const getChatMessage = request => {
   const {chatId, token, count} = request;
@@ -16,7 +18,7 @@ export const getChatMessage = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -59,7 +61,7 @@ export const sendMessage = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -74,6 +76,14 @@ export const sendMessage = request => {
       return result;
     }
 
-    return 0
+    return 0;
   };
 };
+
+// export const chatMessageSub = request => {
+//     const {token, chatId} = request
+
+//     const {data: { newChatMessage }, loading} = useSubscription(chatMessageSubscription, {variables: {chatId}})
+//     console.log(data)
+//     return 0
+// }

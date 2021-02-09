@@ -4,6 +4,7 @@ import {
   addTagToGroupMutation,
   removeTagFromGroupMutation,
 } from './query/tagQuery';
+import {http} from '../../apollo'
 
 export const searchTag = request => {
   const {term, count} = request;
@@ -21,7 +22,7 @@ export const searchTag = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -55,7 +56,7 @@ export const createTag = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -95,7 +96,7 @@ export const addTagToGroup = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -143,7 +144,7 @@ export const removeTagFromGroup = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

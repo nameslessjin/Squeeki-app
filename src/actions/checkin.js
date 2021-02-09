@@ -6,6 +6,7 @@ import {
   getGroupCheckInResultQuery,
   createUserCheckInBatchMutation
 } from './query/checkinQuery';
+import {http} from '../../apollo'
 
 export const createCheckIn = request => {
   const {
@@ -41,7 +42,7 @@ export const createCheckIn = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -76,7 +77,7 @@ export const getGroupCheckIn = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -127,7 +128,7 @@ export const userCheckIn = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -166,7 +167,7 @@ export const deleteCheckIn = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -211,7 +212,7 @@ export const getGroupCheckInResult = request => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -256,7 +257,7 @@ export const userCheckInBatch = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

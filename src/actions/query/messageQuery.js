@@ -1,26 +1,67 @@
+import {gql} from '@apollo/client';
+
 export const getChatMessageQuery = `
 query getChatMessage($input: MessageQuery!){
     getChatMessage(input: $input){
-        message {
-            id
-            content
+        messages {
+            _id
+            text
             createdAt
             user {
-                id
-                username
+                _id
+                name
                 title
-                icon {
-                    uri
-                }
+                avatar
             }
         }
         count
     }
 }
-`
+`;
+
+export const getChatMessageQueryApollo = gql`
+  query getChatMessage($input: MessageQuery!) {
+    getChatMessage(input: $input) {
+      messages {
+        _id
+        text
+        createdAt
+        user {
+          _id
+          name
+          title
+          avatar
+        }
+      }
+      count
+    }
+  }
+`;
 
 export const sendMessageMutation = `
 mutation sendMessage($input: MessageMutation!){
     sendMessage(input: $input)
 }
-`
+`;
+
+export const sendMessageMutationApollo = gql`
+  mutation sendMessage($input: MessageMutation!) {
+    sendMessage(input: $input)
+  }
+`;
+
+export const chatMessageSubscriptionApollo = gql`
+  subscription newChatMessage($chatId: ID!) {
+    newChatMessage(chatId: $chatId) {
+      _id
+      text
+      createdAt
+      user {
+        _id
+        name
+        title
+        avatar
+      }
+    }
+  }
+`;

@@ -11,6 +11,7 @@ import {
   getNominationPostQuery,
   getGroupPostForCheckInQuery
 } from './query/postQuery';
+import {http} from '../../apollo'
 
 export const getGroupPosts = data => {
   const {groupId, token, count} = data;
@@ -27,7 +28,7 @@ export const getGroupPosts = data => {
       },
     };
 
-    const groupPosts = await fetch('http://192.168.86.24:8080/graphql', {
+    const groupPosts = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -63,7 +64,7 @@ export const getFeed = data => {
       }
     };
 
-    const feed = await fetch('http://192.168.86.24:8080/graphql', {
+    const feed = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -101,7 +102,7 @@ export const getPost = data => {
       },
     };
 
-    const post = await fetch('http://192.168.86.24:8080/graphql', {
+    const post = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -186,7 +187,7 @@ export const createPost = data => {
       },
     };
 
-    const post = await fetch('http://192.168.86.24:8080/graphql', {
+    const post = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -297,7 +298,7 @@ export const updatePost = data => {
     }
 
 
-    const post = await fetch('http://192.168.86.24:8080/graphql', {
+    const post = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -334,7 +335,7 @@ export const deletePost = data => {
       }
     }
 
-    const post = await fetch('http://192.168.86.24:8080/graphql', {
+    const post = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -374,7 +375,7 @@ export const likePost = data => {
       }
     }
 
-    const post = await fetch('http://192.168.86.24:8080/graphql', {
+    const post = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -405,7 +406,7 @@ export const changePostNotification = data => {
       }
     }
 
-    const notification = await fetch('http://192.168.86.24:8080/graphql', {
+    const notification = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -441,7 +442,7 @@ export const reportPost = data => {
       }
     }
 
-    const report = await fetch('http://192.168.86.24:8080/graphql', {
+    const report = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -479,7 +480,7 @@ export const getNominationPost = request => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -516,7 +517,7 @@ export const getGroupPostForCheckIn = request => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

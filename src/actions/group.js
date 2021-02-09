@@ -14,6 +14,7 @@ import {
   getGroupRulesQuery,
   getGroupJoinRequestCountQuery
 } from './query/groupQuery';
+import {http} from '../../apollo'
 
 export const findUserGroupsByUserId = data => {
   const {token, count} = data;
@@ -25,7 +26,7 @@ export const findUserGroupsByUserId = data => {
       }
     };
     // api request
-    const groups = await fetch('http://192.168.86.24:8080/graphql', {
+    const groups = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -64,7 +65,7 @@ export const getSingleGroupById = data => {
     };
 
     // api request
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -107,7 +108,7 @@ export const searchGroup = data => {
       },
     };
 
-    let groups = await fetch('http://192.168.86.24:8080/graphql', {
+    let groups = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -225,7 +226,7 @@ export const createGroup = data => {
     };
 
     // api request
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -350,7 +351,7 @@ export const updateGroup = data => {
     };
 
     // api request
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -382,7 +383,7 @@ export const joinGroup = data => {
       },
     };
 
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -421,7 +422,7 @@ export const leaveGroup = data => {
       },
     };
 
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -452,7 +453,7 @@ export const setGroupVisibility = data => {
       }
     }
 
-    const group = await fetch('http://192.168.86.24:8080/graphql', {
+    const group = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -483,7 +484,7 @@ export const setGroupRequestToJoin = data => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -517,7 +518,7 @@ export const getGroupJoinRequest = data => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -584,7 +585,7 @@ export const onRespondJoinRequest = data => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -620,7 +621,7 @@ export const onGroupRulesUpdate = data => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -651,7 +652,7 @@ export const getGroupRules = data => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -680,7 +681,7 @@ export const getGroupJoinRequestCount = data => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

@@ -7,6 +7,8 @@ import {
   checkVerificationCodeQuery,
   resetPasswordMutation,
 } from '../actions/query/authQuery';
+import {http} from '../../apollo';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export const signup = data => {
   const {email, password, username, icon, refer_code} = data;
@@ -17,7 +19,7 @@ export const signup = data => {
       password: password,
       username: username,
       icon: uploadIcon,
-      refer_code: refer_code
+      refer_code: refer_code,
     };
 
     const graphQL = {
@@ -27,7 +29,7 @@ export const signup = data => {
       },
     };
 
-    const user = await fetch('http://192.168.86.24:8080/graphql', {
+    const user = await fetch(http, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,6 +42,7 @@ export const signup = data => {
       return userData;
     }
     dispatch(userSignIn(userData.data.signup));
+    // AsyncStorage.setItem('token', userData.data.signup.token);
     return 0;
   };
 };
@@ -56,8 +59,7 @@ export const signin = data => {
       },
     };
 
-    console.log(graphQL)
-    const user = await fetch('http://192.168.86.24:8080/graphql', {
+    const user = await fetch(http, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -71,6 +73,11 @@ export const signin = data => {
       return userData;
     }
     dispatch(userSignIn(userData.data.login));
+
+    AsyncStorage.setItem('token', userData.data.login.token).catch(err =>
+      console.log(err),
+    );
+
     return 0;
   };
 };
@@ -143,7 +150,7 @@ export const updateProfile = data => {
       },
     };
 
-    const user = await fetch('http://192.168.86.24:8080/graphql', {
+    const user = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -190,7 +197,7 @@ export const changePassword = data => {
       },
     };
 
-    const user = await fetch('http://192.168.86.24:8080/graphql', {
+    const user = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -219,7 +226,7 @@ export const requireVerificationCode = data => {
       },
     };
 
-    const verificationFetch = await fetch('http://192.168.86.24:8080/graphql', {
+    const verificationFetch = await fetch(http, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -246,7 +253,7 @@ export const checkVerificationCode = data => {
       },
     };
 
-    const verificationFetch = await fetch('http://192.168.86.24:8080/graphql', {
+    const verificationFetch = await fetch(http, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -272,8 +279,8 @@ export const resetPassword = data => {
         newPassword: newPassword,
       },
     };
-  
-    const resetFetch = await fetch('http://192.168.86.24:8080/graphql', {
+
+    const resetFetch = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

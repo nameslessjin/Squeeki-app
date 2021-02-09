@@ -1,4 +1,5 @@
 import {getUserGroupPointQuery, getGroupPointLeaderBoardQuery} from './query/pointQuery';
+import {http} from '../../apollo'
 
 export const getUserGroupPoint = request => {
   const {token, groupId} = request;
@@ -11,7 +12,7 @@ export const getUserGroupPoint = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -58,7 +59,7 @@ export const getGroupPointLeaderBoard = request => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

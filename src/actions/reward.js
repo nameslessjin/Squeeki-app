@@ -6,6 +6,7 @@ import {
   getMonthlyGiftCardCountQuery,
   lootRewardMutation
 } from './query/rewardQuery';
+import {http} from '../../apollo'
 
 export const createGroupReward = request => {
   const {token, groupId, from, type, content, name, chance, hide} = request;
@@ -28,7 +29,7 @@ export const createGroupReward = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -64,7 +65,7 @@ export const getGroupReward = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -101,7 +102,7 @@ export const deleteGroupReward = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -145,7 +146,7 @@ export const getUserGroupRewardHistory = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -179,7 +180,7 @@ export const getMonthlyGiftCardCount = request => {
       },
     };
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -209,7 +210,7 @@ export const lootReward = request => {
       }
     }
 
-    const req = await fetch('http://192.168.86.24:8080/graphql', {
+    const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

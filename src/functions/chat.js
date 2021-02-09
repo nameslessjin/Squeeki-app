@@ -8,7 +8,7 @@ export const getChatFunc = async data => {
 
   const req = await getChat(request);
   if (req.errors) {
-    // console.log(req.errors)
+
     alert('Cannot load chat in at this time, please try again later');
     if (req.errors[0].message == 'Not Authenticated') {
       userLogout();

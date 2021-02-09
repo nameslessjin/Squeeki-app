@@ -7,7 +7,7 @@ import {
   StatusBar,
   Text,
   TouchableOpacity,
-  Animated
+  Animated,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -16,40 +16,36 @@ import HeaderRightButton from '../components/chat/headerRightButton';
 import {getChatFunc} from '../functions/chat';
 import {GiftedChat, InputToolbar, SendProps} from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {sendMessage, getChatMessage, chatMessageSub} from '../actions/message';
+import {sendMessageFunc, getChatMessageFunc} from '../functions/message';
+import {useSubscription} from '@apollo/client';
+import {chatMessageSubscription} from '../actions/query/messageQuery';
+import AsyncStorage from '@react-native-community/async-storage';
+import Chats from './functions/message';
 
 class Chat extends React.Component {
   state = {
     name: '',
-    type: 'group',
     rank_req: 7,
     icon: null,
     chatId: null,
+    ...this.props.route.params,
     messages: [
       {
         _id: 1,
-        text: 'My message',
-        createdAt: new Date(Date.UTC(2016, 5, 11, 17, 20, 0)),
+        text: 'Hello developer',
+        createdAt: new Date(),
         user: {
           _id: 2,
           name: 'React Native',
-          avatar: 'https://facebook.github.io/react/img/logo_og.png',
+          avatar: 'https://placeimg.com/140/140/any',
         },
-        image: 'https://facebook.github.io/react/img/logo_og.png',
       },
     ],
-    content: '',
   };
 
   componentDidMount() {
     const {navigation, route, group} = this.props;
-    const {name, type, rank_req, icon, chatId} = route.params;
-    this.setState({
-      name,
-      type,
-      rank_req,
-      icon,
-      chatId,
-    });
 
     navigation.setOptions({
       headerRight: () =>
@@ -61,8 +57,9 @@ class Chat extends React.Component {
           />
         ),
       headerBackTitleVisible: false,
-      headerTitle: name,
+      headerTitle: route.params.name,
     });
+
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -113,63 +110,19 @@ class Chat extends React.Component {
     });
   };
 
-  onSend = m => {
-    this.setState({content: ''});
-  };
 
-  renderSend = props => {
-    const {content} = this.state;
-    const text = content.trim();
- 
-    return (
-      <TouchableOpacity
-        onPress={props.onSend}
-        style={{marginBottom: 10, marginRight: 10}}
-        disabled={text.length == 0 || text.length > 200}>
-        <MaterialIcons
-          size={30}
-          name={'arrow-up-drop-circle'}
-          color={text.length == 0 || text.length > 200 ? 'grey' : '#EA2027'}
-        />
-      </TouchableOpacity>
-    );
-  };
-
-  renderInputToolbar = props => {
-    return <View />;
-  };
-
-  renderMessage = props => {
-    return (
-      <TouchableOpacity>
-        <MaterialIcons size={25} name={'arrow-up-drop-circle'} />
-      </TouchableOpacity>
-    );
-  };
 
   render() {
     const {auth} = this.props;
-    const user = {
-      _id: auth.user.id,
-    };
-    const {content, messages} = this.state;
+    const {chatId} = this.state;
+
     return (
       <TouchableWithoutFeedback>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
-          <GiftedChat
-            user={user}
-            messages={messages}
-            primaryStyle={{backgroundColor: 'white'}}
-            bottomOffset={0}
-            onSend={v => this.onSend(v)}
-            keyboardShouldPersistTaps={'never'}
-            alwaysShowSend={true}
-            // renderInputToolbar={props => this.renderInputToolbar(props)}
-            renderSend={props => this.renderSend(props)}
-            onInputTextChanged={v => this.setState({content: v})}
-            text={content}
-
+          <Chats
+            chatId={chatId}
+            auth={auth}
           />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -179,17 +132,11 @@ class Chat extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    // alignItems: 'center',
     justifyContent: 'flex-start',
     height: '100%',
     width: '100%',
     backgroundColor: 'white',
   },
-  giftedChatPrimaryStyle: {
-    backgroundColor: 'white',
-    alignItems: 'flex-start',
-  },
-  
 });
 
 const mapStateToProps = state => {
@@ -201,6 +148,8 @@ const mapDispatchToProps = dispatch => {
   return {
     userLogout: () => dispatch(userLogout()),
     getChat: data => dispatch(getChat(data)),
+    sendMessage: data => dispatch(sendMessage(data)),
+    getChatMessage: data => dispatch(getChatMessage(data)),
   };
 };
 

@@ -1,3 +1,5 @@
+import {gql} from '@apollo/client'
+
 export const getGroupPostsQuery = `
 query getGroupPosts($input: GetPostInput!){
     getGroupPosts(input: $input){
