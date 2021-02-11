@@ -91,8 +91,8 @@ class GroupCreation extends React.Component {
     const {createGroup, navigation} = this.props;
     const createGroupResult = await createGroup(data);
     if (createGroupResult.errors) {
-      // alert(createGroupResult.errors[0].message);
-      alert('Cannot create group at this time, please try again later')
+      alert(createGroupResult.errors[0].message);
+      // alert('Cannot create group at this time, please try again later')
       if (createGroupResult.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -100,11 +100,11 @@ class GroupCreation extends React.Component {
           routes: [{name: 'SignIn'}],
         });
       }
-      return;
     } else {
-      this.setState({loading: false});
       this.props.navigation.replace('GroupNavigator');
     }
+
+    this.setState({loading: false});
   };
 
   onSwitchToggle = type => {
@@ -139,8 +139,12 @@ class GroupCreation extends React.Component {
   validate = () => {
     const {groupname, shortDescription} = this.state
 
+    const regexp = /^[a-zA-Z0-9_]+$/;
+    if (groupname.search(regexp) === -1){
+      return false
+    }
 
-    if (!validator.isAlphanumeric(groupname)){
+    if (groupname.substring(groupname.length-1) == '_'){
       return false
     }
 
@@ -153,7 +157,7 @@ class GroupCreation extends React.Component {
   }
 
   render() {
-    const {groupname, shortDescription, visibility, loading, request_to_join} = this.state;
+    const {visibility, loading, request_to_join} = this.state;
 
     let createGroupButtonActive = this.validate()
 
