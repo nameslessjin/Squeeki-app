@@ -4,6 +4,7 @@ query getMyGroups($count: Int!){
         groups{
             id
             groupname
+            display_name
             shortDescription
             icon {
                 uri
@@ -23,6 +24,7 @@ query getGroup($groupId: ID!){
     getGroup(groupId: $groupId){
         id
         groupname
+        display_name
         shortDescription
         icon {
             uri
@@ -60,6 +62,7 @@ query searchGroup($input: searchGroupInput!){
         groups{
             id
             groupname
+            display_name
             shortDescription
             icon {
                 uri
@@ -79,6 +82,7 @@ mutation createGroup($GroupInput: GroupInput!){
     createGroup(input: $GroupInput){
         id
         groupname
+        display_name
         shortDescription
         icon {
             uri
@@ -114,6 +118,7 @@ mutation updateGroup($GroupInput: GroupInput!){
     updateGroup(input: $GroupInput){
         id
         groupname
+        display_name
         shortDescription
         icon {
             uri
@@ -150,6 +155,7 @@ mutation joinGroup($groupId: ID!){
         joinedGroup{
             id
             groupname
+            display_name
             shortDescription
             icon {
                 uri
@@ -181,6 +187,7 @@ mutation joinGroup($groupId: ID!){
             groups{
                 id
                 groupname
+                display_name
                 shortDescription
                 icon {
                     uri
@@ -202,6 +209,7 @@ mutation leaveGroup($groupId: ID!){
         groups{
             id
             groupname
+            display_name
             shortDescription
             icon {
                 uri

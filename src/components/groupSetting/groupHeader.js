@@ -12,11 +12,13 @@ class GroupSettingsHeader extends React.Component {
     icon: null,
     backgroundImg: null,
     groupname: '',
+    display_name: '',
     shortDescription: '',
     initialize: true,
     loading: false,
     modalVisible: false,
     isBackground: true,
+    groupId: null
   };
 
   componentDidMount() {
@@ -25,9 +27,11 @@ class GroupSettingsHeader extends React.Component {
       backgroundImg,
       shortDescription,
       groupname,
+      display_name,
       initialize,
       createdAt,
       memberCount,
+      id
     } = this.props.data;
 
     this.setState({
@@ -38,6 +42,8 @@ class GroupSettingsHeader extends React.Component {
       initialize: initialize,
       createdAt: createdAt,
       memberCount: memberCount,
+      display_name,
+      groupId: id
     });
   }
 
@@ -59,8 +65,15 @@ class GroupSettingsHeader extends React.Component {
     this.setState({shortDescription: descritpion});
   };
 
-  updateGroupname = name => {
-    this.setState({groupname: name});
+  updateGroupName = name => {
+
+    const {groupId} = this.state
+
+    if (groupId){
+      this.setState({display_name: name});
+    } else {
+      this.setState({groupname: name.trim(), display_name: name.trim()});
+    }
   };
 
   leaveGroup = async () => {
@@ -77,7 +90,7 @@ class GroupSettingsHeader extends React.Component {
 
     if (group.errors) {
       // alert(group.errors[0].message);
-      alert('Cannot leave group at this time, please try again later')
+      alert('Cannot leave group at this time, please try again later');
       if (group.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -107,11 +120,13 @@ class GroupSettingsHeader extends React.Component {
       backgroundImg,
       shortDescription,
       groupname,
+      display_name,
       initialize,
       createdAt,
       memberCount,
       modalVisible,
       isBackground,
+      groupId
     } = this.state;
 
     const {auth_rank} = this.props;
@@ -141,29 +156,32 @@ class GroupSettingsHeader extends React.Component {
         <View style={underImageStyle}>
           <View style={component}>
             <TextInput
-              style={{fontWeight: 'bold', fontSize: 20, width: '100%', paddingLeft: -1}}
+              style={{
+                fontWeight: 'bold',
+                fontSize: 20,
+                width: '100%',
+                paddingLeft: -1,
+              }}
               maxLength={60}
               multiline={true}
-              placeholder={'group name (min 6 chars)'}
+              placeholder={'group name (min 6 chars, can be changed after creation)'}
               placeholderTextColor={'#7f8fa6'}
-              onChangeText={text => this.updateGroupname(text)}
-              value={groupname}
+              onChangeText={text => this.updateGroupName(text)}
+              value={display_name}
               editable={auth_rank <= 1}
             />
+          </View>
+          <View style={[component, {marginTop: 1}]}>
+            <Text style={{color: '#95a5a6'}}>@{groupname}</Text>
           </View>
           <View style={[component, {marginTop: 1}]}>
             <Text style={{color: '#95a5a6'}}>Since {date}</Text>
           </View>
           <View style={[component, {marginTop: 1}]}>
-            <Text style={{color: '#95a5a6'}}>
-              Member: {memberCount}
-            </Text>
+            <Text style={{color: '#95a5a6'}}>Member: {memberCount}</Text>
           </View>
           <View
-            style={[
-              component,
-              {paddingTop: 1, marginTop: 5, marginBottom: 5},
-            ]}>
+            style={[component, {paddingTop: 1, marginTop: 5, marginBottom: 5}]}>
             <TextInput
               multiline={true}
               maxLength={150}
@@ -191,7 +209,7 @@ class GroupSettingsHeader extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    maxHeight: 400,
+    maxHeight: 600,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     borderBottomWidth: 0.5,
@@ -210,7 +228,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     // backgroundColor: 'yellow',
-  }
+  },
 });
 
 const mapStateToProps = state => {

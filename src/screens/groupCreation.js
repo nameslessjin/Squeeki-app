@@ -15,12 +15,14 @@ import GroupHeader from '../components/groupSetting/groupHeader';
 import {userLogout} from '../actions/auth';
 import ToggleSetting from '../components/groupSetting/toggleSetting';
 import SettingEdition from '../components/groupSetting/settingEdition';
+import validator from 'validator';
 
 class GroupCreation extends React.Component {
   state = {
     icon: null,
     backgroundImg: null,
     groupname: '',
+    display_name: '',
     shortDescription: '',
     initialize: true,
     loading: false,
@@ -50,12 +52,13 @@ class GroupCreation extends React.Component {
   }
 
   setGroupHeader = data => {
-    const {icon, backgroundImg, groupname, shortDescription} = data;
+    const {icon, backgroundImg, groupname, shortDescription, display_name} = data;
     this.setState({
       icon: icon,
       backgroundImg: backgroundImg,
       groupname: groupname,
       shortDescription: shortDescription,
+      display_name
     });
   };
 
@@ -133,11 +136,26 @@ class GroupCreation extends React.Component {
     });
   };
 
+  validate = () => {
+    const {groupname, shortDescription} = this.state
+
+
+    if (!validator.isAlphanumeric(groupname)){
+      return false
+    }
+
+    if (groupname.length < 6 || shortDescription.length < 20){
+      return false
+    }
+
+    return true
+
+  }
+
   render() {
     const {groupname, shortDescription, visibility, loading, request_to_join} = this.state;
 
-    let createGroupButtonActive =
-      groupname.length >= 6 && shortDescription.length >= 20;
+    let createGroupButtonActive = this.validate()
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

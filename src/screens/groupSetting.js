@@ -53,8 +53,8 @@ class GroupSetting extends React.Component {
   }
 
   validation = () => {
-    const {groupname, shortDescription} = this.state;
-    if (!validator.isLength(groupname.trim(), {min: 6})) {
+    const {display_name, shortDescription} = this.state;
+    if (!validator.isLength(display_name.trim(), {min: 6})) {
       return false;
     }
 
@@ -65,13 +65,13 @@ class GroupSetting extends React.Component {
   };
 
   extractData = () => {
-    let {id, groupname, shortDescription, icon, backgroundImg} = this.state;
+    let {id, display_name, shortDescription, icon, backgroundImg} = this.state;
     const {group} = this.props.group
-    groupname = groupname.trim();
+    display_name = display_name.trim();
     shortDescription = shortDescription.trim();
 
     const origin = {
-      groupname: group.groupname,
+      display_name: group.display_name,
       shortDescription: group.shortDescription,
       icon: group.icon,
       backgroundImg: group.backgroundImg,
@@ -84,8 +84,8 @@ class GroupSetting extends React.Component {
       backgroundImg = null;
     }
 
-    if (groupname == origin.groupname) {
-      groupname = null;
+    if (display_name == origin.display_name) {
+      display_name = null;
     }
 
     if (shortDescription == origin.shortDescription) {
@@ -95,13 +95,13 @@ class GroupSetting extends React.Component {
     if (
       icon != null ||
       backgroundImg != null ||
-      groupname != null ||
+      display_name != null ||
       shortDescription != null
     ) {
       const updateData = {
         token: this.props.auth.token,
         groupId: id,
-        groupname: groupname,
+        display_name: display_name,
         shortDescription: shortDescription,
         icon: icon,
         backgroundImg: backgroundImg,
@@ -200,11 +200,11 @@ class GroupSetting extends React.Component {
   };
 
   setGroupHeader = data => {
-    const {icon, backgroundImg, groupname, shortDescription} = data;
+    const {icon, backgroundImg, display_name, shortDescription} = data;
     this.setState({
       icon: icon,
       backgroundImg: backgroundImg,
-      groupname: groupname,
+      display_name: display_name,
       shortDescription: shortDescription,
     });
   };

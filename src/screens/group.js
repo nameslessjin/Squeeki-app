@@ -31,11 +31,11 @@ class Group extends React.Component {
   };
 
   componentDidMount() {
-    const {groupname, visibility, auth, id} = this.props.group.group;
+    const {display_name, visibility, auth, id} = this.props.group.group;
     const {navigation, group} = this.props;
 
     navigation.setOptions({
-      headerTitle: groupname,
+      headerTitle: display_name,
       headerBackTitleVisible: false,
     });
 

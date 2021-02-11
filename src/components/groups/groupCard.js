@@ -50,6 +50,7 @@ class GroupCard extends React.Component {
       id,
       groupname,
       shortDescription,
+      display_name,
       memberCount,
       icon,
     } = this.props.item;
@@ -87,7 +88,7 @@ class GroupCard extends React.Component {
         <View style={informationContainer}>
           <View style={nameMemberCountContainer}>
             <Text numberOfLines={2} style={nameStyle}>
-              {groupname}
+              {display_name}
             </Text>
             <View style={memberCountStyle}>
               <MaterialIcons

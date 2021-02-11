@@ -249,7 +249,7 @@ export const createGroup = data => {
 export const updateGroup = data => {
   const {updateData, origin} = data;
   const {
-    groupname,
+    display_name,
     shortDescription,
     backgroundImg,
     icon,
@@ -259,7 +259,7 @@ export const updateGroup = data => {
   return async function(dispatch) {
     let newgroupIcon = icon;
     let newgroupBackgroundImg = backgroundImg;
-    let newGroupName = groupname;
+    let new_display_name = display_name;
     let newShortDescription = shortDescription;
 
     if (icon != null) {
@@ -327,8 +327,8 @@ export const updateGroup = data => {
       };
     }
 
-    if (groupname == null) {
-      newGroupName = origin.groupname;
+    if (display_name == null) {
+      new_display_name = origin.display_name;
     }
 
     if (shortDescription == null) {
@@ -337,7 +337,7 @@ export const updateGroup = data => {
 
     const groupInput = {
       groupId: groupId,
-      groupname: newGroupName,
+      display_name: new_display_name,
       shortDescription: newShortDescription,
       backgroundImg: newgroupBackgroundImg,
       icon: newgroupIcon,

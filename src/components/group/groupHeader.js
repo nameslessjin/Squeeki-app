@@ -19,19 +19,19 @@ import {changeGroupNotification} from '../../actions/user';
 import {userLogout} from '../../actions/auth';
 import TagList from '../tags/tagList';
 import {pointFormat} from '../../utils/point';
-import { getGroupPointLeaderBoard } from '../../actions/point'
-import { loadLeaderBoardFunc } from '../../functions/point'
-import { getSemester, getFormalTime } from '../../utils/time'
+import {getGroupPointLeaderBoard} from '../../actions/point';
+import {loadLeaderBoardFunc} from '../../functions/point';
+import {getSemester, getFormalTime} from '../../utils/time';
 
 const extractKey = ({key}) => key;
 class GroupHeader extends React.Component {
   state = {
     loading: false,
-    notificationToggled: false
+    notificationToggled: false,
   };
 
   // join button method / setting method
-  groupMethod = async() => {
+  groupMethod = async () => {
     const {auth} = this.props.item;
     if (auth == null) {
       this.setState({loading: true});
@@ -53,7 +53,7 @@ class GroupHeader extends React.Component {
     const result = await changeGroupNotification(data);
     if (result.errors) {
       // alert(result.errors[0].message);
-      alert('Cannot change notification at this time, please try again later')
+      alert('Cannot change notification at this time, please try again later');
       if (result.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -85,7 +85,7 @@ class GroupHeader extends React.Component {
     const result = await joinGroup(data);
     if (result.errors) {
       // alert(result.errors[0].message);
-      alert('Cannot join group at this time, please try again later')
+      alert('Cannot join group at this time, please try again later');
       if (result.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -96,7 +96,7 @@ class GroupHeader extends React.Component {
     }
 
     // if joined result is true then navigate to group page or change button to requested
-    if (result){
+    if (result) {
       navigation.navigate('GroupNavigator');
     } else {
       // nothing
@@ -130,12 +130,12 @@ class GroupHeader extends React.Component {
   };
 
   onLeaderboardPress = () => {
-    const {cleanLeaderboard, navigation} = this.props
+    const {cleanLeaderboard, navigation} = this.props;
 
-    navigation.navigate('Leaderboard')
-  }
+    navigation.navigate('Leaderboard');
+  };
 
-  loadLeaderBoard = (period) => {
+  loadLeaderBoard = period => {
     const {
       userLogout,
       auth,
@@ -161,6 +161,7 @@ class GroupHeader extends React.Component {
     const {
       icon,
       groupname,
+      display_name,
       shortDescription,
       createdAt,
       memberCount,
@@ -168,7 +169,7 @@ class GroupHeader extends React.Component {
       auth,
       visibility,
       tags,
-      join_requested
+      join_requested,
     } = this.props.item;
     const {point, onAddPost} = this.props;
     let {total_point, base_point_semester, leaderboard} = point;
@@ -179,11 +180,11 @@ class GroupHeader extends React.Component {
 
     const total_point_display = pointFormat(total_point);
     const base_point_semester_display = pointFormat(base_point_semester);
-    const { semester_begin, semester_end } = getSemester()
-    const begin_month = semester_begin.getMonth() + 1
-    const begin_date = semester_begin.getDate()
-    const end_month = semester_end.getMonth() + 1
-    const end_date = semester_end.getDate()
+    const {semester_begin, semester_end} = getSemester();
+    const begin_month = semester_begin.getMonth() + 1;
+    const begin_date = semester_begin.getDate();
+    const end_month = semester_end.getMonth() + 1;
+    const end_date = semester_end.getDate();
 
     return (
       <TouchableWithoutFeedback>
@@ -207,9 +208,12 @@ class GroupHeader extends React.Component {
               <View style={{width: '70%'}}>
                 <View style={[component]}>
                   <Text style={{fontWeight: 'bold', fontSize: 20}}>
-                    {groupname}
+                    {display_name}
                   </Text>
                 </View>
+                <Text style={{color: '#95a5a6'}}>
+                  @{groupname}
+                </Text>
                 <View style={[component, {marginTop: 1}]}>
                   <Text style={{color: '#95a5a6'}}>Since {date}</Text>
                 </View>
@@ -232,7 +236,13 @@ class GroupHeader extends React.Component {
                     Semester Base: {base_point_semester_display}
                   </Text>
                   <Text style={{fontSize: 9, color: 'grey'}}>
-                    {begin_month + '/' + begin_date + '-' + end_month + '/' + end_date}
+                    {begin_month +
+                      '/' +
+                      begin_date +
+                      '-' +
+                      end_month +
+                      '/' +
+                      end_date}
                   </Text>
                 </View>
               ) : null}
@@ -321,7 +331,7 @@ class GroupHeader extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    maxHeight: 570,
+    maxHeight: 600,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     borderBottomWidth: 0.5,

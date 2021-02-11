@@ -27,7 +27,7 @@ class GroupDrawerNavigator extends React.Component {
         auth == null ? null : (
           <HeaderRightButton onPress={this.onToggleHeaderRightButton} />
         ),
-      headerTitle: group.group.groupname,
+      headerTitle: group.group.display_name,
       headerBackTitleVisible: false,
     });
   }
