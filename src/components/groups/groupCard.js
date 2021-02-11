@@ -1,15 +1,21 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet, Image, Keyboard} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Image,
+  Keyboard,
+} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {connect} from 'react-redux';
 import {getSingleGroupById} from '../../actions/group';
-import {userLogout} from '../../actions/auth'
+import {userLogout} from '../../actions/auth';
 
 class GroupCard extends React.Component {
-
   state = {
-    icon_option: 'emoticon-cool-outline'
-  }
+    icon_option: 'emoticon-cool-outline',
+  };
 
   componentDidMount() {
     const random = Math.floor(Math.random() * 5);
@@ -20,7 +26,7 @@ class GroupCard extends React.Component {
       'emoticon-wink-outline',
       'emoticon-tongue-outline',
     ];
-    this.setState({icon_option: icon_options[random]})
+    this.setState({icon_option: icon_options[random]});
   }
 
   onPress = async () => {
@@ -30,17 +36,17 @@ class GroupCard extends React.Component {
     const groupData = await getSingleGroupById({id: id, token: token});
     if (groupData.errors) {
       // alert(groupData.errors[0].message);
-      alert('Cannot load group at this time, please try again later')
-      if (groupData.errors[0].message == "Not Authenticated"){
-        userLogout()
-            navigation.reset({
-      index: 0,
-      routes: [{ name: 'SignIn' }],
-    })
+      alert('Cannot load group at this time, please try again later');
+      if (groupData.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
       }
       return;
     } else {
-      Keyboard.dismiss()
+      Keyboard.dismiss();
       navigation.navigate('GroupNavigator');
     }
   };
@@ -65,7 +71,7 @@ class GroupCard extends React.Component {
       peopleIconStyle,
       imageStyle,
     } = styles;
-    const { icon_option } = this.state
+    const {icon_option} = this.state;
     const random = Math.floor(Math.random() * 5);
     const icon_options = [
       'emoticon-cool-outline',
@@ -77,19 +83,24 @@ class GroupCard extends React.Component {
     return (
       <TouchableOpacity style={groupContainer} onPress={this.onPress}>
         <View style={imgHolder}>
-          {icon != null ?
-          <Image
-            source={{
-              uri: icon.uri,
-            }}
-            style={[imageStyle]}
-          /> : <MaterialIcons name={icon_option} size={90} />}
+          {icon != null ? (
+            <Image
+              source={{
+                uri: icon.uri,
+              }}
+              style={[imageStyle]}
+            />
+          ) : (
+            <MaterialIcons name={icon_option} size={100} />
+          )}
         </View>
         <View style={informationContainer}>
           <View style={nameMemberCountContainer}>
-            <Text numberOfLines={2} style={nameStyle}>
-              {display_name}
-            </Text>
+            <View style={{width: '85%'}}>
+              <Text numberOfLines={2} style={nameStyle}>
+                {display_name}
+              </Text>
+            </View>
             <View style={memberCountStyle}>
               <MaterialIcons
                 style={peopleIconStyle}
@@ -99,6 +110,7 @@ class GroupCard extends React.Component {
               <Text>{memberCount}</Text>
             </View>
           </View>
+
           <Text numberOfLines={3} style={descriptionStyle}>
             {shortDescription}
           </Text>
@@ -110,7 +122,8 @@ class GroupCard extends React.Component {
 
 const styles = StyleSheet.create({
   groupContainer: {
-    height: 130,
+    minHeight: 130,
+    maxHeight: 140,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
@@ -131,14 +144,16 @@ const styles = StyleSheet.create({
   },
   informationContainer: {
     // backgroundColor: 'grey',
-    height: 100,
+    minHeight: 100,
+    maxHeight: 110,
     width: '70%',
     marginRight: 20,
     marginLeft: 7,
   },
   nameMemberCountContainer: {
     width: '100%',
-    height: 40,
+    // minHeight: 40,
+    maxHeight: 40,
     // backgroundColor: '#74b9ff',
     flexDirection: 'row',
     alignItems: 'center',
@@ -151,6 +166,8 @@ const styles = StyleSheet.create({
   descriptionStyle: {
     color: '#718093',
     textAlign: 'left',
+    width: '90%',
+    marginTop: 5
   },
   memberCountStyle: {
     flexDirection: 'row',
@@ -169,7 +186,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
-    userLogout: () => dispatch(userLogout())
+    userLogout: () => dispatch(userLogout()),
   };
 };
 

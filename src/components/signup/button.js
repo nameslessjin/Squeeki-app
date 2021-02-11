@@ -18,7 +18,7 @@ export default class SignUpButton extends React.Component {
 
 const styles = StyleSheet.create({
     signUpButton:{
-        height: '5%',
+        height: 40,
         width: '30%',
         backgroundColor: '#EA2027',
         borderRadius: 15,

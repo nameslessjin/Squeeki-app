@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   View,
+  ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {signup, signin} from '../actions/auth';
@@ -142,47 +143,49 @@ class SignUp extends React.Component {
     } = this.state;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
-          <StatusBar barStyle={'dark-content'} />
-          <Text style={{color: 'red'}}>{errorText}</Text>
-          <SignUpTextInput
-            type={'Email'}
-            onChangeText={this.onChangeText}
-            value={email}
-          />
-          <SignUpTextInput
-            type={'Username'}
-            onChangeText={this.onChangeText}
-            value={username}
-          />
-          <SignUpTextInput
-            type={'Password'}
-            onChangeText={this.onChangeText}
-            value={password}
-          />
-          <SignUpTextInput
-            type={'RePassword'}
-            onChangeText={this.onChangeText}
-            value={rePassword}
-          />
-          {/* <SignUpTextInput
-            type={'Refercode'}
-            onChangeText={this.onChangeText}
-            value={referCode}
-          /> */}
-          {loading ? (
-            <ActivityIndicator animating={true} style={{marginTop: 20}} />
-          ) : (
-            <SignUpButton onPress={this.onPress} />
-          )}
-          <View style={styles.term}>
-            <TouchableOpacity
-              style={styles.termButton}
-              onPress={this.onTermsPressed}>
-              <Text style={styles.text}>Terms and Conditions</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
+        <ScrollView
+          style={{width: '100%', height: '100%', backgroundColor: 'white'}}
+          alwaysBounceHorizontal={false}
+          alwaysBounceVertical={false}
+          showsVerticalScrollIndicator={false}
+          >
+          <KeyboardAvoidingView style={styles.container}>
+            <StatusBar barStyle={'dark-content'} />
+            <Text style={{color: 'red'}}>{errorText}</Text>
+            <SignUpTextInput
+              type={'Email'}
+              onChangeText={this.onChangeText}
+              value={email}
+            />
+            <SignUpTextInput
+              type={'Username'}
+              onChangeText={this.onChangeText}
+              value={username}
+            />
+            <SignUpTextInput
+              type={'Password'}
+              onChangeText={this.onChangeText}
+              value={password}
+            />
+            <SignUpTextInput
+              type={'RePassword'}
+              onChangeText={this.onChangeText}
+              value={rePassword}
+            />
+            {loading ? (
+              <ActivityIndicator animating={true} style={{marginTop: 20}} />
+            ) : (
+              <SignUpButton onPress={this.onPress} />
+            )}
+            <View style={styles.term}>
+              <TouchableOpacity
+                style={styles.termButton}
+                onPress={this.onTermsPressed}>
+                <Text style={styles.text}>Terms and Conditions</Text>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
+        </ScrollView>
       </TouchableWithoutFeedback>
     );
   }
@@ -195,6 +198,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     height: height,
     width: '100%',
+    height: '100%',
     backgroundColor: '#ffffff',
   },
 

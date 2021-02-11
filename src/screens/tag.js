@@ -58,8 +58,11 @@ class EditTag extends React.Component {
   onTagCreate = async () => {
     const {searchTerm} = this.state;
     const {auth, group, createTag, userLogout} = this.props;
-    const tag_name = searchTerm.substring(1).trim();
-
+    let tag_name = searchTerm.substring(1).trim();
+    // format text
+    tag_name = tag_name.replace(/(^\w{1})|(\s+\w{1})/g, letter =>
+      letter.toUpperCase(),
+    );
     // validation
     if (group.group.tags.length >= 5) {
       this.setState({warning: 'Every group can have max 5 tags'});

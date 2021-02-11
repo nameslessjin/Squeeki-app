@@ -89,7 +89,7 @@ class Groups extends React.Component {
               refreshing={this.state.refreshing}
             />
           )}
-          {loading ? <ActivityIndicator animating={loading} /> : null}
+          {/* {loading ? <ActivityIndicator animating={loading} /> : null} */}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

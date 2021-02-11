@@ -46,7 +46,7 @@ export default class SignUnTextInput extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '80%',
-    height: '7%',
+    height: 50,
     backgroundColor: 'grey',
     borderRadius: 15,
     backgroundColor: '#f1f2f6',

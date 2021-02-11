@@ -21,7 +21,7 @@ import {
   setGroupRequestToJoin,
   getSingleGroupById,
 } from '../actions/group';
-import { getStatusInGroup } from '../actions/user'
+import {getStatusInGroup} from '../actions/user';
 import {userLogout} from '../actions/auth';
 import ToggleSetting from '../components/groupSetting/toggleSetting';
 import SettingEdition from '../components/groupSetting/settingEdition';
@@ -66,7 +66,7 @@ class GroupSetting extends React.Component {
 
   extractData = () => {
     let {id, display_name, shortDescription, icon, backgroundImg} = this.state;
-    const {group} = this.props.group
+    const {group} = this.props.group;
     display_name = display_name.trim();
     shortDescription = shortDescription.trim();
 
@@ -281,17 +281,16 @@ class GroupSetting extends React.Component {
     });
   };
 
-  onEditProfilePress = async() => {
-    const {navigation, group, auth, userLogout, getStatusInGroup} =  this.props
+  onEditProfilePress = async () => {
+    const {navigation, group, auth, userLogout, getStatusInGroup} = this.props;
     const request = {
       token: auth.token,
-      groupId: group.group.id
-    }
+      groupId: group.group.id,
+    };
 
-
-    const req = await getStatusInGroup(request)
+    const req = await getStatusInGroup(request);
     if (req.errors) {
-      console.log(req.errors)
+      console.log(req.errors);
       // alert(req.errors[0].message);
       alert('Load profile failed, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
@@ -306,8 +305,8 @@ class GroupSetting extends React.Component {
     navigation.navigate('Member', {
       ...req,
       prev_route: 'GroupSetting',
-    })
-  }
+    });
+  };
 
   render() {
     const {visibility, loading, request_to_join, type} = this.state;
@@ -316,53 +315,59 @@ class GroupSetting extends React.Component {
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
-          <StatusBar barStyle={'dark-content'} />
-          <GroupHeader
-            setGroupHeader={this.setGroupHeader}
-            data={this.state}
-            navigation={this.props.navigation}
-            auth_rank={auth_rank}
-          />
+        <ScrollView
+          alwaysBounceHorizontal={false}
+          alwaysBounceVertical={false}
+          showsVerticalScrollIndicator={false}
+          style={{height: '100%', width: '100%', backgroundColor: 'white'}}>
+          <KeyboardAvoidingView style={styles.container}>
+            <StatusBar barStyle={'dark-content'} />
+            <GroupHeader
+              setGroupHeader={this.setGroupHeader}
+              data={this.state}
+              navigation={this.props.navigation}
+              auth_rank={auth_rank}
+            />
 
-          <ToggleSetting
-            on={visibility}
-            disabled={auth_rank > 1}
-            loading={type == 'visibility' ? loading : false}
-            onToggle={this.onSwitchToggle}
-            type={'visibility'}
-          />
+            <ToggleSetting
+              on={visibility}
+              disabled={auth_rank > 1}
+              loading={type == 'visibility' ? loading : false}
+              onToggle={this.onSwitchToggle}
+              type={'visibility'}
+            />
 
-          <ToggleSetting
-            on={request_to_join}
-            disabled={auth_rank > 1}
-            loading={type == 'request_to_join' ? loading : false}
-            onToggle={this.onSwitchToggle}
-            type={'request_to_join'}
-          />
+            <ToggleSetting
+              on={request_to_join}
+              disabled={auth_rank > 1}
+              loading={type == 'request_to_join' ? loading : false}
+              onToggle={this.onSwitchToggle}
+              type={'request_to_join'}
+            />
 
-          <SettingEdition
-            onPress={this.onEditProfilePress}
-            name={'Edit your profile'}
-            disabled={false}
-          />
+            <SettingEdition
+              onPress={this.onEditProfilePress}
+              name={'Edit your profile'}
+              disabled={false}
+            />
 
-          <SettingEdition
-            onPress={this.onNominationCreationPress}
-            name={'Edit nominations'}
-            disabled={auth_rank >= 2}
-          />
-          <SettingEdition
-            onPress={this.onEditTagPress}
-            name={'Edit tags'}
-            disabled={auth_rank >= 2}
-          />
+            <SettingEdition
+              onPress={this.onNominationCreationPress}
+              name={'Edit nominations'}
+              disabled={auth_rank >= 2}
+            />
+            <SettingEdition
+              onPress={this.onEditTagPress}
+              name={'Edit tags'}
+              disabled={auth_rank >= 2}
+            />
 
-          <ActivityIndicator
-            style={{marginTop: 30}}
-            animating={this.state.loading}
-          />
-        </KeyboardAvoidingView>
+            <ActivityIndicator
+              style={{marginTop: 30}}
+              animating={this.state.loading}
+            />
+          </KeyboardAvoidingView>
+        </ScrollView>
       </TouchableWithoutFeedback>
     );
   }
@@ -389,7 +394,7 @@ const mapDispatchToProps = dispatch => {
     setGroupVisibility: data => dispatch(setGroupVisibility(data)),
     setGroupRequestToJoin: data => dispatch(setGroupRequestToJoin(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
-    getStatusInGroup: data => dispatch(getStatusInGroup(data))
+    getStatusInGroup: data => dispatch(getStatusInGroup(data)),
   };
 };
 
