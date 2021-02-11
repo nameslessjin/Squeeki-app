@@ -26,8 +26,8 @@ export default class SignInButton extends React.Component {
 
 const styles = StyleSheet.create({
   signInButton: {
-    height: '7%',
-    width: '30%',
+    height: '6%',
+    width: '27%',
     backgroundColor: '#EA2027',
     borderRadius: 15,
     justifyContent: 'center',
@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
   signInButtonText: {
     color: '#fff',
     fontSize: 25,
-    fontFamily: 'Jellee-Roman',
+    // fontFamily: 'Jellee-Roman',
+    fontWeight: 'bold'
   },
   secondaryButton: {
     marginTop: 10,
