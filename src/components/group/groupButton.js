@@ -9,7 +9,8 @@ export default class groupButton extends React.Component {
       method,
       onNotificationPress,
       onAddPost,
-      join_requested
+      join_requested,
+      rank_setting
     } = this.props;
 
     const joinButton = (
@@ -24,9 +25,20 @@ export default class groupButton extends React.Component {
       </TouchableOpacity>
     );
 
+    let create_post_allowed = false
+    console.log(rank_setting)
+    console.log(auth)
+    if (rank_setting && auth){
+      console.log(rank_setting.post_rank_required)
+      console.log(auth.rank)
+      if (rank_setting.post_rank_required >= auth.rank){
+        create_post_allowed = true
+      }
+    }
+
     const createButton = (
-      <TouchableOpacity onPress={onAddPost}>
-        <MaterialIcons name={'plus'} size={50} color={'#EA2027'} />
+      <TouchableOpacity onPress={onAddPost} disabled={!create_post_allowed}>
+        <MaterialIcons name={'plus'} size={50} color={create_post_allowed ? '#EA2027' : 'grey'} />
       </TouchableOpacity>
     );
 

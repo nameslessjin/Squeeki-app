@@ -3,8 +3,6 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 export default class GroupHeaderRight extends React.Component {
 
-
-
   render() {
 
       const {onPress, update, loading} = this.props

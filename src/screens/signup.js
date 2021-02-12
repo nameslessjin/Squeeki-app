@@ -48,7 +48,7 @@ class SignUp extends React.Component {
     } else if (type == 'RePassword') {
       this.setState({rePassword: text});
     } else if (type == 'Username') {
-      this.setState({username: text});
+      this.setState({username: text.trim()});
     } else {
       this.setState({referCode: text});
     }
@@ -69,18 +69,15 @@ class SignUp extends React.Component {
       return false;
     }
 
-    const trimmed_username = username.trim();
-    const check_username = trimmed_username.replace(/_/g, '');
-    const last_character = trimmed_username.charAt(trimmed_username.length - 1);
-
+    const regexp = /^[a-zA-Z0-9_]+$/;
     if (
-      !validator.isLength(username.trim(), {min: 6, max: 30}) ||
-      !validator.isAlphanumeric(check_username) ||
-      !validator.isAlphanumeric(last_character)
+      username.search(regexp) === -1 ||
+      groupname.substring(groupname.length - 1) == '_' ||
+      !validator.isLength(username.trim(), {min: 6, max: 30})
     ) {
       this.setState({
         errorText:
-          'Invalid username.  Username needs to be least 6 characters long or contains forbidden characaters',
+          'Invalid username.  Username needs to be least 6 characters long and cannot contains forbidden characaters',
       });
       return false;
     }
@@ -147,8 +144,7 @@ class SignUp extends React.Component {
           style={{width: '100%', height: '100%', backgroundColor: 'white'}}
           alwaysBounceHorizontal={false}
           alwaysBounceVertical={false}
-          showsVerticalScrollIndicator={false}
-          >
+          showsVerticalScrollIndicator={false}>
           <KeyboardAvoidingView style={styles.container}>
             <StatusBar barStyle={'dark-content'} />
             <Text style={{color: 'red'}}>{errorText}</Text>

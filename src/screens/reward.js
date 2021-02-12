@@ -85,7 +85,8 @@ class Reward extends React.Component {
 
   render() {
     const {point, loading, reward} = this.state;
-    const disabled = loading || point < 100;
+    const {auth, rank_setting} = this.props.group.group
+    const disabled = loading || point < 100 || rank_setting.reward_rank_required < auth.rank;
     return (
       <View style={styles.container}>
         <StatusBar barStyle={'dark-content'} />

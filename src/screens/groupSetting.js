@@ -281,6 +281,13 @@ class GroupSetting extends React.Component {
     });
   };
 
+  onEditRankPress = () => {
+    const {navigation} = this.props
+    navigation.navigate('RankSetting', {
+      prev_route: 'GroupSetting'
+    })
+  }
+
   onEditProfilePress = async () => {
     const {navigation, group, auth, userLogout, getStatusInGroup} = this.props;
     const request = {
@@ -354,12 +361,17 @@ class GroupSetting extends React.Component {
             <SettingEdition
               onPress={this.onNominationCreationPress}
               name={'Edit nominations'}
-              disabled={auth_rank >= 2}
+              disabled={false}
             />
             <SettingEdition
               onPress={this.onEditTagPress}
               name={'Edit tags'}
               disabled={auth_rank >= 2}
+            />
+            <SettingEdition
+              onPress={this.onEditRankPress}
+              name={'Edit ranks'}
+              disabled={false}
             />
 
             <ActivityIndicator
@@ -383,8 +395,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group, currentScreen, auth} = state;
-  return {group, currentScreen, auth};
+  const {group, auth} = state;
+  return {group, auth};
 };
 
 const mapDispatchToProps = dispatch => {

@@ -70,7 +70,8 @@ export default class HeaderImageBackground extends React.Component {
       onNotificationPress,
       onAddPost,
       visibility,
-      join_requested
+      join_requested,
+      rank_setting
     } = this.props;
 
     const {background_text_sequence, material_icon} = this.state;
@@ -128,7 +129,7 @@ export default class HeaderImageBackground extends React.Component {
               onNotificationPress={onNotificationPress}
               onAddPost={onAddPost}
               join_requested={join_requested}
-
+              rank_setting={rank_setting}
             />
           )}
         </View>

@@ -130,7 +130,7 @@ class GroupSettingsHeader extends React.Component {
     } = this.state;
 
     const {auth_rank} = this.props;
-
+    const {rank_setting} = this.props.group.group
     let date = new Date();
 
     if (initialize) {

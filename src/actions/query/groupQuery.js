@@ -51,6 +51,13 @@ query getGroup($groupId: ID!){
         request_to_join
         visibility
         join_requested
+        rank_setting {
+            post_rank_required
+            priority_1_rank_required
+            priority_2_rank_required
+            priority_3_rank_required
+            reward_rank_required
+        }
         createdAt
     }
 }
@@ -107,6 +114,13 @@ mutation createGroup($GroupInput: GroupInput!){
         }
         visibility
         request_to_join
+        rank_setting {
+            post_rank_required
+            priority_1_rank_required
+            priority_2_rank_required
+            priority_3_rank_required
+            reward_rank_required
+        }
         memberCount
         createdAt
     }
@@ -143,6 +157,13 @@ mutation updateGroup($GroupInput: GroupInput!){
         }
         visibility
         request_to_join
+        rank_setting {
+            post_rank_required
+            priority_1_rank_required
+            priority_2_rank_required
+            priority_3_rank_required
+            reward_rank_required
+        }
         memberCount
         createdAt
     }
@@ -180,6 +201,13 @@ mutation joinGroup($groupId: ID!){
             }
             visibility
             join_requested
+            rank_setting {
+                post_rank_required
+                priority_1_rank_required
+                priority_2_rank_required
+                priority_3_rank_required
+                reward_rank_required
+            }
             memberCount
             createdAt
         }
@@ -277,5 +305,11 @@ query getGroupRules($groupId: ID!){
 export const getGroupJoinRequestCountQuery = `
 query getGroupJoinRequestCount($groupId: ID!){
     getGroupJoinRequestCount(groupId: $groupId)
+}
+`
+
+export const updateRankFeaturesMutation = `
+mutation updateRankFeatures($input: GroupInput!){
+    updateRankFeatures(input: $input)
 }
 `

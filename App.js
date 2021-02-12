@@ -62,6 +62,7 @@ import GroupRules from './src/screens/groupRules';
 import Chats from './src/screens/chats';
 import ChatSetting from './src/screens/chatSetting';
 import Chat from './src/screens/chat';
+import RankSetting from './src/screens/rankSetting'
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -199,6 +200,7 @@ export default (App = () => {
               <Stack.Screen name="Chats" component={Chats} />
               <Stack.Screen name="ChatSetting" component={ChatSetting} />
               <Stack.Screen name="Chat" component={Chat} />
+              <Stack.Screen name="RankSetting" component={RankSetting} />
             </Stack.Navigator>
           </NavigationContainer>
         </PersistGate>

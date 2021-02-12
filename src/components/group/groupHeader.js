@@ -170,6 +170,7 @@ class GroupHeader extends React.Component {
       visibility,
       tags,
       join_requested,
+      rank_setting
     } = this.props.item;
     const {point, onAddPost} = this.props;
     let {total_point, base_point_semester, leaderboard} = point;
@@ -202,6 +203,7 @@ class GroupHeader extends React.Component {
               onAddPost={onAddPost}
               visibility={visibility}
               join_requested={join_requested}
+              rank_setting={rank_setting}
             />
 
             <View style={underImageStyle}>

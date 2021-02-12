@@ -122,6 +122,15 @@ export default (groupReducer = (state = INITIAL_STATE, action) => {
         },
       };
 
+    case 'updateRankFeatures':
+      return {
+        ...state,
+        group: {
+          ...state.group,
+          rank_setting: action.i
+        }
+      }
+
     default:
       return state;
   }

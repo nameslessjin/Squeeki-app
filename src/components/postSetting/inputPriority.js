@@ -15,7 +15,8 @@ export default class InputPriority extends React.Component {
       onToggle,
       toggleTyple,
       onKeyboardInputFocus,
-      currentUserAuth
+      currentUserAuth,
+      rank_setting
     } = this.props;
 
     return (
@@ -29,6 +30,7 @@ export default class InputPriority extends React.Component {
           type={'priority'}
           toggleTyple={toggleTyple}
           currentUserAuth={currentUserAuth}
+          rank_setting={rank_setting}
         />
 
         <View style={styles.inputContainer}>

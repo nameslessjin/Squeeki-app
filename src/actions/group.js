@@ -12,7 +12,8 @@ import {
   setGroupRequestToJoinMutation,
   onGroupRulesUpdateMutation,
   getGroupRulesQuery,
-  getGroupJoinRequestCountQuery
+  getGroupJoinRequestCountQuery,
+  updateRankFeaturesMutation
 } from './query/groupQuery';
 import {http} from '../../apollo'
 
@@ -706,5 +707,48 @@ const getGroupJoinRequestCountReducer = data => {
   return {
     type: 'getGroupJoinRequestCount',
     data: data
+  }
+}
+
+export const updateRankFeatures = data => {
+  const {token, groupId, rank_setting} = data
+  return async function (dispatch){
+    const input = {
+      groupId,
+      rank_setting
+    }
+    console.log(groupId)
+    const graphql = {
+      query: updateRankFeaturesMutation,
+      variables: {
+        input: input
+      }
+    }
+    const req = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+
+    dispatch(updateRankFeaturesReducer(rank_setting))
+    return 0
+
+  }
+}
+
+const updateRankFeaturesReducer = data => {
+  return {
+    type: 'updateRankFeatures',
+    i: data
   }
 }

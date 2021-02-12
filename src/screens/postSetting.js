@@ -527,6 +527,7 @@ class PostSetting extends React.Component {
               toggleTyple={toggleTyple}
               onKeyboardInputFocus={this.onKeyboardInputFocus}
               currentUserAuth={this.props.group.group.auth}
+              rank_setting={this.props.group.group.rank_setting}
             />
           )}
 

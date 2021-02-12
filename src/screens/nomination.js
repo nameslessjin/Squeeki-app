@@ -21,7 +21,7 @@ class Nomination extends React.Component {
   };
 
   componentDidMount() {
-    const {navigation, auth, userLogout, getGroupNominations} = this.props;
+    const {navigation, auth, userLogout, getGroupNominations, group} = this.props;
     const {params} = this.props.route;
     if (params) {
       this.setState({
@@ -40,7 +40,7 @@ class Nomination extends React.Component {
       getGroupNominationsFunc(input);
     }
 
-    let button = (
+    let button = group.group.auth.rank > 2 ? null : (
       <HeaderRightButton
         type={'create'}
         disabled={false}
@@ -66,10 +66,10 @@ class Nomination extends React.Component {
 
   componentDidUpdate() {
     const {prev_route, chosenUser, nomination} = this.state;
-    const {navigation} = this.props;
+    const {navigation, group} = this.props;
     let disabled = false;
 
-    let button = (
+    let button = group.group.auth.rank > 2 ? null : (
       <HeaderRightButton
         type={'create'}
         disabled={false}
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   const {auth, group} = state;
-  return {auth, nominations: group.group.nominations || []};
+  return {auth, nominations: group.group.nominations || [], group};
 };
 
 const mapDispatchToProps = dispatch => {

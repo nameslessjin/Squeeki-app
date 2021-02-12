@@ -24,9 +24,8 @@ export default class InputPicker extends React.Component {
 
   viewOptions = [
     {key: 'public', label: 'Public', value: 'public'},
-    {key: 'private', label: 'Private', value: 'private'}
-  ]
-
+    {key: 'private', label: 'Private', value: 'private'},
+  ];
 
   render() {
     const {
@@ -38,6 +37,7 @@ export default class InputPicker extends React.Component {
       type,
       toggleTyple,
       currentUserAuth,
+      rank_setting,
     } = this.props;
 
     let options = [];
@@ -58,29 +58,45 @@ export default class InputPicker extends React.Component {
         textInputValue = 'false';
       }
     } else if (type == 'visibility') {
-      header = 'Visibility'
+      header = 'Visibility';
     }
 
     // the current toggled type.  This is used to correctly show the selections
     if (toggleTyple == 'priority') {
       if (currentUserAuth) {
         const {rank} = currentUserAuth;
+        const {
+          priority_1_rank_required,
+          priority_2_rank_required,
+          priority_3_rank_required,
+        } = rank_setting;
         options = this.priorityOptions.filter(option => {
-          if (rank <= 1) {
-            return true;
-          } else if (rank == 2) {
-            return option.value < 3;
-          } else {
-            return option.value < 2;
+          if (option.value == 1){
+            if (rank <= priority_1_rank_required){
+              return true
+            }
+            return false
+          } else if (option.value == 2){
+            if (rank <= priority_2_rank_required){
+              return true
+            }
+            return false
+          } else if (option.value == 3){
+            if (rank <= priority_3_rank_required){
+              return true
+            }
+            return false
           }
+
+          return true
         });
       }
     } else if (toggleTyple == 'type') {
       options = this.typeOptions;
     } else if (toggleTyple == 'comment') {
       options = this.commentOptions;
-    } else if (toggleTyple == 'visibility'){
-      options = this.viewOptions
+    } else if (toggleTyple == 'visibility') {
+      options = this.viewOptions;
     }
 
     // binary setup can be weird
@@ -91,8 +107,7 @@ export default class InputPicker extends React.Component {
       } else {
         display_text = 'No';
       }
-    } 
-    
+    }
 
     const toggled = onToggle && toggleTyple == type;
     return (
