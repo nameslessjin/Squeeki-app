@@ -7,8 +7,8 @@ const extractKey = ({id}) => id;
 export default class GroupList extends React.Component {
 
   renderItem = ({item}) => {
-    const {navigation} = this.props
-    return <GroupCard item = {item} navigation={navigation} />;
+    const {navigation, route} = this.props
+    return <GroupCard item = {item} navigation={navigation} route={route} />;
   };
 
   render() {

@@ -79,11 +79,3 @@ export const sendMessage = request => {
     return 0;
   };
 };
-
-// export const chatMessageSub = request => {
-//     const {token, chatId} = request
-
-//     const {data: { newChatMessage }, loading} = useSubscription(chatMessageSubscription, {variables: {chatId}})
-//     console.log(data)
-//     return 0
-// }

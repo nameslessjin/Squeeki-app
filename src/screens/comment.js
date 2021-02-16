@@ -110,9 +110,7 @@ class Comment extends React.Component {
       return;
     }
 
-    const post = postData.data.getPost;
-
-    this.setState({post: post});
+    this.setState({post: postData});
 
     Keyboard.dismiss();
   };
@@ -120,6 +118,7 @@ class Comment extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const prevComment = prevProps.comment;
     const {comment} = this.props;
+
     if (prevComment.comments != comment.comments) {
       this.setState(prevState => ({
         comments: comment.comments.comments,
@@ -284,6 +283,8 @@ class Comment extends React.Component {
       comment_uid,
     } = this.state;
     const disabled = newComment.trim().length == 0;
+    const {navigation} = this.props
+
 
     getSundays();
     return (
@@ -300,6 +301,7 @@ class Comment extends React.Component {
             sent={sent}
             onCommentLike={this.onCommentLike}
             onOptionToggle={this.onOptionToggle}
+            navigation={navigation}
           />
           {post.allowComment ? (
             <View style={styles.textInputContainer}>

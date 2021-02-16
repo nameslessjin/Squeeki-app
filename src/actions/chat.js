@@ -7,7 +7,7 @@ import {
   deleteUserChatMutation,
   switchOwnershipMutation,
 } from './query/chatQuery';
-import {http} from '../../apollo'
+import {http, http_upload} from '../../apollo'
 
 export const getChat = request => {
   const {groupId, count, token} = request;
@@ -65,7 +65,7 @@ export const createChat = request => {
       iconData.append('fileCategory', 'chat_icons');
 
       const upload_icon_req = await fetch(
-        'http://192.168.86.24:8080/uploadImage',
+        http_upload,
         {
           method: 'POST',
           headers: {
@@ -166,7 +166,7 @@ export const updateChat = request => {
       iconData.append('fileCategory', 'chat_icons');
 
       const upload_icon_req = await fetch(
-        'http://192.168.86.24:8080/uploadImage',
+        http_upload,
         {
           method: 'POST',
           headers: {

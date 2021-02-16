@@ -8,11 +8,11 @@ const extractKey = ({id}) => id;
 export default class CommentList extends React.Component {
   renderItem = ({item}) => {
 
-    const {onCommentLike, onOptionToggle} = this.props
-  
+    const {onCommentLike, onOptionToggle, navigation} = this.props
+    
     if (item.id) {
       if (item.type) {
-        return <CommentPost post={item} option={false} />;
+        return <CommentPost post={item} option={false} navigation={navigation}/>;
       }
       return <CommentCard comment={item} onCommentLike={onCommentLike} onOptionToggle={onOptionToggle}/>;
     }
@@ -27,7 +27,7 @@ export default class CommentList extends React.Component {
   };
 
   render() {
-    const {post, comments, onEndReached, sent} = this.props;
+    const {post, comments, onEndReached, sent, navigation} = this.props;
     let data = [];
     if (post.id) {
       if (post.allowComment) {
@@ -41,8 +41,6 @@ export default class CommentList extends React.Component {
     if (sent) {
       this.scrollToTop(this.instance);
     }
-
-
     return post.allowComment ? (
       <FlatList
         style={styles.container}
@@ -62,7 +60,7 @@ export default class CommentList extends React.Component {
           justifyContent: 'flex-start',
           alignItems: 'center',
         }}>
-        <CommentPost post={post} option={false} />
+        <CommentPost post={post} option={false} navigation={navigation}/>
         <Text style={styles.commentDisabled}>Comment disabled</Text>
       </View>
     );

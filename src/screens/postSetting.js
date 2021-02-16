@@ -21,7 +21,7 @@ import NominationButton from '../components/postSetting/nominationButton';
 import {getSundays} from '../utils/time';
 import PostSettingModal from '../components/postSetting/postSettingModal';
 import {getUserGroupPoint} from '../actions/point';
-import {getSingleGroupById} from '../actions/group'
+import {getSingleGroupById} from '../actions/group';
 
 class PostSetting extends React.Component {
   state = {
@@ -152,16 +152,22 @@ class PostSetting extends React.Component {
   }
 
   getGroup = async () => {
-    const {group, auth, getSingleGroupById, navigation, userLogout} = this.props
+    const {
+      group,
+      auth,
+      getSingleGroupById,
+      navigation,
+      userLogout,
+    } = this.props;
     const request = {
       token: auth.token,
-      id: group.group.id
-    }
+      id: group.group.id,
+    };
 
     const req = await getSingleGroupById(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load group at this time, please try again later')
+      alert('Cannot load group at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -171,8 +177,7 @@ class PostSetting extends React.Component {
       }
       return;
     }
-
-  }
+  };
 
   getUserGroupPoint = async () => {
     const {group, auth, getUserGroupPoint, navigation, userLogout} = this.props;
@@ -185,7 +190,7 @@ class PostSetting extends React.Component {
     const req = await getUserGroupPoint(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load points at this time, please try again later')
+      alert('Cannot load points at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -199,7 +204,7 @@ class PostSetting extends React.Component {
 
   extractData = () => {
     const {postData, create, chosenUser} = this.state;
-    let {nomination} = this.state
+    let {nomination} = this.state;
     const {token} = this.props.auth;
     const {last_sunday, next_sunday} = getSundays();
     let origin = null;
@@ -250,7 +255,7 @@ class PostSetting extends React.Component {
       priorityDuration != null ||
       allowComment != null ||
       type != null ||
-      visibility != null 
+      visibility != null
     ) {
       const updateData = {
         id: create ? null : postId,
@@ -308,6 +313,7 @@ class PostSetting extends React.Component {
       getGroupPosts,
       navigation,
       userLogout,
+      group
     } = this.props;
     const {token} = this.props.auth;
 
@@ -316,7 +322,7 @@ class PostSetting extends React.Component {
       const post = await createPost(updateData);
       if (post.errors) {
         console.log(post.errors[0].message);
-        alert('Cannot create post at this time, please try again later')
+        alert('Cannot create post at this time, please try again later');
         if (post.errors[0].message == 'Not authenticated') {
           userLogout();
           navigation.reset({
@@ -334,8 +340,8 @@ class PostSetting extends React.Component {
 
       const updatePost = await this.props.updatePost(data);
       if (updatePost.errors) {
-        // alert(updatePost.errors[0].message);
-        alert('Cannot update post at this time, please try again later')
+        console.log(updatePost.errors[0].message);
+        alert('Cannot update post at this time, please try again later');
         if (updatePost.errors[0].message == 'Not authenticated') {
           userLogout();
           navigation.reset({
@@ -348,7 +354,18 @@ class PostSetting extends React.Component {
     }
     this.setState({loading: false});
 
-    if (this.props.route.params.groupId == null) {
+    if (group.group.id){
+      const data = {
+        token: token,
+        groupId: group.group.id,
+        getGroupPosts: getGroupPosts,
+        navigation: navigation,
+        userLogout: userLogout,
+        count: 0,
+      };
+
+      getGroupPostsFunc(data);
+    } else {
       const data = {
         token: token,
         getFeed: getFeed,
@@ -357,19 +374,14 @@ class PostSetting extends React.Component {
         count: 0,
       };
       getFeedFunc(data);
-    } else {
-      const data = {
-        token: token,
-        groupId: this.props.route.params.groupId,
-        getGroupPosts: getGroupPosts,
-        navigation: navigation,
-        userLogout: userLogout,
-        count: 0,
-      };
-
-      getGroupPostsFunc(data);
     }
-    this.props.navigation.goBack();
+
+    if (this.props.route.params.prev_route == 'comment'){
+      navigation.navigate(group.group.id ? 'GroupNavigator' : 'Home')
+      return 
+    }
+
+    navigation.goBack();
   };
 
   atUser = value => {
@@ -498,7 +510,8 @@ class PostSetting extends React.Component {
       create,
       modalVisible,
     } = this.state;
-
+    // console.log(this.state)
+  
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
         <KeyboardAvoidingView style={styles.container}>
@@ -614,7 +627,7 @@ const mapDispatchToProps = dispatch => {
     updatePost: data => dispatch(updatePost(data)),
     userLogout: () => dispatch(userLogout()),
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
-    getSingleGroupById: data => dispatch(getSingleGroupById(data))
+    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
   };
 };
 

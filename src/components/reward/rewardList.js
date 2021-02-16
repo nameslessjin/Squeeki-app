@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     textShadowColor: 'black',
     textShadowRadius: 0.1,
     textShadowOffset: {
-      width: 0.2, height: 0.2
+      width: 0.17, height: 0.17
     }
   },
   button: {

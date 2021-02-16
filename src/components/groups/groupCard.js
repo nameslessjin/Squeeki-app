@@ -52,6 +52,7 @@ class GroupCard extends React.Component {
   };
 
   render() {
+    const {route, item} = this.props;
     const {
       id,
       groupname,
@@ -59,7 +60,7 @@ class GroupCard extends React.Component {
       display_name,
       memberCount,
       icon,
-    } = this.props.item;
+    } = item;
     const {
       groupContainer,
       imgHolder,
@@ -72,14 +73,7 @@ class GroupCard extends React.Component {
       imageStyle,
     } = styles;
     const {icon_option} = this.state;
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
+
     return (
       <TouchableOpacity style={groupContainer} onPress={this.onPress}>
         <View style={imgHolder}>
@@ -100,6 +94,13 @@ class GroupCard extends React.Component {
               <Text numberOfLines={2} style={nameStyle}>
                 {display_name}
               </Text>
+              {route == 'search' ? (
+                <Text
+                  numberOfLines={2}
+                  style={[nameStyle, {color: 'grey', fontSize: 13}]}>
+                  @{groupname}
+                </Text>
+              ) : null}
             </View>
             <View style={memberCountStyle}>
               <MaterialIcons
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     color: '#718093',
     textAlign: 'left',
     width: '90%',
-    marginTop: 5
+    marginTop: 5,
   },
   memberCountStyle: {
     flexDirection: 'row',

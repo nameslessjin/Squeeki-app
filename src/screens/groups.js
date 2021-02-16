@@ -87,6 +87,7 @@ class Groups extends React.Component {
               onEndReached={this.onEndReached}
               onRefresh={this.onRefresh}
               refreshing={this.state.refreshing}
+              route={'groups'}
             />
           )}
           {/* {loading ? <ActivityIndicator animating={loading} /> : null} */}

@@ -15,7 +15,7 @@ import {
   getGroupJoinRequestCountQuery,
   updateRankFeaturesMutation
 } from './query/groupQuery';
-import {http} from '../../apollo'
+import {http, http_upload} from '../../apollo'
 
 export const findUserGroupsByUserId = data => {
   const {token, count} = data;
@@ -148,7 +148,7 @@ export const createGroup = data => {
       iconData.append('fileData', icon.data);
       iconData.append('fileCategory', 'icons');
 
-      const iconFetch = await fetch('http://192.168.86.24:8080/uploadImage', {
+      const iconFetch = await fetch(http_upload, {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
@@ -182,7 +182,7 @@ export const createGroup = data => {
       backgroundImgData.append('fileCategory', 'backgroundImgs');
 
       const backgroundImgFetch = await fetch(
-        'http://192.168.86.24:8080/uploadImage',
+        http_upload,
         {
           method: 'POST',
           headers: {
@@ -269,7 +269,7 @@ export const updateGroup = data => {
       iconData.append('fileData', icon.data);
       iconData.append('fileCategory', 'icons');
 
-      const iconFetch = await fetch('http://192.168.86.24:8080/uploadImage', {
+      const iconFetch = await fetch(http_upload, {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
@@ -301,7 +301,7 @@ export const updateGroup = data => {
       backgroundImgData.append('fileCategory', 'backgroundImgs');
 
       const backgroundImgFetch = await fetch(
-        'http://192.168.86.24:8080/uploadImage',
+        http_upload,
         {
           method: 'POST',
           headers: {
@@ -717,7 +717,7 @@ export const updateRankFeatures = data => {
       groupId,
       rank_setting
     }
-    console.log(groupId)
+ 
     const graphql = {
       query: updateRankFeaturesMutation,
       variables: {

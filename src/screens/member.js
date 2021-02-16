@@ -374,9 +374,9 @@ class Member extends React.Component {
             editable={allowToChangeGroupUsername}
           />
           {loading ? (
-            <ActivityIndicator style={{marginTop: 300}} animating={loading} />
+            <ActivityIndicator style={{marginTop: 200}} animating={loading} />
           ) : (
-            <View style={{marginTop: 300}}>
+            <View style={{marginTop: 200}}>
               <OptionButtons
                 onDeleteMember={this.onDeleteMember}
                 allowToDeleteMember={allowToDeleteMember}

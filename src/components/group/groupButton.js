@@ -26,11 +26,9 @@ export default class groupButton extends React.Component {
     );
 
     let create_post_allowed = false
-    console.log(rank_setting)
-    console.log(auth)
+
     if (rank_setting && auth){
-      console.log(rank_setting.post_rank_required)
-      console.log(auth.rank)
+
       if (rank_setting.post_rank_required >= auth.rank){
         create_post_allowed = true
       }

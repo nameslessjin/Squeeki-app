@@ -9,22 +9,22 @@ import {
   changePostNotificationMutation,
   reportPostMutation,
   getNominationPostQuery,
-  getGroupPostForCheckInQuery
+  getGroupPostForCheckInQuery,
 } from './query/postQuery';
-import {http} from '../../apollo'
+import {http, http_upload} from '../../apollo';
 
 export const getGroupPosts = data => {
   const {groupId, token, count} = data;
   return async function(dispatch) {
     const input = {
       groupId: groupId,
-      count: count
-    }
+      count: count,
+    };
 
     const graphql = {
       query: getGroupPostsQuery,
       variables: {
-        input: input
+        input: input,
       },
     };
 
@@ -41,7 +41,7 @@ export const getGroupPosts = data => {
       return postsData;
     }
 
-    dispatch(getGroupPostsData(postsData.data.getGroupPosts))
+    dispatch(getGroupPostsData(postsData.data.getGroupPosts));
 
     return 0;
   };
@@ -60,8 +60,8 @@ export const getFeed = data => {
     const graphql = {
       query: getFeedQuery,
       variables: {
-        count: count
-      }
+        count: count,
+      },
     };
 
     const feed = await fetch(http, {
@@ -77,7 +77,6 @@ export const getFeed = data => {
     if (feedData.errors) {
       return feedData;
     }
-
 
     dispatch(getFeedData(feedData.data.getFeed));
 
@@ -102,7 +101,7 @@ export const getPost = data => {
       },
     };
 
-    const post = await fetch(http, {
+    const postFetch = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -110,11 +109,20 @@ export const getPost = data => {
       },
       body: JSON.stringify(graphql),
     });
-    const postData = await post.json();
+    const postData = await postFetch.json();
     if (postData.errors) {
       return postData;
     }
-    return postData;
+
+    const post = postData.data.getPost;
+    const expiration_date = new Date(parseInt(post.priority_expiration_date));
+    const diff = expiration_date - Date.now();
+    let duration = 0;
+    if (diff > 0) {
+      duration = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    }
+
+    return {...post, priorityDuration: duration};
   };
 };
 
@@ -129,7 +137,7 @@ export const createPost = data => {
     groupId,
     token,
     nomination,
-    visibility
+    visibility,
   } = data;
 
   return async function(dispatch) {
@@ -140,7 +148,7 @@ export const createPost = data => {
       imageData.append('fileData', image.data);
       imageData.append('fileCategory', 'postImgs');
 
-      const imagePost = await fetch('http://192.168.86.24:8080/uploadImage', {
+      const imagePost = await fetch(http_upload, {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
@@ -161,11 +169,13 @@ export const createPost = data => {
         uri: imageUri.url,
         width: image.width,
         height: image.height,
-        name: imageUri.name
+        name: imageUri.name,
       };
     }
 
-    const priority_expiration_date = new Date(Date.now() + priorityDuration * 24 * 60 * 60 * 1000)
+    const priority_expiration_date = new Date(
+      Date.now() + priorityDuration * 24 * 60 * 60 * 1000,
+    );
 
     const postInput = {
       content: content,
@@ -176,9 +186,8 @@ export const createPost = data => {
       image: uploadImage,
       visibility: visibility,
       nomination: nomination,
-      priority_expiration_date: priority_expiration_date
+      priority_expiration_date: priority_expiration_date,
     };
-
 
     const graphQl = {
       query: createPostMutation,
@@ -206,27 +215,36 @@ export const createPost = data => {
 };
 
 export const updatePost = data => {
-
   const {updateData, origin} = data;
-  const {token, id, groupId, image, content, priority, priorityDuration, allowComment, type, visibility} = updateData
+  const {
+    token,
+    id,
+    groupId,
+    image,
+    content,
+    priority,
+    priorityDuration,
+    allowComment,
+    type,
+    visibility,
+  } = updateData;
 
   return async function(dispatch) {
+    let newImage = image;
+    let newContent = content;
+    let newPriority = priority;
+    let newPriorityDuration = priorityDuration;
+    let newAllowComment = allowComment;
+    let newType = type;
+    let newVisibility = visibility;
 
-    let newImage = image
-    let newContent = content
-    let newPriority = priority
-    let newPriorityDuration = priorityDuration
-    let newAllowComment = allowComment
-    let newType = type
-    let newVisibility = visibility
-
-    if (image != null){
-      const imageData = new FormData()
+    if (image != null) {
+      const imageData = new FormData();
       imageData.append('fileType', image.type);
       imageData.append('fileData', image.data);
       imageData.append('fileCategory', 'postImgs');
 
-      const imagePost = await fetch('http://192.168.86.24:8080/uploadImage', {
+      const imagePost = await fetch(http_upload, {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
@@ -246,36 +264,37 @@ export const updatePost = data => {
         uri: imageUri.url,
         width: image.width,
         height: image.height,
-        name: imageUri.name
+        name: imageUri.name,
       };
-
     }
 
-    if (content == null){
+    if (content == null) {
       newContent = origin.content;
     }
 
-    if (priority == null){
-      newPriority = origin.priority
+    if (priority == null) {
+      newPriority = origin.priority;
     }
 
-    if (priorityDuration == null){
-      newPriorityDuration = origin.priorityDuration
+    if (priorityDuration == null) {
+      newPriorityDuration = origin.priorityDuration;
     }
 
-    if (allowComment == null){
-      newAllowComment = origin.allowComment
+    if (allowComment == null) {
+      newAllowComment = origin.allowComment;
     }
 
-    if (type == null){
-      newType = origin.type
+    if (type == null) {
+      newType = origin.type;
     }
 
-    if (visibility == null){
-      newVisibility = origin.visibility
+    if (visibility == null) {
+      newVisibility = origin.visibility;
     }
 
-    const priority_expiration_date = new Date(Date.now() + newPriorityDuration * 24 * 60 * 60 * 1000)
+    const priority_expiration_date = new Date(
+      Date.now() + newPriorityDuration * 24 * 60 * 60 * 1000,
+    );
 
     const postInput = {
       groupId: groupId,
@@ -286,17 +305,15 @@ export const updatePost = data => {
       allowComment: newAllowComment,
       type: newType,
       visibility: newVisibility,
-      priority_expiration_date: priority_expiration_date
-    }
-
+      priority_expiration_date: priority_expiration_date,
+    };
 
     const graphQl = {
       query: updatePostMutation,
       variables: {
-        postInput: postInput
-      }
-    }
-
+        postInput: postInput,
+      },
+    };
 
     const post = await fetch(http, {
       method: 'POST',
@@ -311,211 +328,201 @@ export const updatePost = data => {
     if (postData.errors) {
       return postData;
     }
-    dispatch(updatePostReducer(postData.data.updatePost))
-    return 0
+    dispatch(updatePostReducer(postData.data.updatePost));
+    return 0;
   };
 };
 
 const updatePostReducer = data => {
   return {
     type: 'updatePost',
-    post: data
-  }
-}
+    post: data,
+  };
+};
 
 export const deletePost = data => {
-  const {postId, token} = data
+  const {postId, token} = data;
 
-  return async function(dispatch){
-
+  return async function(dispatch) {
     const graphQl = {
       query: deletePostMutation,
       variables: {
-        postId: postId
-      }
-    }
+        postId: postId,
+      },
+    };
 
     const post = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(graphQl)
-    })
+      body: JSON.stringify(graphQl),
+    });
 
-    const postData = await post.json()
+    const postData = await post.json();
 
-    if (postData.errors){
-      return postData
+    if (postData.errors) {
+      return postData;
     }
 
-    dispatch(DeletePost(postId))
+    dispatch(DeletePost(postId));
 
-    return 0
-  }
-}
-
+    return 0;
+  };
+};
 
 const DeletePost = data => {
   return {
     type: 'deletePost',
-    postId: data
-  }
-}
+    postId: data,
+  };
+};
 
 export const likePost = data => {
-  const {postId, token} = data
+  const {postId, token} = data;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const graphQl = {
       query: likePostMutation,
       variables: {
         postId: postId,
-      }
-    }
+      },
+    };
 
     const post = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(graphQl)
-    })
+      body: JSON.stringify(graphQl),
+    });
 
-    const postData = await post.json()
+    const postData = await post.json();
 
-    if (postData.errors){
-      return postData
+    if (postData.errors) {
+      return postData;
     }
-    
-    return 0
 
-  }
-}
+    return 0;
+  };
+};
 
 export const changePostNotification = data => {
-  const {token, postId} = data
+  const {token, postId} = data;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const graphQl = {
       query: changePostNotificationMutation,
       variables: {
-        postId: postId
-      }
-    }
+        postId: postId,
+      },
+    };
 
     const notification = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(graphQl)
-    })
+      body: JSON.stringify(graphQl),
+    });
 
-    const notificationResult = await notification.json()
+    const notificationResult = await notification.json();
 
-    if (notificationResult.errors){
-      return notificationResult
+    if (notificationResult.errors) {
+      return notificationResult;
     }
 
-    return 0
-
-  }
-
-}
+    return 0;
+  };
+};
 
 export const reportPost = data => {
-  const {token, postId, content} = data
+  const {token, postId, content} = data;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const postReportInput = {
       postId: postId,
-      content: content
-    }
+      content: content,
+    };
     const graphql = {
       query: reportPostMutation,
       variables: {
-        postReportInput: postReportInput
-      }
-    }
+        postReportInput: postReportInput,
+      },
+    };
 
     const report = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(graphql)
-    })
+      body: JSON.stringify(graphql),
+    });
 
-    const reportResult = await report.json()
-    if (reportResult.errors){
-      return reportResult
+    const reportResult = await report.json();
+    if (reportResult.errors) {
+      return reportResult;
     }
-    return 0
-
-  }
-}
+    return 0;
+  };
+};
 
 export const getNominationPost = request => {
-  const {token, groupId, time, nomineeId, nominationId, count} = request
+  const {token, groupId, time, nomineeId, nominationId, count} = request;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const input = {
       groupId: groupId,
       nomineeId: nomineeId,
       nominationId: nominationId,
       endAt: time.next_sunday,
       beginAt: time.last_sunday,
-      count: count
-    }
+      count: count,
+    };
 
     const graphql = {
       query: getNominationPostQuery,
       variables: {
-        nominationPostInput: input
-      }
-    }
+        nominationPostInput: input,
+      },
+    };
 
     const req = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(graphql)
-    })
+      body: JSON.stringify(graphql),
+    });
 
-    const result = await req.json()
-    if (result.errors){
-      return result
+    const result = await req.json();
+    if (result.errors) {
+      return result;
     }
-    return result.data.getNominationPost
-
-
-
-  }
-}
+    return result.data.getNominationPost;
+  };
+};
 
 export const getGroupPostForCheckIn = request => {
+  const {token, groupId, count} = request;
 
-  const {token, groupId, count} = request
-
-  return async function(dispatch){
+  return async function(dispatch) {
     const input = {
       groupId: groupId,
-      count: count
-    }
+      count: count,
+    };
 
     const graphql = {
       query: getGroupPostForCheckInQuery,
       variables: {
-        input: input
-      }
-    }
+        input: input,
+      },
+    };
 
     const req = await fetch(http, {
       method: 'POST',
@@ -532,7 +539,5 @@ export const getGroupPostForCheckIn = request => {
     }
 
     return result.data.getGroupPostForCheckIn;
-
-  }
-
-}
+  };
+};

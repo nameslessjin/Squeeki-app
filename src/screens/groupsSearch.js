@@ -120,6 +120,7 @@ class GroupsSearch extends React.Component {
             groupsData={groupsData || []}
             navigation={this.props.navigation}
             onEndReached={this.onEndReached}
+            route={'search'}
           />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

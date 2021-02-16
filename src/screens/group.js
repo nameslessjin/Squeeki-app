@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   noPostStyle: {
-    marginBottom: 300,
+    marginBottom: 200,
     color: 'grey',
     fontStyle: 'italic',
   },

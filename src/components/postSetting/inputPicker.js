@@ -1,30 +1,38 @@
 import React from 'react';
 import Modal from 'react-native-modal';
 import {Picker} from '@react-native-community/picker';
-import {StyleSheet, TextInput, Text, View, Platform} from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  Text,
+  View,
+  Platform,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import InputPickerModal from './inputPickerModal';
 
 export default class InputPicker extends React.Component {
   priorityOptions = [
-    {key: '0', label: '0', value: 0},
-    {key: '1', label: '1', value: 1},
-    {key: '2', label: '2', value: 2},
-    {key: '3', label: '3', value: 3},
+    {id: '0', label: '0', value: 0},
+    {id: '1', label: '1', value: 1},
+    {id: '2', label: '2', value: 2},
+    {id: '3', label: '3', value: 3},
   ];
 
   typeOptions = [
-    {key: 'post', label: 'Post', value: 'post'},
-    {key: 'event', label: 'Event', value: 'event'},
-    {key: 'request', label: 'Request', value: 'request'},
+    {id: '0', label: 'Post', value: 'post'},
+    {id: '1', label: 'Event', value: 'event'},
+    {id: '2', label: 'Request', value: 'request'},
   ];
 
   commentOptions = [
-    {key: 'true', label: 'Yes', value: 'true'},
-    {key: 'false', label: 'No', value: 'false'},
+    {id: '0', label: 'Yes', value: 'true'},
+    {id: '1', label: 'No', value: 'false'},
   ];
 
   viewOptions = [
-    {key: 'public', label: 'Public', value: 'public'},
-    {key: 'private', label: 'Private', value: 'private'},
+    {id: '0', label: 'Public', value: 'public'},
+    {id: '1', label: 'Private', value: 'private'},
   ];
 
   render() {
@@ -71,24 +79,24 @@ export default class InputPicker extends React.Component {
           priority_3_rank_required,
         } = rank_setting;
         options = this.priorityOptions.filter(option => {
-          if (option.value == 1){
-            if (rank <= priority_1_rank_required){
-              return true
+          if (option.value == 1) {
+            if (rank <= priority_1_rank_required) {
+              return true;
             }
-            return false
-          } else if (option.value == 2){
-            if (rank <= priority_2_rank_required){
-              return true
+            return false;
+          } else if (option.value == 2) {
+            if (rank <= priority_2_rank_required) {
+              return true;
             }
-            return false
-          } else if (option.value == 3){
-            if (rank <= priority_3_rank_required){
-              return true
+            return false;
+          } else if (option.value == 3) {
+            if (rank <= priority_3_rank_required) {
+              return true;
             }
-            return false
+            return false;
           }
 
-          return true
+          return true;
         });
       }
     } else if (toggleTyple == 'type') {
@@ -110,39 +118,22 @@ export default class InputPicker extends React.Component {
     }
 
     const toggled = onToggle && toggleTyple == type;
+
     return (
       <View style={styles.inputContainer}>
         <Text style={styles.header}>{header}</Text>
-        <TextInput
-          style={styles.textInputContainer}
-          placeholderTextColor={'#7f8fa6'}
-          placeholder={header}
-          value={display_text}
-          onFocus={() => onInputFocus(type)}
-        />
-        <Modal
-          isVisible={toggled}
-          style={Platform.OS == 'ios' ? styles.Modal : null}
+        <TouchableWithoutFeedback onPress={() => onInputFocus(type)}>
+          <View style={styles.textInputContainer}>
+            <Text>{display_text}</Text>
+          </View>
+        </TouchableWithoutFeedback>
+        <InputPickerModal
+          modalVisible={toggled}
           onBackdropPress={onBackdropPress}
-          animationIn={'slideInUp'}
-          animationOut={'slideOutDown'}>
-          <Picker
-            style={
-              Platform.OS == 'ios' ? styles.Picker : {backgroundColor: 'white'}
-            }
-            selectedValue={textInputValue}
-            onValueChange={v => modifyInput(v, toggleTyple)}>
-            {options.map(option => {
-              return (
-                <Picker.Item
-                  key={option.key}
-                  label={option.label}
-                  value={option.value}
-                />
-              );
-            })}
-          </Picker>
-        </Modal>
+          options={options}
+          type={toggleTyple}
+          modifyInput={modifyInput}
+        />
       </View>
     );
   }

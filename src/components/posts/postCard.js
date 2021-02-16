@@ -163,7 +163,7 @@ class PostCard extends React.Component {
 
   onPostUpdate = () => {
     const {auth, groupAuth} = this.props.item;
-    const {navigation} = this.props;
+    const {navigation, prev_route} = this.props;
     const currentUserAuth = this.props.group.group.auth;
 
     let currentUserAuthQualified = false;
@@ -181,6 +181,7 @@ class PostCard extends React.Component {
       navigation.navigate('PostSetting', {
         postData: postData,
         create: false,
+        prev_route: prev_route
       });
       this.onBackDropPress();
     } else {

@@ -4,8 +4,8 @@ import PostCard from '../posts/postCard';
 
 export default class CommentPost extends React.Component {
   render() {
-    const {post, option} = this.props;
-    return <PostCard item={post} commentTouchable={false} option={option} />;
+    const {post, option, navigation} = this.props;
+    return <PostCard item={post} commentTouchable={false} option={option} navigation={navigation} prev_route={'comment'} />;
   }
 }
 

@@ -1,13 +1,11 @@
 import React from 'react';
 import {
-  View,
   TouchableOpacity,
   StyleSheet,
   Text,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  TextInput,
   ActivityIndicator,
   StatusBar
 } from 'react-native';
@@ -147,10 +145,6 @@ class NominationSetting extends React.Component {
     if (period != 0 && period != 7 && period != 14 && period != 30) {
       return false;
     }
-
-    // if (points < 0 || points > 500) {
-    //   return false;
-    // }
 
     return true;
   };

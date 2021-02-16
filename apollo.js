@@ -7,7 +7,6 @@ import {ApolloClient, InMemoryCache} from '@apollo/client';
 // initialize apollo client
 export const apolloClient = (token) => {
 
-  console.log(token)
   const httpLink = new HttpLink({
     uri: 'http://192.168.86.24:8080/graphql',
     headers: {
@@ -30,7 +29,6 @@ export const apolloClient = (token) => {
   const splitLink = split(
     ({query}) => {
       const definition = getMainDefinition(query);
-      console.log(definition)
       return (
         definition.kind === 'OperationDefinition' &&
         definition.operation === 'subscription'
@@ -40,8 +38,8 @@ export const apolloClient = (token) => {
     httpLink,
   );
 
-  console.log('apollo here')
-  console.log(splitLink)
+  // console.log('apollo here')
+  // console.log(splitLink)
 
   const client = new ApolloClient({
     // uri: 'http://192.168.86.24:8080/graphql',
@@ -54,3 +52,7 @@ export const apolloClient = (token) => {
 };
 
 export const http = 'http://squeeki.appspot.com/graphql';
+
+export const http_upload = 'http://squeeki.appspot.com/uploadImage'
+
+// export const http = 'http://192.168.86.24:8080/graphql'

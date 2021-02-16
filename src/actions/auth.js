@@ -7,7 +7,7 @@ import {
   checkVerificationCodeQuery,
   resetPasswordMutation,
 } from '../actions/query/authQuery';
-import {http} from '../../apollo';
+import {http, http_upload} from '../../apollo';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export const signup = data => {
@@ -99,7 +99,7 @@ export const updateProfile = data => {
       iconData.append('fileData', icon.data);
       iconData.append('fileCategory', 'userIcons');
 
-      const iconPost = await fetch('http://192.168.86.24:8080/uploadImage', {
+      const iconPost = await fetch(http_upload, {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
