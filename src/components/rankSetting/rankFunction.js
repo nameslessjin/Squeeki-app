@@ -6,15 +6,17 @@ export default class RankFunction extends React.Component {
     const {type, value, onPress} = this.props;
     let name;
     if (type == 'post') {
-      name = 'Create Post rank';
+      name = 'Create Post';
     } else if (type == 'priority1') {
-      name = 'Create priority 1 rank';
+      name = 'Create priority 1 post';
     } else if (type == 'priority2') {
-      name = 'Create priority 2 rank';
+      name = 'Create priority 2 post';
     } else if (type == 'priority3') {
-      name = 'Create priority 3 rank';
+      name = 'Create priority 3 post';
     } else if (type == 'reward') {
-      name = 'Loot reward rank';
+      name = 'Loot reward';
+    } else if (type == 'member') {
+      name = 'Modify member'
     }
 
     return (

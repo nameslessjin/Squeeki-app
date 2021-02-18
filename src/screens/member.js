@@ -13,7 +13,6 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {connect} from 'react-redux';
 import InputRankTitle from '../components/users/members/inputRankTitle';
-import ModifyButton from '../components/users/members/modifyButton';
 import {updateMember, deleteMember, makeOwner} from '../actions/user';
 import {getSingleGroupById} from '../actions/group';
 import {userLogout} from '../actions/auth';
@@ -42,13 +41,13 @@ class Member extends React.Component {
     ];
     this.setState({icon_option: icon_options[random]});
     this.props.navigation.setOptions({
-      headerRight: () => (
-        <ModifyButton
-          update={false}
-          onPress={this.modifyMemberStatus}
-          loading={false}
-        />
-      ),
+      // headerRight: () => (
+      //   <ModifyButton
+      //     update={false}
+      //     onPress={this.modifyMemberStatus}
+      //     loading={false}
+      //   />
+      // ),
       headerBackTitleVisible: false,
     });
   }
@@ -60,25 +59,24 @@ class Member extends React.Component {
     ) {
       let update = false;
       update = this.extractData().update;
-      const {navigation} = this.props;
-      navigation.setOptions({
-        headerRight: () => (
-          <ModifyButton
-            update={update}
-            onPress={this.modifyMemberStatus}
-            loading={this.state.loading}
-          />
-        ),
-      });
+      // const {navigation} = this.props;
+      // navigation.setOptions({
+      //   headerRight: () => (
+      //     <ModifyButton
+      //       update={update}
+      //       onPress={this.modifyMemberStatus}
+      //       loading={this.state.loading}
+      //     />
+      //   ),
+      // });
     }
   }
 
   componentWillUnmount() {
-    const {prev_route} = this.state;
-    if (prev_route == 'Members') {
-      this.loadGroupMembers();
+    // update member profile
+    if (this.extractData().update) {
+      this.modifyMemberStatus();
     }
-    this.getGroup();
   }
 
   getGroup = async () => {
@@ -243,6 +241,7 @@ class Member extends React.Component {
   };
 
   modifyMemberStatus = async () => {
+    const {prev_route} = this.state;
     this.setState({loading: true});
     // get function here
     const {userLogout, navigation} = this.props;
@@ -264,12 +263,18 @@ class Member extends React.Component {
       return;
     }
 
-    this.setState({
-      loading: false,
-      auth: updateData.auth,
-      group_username: updateData.group_username,
-    });
-    navigation.goBack();
+    // get members when return to member page
+    if (prev_route == 'Members') {
+      this.loadGroupMembers();
+    }
+    // get group info when return to group setting page
+    this.getGroup();
+
+    // this.setState({
+    //   loading: false,
+    //   auth: updateData.auth,
+    //   group_username: updateData.group_username,
+    // });
   };
 
   onBackdropPress = () => {
@@ -330,16 +335,14 @@ class Member extends React.Component {
     } = this.state;
     //group auth is your auth in the group
     const {group} = this.props.group;
+    const {modify_member_rank_required} = group.rank_setting;
 
     // auth here is auth of group member
     const {user} = this.props.auth;
-    const allowToChangeRank = group.auth.rank < auth.rank;
-    const allowToChangeTitle = group.auth.rank < auth.rank || user.id == id;
-    const allowToDeleteMember =
-      auth.rank != 1 && group.auth.rank <= 2 && user.id != id;
+    const allowToModifyMember = group.auth.rank <= modify_member_rank_required;
     const allowToMakeOwner = group.auth.rank <= 1 && auth.rank > 1;
-    const allowToChangeGroupUsername = user.id == id;
-
+    const allowToChangeGroupUsername =
+      user.id == id || group.auth.rank <= modify_member_rank_required;
 
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
@@ -364,8 +367,7 @@ class Member extends React.Component {
             onBackdropPress={this.onBackdropPress}
             toggled={toggled}
             modifyInput={this.modifyInput}
-            allowToChangeRank={allowToChangeRank}
-            allowToChangeTitle={allowToChangeTitle}
+            allowToModifyMember={allowToModifyMember}
             userAuth={group.auth}
           />
           <InputText
@@ -379,7 +381,7 @@ class Member extends React.Component {
             <View style={{marginTop: 200}}>
               <OptionButtons
                 onDeleteMember={this.onDeleteMember}
-                allowToDeleteMember={allowToDeleteMember}
+                allowToDeleteMember={allowToModifyMember}
                 allowToMakeOwner={allowToMakeOwner}
                 onMakeOwner={this.onMakeOwner}
               />

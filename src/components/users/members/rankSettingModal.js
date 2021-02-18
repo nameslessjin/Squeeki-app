@@ -30,31 +30,23 @@ export default class RankSettingModal extends React.Component {
   };
 
   renderItem = i => {
-    const {name} = i.item;
+    const {value} = i.item;
     return (
-      <TouchableOpacity onPress={() => this.onRankChange(name)}>
+      <TouchableOpacity onPress={() => this.onRankChange(value)}>
         <View
           style={[
             styles.rank,
-            {marginBottom: name == 7 ? 20 : 0},
+            {marginBottom: value == 7 ? 20 : 0},
           ]}>
-          <Text style={{color: '#3498db'}}>{name}</Text>
+          <Text style={{color: '#3498db'}}>{value.toString()}</Text>
         </View>
       </TouchableOpacity>
     );
   };
 
   render() {
-    const {modalVisible, onBackdropPress} = this.props;
-    const ranks = [
-      {id: '1', name: 1},
-      {id: '2', name: 2},
-      {id: '3', name: 3},
-      {id: '4', name: 4},
-      {id: '5', name: 5},
-      {id: '6', name: 6},
-      {id: '7', name: 7},
-    ];
+    const {modalVisible, onBackdropPress, rankOptions} = this.props;
+    const ranks = rankOptions
 
     return (
       <View style={styles.centeredView}>
@@ -65,7 +57,7 @@ export default class RankSettingModal extends React.Component {
                 <KeyboardAvoidingView style={styles.view}>
                   <View style={styles.rank_display}>
                     <View style={styles.header}>
-                      <Text>Minimum rank required</Text>
+                      <Text>Set Member rank</Text>
                     </View>
                     <FlatList
                       data={ranks}

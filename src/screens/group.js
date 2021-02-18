@@ -194,7 +194,7 @@ class Group extends React.Component {
           {post.groupPosts.posts.length == 0 && auth != null ? (
             <Text style={styles.noPostStyle}>There is not any post yet</Text>
           ) : null}
-          {loading ? <ActivityIndicator animating={loading} /> : null}
+          {/* {loading ? <ActivityIndicator animating={loading} /> : null} */}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

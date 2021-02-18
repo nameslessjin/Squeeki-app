@@ -1,6 +1,4 @@
 import React from 'react';
-import Modal from 'react-native-modal';
-import {Picker} from '@react-native-community/picker';
 import {StyleSheet, TextInput, Text, View, Keyboard} from 'react-native';
 import InputPicker from './inputPicker';
 
@@ -13,8 +11,7 @@ export default class InputRankTitle extends React.Component {
       onBackdropPress,
       toggled,
       modifyInput,
-      allowToChangeRank,
-      allowToChangeTitle,
+      allowToModifyMember,
       userAuth
     } = this.props;
     const {rank, title} = auth;
@@ -26,7 +23,7 @@ export default class InputRankTitle extends React.Component {
           onBackdropPress={onBackdropPress}
           toggled={toggled}
           modifyInput={modifyInput}
-          allowToChangeRank={allowToChangeRank}
+          allowToModifyMember={allowToModifyMember}
           userAuth={userAuth}
         />
 
@@ -39,7 +36,7 @@ export default class InputRankTitle extends React.Component {
             onFocus={onTitleInputFocus}
             multiline={true}
             maxLength={30}
-            editable={allowToChangeTitle}
+            editable={allowToModifyMember}
           />
         </View>
       </View>

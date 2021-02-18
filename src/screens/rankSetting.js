@@ -43,6 +43,7 @@ class RankSetting extends React.Component {
       priority_2_rank_required,
       priority_3_rank_required,
       reward_rank_required,
+      modify_member_rank_required
     } = this.state;
     const request = {
       token: auth.token,
@@ -53,6 +54,7 @@ class RankSetting extends React.Component {
         priority_2_rank_required,
         priority_3_rank_required,
         reward_rank_required,
+        modify_member_rank_required
       },
     };
     const req =  await updateRankFeatures(request);
@@ -66,6 +68,7 @@ class RankSetting extends React.Component {
       priority_2_rank_required,
       priority_3_rank_required,
       reward_rank_required,
+      modify_member_rank_required
     } = this.state;
     const {rank_setting} = this.props.group.group;
 
@@ -74,7 +77,8 @@ class RankSetting extends React.Component {
       rank_setting.priority_1_rank_required == priority_1_rank_required &&
       rank_setting.priority_2_rank_required == priority_2_rank_required &&
       rank_setting.priority_3_rank_required == priority_3_rank_required &&
-      rank_setting.reward_rank_required == reward_rank_required
+      rank_setting.reward_rank_required == reward_rank_required &&
+      rank_setting.modify_member_rank_required == modify_member_rank_required
     ) {
       return false;
     }
@@ -106,6 +110,8 @@ class RankSetting extends React.Component {
       this.setState({priority_3_rank_required: value});
     } else if (type == 'reward') {
       this.setState({reward_rank_required: value});
+    } else if (type == 'member'){
+      this.setState({modify_member_rank_required: value})
     }
   };
 
@@ -116,6 +122,7 @@ class RankSetting extends React.Component {
       priority_2_rank_required,
       priority_3_rank_required,
       reward_rank_required,
+      modify_member_rank_required,
       modalVisible,
       type,
     } = this.state;
@@ -146,6 +153,11 @@ class RankSetting extends React.Component {
           <RankFunction
             type={'reward'}
             value={reward_rank_required}
+            onPress={this.onPress}
+          />
+          <RankFunction
+            type={'member'}
+            value={modify_member_rank_required}
             onPress={this.onPress}
           />
           <RankSettingModal

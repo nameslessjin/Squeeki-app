@@ -1,17 +1,25 @@
 import React from 'react';
 import Modal from 'react-native-modal';
 import {Picker} from '@react-native-community/picker';
-import {StyleSheet, TextInput, Text, View, Platform} from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  Text,
+  View,
+  Platform,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import RankSettingModal from './rankSettingModal';
 
 export default class InputRankTitle extends React.Component {
   rankOptions = [
-    {key: '1', label: '1', value: 1},
-    {key: '2', label: '2', value: 2},
-    {key: '3', label: '3', value: 3},
-    {key: '4', label: '4', value: 4},
-    {key: '5', label: '5', value: 5},
-    {key: '6', label: '6', value: 6},
-    {key: '7', label: '7', value: 7},
+    {id: '1', value: 1},
+    {id: '2', value: 2},
+    {id: '3', value: 3},
+    {id: '4', value: 4},
+    {id: '5', value: 5},
+    {id: '6', value: 6},
+    {id: '7', value: 7},
   ];
 
   render() {
@@ -21,33 +29,43 @@ export default class InputRankTitle extends React.Component {
       toggled,
       onBackdropPress,
       modifyInput,
-      allowToChangeRank,
-      userAuth
+      allowToModifyMember,
+      userAuth,
     } = this.props;
-    
+
+    const rankOptions = this.rankOptions.filter(op => op.value > userAuth.rank)
+
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Rank</Text>
 
-        <TextInput
-          style={styles.textInputContainer}
-          placeholder={'rank'}
-          placeholderTextColor={'#7f8fa6'}
-          value={rank.toString()}
-          editable={allowToChangeRank}
-          onFocus={() => onFocus()}
-          
+        <TouchableWithoutFeedback
+          onPress={onFocus}
+          disabled={!allowToModifyMember}>
+          <View style={styles.textInputContainer}>
+            <Text>{rank}</Text>
+          </View>
+        </TouchableWithoutFeedback>
+
+        <RankSettingModal
+          modalVisible={toggled && allowToModifyMember}
+          onBackdropPress={onBackdropPress}
+          rankOptions={rankOptions}
+          onRankChange={modifyInput}
+          type={'rank'}
         />
 
-        <Modal
+        {/* <Modal
           isVisible={toggled && allowToChangeRank}
           style={Platform.OS == 'ios' ? styles.Modal : null}
           onBackdropPress={onBackdropPress}
           animationIn={'slideInUp'}
           animationOut={'slideOutDown'}>
           <Picker
-            style={Platform.OS == 'ios' ? styles.Picker: {backgroundColor: 'white'}}
-            selectedValue={Platform.OS == 'ios' ? rank : rank-1}
+            style={
+              Platform.OS == 'ios' ? styles.Picker : {backgroundColor: 'white'}
+            }
+            selectedValue={Platform.OS == 'ios' ? rank : rank - 1}
             onValueChange={v => modifyInput('rank', v)}>
             {this.rankOptions.map(option => {
               if (option.value > userAuth.rank) {
@@ -61,7 +79,7 @@ export default class InputRankTitle extends React.Component {
               }
             })}
           </Picker>
-        </Modal>
+        </Modal> */}
       </View>
     );
   }
@@ -85,7 +103,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: 'black',
-    color: 'black'
+    color: 'black',
   },
   Modal: {
     flex: 1,
