@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 
 export default class GroupHeaderRight extends React.Component {
 
@@ -7,7 +7,7 @@ export default class GroupHeaderRight extends React.Component {
 
       const {onPress, update, loading} = this.props
       const disabled = !(update && !loading)
-    return (
+    return  loading ? <ActivityIndicator animating={true} style={styles.headerRightButton} /> : (
       <TouchableOpacity
         style={styles.headerRightButton}
         onPress={onPress}

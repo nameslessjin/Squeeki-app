@@ -77,10 +77,10 @@ class GroupSetting extends React.Component {
       backgroundImg: group.backgroundImg,
     };
 
-    if (icon == origin.icon) {
+    if (icon.uri == origin.icon.uri) {
       icon = null;
     }
-    if (backgroundImg == origin.backgroundImg) {
+    if (backgroundImg.uri == origin.backgroundImg.uri) {
       backgroundImg = null;
     }
 
@@ -98,6 +98,7 @@ class GroupSetting extends React.Component {
       display_name != null ||
       shortDescription != null
     ) {
+
       const updateData = {
         token: this.props.auth.token,
         groupId: id,
@@ -119,6 +120,7 @@ class GroupSetting extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
       let update = false;
+      console.log(this.extractData())
       update = this.extractData().update;
       const {navigation} = this.props;
       const {auth} = this.props.group.group;
@@ -132,6 +134,14 @@ class GroupSetting extends React.Component {
             />
           ) : null,
       });
+    }
+
+    if (this.props.group.group.id){
+      if (prevProps.group.group != this.props.group.group){
+        this.setState({
+          ...this.props.group.group
+        })
+      }
     }
   }
 
