@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ActivityIndicator,
-  StatusBar
+  StatusBar,
 } from 'react-native';
 import {connect} from 'react-redux';
 import HeaderRightButton from '../components/nominationSetting/headerRightButton';
@@ -26,11 +26,12 @@ class NominationSetting extends React.Component {
     nomination_name: '',
     period: 7,
     points: 100,
-    type: 'reward' ,
+    type: 'reward',
     moddleToggled: false,
     backdrop: false,
     create: true,
     loading: false,
+    id: null,
   };
 
   componentDidMount() {
@@ -43,7 +44,7 @@ class NominationSetting extends React.Component {
         points,
         period,
         groupId,
-        type
+        type,
       } = this.props.route.params.nomination;
       this.setState({
         nomination_name: name,
@@ -61,18 +62,26 @@ class NominationSetting extends React.Component {
 
     navigation.setOptions({
       headerTitle: headerTitle,
-      headerRight: () => (
-        <HeaderRightButton
-          update={false}
-          loading={false}
-          onPress={this.onCreateUpdateNomination}
-        />
-      ),
-      headerBackTitleVisible: false
+      headerRight: () =>
+        this.props.route.params.create ? (
+          <HeaderRightButton
+            update={false}
+            loading={false}
+            onPress={this.onCreateUpdateNomination}
+          />
+        ) : null,
+      headerBackTitleVisible: false,
     });
   }
 
   componentWillUnmount() {
+
+    if (this.extractData().update && !this.props.route.params.create) {
+      this.onCreateUpdateNomination();
+    }
+  }
+
+  loadNomination = () => {
     const {auth, getGroupNominations, navigation, userLogout} = this.props;
     const {groupId} = this.state;
     const input = {
@@ -84,21 +93,23 @@ class NominationSetting extends React.Component {
     };
 
     getGroupNominationsFunc(input);
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
+      const {id} = this.state;
       let update = false;
       update = this.extractData().update;
       const {navigation} = this.props;
       navigation.setOptions({
-        headerRight: () => (
-          <HeaderRightButton
-            update={update}
-            loading={this.state.loading}
-            onPress={this.onCreateUpdateNomination}
-          />
-        ),
+        headerRight: () =>
+          this.props.route.params.create ? (
+            <HeaderRightButton
+              update={update}
+              loading={this.state.loading}
+              onPress={this.onCreateUpdateNomination}
+            />
+          ) : null,
       });
     }
   }
@@ -110,17 +121,17 @@ class NominationSetting extends React.Component {
       this.setState({points: parseInt(text) || 0});
     } else if (type == 'period') {
       this.setState({period: parseInt(text) || 0});
-    } else if (type == 'type'){
-      const {type} = this.state
-      let value = 'reward'
-      if (type == 'reward'){
-        value = 'neutral'
-      } else if (type == 'neutral'){
-        value = 'penalty'
-      } else if (type == 'penalty'){
-        value = 'reward'
+    } else if (type == 'type') {
+      const {type} = this.state;
+      let value = 'reward';
+      if (type == 'reward') {
+        value = 'neutral';
+      } else if (type == 'neutral') {
+        value = 'penalty';
+      } else if (type == 'penalty') {
+        value = 'reward';
       }
-      this.setState({type: value})
+      this.setState({type: value});
     }
   };
 
@@ -150,7 +161,15 @@ class NominationSetting extends React.Component {
   };
 
   extractData = () => {
-    let {nomination_name, period, points, create, id, groupId, type} = this.state;
+    let {
+      nomination_name,
+      period,
+      points,
+      create,
+      id,
+      groupId,
+      type,
+    } = this.state;
     nomination_name = nomination_name.trim();
     let origin = null;
     if (!create) {
@@ -167,19 +186,22 @@ class NominationSetting extends React.Component {
         period = null;
       }
       if (origin.type == type) {
-        type = null
+        type = null;
       }
     }
 
-
-    if (nomination_name != null || points != null || period != null || type != null) {
-
-      let reward_point = 100
+    if (
+      nomination_name != null ||
+      points != null ||
+      period != null ||
+      type != null
+    ) {
+      let reward_point = 100;
       let {nomination_name, period, points, type} = this.state;
-      if (type == 'neutral'){
-        reward_point = 0
-      } else if (type == 'penalty'){
-        reward_point = -100
+      if (type == 'neutral') {
+        reward_point = 0;
+      } else if (type == 'penalty') {
+        reward_point = -100;
       }
       const updateData = {
         id: create ? null : id,
@@ -222,8 +244,10 @@ class NominationSetting extends React.Component {
     this.setState({loading: false});
 
     if (nomination.errors) {
-      // alert(nomination.errors[0].message);
-      alert('Cannot create/update nomination at this time, please try again later')
+      console(nomination.errors[0].message);
+      alert(
+        'Cannot create/update nomination at this time, please try again later',
+      );
       if (nomination.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({
@@ -233,7 +257,11 @@ class NominationSetting extends React.Component {
       }
     }
 
-    navigation.goBack();
+    this.loadNomination();
+
+    if (this.props.route.params.create) {
+      navigation.goBack();
+    }
   };
 
   onDeleteNomination = async () => {
@@ -251,7 +279,7 @@ class NominationSetting extends React.Component {
 
     if (nomination.errors) {
       // alert(nomination.errors[0].message);
-      alert('Cannot delete nomination at this time, please try again later')
+      alert('Cannot delete nomination at this time, please try again later');
       if (nomination.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({
@@ -261,10 +289,11 @@ class NominationSetting extends React.Component {
       }
     }
 
+    this.loadNomination();
+
     navigation.goBack();
   };
 
-  
   render() {
     const {
       nomination_name,
@@ -279,7 +308,7 @@ class NominationSetting extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
-        <StatusBar barStyle={'dark-content'} />
+          <StatusBar barStyle={'dark-content'} />
           <Input
             type={'name'}
             value={nomination_name}
@@ -300,7 +329,9 @@ class NominationSetting extends React.Component {
           />
           {/* <Input type={'point'} value={points.toString()} onInputChange={this.onInputChange}  /> */}
           {!create ? (
-            <TouchableOpacity style={{marginTop: 10}} onPress={this.onDeleteNomination}>
+            <TouchableOpacity
+              style={{marginTop: 10}}
+              onPress={this.onDeleteNomination}>
               <Text style={{color: 'red'}}>Delete</Text>
             </TouchableOpacity>
           ) : null}

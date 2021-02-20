@@ -9,8 +9,6 @@ query login($email: String, $password: String, $token: String){
             email
             icon{
                 uri
-                width
-                height
             }
         }
     }
@@ -28,8 +26,6 @@ mutation signup($userInput: AuthInput!){
             email
             icon{
                 uri
-                width
-                height
             }
         }
     }
@@ -47,8 +43,6 @@ mutation updateProfile($userInput: AuthInput!){
             email
             icon{
                 uri
-                width
-                height
             }
         } 
     }

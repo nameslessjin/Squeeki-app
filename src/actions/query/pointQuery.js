@@ -18,8 +18,6 @@ query getGroupPointLeaderBoard($input: getUserGroupPointInput!){
                 group_username
                 icon {
                     uri
-                    width
-                    height
                 }
             }
             base_point

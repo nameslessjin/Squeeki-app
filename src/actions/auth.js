@@ -118,8 +118,6 @@ export const updateProfile = data => {
 
       newIcon = {
         uri: iconUri.url,
-        width: icon.width,
-        height: icon.height,
         name: iconUri.name,
       };
     }

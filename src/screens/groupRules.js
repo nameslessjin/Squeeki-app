@@ -18,43 +18,28 @@ class GroupRules extends React.Component {
   state = {
     rules: '',
     loading: false,
+    rules_duplicate: '',
   };
 
   componentDidMount() {
     // also if group auth is not there then don't put the button there
-    const {auth} = this.props.group.group;
     const {navigation} = this.props;
     navigation.setOptions({
       headerTitle: 'Rules',
       headerBackTitleVisible: false,
-      headerRight: () =>
-        auth.rank <= 2 ? (
-          <HeaderButton
-            update={false}
-            onPress={this.onUpdate}
-            loading={false}
-          />
-        ) : null,
     });
     this.getGroupRule();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // if rules updated the button will be pressable else disabled
-    const {group, navigation} = this.props
-    const update = (prevState.rules != this.state.rules) && prevState.rules.length != 0;
-
-    const {auth} = group.group;
-    navigation.setOptions({
-      headerRight: () =>
-        auth.rank <= 2 ? (
-          <HeaderButton
-            update={update}
-            onPress={this.onUpdate}
-            loading={this.state.loading}
-          />
-        ) : null,
-    });
+  componentWillUnmount() {
+    // update rules if it changes
+    const {rules, rules_duplicate} = this.state;
+    if (rules_duplicate != rules && rules_duplicate.length != 0) {
+      const {auth, rank_setting} = this.props.group.group;
+      if (auth.rank <= rank_setting.group_setting_rank_required) {
+        this.onUpdate();
+      }
+    }
   }
 
   getGroupRule = async () => {
@@ -67,9 +52,8 @@ class GroupRules extends React.Component {
     this.setState({loading: true});
     const req = await getGroupRules(request);
     if (req.errors) {
-
       // alert(req.errors[0].message);
-      alert('Cannot get group rules at this time, please try again later')
+      alert('Cannot get group rules at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -79,7 +63,11 @@ class GroupRules extends React.Component {
       }
       return;
     }
-    this.setState({loading: false, rules: req == 0 ? '' : req});
+    this.setState({
+      loading: false,
+      rules: req == 0 ? '' : req,
+      rules_duplicate: req == 0 ? '' : req,
+    });
   };
 
   onUpdate = async () => {
@@ -101,7 +89,7 @@ class GroupRules extends React.Component {
     const req = await onGroupRulesUpdate(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot update group rules at this time, please try again later')
+      alert('Cannot update group rules at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -117,12 +105,13 @@ class GroupRules extends React.Component {
 
   render() {
     const {rules} = this.state;
-    const {auth} = this.props.group.group;
+    const {auth, rank_setting} = this.props.group.group;
 
+    // if there is no rules and user auth in group is greater than group setting rank requirement. Show no rules
     const value =
-      auth.rank > 2 && rules.length == 0 ? 'This group has no rules' : rules;
-
-    // if there is no rules and user auth in group is greater than 2. Show no rules
+      auth.rank > rank_setting.group_setting_rank_required && rules.length == 0
+        ? 'This group has no rules'
+        : rules;
 
     return (
       <TouchableWithoutFeedback>
@@ -136,7 +125,7 @@ class GroupRules extends React.Component {
               value={value}
               multiline={true}
               maxLength={5000}
-              editable={auth.rank <= 2}
+              editable={auth.rank <= rank_setting.group_setting_rank_required}
             />
           </ScrollView>
         </KeyboardAvoidingView>

@@ -23,8 +23,6 @@ query getGroupReward($input: GroupRewardInput!){
                 group_username
                 icon{
                     uri
-                    width
-                    height
                 }
             }
         }

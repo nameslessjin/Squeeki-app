@@ -293,7 +293,7 @@ class PostCard extends React.Component {
       selected,
       checked,
     } = this.state;
-    const {option, commentTouchable, selectionMode, onPostSelect, group} = this.props;
+    const {option, commentTouchable, selectionMode, onPostSelect, group, navigation} = this.props;
     const {username, icon, displayName, group_username} = user;
     const date = dateConversion(createdAt);
 
@@ -341,7 +341,7 @@ class PostCard extends React.Component {
             rank_required={group.group.rank_setting ? group.group.rank_setting.manage_post_rank_required : null}
           />
 
-          <PostMedia image={image} content={content} />
+          <PostMedia image={image} content={content} navigation={navigation}/>
 
           {selectionMode ? (
             checked ? (

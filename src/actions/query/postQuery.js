@@ -7,8 +7,6 @@ query getGroupPosts($input: GetPostInput!){
             id
             image{
                 uri
-                width
-                height
             }
             content
             createdAt
@@ -20,8 +18,6 @@ query getGroupPosts($input: GetPostInput!){
                 group_username
                 icon {
                     uri
-                    width
-                    height
                 }
             }
             groupAuth {
@@ -65,8 +61,6 @@ query getFeed($count: Int!){
             id
             image{
                 uri
-                width
-                height
             }
             content
             createdAt
@@ -78,8 +72,6 @@ query getFeed($count: Int!){
                 group_username
                 icon {
                     uri
-                    width
-                    height
                 }
             }
             priority
@@ -117,8 +109,6 @@ query getPost($postId: ID!){
             id
             image{
                 uri
-                width
-                height
             }
             content
             createdAt
@@ -130,8 +120,6 @@ query getPost($postId: ID!){
                 group_username
                 icon {
                     uri
-                    width
-                    height
                 }
             }
             groupAuth {
@@ -165,8 +153,6 @@ mutation updatePost($postInput: PostInput!){
         id
         image{
             uri
-            width
-            height
         }
         content
         createdAt
@@ -178,8 +164,6 @@ mutation updatePost($postInput: PostInput!){
             group_username
             icon {
                 uri
-                width
-                height
             }
         }
         groupAuth {
@@ -230,8 +214,6 @@ query getNominationPost($nominationPostInput: NominationPostInput!){
             id
             image{
                 uri
-                width
-                height
             }
             content
             createdAt
@@ -243,8 +225,6 @@ query getNominationPost($nominationPostInput: NominationPostInput!){
                 group_username
                 icon {
                     uri
-                    width
-                    height
                 }
             }
             groupAuth {
@@ -287,8 +267,6 @@ query getGroupPostForCheckIn($input: GetPostInput!){
             id
             image{
                 uri
-                width
-                height
             }
             content
             createdAt
@@ -300,8 +278,6 @@ query getGroupPostForCheckIn($input: GetPostInput!){
                 group_username
                 icon {
                     uri
-                    width
-                    height
                 }
             }
             groupAuth {

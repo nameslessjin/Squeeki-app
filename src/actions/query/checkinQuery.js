@@ -48,8 +48,6 @@ query getGroupCheckInResult($input: CheckInResultInput!){
             group_username
             icon{
                 uri
-                width
-                height
             }
         }
         count

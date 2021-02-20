@@ -174,8 +174,6 @@ export const createGroup = data => {
         return iconUrl;
       }
       groupIcon = {
-        width: icon.width,
-        height: icon.height,
         uri: iconUrl.url,
         name: iconUrl.name,
       };
@@ -206,8 +204,6 @@ export const createGroup = data => {
       }
 
       groupBackgroundImg = {
-        width: backgroundImg.width,
-        height: backgroundImg.height,
         uri: backgroundImgUrl.url,
         name: backgroundImgUrl.name,
       };
@@ -291,8 +287,6 @@ export const updateGroup = data => {
         return iconUrl;
       }
       newgroupIcon = {
-        width: icon.width,
-        height: icon.height,
         uri: iconUrl.url,
         name: iconUrl.name,
       };
@@ -323,8 +317,6 @@ export const updateGroup = data => {
       }
 
       newgroupBackgroundImg = {
-        width: backgroundImg.width,
-        height: backgroundImg.height,
         uri: backgroundImgUrl.url,
         name: backgroundImgUrl.name,
       };

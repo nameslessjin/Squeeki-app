@@ -1,33 +1,66 @@
 import React from 'react';
-import {TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
-import {PostImagePicker} from '../../utils/imagePicker';
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+} from 'react-native';
+
+const {width} = Dimensions.get('window');
 
 export default class InputImage extends React.Component {
+  state = {
+    height: 100,
+    width: width,
+  };
+
+  componentDidMount() {
+    const {image} = this.props;
+    if (image) {
+      Image.getSize(image.uri, (w, h) => {
+        this.setState({height: h, width: w});
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.image !== this.props.image) {
+      const {image} = this.props;
+      if (image) {
+        Image.getSize(image.uri, (w, h) => {
+          this.setState({height: h, width: w});
+        });
+      }
+    }
+  }
+
   render() {
     const {image, contentKeyboard, onPress, create} = this.props;
-    const imageSelected = image != null
+    const imageSelected = image != null;
 
     return (
       <TouchableOpacity
         style={[
           styles.imageSelection,
           imageSelected ? {backgroundColor: 'white'} : {height: 100},
-          (imageSelected && contentKeyboard) ? {maxHeight: 250} : null
+          imageSelected && contentKeyboard ? {maxHeight: 250} : null,
         ]}
-        disabled = {!create}
-        onPress={() => onPress()}
-        >
+        disabled={!create}
+        onPress={() => onPress()}>
         {!imageSelected ? null : (
           <Image
             source={{uri: image.uri}}
             style={[
               styles.imageStyle,
-              {aspectRatio:  image.height / image.width},
-              (imageSelected && contentKeyboard) ? {maxHeight: 250} : null
+              {aspectRatio: this.state.width / this.state.height},
+              imageSelected && contentKeyboard ? {maxHeight: 250} : null,
             ]}
           />
         )}
-        {!imageSelected ? <Text style={{color:'white'}}>Add Image</Text> : null}
+        {!imageSelected ? (
+          <Text style={{color: 'white'}}>{create ? 'Add Image' : 'No Image'}</Text>
+        ) : null}
       </TouchableOpacity>
     );
   }

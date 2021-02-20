@@ -8,8 +8,6 @@ query getMyGroups($count: Int!){
             shortDescription
             icon {
                 uri
-                width
-                height
             }
             memberCount
             createdAt
@@ -28,13 +26,9 @@ query getGroup($groupId: ID!){
         shortDescription
         icon {
             uri
-            width
-            height
         }
         backgroundImg {
             uri
-            width
-            height
         }
         auth {
             rank
@@ -78,8 +72,6 @@ query searchGroup($input: searchGroupInput!){
             shortDescription
             icon {
                 uri
-                width
-                height
             }
             memberCount
             createdAt
@@ -98,13 +90,9 @@ mutation createGroup($GroupInput: GroupInput!){
         shortDescription
         icon {
             uri
-            width
-            height
         }
         backgroundImg {
             uri
-            width
-            height
         }
         auth {
             rank
@@ -146,13 +134,9 @@ mutation updateGroup($GroupInput: GroupInput!){
         shortDescription
         icon {
             uri
-            width
-            height
         }
         backgroundImg {
             uri
-            width
-            height
         }
         auth {
             rank
@@ -195,13 +179,9 @@ mutation joinGroup($groupId: ID!){
             shortDescription
             icon {
                 uri
-                width
-                height
             }
             backgroundImg {
                 uri
-                width
-                height
             }
             auth {
                 rank
@@ -239,8 +219,6 @@ mutation joinGroup($groupId: ID!){
                 shortDescription
                 icon {
                     uri
-                    width
-                    height
                 }
                 memberCount
                 createdAt
@@ -261,8 +239,6 @@ mutation leaveGroup($groupId: ID!){
             shortDescription
             icon {
                 uri
-                width
-                height
             }
             memberCount
             createdAt
@@ -294,8 +270,6 @@ query getGroupJoinRequest($input: joinRequestInput!){
             group_username
             icon{
                 uri
-                width
-                height
             }
         }
         count

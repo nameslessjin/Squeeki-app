@@ -13,6 +13,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
 
+
 export default class PostHeader extends React.Component {
   state = {
     modalToggled: false,

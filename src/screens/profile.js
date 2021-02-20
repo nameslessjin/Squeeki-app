@@ -70,6 +70,10 @@ class Profile extends React.Component {
     }
   }
 
+  componentWillUnmount(){
+    console.log('unmount')
+  }
+
   setIcon = (data, type) => {
     this.setState({icon: data, modalVisible: false});
   };
@@ -253,7 +257,7 @@ class Profile extends React.Component {
                   ? {color: '#487eb0'}
                   : {color: '#95a5a6'}
               }>
-              Change profile
+              Update profile
             </Text>
           </TouchableOpacity>
 

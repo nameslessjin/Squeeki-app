@@ -134,7 +134,7 @@ class GroupDrawerNavigator extends React.Component {
   };
 
   render() {
-    const {groupname} = this.props.group.group;
+    const {groupname, display_name} = this.props.group.group;
 
     return (
       <Drawer.Navigator
@@ -142,7 +142,7 @@ class GroupDrawerNavigator extends React.Component {
         drawerPosition="right"
         drawerContent={props => this.CustomDrawerContent(props)}
         drawerStyle={styles.drawerStyle}>
-        <Drawer.Screen name={groupname || 'Group'} component={Group} />
+        <Drawer.Screen name={display_name || 'Group'} component={Group} />
       </Drawer.Navigator>
     );
   }

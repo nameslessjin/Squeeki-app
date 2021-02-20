@@ -13,8 +13,6 @@ query getPostComments($postId: ID!, $count: Int!){
                 group_username
                 icon {
                     uri
-                    width
-                    height
                 }
             }
             likeCount
@@ -40,8 +38,6 @@ mutation createComment($commentInput: CommentInput!){
                 group_username
                 icon {
                     uri
-                    width
-                    height
                 }
             }
             likeCount

@@ -12,8 +12,6 @@ query getGroupMembers($input: GetGroupMembersInput!){
             }
             icon{
                 uri
-                width
-                height
             }
             createdAt
             lastActiveAt
@@ -36,8 +34,6 @@ query getStatusInGroup($groupId: ID!){
         }
         icon{
             uri
-            width
-            height
         }
         createdAt
         lastActiveAt
@@ -59,13 +55,9 @@ mutation changeGroupNotification($input: GroupNotificationInput!){
         shortDescription
         icon {
             uri
-            width
-            height
         }
         backgroundImg {
             uri
-            width
-            height
         }
         auth {
             rank
@@ -96,8 +88,6 @@ query searchUser($searchUserInput: SearchUserInput!){
             group_username
             icon{
                 uri
-                width
-                height
             }
             in_group
             checked

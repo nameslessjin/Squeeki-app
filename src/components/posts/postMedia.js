@@ -7,29 +7,47 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import Lightbox from 'react-native-lightbox';
 
-const {width} = Dimensions.get('screen');
+const {width} = Dimensions.get('window');
 
 export default class PostMedia extends React.Component {
+  state = {
+    height: 100,
+    width: width,
+  };
+
+  componentDidMount() {
+    const {image} = this.props;
+    if (image) {
+      Image.getSize(image.uri, (w, h) => {
+        this.setState({height: h, width: w});
+      });
+    }
+  }
+
   render() {
     const {image, content} = this.props;
+
     return (
       // <TouchableWithoutFeedback>
-        <View style={styles.contentStyle}>
-          <Text style={styles.textStyle}>{content}</Text>
-          {image != null ? (
-            <View style={styles.imageView}>
-              <Image
-                source={{uri: image.uri}}
-                style={[
-                  styles.imageStyle,
-                  {aspectRatio: image.height / image.width, width: width},
-                ]}
-                resizeMode={'cover'}
-              />
-            </View>
-          ) : null}
-        </View>
+      <View style={styles.contentStyle}>
+        <Text style={styles.textStyle}>{content}</Text>
+        {image != null ? (
+          <View style={styles.imageView}>
+            {/* <Lightbox > */}
+            <Image
+              source={{uri: image.uri}}
+              style={[
+                styles.imageStyle,
+                {aspectRatio: this.state.width / this.state.height},
+              ]}
+              resizeMode={'cover'}
+            />
+            {/* </Lightbox> */}
+          </View>
+        ) : null}
+      </View>
       // </TouchableWithoutFeedback>
     );
   }
@@ -46,6 +64,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     alignItems: 'center',
+    maxHeight: 600,
   },
   textStyle: {
     padding: 7,
