@@ -22,6 +22,7 @@ class Nomination extends React.Component {
 
   componentDidMount() {
     const {navigation, auth, userLogout, getGroupNominations, group} = this.props;
+    const {rank_setting} = group.group
     const {params} = this.props.route;
     if (params) {
       this.setState({
@@ -40,7 +41,7 @@ class Nomination extends React.Component {
       getGroupNominationsFunc(input);
     }
 
-    let button = group.group.auth.rank > 2 ? null : (
+    let button = group.group.auth.rank > rank_setting.group_setting_rank_required ? null : (
       <HeaderRightButton
         type={'create'}
         disabled={false}
@@ -67,9 +68,10 @@ class Nomination extends React.Component {
   componentDidUpdate() {
     const {prev_route, chosenUser, nomination} = this.state;
     const {navigation, group} = this.props;
+    const {auth, rank_setting} = group.group
     let disabled = false;
 
-    let button = group.group.auth.rank > 2 ? null : (
+    let button = auth.rank > rank_setting.group_setting_rank_required ? null : (
       <HeaderRightButton
         type={'create'}
         disabled={false}

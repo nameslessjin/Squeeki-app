@@ -196,7 +196,7 @@ class GroupSetting extends React.Component {
       return;
     }
     this.setState({loading: false});
-    this.props.navigation.goBack();
+    // this.props.navigation.goBack();
   };
 
   setGroupHeader = data => {
@@ -282,11 +282,11 @@ class GroupSetting extends React.Component {
   };
 
   onEditRankPress = () => {
-    const {navigation} = this.props
+    const {navigation} = this.props;
     navigation.navigate('RankSetting', {
-      prev_route: 'GroupSetting'
-    })
-  }
+      prev_route: 'GroupSetting',
+    });
+  };
 
   onEditProfilePress = async () => {
     const {navigation, group, auth, userLogout, getStatusInGroup} = this.props;
@@ -317,9 +317,9 @@ class GroupSetting extends React.Component {
 
   render() {
     const {visibility, loading, request_to_join, type} = this.state;
-    const auth_in_group = this.props.group.group.auth;
-    const auth_rank = auth_in_group ? auth_in_group.rank : 7;
-
+    const {auth, rank_setting} = this.props.group.group;
+    const rank = auth ? auth.rank : 7
+    const required_rank = rank_setting ? rank_setting.group_setting_rank_required : 1
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
@@ -333,12 +333,13 @@ class GroupSetting extends React.Component {
               setGroupHeader={this.setGroupHeader}
               data={this.state}
               navigation={this.props.navigation}
-              auth_rank={auth_rank}
+              auth_rank={rank}
+              required_rank={required_rank}
             />
 
             <ToggleSetting
               on={visibility}
-              disabled={auth_rank > 1}
+              disabled={rank > required_rank}
               loading={type == 'visibility' ? loading : false}
               onToggle={this.onSwitchToggle}
               type={'visibility'}
@@ -346,7 +347,7 @@ class GroupSetting extends React.Component {
 
             <ToggleSetting
               on={request_to_join}
-              disabled={auth_rank > 1}
+              disabled={rank > required_rank}
               loading={type == 'request_to_join' ? loading : false}
               onToggle={this.onSwitchToggle}
               type={'request_to_join'}
@@ -366,7 +367,7 @@ class GroupSetting extends React.Component {
             <SettingEdition
               onPress={this.onEditTagPress}
               name={'Edit tags'}
-              disabled={auth_rank >= 2}
+              disabled={rank > required_rank}
             />
             <SettingEdition
               onPress={this.onEditRankPress}

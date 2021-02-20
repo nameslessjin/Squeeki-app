@@ -499,6 +499,7 @@ class PostSetting extends React.Component {
       image,
       groupId,
       visibility,
+      postId
     } = this.state.postData;
     const {
       onToggle,
@@ -583,6 +584,8 @@ class PostSetting extends React.Component {
               chosenUser={chosenUser}
               nomination={nomination}
               disabled={!create}
+              group={this.props.group.group}
+              postId={postId}
             />
           )}
           <ActivityIndicator animating={loading} />

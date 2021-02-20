@@ -293,7 +293,7 @@ class PostCard extends React.Component {
       selected,
       checked,
     } = this.state;
-    const {option, commentTouchable, selectionMode, onPostSelect} = this.props;
+    const {option, commentTouchable, selectionMode, onPostSelect, group} = this.props;
     const {username, icon, displayName, group_username} = user;
     const date = dateConversion(createdAt);
 
@@ -327,18 +327,18 @@ class PostCard extends React.Component {
             modalToggled={modalToggled}
             toggleModal={this.toggleModal}
             onBackDropPress={this.onBackDropPress}
-            // option={option}
             type={type}
             priority={priority}
             notificationId={notificationId}
             onPostReport={this.onPostReport}
             is_report_toggled={is_report_toggled}
-            currentUserAuth={this.props.group.group.auth}
+            currentUserAuth={group.group.auth}
             report={report}
             onReportInput={this.onReportInput}
             onSubmitReport={this.onSubmitReport}
             onReport={onReport}
             selectionMode={selectionMode}
+            rank_required={group.group.rank_setting ? group.group.rank_setting.manage_post_rank_required : null}
           />
 
           <PostMedia image={image} content={content} />

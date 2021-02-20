@@ -47,10 +47,22 @@ export default class CommentModal extends React.Component {
   };
 
   render() {
-    const {modalVisible, comment_uid, userId, postOwner} = this.props;
+    const {
+      modalVisible,
+      comment_uid,
+      userId,
+      postOwner,
+      rank_in_group,
+      rank_required,
+    } = this.props;
     const {is_report_toggled, report_content, onReport} = this.state;
+
+    // comment owner and post owner and people with proper rank can deletet comment
     const owner = comment_uid == userId;
-    const post_owner = postOwner.id == userId
+    const post_owner = postOwner.id == userId;
+    const rank_permitted = rank_in_group
+      ? rank_in_group <= rank_required
+      : false;
 
     const report_interface = (
       <TouchableWithoutFeedback>
@@ -113,8 +125,8 @@ export default class CommentModal extends React.Component {
                       </View>
                     </TouchableOpacity>
                   )}
-                  {post_owner ? <View style={styles.underline} /> : null}
-                  {owner || post_owner ? (
+                  {(post_owner || rank_permitted ) && !owner ? <View style={styles.underline} /> : null}
+                  {owner || post_owner || rank_permitted ? (
                     <TouchableOpacity onPress={() => this.onPress('delete')}>
                       <View style={styles.button}>
                         <Text>Delete</Text>
@@ -168,7 +180,7 @@ const styles = StyleSheet.create({
   underline: {
     width: 300,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'silver'
+    borderBottomColor: 'silver',
   },
   button: {
     width: 300,

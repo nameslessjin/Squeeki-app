@@ -4,6 +4,7 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
 import RankFunction from '../components/rankSetting/rankFunction';
@@ -43,7 +44,11 @@ class RankSetting extends React.Component {
       priority_2_rank_required,
       priority_3_rank_required,
       reward_rank_required,
-      modify_member_rank_required
+      manage_member_rank_required,
+      nominate_rank_required,
+      group_setting_rank_required,
+      manage_post_rank_required,
+      manage_comment_rank_required,
     } = this.state;
     const request = {
       token: auth.token,
@@ -54,11 +59,15 @@ class RankSetting extends React.Component {
         priority_2_rank_required,
         priority_3_rank_required,
         reward_rank_required,
-        modify_member_rank_required
+        manage_member_rank_required,
+        nominate_rank_required,
+        group_setting_rank_required,
+        manage_post_rank_required,
+        manage_comment_rank_required,
       },
     };
-    const req =  await updateRankFeatures(request);
-    console.log(req)
+    const req = await updateRankFeatures(request);
+    console.log(req);
   };
 
   validation = () => {
@@ -68,7 +77,11 @@ class RankSetting extends React.Component {
       priority_2_rank_required,
       priority_3_rank_required,
       reward_rank_required,
-      modify_member_rank_required
+      manage_member_rank_required,
+      nominate_rank_required,
+      group_setting_rank_required,
+      manage_post_rank_required,
+      manage_comment_rank_required,
     } = this.state;
     const {rank_setting} = this.props.group.group;
 
@@ -78,7 +91,11 @@ class RankSetting extends React.Component {
       rank_setting.priority_2_rank_required == priority_2_rank_required &&
       rank_setting.priority_3_rank_required == priority_3_rank_required &&
       rank_setting.reward_rank_required == reward_rank_required &&
-      rank_setting.modify_member_rank_required == modify_member_rank_required
+      rank_setting.manage_member_rank_required == manage_member_rank_required &&
+      rank_setting.nominate_rank_required == nominate_rank_required &&
+      rank_setting.group_setting_rank_required == group_setting_rank_required &&
+      rank_setting.manage_post_rank_required == manage_post_rank_required &&
+      rank_setting.manage_comment_rank_required == manage_comment_rank_required
     ) {
       return false;
     }
@@ -110,8 +127,16 @@ class RankSetting extends React.Component {
       this.setState({priority_3_rank_required: value});
     } else if (type == 'reward') {
       this.setState({reward_rank_required: value});
-    } else if (type == 'member'){
-      this.setState({modify_member_rank_required: value})
+    } else if (type == 'member') {
+      this.setState({manage_member_rank_required: value});
+    } else if (type == 'nominate') {
+      this.setState({nominate_rank_required: value});
+    } else if (type == 'group') {
+      this.setState({group_setting_rank_required: value});
+    } else if (type == 'manage_post'){
+      this.setState({manage_post_rank_required: value})
+    } else if (type == 'manage_comment'){
+      this.setState({manage_comment_rank_required: value})
     }
   };
 
@@ -122,14 +147,26 @@ class RankSetting extends React.Component {
       priority_2_rank_required,
       priority_3_rank_required,
       reward_rank_required,
-      modify_member_rank_required,
+      manage_member_rank_required,
+      nominate_rank_required,
+      group_setting_rank_required,
+      manage_post_rank_required,
+      manage_comment_rank_required,
       modalVisible,
       type,
     } = this.state;
     return (
       <TouchableWithoutFeedback>
-        <KeyboardAvoidingView>
+        <ScrollView
+          alwaysBounceVertical={false}
+          alwaysBounceHorizontal={false}
+          showsVerticalScrollIndicator={false}>
           <StatusBar barStyle={'dark-content'} />
+          <RankFunction
+            type={'group'}
+            value={group_setting_rank_required}
+            onPress={this.onPress}
+          />
           <RankFunction
             type={'post'}
             value={post_rank_required}
@@ -151,22 +188,38 @@ class RankSetting extends React.Component {
             onPress={this.onPress}
           />
           <RankFunction
+            type={'manage_post'}
+            value={manage_post_rank_required}
+            onPress={this.onPress}
+          />
+          <RankFunction
+            type={'manage_comment'}
+            value={manage_comment_rank_required}
+            onPress={this.onPress}
+          />
+          <RankFunction
+            type={'member'}
+            value={manage_member_rank_required}
+            onPress={this.onPress}
+          />
+          <RankFunction
             type={'reward'}
             value={reward_rank_required}
             onPress={this.onPress}
           />
           <RankFunction
-            type={'member'}
-            value={modify_member_rank_required}
+            type={'nominate'}
+            value={nominate_rank_required}
             onPress={this.onPress}
           />
+
           <RankSettingModal
             modalVisible={modalVisible}
             onBackdropPress={this.onBackdropPress}
             onRankChange={this.onRankChange}
             type={type}
           />
-        </KeyboardAvoidingView>
+        </ScrollView>
       </TouchableWithoutFeedback>
     );
   }

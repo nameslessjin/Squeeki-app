@@ -16,7 +16,15 @@ export default class RankFunction extends React.Component {
     } else if (type == 'reward') {
       name = 'Loot reward';
     } else if (type == 'member') {
-      name = 'Modify member'
+      name = 'Manage member'
+    } else if (type == 'nominate') {
+      name = 'Nominate peer'
+    } else if (type == 'group'){
+      name = 'Edit group'
+    } else if (type == 'manage_post'){
+      name = 'Manage Post'
+    } else if (type == 'manage_comment'){
+      name = 'Manage Comment'
     }
 
     return (

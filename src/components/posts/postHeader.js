@@ -59,6 +59,7 @@ export default class PostHeader extends React.Component {
       onSubmitReport,
       onReport,
       selectionMode,
+      rank_required,
     } = this.props;
 
     const {icon_option} = this.state;
@@ -79,7 +80,7 @@ export default class PostHeader extends React.Component {
     let currentUserAuthQualified = false;
 
     if (currentUserAuth && groupAuth) {
-      if (currentUserAuth.rank < groupAuth.rank && currentUserAuth.rank <= 2) {
+      if (groupAuth.rank > 1 && currentUserAuth.rank <= rank_required) {
         currentUserAuthQualified = true;
       }
     }

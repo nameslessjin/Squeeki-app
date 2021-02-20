@@ -74,11 +74,11 @@ export const updateMember = data => {
   let {userId, groupId, auth, token, group_username} = updateData;
   return async function(dispatch) {
     if (auth.rank == null) {
-      auth.rank = origin.rank;
+      auth.rank = origin.auth.rank;
     }
 
     if (auth.title == null) {
-      auth.title = origin.title;
+      auth.title = origin.auth.title;
     }
 
     if (group_username == null){

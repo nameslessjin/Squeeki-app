@@ -48,6 +48,7 @@ class UserSearch extends React.Component {
       headerTitle:
         params.prev_route == 'PostSetting' ? 'Pick nominee' : 'Search User',
       headerRight: () => button,
+      headerBackTitleVisible: false
     });
   }
 

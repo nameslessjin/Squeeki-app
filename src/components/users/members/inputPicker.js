@@ -41,7 +41,7 @@ export default class InputRankTitle extends React.Component {
 
         <TouchableWithoutFeedback
           onPress={onFocus}
-          disabled={!allowToModifyMember}>
+          disabled={!allowToModifyMember || userAuth.rank == rank}>
           <View style={styles.textInputContainer}>
             <Text>{rank}</Text>
           </View>

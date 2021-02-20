@@ -18,7 +18,7 @@ class GroupSettingsHeader extends React.Component {
     loading: false,
     modalVisible: false,
     isBackground: true,
-    groupId: null
+    groupId: null,
   };
 
   componentDidMount() {
@@ -31,7 +31,7 @@ class GroupSettingsHeader extends React.Component {
       initialize,
       createdAt,
       memberCount,
-      id
+      id,
     } = this.props.data;
 
     this.setState({
@@ -43,7 +43,7 @@ class GroupSettingsHeader extends React.Component {
       createdAt: createdAt,
       memberCount: memberCount,
       display_name,
-      groupId: id
+      groupId: id,
     });
   }
 
@@ -65,14 +65,11 @@ class GroupSettingsHeader extends React.Component {
     this.setState({shortDescription: descritpion});
   };
 
-  updateGroupName = name => {
-
-    const {groupId} = this.state
-
-    if (groupId){
+  updateGroupName = (type, name) => {
+    if (type == 'display_name') {
       this.setState({display_name: name});
-    } else {
-      this.setState({groupname: name.trim(), display_name: name.trim()});
+    } else if (type == 'groupname') {
+      this.setState({groupname: name.replace(/ /g, '')});
     }
   };
 
@@ -126,11 +123,11 @@ class GroupSettingsHeader extends React.Component {
       memberCount,
       modalVisible,
       isBackground,
-      groupId
+      groupId,
     } = this.state;
 
-    const {auth_rank} = this.props;
-    const {rank_setting} = this.props.group.group
+    const {auth_rank, required_rank} = this.props;
+
     let date = new Date();
 
     if (initialize) {
@@ -152,6 +149,7 @@ class GroupSettingsHeader extends React.Component {
           onLeave={this.leaveGroup}
           auth_rank={auth_rank}
           onMediaPress={this.onMediaPress}
+          required_rank={required_rank}
         />
         <View style={underImageStyle}>
           <View style={component}>
@@ -164,17 +162,29 @@ class GroupSettingsHeader extends React.Component {
               }}
               maxLength={60}
               multiline={true}
-              placeholder={'group name (min 6 chars, no space, no special char, underscore allowed)'}
+              placeholder={'Group name'}
               placeholderTextColor={'#7f8fa6'}
-              onChangeText={text => this.updateGroupName(text)}
+              onChangeText={text => this.updateGroupName('display_name', text)}
               value={display_name}
-              editable={auth_rank <= 1}
+              editable={auth_rank <= required_rank}
               numberOfLines={2}
             />
           </View>
+
           <View style={[component, {marginTop: 1}]}>
-            <Text style={{color: '#95a5a6'}}>@{groupname}</Text>
+            <Text style={{color: '#95a5a6'}}>@{groupId ? groupname : ''}</Text>
+            {groupId ? null : (
+              <TextInput
+                style={{width: '100%', marginLeft: 1}}
+                onChangeText={text => this.updateGroupName('groupname', text.trim())}
+                placeholder={'group_id'}
+                placeholderTextColor={'#7f8fa6'}
+                value={groupname.replace(/ /g, '')}
+                maxLength={45}
+              />
+            )}
           </View>
+
           <View style={[component, {marginTop: 1}]}>
             <Text style={{color: '#95a5a6'}}>Since {date}</Text>
           </View>
@@ -191,7 +201,7 @@ class GroupSettingsHeader extends React.Component {
               onChangeText={text => this.updateShortDescription(text)}
               value={shortDescription}
               style={{width: '100%', paddingLeft: -1}}
-              editable={auth_rank <= 1}
+              editable={auth_rank <= required_rank}
               numberOfLines={5}
             />
           </View>

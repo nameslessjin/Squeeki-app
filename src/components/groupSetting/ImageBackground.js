@@ -38,7 +38,8 @@ export default class HeaderImageBackground extends React.Component {
       icon,
       onLeave,
       auth_rank,
-      onMediaPress
+      onMediaPress,
+      required_rank
     } = this.props;
 
     const { icon_option } = this.state
@@ -71,7 +72,7 @@ export default class HeaderImageBackground extends React.Component {
       <View style={[styles.backgroundImageStyle]}>
         <TouchableOpacity
           style={styles.backgroundImageContainerStyle}
-          disabled={auth_rank > 1}
+          disabled={auth_rank > required_rank}
           onPress={() => onMediaPress('background')}
           // onPress={() => backgroundImagePicker(setImage)}
           
@@ -91,7 +92,7 @@ export default class HeaderImageBackground extends React.Component {
         <View style={[styles.profileImgStyle]}>
           <TouchableOpacity
             style={styles.imageStyle}
-            disabled={auth_rank > 1}
+            disabled={auth_rank > required_rank}
             onPress={() => onMediaPress('profileImg')}
             // onPress={() => iconImagePicker(setImage)}
             

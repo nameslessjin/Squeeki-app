@@ -283,7 +283,7 @@ class Comment extends React.Component {
       comment_uid,
     } = this.state;
     const disabled = newComment.trim().length == 0;
-    const {navigation} = this.props
+    const {navigation, group} = this.props
 
 
     getSundays();
@@ -348,6 +348,8 @@ class Comment extends React.Component {
               userId={this.props.auth.user.id}
               onCommentDelete={this.onCommentDelete}
               onCommentReport={this.onCommentReport}
+              rank_in_group={group.group.auth ? group.group.auth.rank : null}
+              rank_required={group.group.rank_setting ? group.group.rank_setting.manage_comment_rank_required : null}
             />
           ) : null}
         </KeyboardAvoidingView>

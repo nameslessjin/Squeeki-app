@@ -13,9 +13,9 @@ import {
   onGroupRulesUpdateMutation,
   getGroupRulesQuery,
   getGroupJoinRequestCountQuery,
-  updateRankFeaturesMutation
+  updateRankFeaturesMutation,
 } from './query/groupQuery';
-import {http, http_upload} from '../../apollo'
+import {http, http_upload} from '../../apollo';
 
 export const findUserGroupsByUserId = data => {
   const {token, count} = data;
@@ -23,8 +23,8 @@ export const findUserGroupsByUserId = data => {
     const graphQl = {
       query: findUserGroupsByUserIdQuery,
       variables: {
-        count: count
-      }
+        count: count,
+      },
     };
     // api request
     const groups = await fetch(http, {
@@ -42,7 +42,6 @@ export const findUserGroupsByUserId = data => {
     }
 
     dispatch(getUserGroups(groupsData.data.getMyGroups));
-
 
     return 0;
   };
@@ -96,16 +95,15 @@ export const getGroup = data => {
 export const searchGroup = data => {
   const {name, token, count} = data;
   return async function(dispatch) {
-
     const input = {
       name: name,
-      count: count
-    }
+      count: count,
+    };
 
     const graphQl = {
       query: searchGroupQuery,
       variables: {
-        input: input
+        input: input,
       },
     };
 
@@ -122,8 +120,8 @@ export const searchGroup = data => {
     if (groupsData.errors) {
       return groupsData;
     }
-  
-    groups = groupsData.data.searchGroup
+
+    groups = groupsData.data.searchGroup;
     return groups;
   };
 };
@@ -136,7 +134,17 @@ export const searchGroup = data => {
 // };
 
 export const createGroup = data => {
-  const {groupname, shortDescription, backgroundImg, icon, token, visibility, request_to_join, tagIds} = data;
+  const {
+    groupname,
+    shortDescription,
+    backgroundImg,
+    icon,
+    token,
+    visibility,
+    request_to_join,
+    tagIds,
+    display_name,
+  } = data;
 
   return async function(dispatch) {
     let groupIcon = null;
@@ -161,7 +169,6 @@ export const createGroup = data => {
         return 1;
       }
 
-
       const iconUrl = await iconFetch.json();
       if (iconUrl.error) {
         return iconUrl;
@@ -170,7 +177,7 @@ export const createGroup = data => {
         width: icon.width,
         height: icon.height,
         uri: iconUrl.url,
-        name: iconUrl.name
+        name: iconUrl.name,
       };
     }
 
@@ -181,17 +188,14 @@ export const createGroup = data => {
       backgroundImgData.append('fileData', backgroundImg.data);
       backgroundImgData.append('fileCategory', 'backgroundImgs');
 
-      const backgroundImgFetch = await fetch(
-        http_upload,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'multipart/form-data',
-          },
-          body: backgroundImgData,
+      const backgroundImgFetch = await fetch(http_upload, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'multipart/form-data',
         },
-      );
+        body: backgroundImgData,
+      });
       if (backgroundImgFetch.status == 500) {
         alert('Uploading background image failed');
         return 1;
@@ -205,18 +209,19 @@ export const createGroup = data => {
         width: backgroundImg.width,
         height: backgroundImg.height,
         uri: backgroundImgUrl.url,
-        name: backgroundImgUrl.name
+        name: backgroundImgUrl.name,
       };
     }
 
     const groupInput = {
+      display_name,
       groupname: groupname,
       shortDescription: shortDescription,
       backgroundImg: groupBackgroundImg,
       icon: groupIcon,
       visibility: visibility,
       request_to_join,
-      tagIds
+      tagIds,
     };
 
     const graphQl = {
@@ -289,7 +294,7 @@ export const updateGroup = data => {
         width: icon.width,
         height: icon.height,
         uri: iconUrl.url,
-        name: iconUrl.name
+        name: iconUrl.name,
       };
     }
 
@@ -300,17 +305,14 @@ export const updateGroup = data => {
       backgroundImgData.append('fileData', backgroundImg.data);
       backgroundImgData.append('fileCategory', 'backgroundImgs');
 
-      const backgroundImgFetch = await fetch(
-        http_upload,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'multipart/form-data',
-          },
-          body: backgroundImgData,
+      const backgroundImgFetch = await fetch(http_upload, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'multipart/form-data',
         },
-      );
+        body: backgroundImgData,
+      });
       if (backgroundImgFetch.status == 500) {
         alert('Uploading background image failed');
         return 1;
@@ -324,7 +326,7 @@ export const updateGroup = data => {
         width: backgroundImg.width,
         height: backgroundImg.height,
         uri: backgroundImgUrl.url,
-        name: backgroundImgUrl.name
+        name: backgroundImgUrl.name,
       };
     }
 
@@ -376,7 +378,6 @@ export const joinGroup = data => {
   const {groupId, token} = data;
 
   return async function(dispatch) {
-
     const graphQl = {
       query: joinGroupMutation,
       variables: {
@@ -407,15 +408,14 @@ export const joinGroup = data => {
 const JoinGroup = data => {
   return {
     type: 'joinGroup',
-    data: data
-  }
-}
+    data: data,
+  };
+};
 
 export const leaveGroup = data => {
   const {groupId, token} = data;
 
   return async function(dispatch) {
-
     const graphQl = {
       query: leaveGroupMutation,
       variables: {
@@ -436,54 +436,52 @@ export const leaveGroup = data => {
     if (groupData.errors) {
       return groupData;
     }
- 
-    dispatch(getPosts({posts: [], count: 0}))
-    dispatch(LeaveGroup(groupData.data.leaveGroup))
-    return 0;
 
+    dispatch(getPosts({posts: [], count: 0}));
+    dispatch(LeaveGroup(groupData.data.leaveGroup));
+    return 0;
   };
 };
 
 export const setGroupVisibility = data => {
   const {groupId, token} = data;
-  return async function(dispatch){
+  return async function(dispatch) {
     const graphQl = {
       query: setGroupVisibilityMutation,
       variables: {
         groupId: groupId,
-      }
-    }
+      },
+    };
 
     const group = await fetch(http, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(graphQl)
-    })
-  
+      body: JSON.stringify(graphQl),
+    });
+
     const groupData = await group.json();
 
-    if (groupData.errors){
+    if (groupData.errors) {
       return groupData;
     }
 
     dispatch(changeGroupVisibility());
-    return 0
-  }
-}
-
+    return 0;
+  };
+};
 
 export const setGroupRequestToJoin = data => {
   const {groupId, token} = data;
-  return async function(dispatch){
+  return async function(dispatch) {
     const graphql = {
       query: setGroupRequestToJoinMutation,
       variables: {
         groupId: groupId,
-      }
-    }
+      },
+    };
 
     const req = await fetch(http, {
       method: 'POST',
@@ -496,28 +494,28 @@ export const setGroupRequestToJoin = data => {
 
     const result = await req.json();
 
-    if (result.errors){
+    if (result.errors) {
       return result;
     }
 
     dispatch(changeGroupRequestToJoin());
-    return 0
-  }
-}
+    return 0;
+  };
+};
 
 export const getGroupJoinRequest = data => {
-  const {token, groupId, count} = data
-  return async function(dispatch){
+  const {token, groupId, count} = data;
+  return async function(dispatch) {
     const input = {
       count: count,
-      groupId: groupId
-    }
+      groupId: groupId,
+    };
     const graphql = {
       query: getGroupJoinRequestQuery,
       variables: {
-        input: input
-      }
-    }
+        input: input,
+      },
+    };
 
     const req = await fetch(http, {
       method: 'POST',
@@ -534,27 +532,27 @@ export const getGroupJoinRequest = data => {
       return result;
     }
     return result.data.getGroupJoinRequest;
-  }
-}
+  };
+};
 
 const changeGroupVisibility = () => {
   return {
     type: 'changeGroupVisibility',
-  }
-}
+  };
+};
 
 const changeGroupRequestToJoin = () => {
   return {
     type: 'changeGroupRequestToJoin',
-  }
-}
+  };
+};
 
 const LeaveGroup = data => {
   return {
     type: 'leaveGroup',
     groups: data,
-  }
-}
+  };
+};
 
 const getPosts = data => {
   return {
@@ -565,26 +563,26 @@ const getPosts = data => {
 
 export const cleanGroup = () => {
   return {
-    type: 'cleanGroup'
-  }
-}
+    type: 'cleanGroup',
+  };
+};
 
 export const onRespondJoinRequest = data => {
-  const {token, groupId, requesterId, type} = data
+  const {token, groupId, requesterId, type} = data;
 
   return async function(dispatch) {
     const input = {
       groupId: groupId,
       requesterId: requesterId,
-      type: type
-    }
+      type: type,
+    };
 
     const graphql = {
       query: onRespondJoinRequestMutation,
       variables: {
-        input: input
-      }
-    }
+        input: input,
+      },
+    };
 
     const req = await fetch(http, {
       method: 'POST',
@@ -602,25 +600,24 @@ export const onRespondJoinRequest = data => {
     }
 
     return 0;
-
-  }
-}
+  };
+};
 
 export const onGroupRulesUpdate = data => {
-  const {token, groupId, rules} = data
+  const {token, groupId, rules} = data;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const input = {
       groupId: groupId,
-      rules: rules
-    }
+      rules: rules,
+    };
 
     const graphql = {
       query: onGroupRulesUpdateMutation,
       variables: {
-        input: input
-      }
-    }
+        input: input,
+      },
+    };
 
     const req = await fetch(http, {
       method: 'POST',
@@ -638,20 +635,19 @@ export const onGroupRulesUpdate = data => {
     }
 
     return 0;
-
-  }
-}
+  };
+};
 
 export const getGroupRules = data => {
-  const {token, groupId} = data
+  const {token, groupId} = data;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const graphql = {
       query: getGroupRulesQuery,
       variables: {
-        groupId: groupId
-      }
-    }
+        groupId: groupId,
+      },
+    };
 
     const req = await fetch(http, {
       method: 'POST',
@@ -666,21 +662,20 @@ export const getGroupRules = data => {
     if (result.errors) {
       return result;
     }
-    return result.data.getGroupRules ? result.data.getGroupRules : 0
-
-  }
-}
+    return result.data.getGroupRules ? result.data.getGroupRules : 0;
+  };
+};
 
 export const getGroupJoinRequestCount = data => {
-  const {token, groupId} = data
+  const {token, groupId} = data;
 
-  return async function (dispatch){
+  return async function(dispatch) {
     const graphql = {
       query: getGroupJoinRequestCountQuery,
       variables: {
-        groupId: groupId
-      }
-    }
+        groupId: groupId,
+      },
+    };
 
     const req = await fetch(http, {
       method: 'POST',
@@ -696,34 +691,35 @@ export const getGroupJoinRequestCount = data => {
       return result;
     }
 
-    dispatch(getGroupJoinRequestCountReducer(result.data.getGroupJoinRequestCount))
+    dispatch(
+      getGroupJoinRequestCountReducer(result.data.getGroupJoinRequestCount),
+    );
 
-    return 0
-    
-  }
-}
+    return 0;
+  };
+};
 
 const getGroupJoinRequestCountReducer = data => {
   return {
     type: 'getGroupJoinRequestCount',
-    data: data
-  }
-}
+    data: data,
+  };
+};
 
 export const updateRankFeatures = data => {
-  const {token, groupId, rank_setting} = data
-  return async function (dispatch){
+  const {token, groupId, rank_setting} = data;
+  return async function(dispatch) {
     const input = {
       groupId,
-      rank_setting
-    }
- 
+      rank_setting,
+    };
+
     const graphql = {
       query: updateRankFeaturesMutation,
       variables: {
-        input: input
-      }
-    }
+        input: input,
+      },
+    };
     const req = await fetch(http, {
       method: 'POST',
       headers: {
@@ -739,16 +735,14 @@ export const updateRankFeatures = data => {
       return result;
     }
 
-
-    dispatch(updateRankFeaturesReducer(rank_setting))
-    return 0
-
-  }
-}
+    dispatch(updateRankFeaturesReducer(rank_setting));
+    return 0;
+  };
+};
 
 const updateRankFeaturesReducer = data => {
   return {
     type: 'updateRankFeatures',
-    i: data
-  }
-}
+    i: data,
+  };
+};

@@ -94,6 +94,7 @@ class GroupCreation extends React.Component {
     Keyboard.dismiss();
     this.setState({loading: true});
     const {
+      display_name,
       groupname,
       shortDescription,
       backgroundImg,
@@ -104,6 +105,7 @@ class GroupCreation extends React.Component {
     } = this.state;
     const {token} = this.props.auth;
     const data = {
+      display_name: display_name.trim(),
       groupname: groupname.trim(),
       shortDescription: shortDescription.trim(),
       backgroundImg: backgroundImg,
@@ -199,6 +201,7 @@ class GroupCreation extends React.Component {
               setGroupHeader={this.setGroupHeader}
               data={this.state}
               auth_rank={1}
+              required_rank={1}
             />
             <ToggleSetting
               on={visibility}

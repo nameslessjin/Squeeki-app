@@ -145,6 +145,7 @@ class Member extends React.Component {
       }
       return;
     }
+    this.loadGroupMembers();
     navigation.goBack();
   };
 
@@ -171,6 +172,7 @@ class Member extends React.Component {
       }
       return;
     }
+    this.loadGroupMembers();
     navigation.goBack();
   };
 
@@ -182,13 +184,13 @@ class Member extends React.Component {
 
     // compare with orign
     const origin = {
-      ...this.props.route.params.auth,
+      ...this.props.route.params,
     };
 
-    if (rank == origin.rank) {
+    if (rank == origin.auth.rank) {
       rank = null;
     }
-    if (title == origin.title) {
+    if (title == origin.auth.title) {
       title = null;
     }
 
@@ -252,6 +254,7 @@ class Member extends React.Component {
 
     if (updateMember.errors) {
       // alert(updateMember.errors[0].message);
+      console.log(updateMember.errors[0].message);
       alert('Cannot modify member status at this time, please try again later');
       if (updateMember.errors[0].message == 'Not authenticated') {
         userLogout();
@@ -263,18 +266,12 @@ class Member extends React.Component {
       return;
     }
 
-    // get members when return to member page
     if (prev_route == 'Members') {
       this.loadGroupMembers();
+    } else {
+      // get group info when return to group setting page
+      this.getGroup();
     }
-    // get group info when return to group setting page
-    this.getGroup();
-
-    // this.setState({
-    //   loading: false,
-    //   auth: updateData.auth,
-    //   group_username: updateData.group_username,
-    // });
   };
 
   onBackdropPress = () => {
@@ -335,14 +332,15 @@ class Member extends React.Component {
     } = this.state;
     //group auth is your auth in the group
     const {group} = this.props.group;
-    const {modify_member_rank_required} = group.rank_setting;
+    const {manage_member_rank_required} = group.rank_setting;
 
     // auth here is auth of group member
     const {user} = this.props.auth;
-    const allowToModifyMember = group.auth.rank <= modify_member_rank_required;
+    const allowToModifyMember = group.auth.rank <= manage_member_rank_required;
     const allowToMakeOwner = group.auth.rank <= 1 && auth.rank > 1;
     const allowToChangeGroupUsername =
-      user.id == id || group.auth.rank <= modify_member_rank_required;
+      user.id == id || group.auth.rank <= manage_member_rank_required;
+    const isSelf = user.id == id;
 
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
@@ -369,6 +367,7 @@ class Member extends React.Component {
             modifyInput={this.modifyInput}
             allowToModifyMember={allowToModifyMember}
             userAuth={group.auth}
+            isSelf={isSelf}
           />
           <InputText
             modifyInput={this.modifyInput}

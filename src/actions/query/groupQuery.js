@@ -57,7 +57,11 @@ query getGroup($groupId: ID!){
             priority_2_rank_required
             priority_3_rank_required
             reward_rank_required
-            modify_member_rank_required
+            manage_member_rank_required
+            group_setting_rank_required
+            nominate_rank_required
+            manage_post_rank_required
+            manage_comment_rank_required
         }
         createdAt
     }
@@ -121,7 +125,11 @@ mutation createGroup($GroupInput: GroupInput!){
             priority_2_rank_required
             priority_3_rank_required
             reward_rank_required
-            modify_member_rank_required
+            manage_member_rank_required
+            group_setting_rank_required
+            nominate_rank_required
+            manage_post_rank_required
+            manage_comment_rank_required
         }
         memberCount
         createdAt
@@ -165,7 +173,11 @@ mutation updateGroup($GroupInput: GroupInput!){
             priority_2_rank_required
             priority_3_rank_required
             reward_rank_required
-            modify_member_rank_required
+            manage_member_rank_required
+            group_setting_rank_required
+            nominate_rank_required
+            manage_post_rank_required
+            manage_comment_rank_required
         }
         memberCount
         createdAt
@@ -210,7 +222,11 @@ mutation joinGroup($groupId: ID!){
                 priority_2_rank_required
                 priority_3_rank_required
                 reward_rank_required
-                modify_member_rank_required
+                manage_member_rank_required
+                group_setting_rank_required
+                nominate_rank_required
+                manage_post_rank_required
+                manage_comment_rank_required
             }
             memberCount
             createdAt

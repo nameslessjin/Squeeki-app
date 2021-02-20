@@ -73,9 +73,10 @@ class NominationCard extends React.Component {
   render() {
     let {item, loading} = this.state;
     let {name, period, points, on, selected, type} = item;
-    const {prev_route} = this.props;
+    const {prev_route, group} = this.props;
     const value = this.options.filter(i => i.key == period)[0].value;
     const type_display = type == 'reward' ? "Reward" : 'Penalty'
+    const {auth, rank_setting} = group.group
     
     return (
       <TouchableWithoutFeedback onPress={this.onSelected}>
@@ -87,7 +88,7 @@ class NominationCard extends React.Component {
             <Text style={styles.period}>{value}</Text>
           </View>
 
-          {prev_route == 'PostSetting' ? (
+          {prev_route == 'PostSetting' || auth.rank > rank_setting.group_setting_rank_required ? (
             <View style={styles.options} />
           ) : (
             <View style={styles.options}>
@@ -143,8 +144,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {auth} = state;
-  return {auth};
+  const {auth, group} = state;
+  return {auth, group};
 };
 
 const mapDispatchToProps = dispatch => {

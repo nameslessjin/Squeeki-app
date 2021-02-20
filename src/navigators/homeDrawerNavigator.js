@@ -47,6 +47,7 @@ class HomeDrawerNavigator extends React.Component {
         <HeaderLeftButton onPress={this.onToggleHeaderLeftButton} />
       ),
       // headerRight: () => <HomeHeaderRightButton onPress={this.onToggleHomeRightButton} />,
+      headerBackTitleVisible: false,
     });
   }
 
