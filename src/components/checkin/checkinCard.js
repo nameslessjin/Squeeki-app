@@ -54,6 +54,7 @@ export default class CheckinCard extends React.Component {
       currentUserId,
       auth,
       item,
+      rank_required,
       onResultPress,
     } = this.props;
     const {
@@ -82,7 +83,7 @@ export default class CheckinCard extends React.Component {
               justifyContent: 'space-between',
             }}>
             <Text style={[styles.name, styles.text]}>{name}</Text>
-            {currentUserId == userId || auth.rank <= 2 ? (
+            {currentUserId == userId || auth.rank <= rank_required ? (
               <TouchableOpacity onPress={this.onDelete}>
                 <Text
                   style={[

@@ -21,6 +21,29 @@ query getGroupMembers($input: GetGroupMembersInput!){
 }
 `;
 
+export const searchGroupMembersQuery = `
+query searchGroupMembers($input: SearchMemberInput!){
+    searchGroupMembers(input: $input){
+        members{
+            id
+            username
+            displayName
+            group_username
+            auth {
+                rank
+                title
+            }
+            icon{
+                uri
+            }
+            createdAt
+            lastActiveAt
+        }
+        count
+    }
+}
+`;
+
 export const getStatusInGroupQuery = `
 query getStatusInGroup($groupId: ID!){
     getStatusInGroup(groupId: $groupId){

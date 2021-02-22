@@ -2,12 +2,27 @@ import React from 'react';
 import {FlatList, StyleSheet, View, SectionList, Text} from 'react-native';
 import MemberCard from './memberCard';
 import {extractMembersWithRank} from '../../../functions/user';
+import SearchBar from '../userSearch/searchBar';
 
 const extractKey = ({id}) => id;
 
 export default class MemberList extends React.Component {
   renderFlatList = ({item}) => {
     
+    if (item == 'search') {
+      const {onSearchChange, search_term} = this.props
+      return (
+        <View
+          style={{
+            width: '100%',
+            height: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <SearchBar onChange={onSearchChange} value={search_term}/>
+        </View>
+      );
+    }
     return (
       <FlatList
         style={[styles.container, {alignItems: 'center', marginBottom: 30}]}
@@ -24,16 +39,19 @@ export default class MemberList extends React.Component {
 
   renderItem = ({item}) => {
     const {navigation} = this.props;
-    return <MemberCard navigation={navigation} item={item} />
+    return <MemberCard navigation={navigation} item={item} />;
   };
 
   renderSectionHeader = ({section}) => {
+    if (section.title == 'search') {
+      return null;
+    }
+
     return <Text style={styles.title}>{section.title}</Text>;
   };
 
   render() {
-    const {onEndReached, navigation, group} = this.props;
-    const {members} = this.props.members;
+    const {onEndReached, navigation, group, members} = this.props;
     const sections = extractMembersWithRank(members, group.auth.rank);
 
     return (
@@ -48,6 +66,7 @@ export default class MemberList extends React.Component {
         onEndReachedThreshold={0.1}
         stickySectionHeadersEnabled={false}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps={'handled'}
       />
     );
   }
@@ -61,6 +80,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 10,
-    marginVertical: 5
+    marginVertical: 5,
   },
 });

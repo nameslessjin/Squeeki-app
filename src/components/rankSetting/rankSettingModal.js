@@ -36,7 +36,7 @@ export default class RankSettingModal extends React.Component {
         <View
           style={[
             styles.rank,
-            {marginBottom: name == 7 ? 20 : 0},
+            {borderBottomWidth: name == 7 ? 0 : StyleSheet.hairlineWidth},
           ]}>
           <Text style={{color: '#3498db'}}>{name}</Text>
         </View>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   view: {
     backgroundColor: 'white',
-    width: '50%',
+    width: '70%',
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -112,8 +112,10 @@ const styles = StyleSheet.create({
   rank: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: width * 0.5,
+    width: width * 0.7,
     height: 45,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'grey'
   },
   rank_display: {
     width: '100%',

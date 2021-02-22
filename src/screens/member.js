@@ -437,6 +437,7 @@ const mapDispatchToProps = dispatch => {
     deleteMember: data => dispatch(deleteMember(data)),
     makeOwner: data => dispatch(makeOwner(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
+    searchUser: data => dispatch(searchUser(data)),
   };
 };
 

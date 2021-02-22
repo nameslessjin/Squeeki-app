@@ -77,11 +77,16 @@ class GroupSetting extends React.Component {
       backgroundImg: group.backgroundImg,
     };
 
-    if (icon.uri == origin.icon.uri) {
-      icon = null;
+    if (icon) {
+      if (icon.uri == origin.icon.uri) {
+        icon = null;
+      }
     }
-    if (backgroundImg.uri == origin.backgroundImg.uri) {
-      backgroundImg = null;
+
+    if (backgroundImg) {
+      if (backgroundImg.uri == origin.backgroundImg.uri) {
+        backgroundImg = null;
+      }
     }
 
     if (display_name == origin.display_name) {
@@ -98,7 +103,6 @@ class GroupSetting extends React.Component {
       display_name != null ||
       shortDescription != null
     ) {
-
       const updateData = {
         token: this.props.auth.token,
         groupId: id,
@@ -120,7 +124,7 @@ class GroupSetting extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
       let update = false;
-      console.log(this.extractData())
+      console.log(this.extractData());
       update = this.extractData().update;
       const {navigation} = this.props;
       const {auth} = this.props.group.group;
@@ -136,11 +140,11 @@ class GroupSetting extends React.Component {
       });
     }
 
-    if (this.props.group.group.id){
-      if (prevProps.group.group != this.props.group.group){
+    if (this.props.group.group.id) {
+      if (prevProps.group.group != this.props.group.group) {
         this.setState({
-          ...this.props.group.group
-        })
+          ...this.props.group.group,
+        });
       }
     }
   }
@@ -328,8 +332,10 @@ class GroupSetting extends React.Component {
   render() {
     const {visibility, loading, request_to_join, type} = this.state;
     const {auth, rank_setting} = this.props.group.group;
-    const rank = auth ? auth.rank : 7
-    const required_rank = rank_setting ? rank_setting.group_setting_rank_required : 1
+    const rank = auth ? auth.rank : 7;
+    const required_rank = rank_setting
+      ? rank_setting.group_setting_rank_required
+      : 1;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView

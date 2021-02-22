@@ -7,29 +7,28 @@ import {
   addMembersMutation,
   deleteMemberMutation,
   makeOwnerMutation,
-  getStatusInGroupQuery
+  getStatusInGroupQuery,
+  searchGroupMembersQuery,
 } from './query/userQuery';
 import {getGroup} from './group';
-import {http} from '../../apollo'
+import {http} from '../../apollo';
 
 export const getGroupMembers = data => {
   const {groupId, token, count, userIdList} = data;
 
   return async function(dispatch) {
-
     const input = {
       groupId: groupId,
       count: count,
-      userIdList: userIdList
-    }
+      userIdList: userIdList,
+    };
 
     const graphql = {
       query: getGroupMembersQuery,
       variables: {
-        input: input
+        input: input,
       },
     };
-
 
     const groupMembers = await fetch(http, {
       method: 'POST',
@@ -69,6 +68,41 @@ const loadMoreGroupMembers = data => {
   };
 };
 
+export const searchGroupMembers = data => {
+  const {count, groupId, search_term, token} = data;
+  return async function(dispatch) {
+    const input = {
+      groupId,
+      count,
+      search_term: search_term.trim(),
+    };
+
+    const graphql = {
+      query: searchGroupMembersQuery,
+      variables: {
+        input: input,
+      },
+    };
+
+    const request = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const req = await request.json()
+    if (req.errors){
+      return req
+    }
+
+    return req.data.searchGroupMembers
+
+  };
+};
+
 export const updateMember = data => {
   const {updateData, origin} = data;
   let {userId, groupId, auth, token, group_username} = updateData;
@@ -81,15 +115,15 @@ export const updateMember = data => {
       auth.title = origin.auth.title;
     }
 
-    if (group_username == null){
-      group_username = origin.group_username
+    if (group_username == null) {
+      group_username = origin.group_username;
     }
 
     const memberInput = {
       memberId: userId,
       groupId: groupId,
       auth: auth,
-      group_username
+      group_username,
     };
 
     const graphQl = {
@@ -187,7 +221,15 @@ export const registerDeviceForNotification = data => {
 };
 
 export const searchUser = data => {
-  const {searchTerm, token, count, groupId, userIdList, inGroup, checkin_id} = data;
+  const {
+    searchTerm,
+    token,
+    count,
+    groupId,
+    userIdList,
+    inGroup,
+    checkin_id,
+  } = data;
 
   return async function(dispatch) {
     const searchUserInput = {
@@ -196,9 +238,9 @@ export const searchUser = data => {
       groupId: groupId,
       userIdList: userIdList,
       inGroup: inGroup,
-      checkin_id: checkin_id
+      checkin_id: checkin_id,
     };
-    
+
     const graphql = {
       query: searchUserQuery,
       variables: {
@@ -286,17 +328,16 @@ export const deleteMember = data => {
 };
 
 export const makeOwner = data => {
-  const {token, groupId, memberId} = data
+  const {token, groupId, memberId} = data;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const graphql = {
       query: makeOwnerMutation,
       variables: {
         memberId: memberId,
-        groupId: groupId
-      }
-    }
-
+        groupId: groupId,
+      },
+    };
 
     let mutation = await fetch(http, {
       method: 'POST',
@@ -307,24 +348,24 @@ export const makeOwner = data => {
       body: JSON.stringify(graphql),
     });
 
-    const result = await mutation.json()
-    if (result.errors){
+    const result = await mutation.json();
+    if (result.errors) {
       return result;
     }
-    return 0
-  }
-}
+    return 0;
+  };
+};
 
 export const getStatusInGroup = data => {
-  const {token, groupId} = data
+  const {token, groupId} = data;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const graphql = {
       query: getStatusInGroupQuery,
       variables: {
-        groupId: groupId
-      }
-    }
+        groupId: groupId,
+      },
+    };
 
     const req = await fetch(http, {
       method: 'POST',
@@ -341,7 +382,6 @@ export const getStatusInGroup = data => {
       return result;
     }
 
-    return result.data.getStatusInGroup
-
-  }
-}
+    return result.data.getStatusInGroup;
+  };
+};

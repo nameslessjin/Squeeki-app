@@ -25,6 +25,8 @@ export default class RankFunction extends React.Component {
       name = 'Manage Post'
     } else if (type == 'manage_comment'){
       name = 'Manage Comment'
+    } else if (type == 'manage_check_in'){
+      name = 'Manage Check-in'
     }
 
     return (

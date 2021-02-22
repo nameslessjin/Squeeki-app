@@ -6,10 +6,66 @@ import {getGroupMembers} from '../actions/user';
 import {getGroupMembersFunc} from '../functions/user';
 import MemberList from '../components/users/members/memberList';
 import AddButton from '../components/users/members/addButton';
+import {searchGroupMembers} from '../actions/user';
 
 class Users extends React.Component {
   state = {
     loading: false,
+    search_term: '',
+    searched_users: [],
+    count: 0,
+  };
+
+  onSearchChange = async (text, init = true) => {
+    const {search_term} = this.state;
+    const term = text != null ? text.trim() : search_term.trim();
+    if (text != null) {
+      this.setState({search_term: text});
+    }
+
+    if (term.length < 3) {
+      this.setState({searched_users: [], count: 0});
+      return;
+    }
+
+
+    const {
+      auth,
+      navigation,
+      userLogout,
+      group,
+      searchGroupMembers,
+    } = this.props;
+
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+      search_term: term,
+      count: init ? 0 : this.state.count,
+    };
+
+    const req = await searchGroupMembers(request);
+    if (req.errors) {
+      console.log(req.errors);
+      if (req.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
+    }
+
+    const {count, members} = req;
+    console.log(members)
+    this.setState(prevState => {
+      return {
+        count: count,
+        searched_users:
+          count == 10 ? members : prevState.searched_users.concat(members),
+      };
+    });
   };
 
   onPress = () => {
@@ -84,21 +140,32 @@ class Users extends React.Component {
   };
 
   onEndReached = () => {
+    const {searched_users} = this.state;
     this.setState({loading: true});
-    this.loadGroupMembers(false);
+    if (searched_users.length == 0) {
+      this.loadGroupMembers(false);
+    } else {
+      this.onSearchChange(null, false);
+    }
     this.setState({loading: false});
   };
 
   render() {
     const {user, navigation, group} = this.props;
+    const {search_term, searched_users} = this.state;
+    const members = searched_users.length == 0 ? user.members.members : searched_users;
+
     return (
       <View style={{width: '100%', height: '100%'}}>
         <StatusBar barStyle={'dark-content'} />
         <MemberList
-          members={user.members}
+          members={members}
           navigation={navigation}
           onEndReached={this.onEndReached}
           group={group.group}
+          onSearchChange={this.onSearchChange}
+          search_term={search_term}
+          // searched_users={searched_users}
         />
       </View>
     );
@@ -114,6 +181,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getGroupMembers: data => dispatch(getGroupMembers(data)),
     userLogout: () => dispatch(userLogout()),
+    searchGroupMembers: data => dispatch(searchGroupMembers(data)),
   };
 };
 

@@ -11,13 +11,14 @@ const extractKey = ({id}) => id;
 
 export default class CheckinList extends React.Component {
   renderItem = ({item}) => {
-    const {onCheckInPress, currentUserId, auth, onDeleteCheckIn, onResultPress} = this.props;
+    const {onCheckInPress, currentUserId, auth, onDeleteCheckIn, onResultPress, rank_required} = this.props;
     return (
       <CheckinCard
         item={item}
         onCheckInPress={onCheckInPress}
         currentUserId={currentUserId}
         auth={auth}
+        rank_required={rank_required}
         onDeleteCheckIn={onDeleteCheckIn}
         onResultPress={onResultPress}
       />

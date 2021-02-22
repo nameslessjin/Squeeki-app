@@ -43,6 +43,11 @@ export const extractMembersWithRank = (members, groupAuth) => {
 
   const MembersWithRank = [
     {
+      title: 'search',
+      id: 'search',
+      data: ['search']
+    },
+    {
       title: 'Rank 0',
       id: 'rank0',
       data: groupAuth == 0 ? [rank0] : [[]],

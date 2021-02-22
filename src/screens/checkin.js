@@ -30,18 +30,19 @@ class CheckIn extends React.Component {
   };
 
   componentDidMount() {
-    const {navigation} = this.props;
-
+    const {navigation, group} = this.props;
+    const {rank_setting, auth} = group.group;
     navigation.setOptions({
-      headerRight: () => (
-        <HeaderRightButton
-          onPress={this.onHeaderRightButtonPress}
-          type={'create'}
-          disabled={false}
-        />
-      ),
+      headerRight: () =>
+        auth.rank <= rank_setting.manage_check_in_rank_required ? (
+          <HeaderRightButton
+            onPress={this.onHeaderRightButtonPress}
+            type={'create'}
+            disabled={false}
+          />
+        ) : null,
       headerBackTitleVisible: false,
-      headerTitle: 'Check-Ins',
+      headerTitle: 'Check Ins',
     });
 
     this.loadCheckIn(true);
@@ -63,7 +64,7 @@ class CheckIn extends React.Component {
     const req = await getUserGroupPoint(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load points at this time, please try again later')
+      alert('Cannot load points at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -102,7 +103,7 @@ class CheckIn extends React.Component {
     const req = await getGroupCheckIn(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load check in at this time, please try again later')
+      alert('Cannot load check in at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -153,7 +154,7 @@ class CheckIn extends React.Component {
     const req = await userCheckIn(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot check in at this time, please try again later')
+      alert('Cannot check in at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -183,7 +184,7 @@ class CheckIn extends React.Component {
     const req = await deleteCheckIn(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot delete check in at this time, please try again later')
+      alert('Cannot delete check in at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -216,6 +217,9 @@ class CheckIn extends React.Component {
             onCheckInPress={this.onCheckInPress}
             currentUserId={auth.user.id}
             auth={group.group.auth}
+            rank_required={
+              group.group.rank_setting.manage_check_in_rank_required
+            }
             onEndReached={this.onEndReached}
             onRefresh={this.onRefresh}
             refresh={refresh}
