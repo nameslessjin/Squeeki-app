@@ -10,7 +10,7 @@ import {
   Image,
   ActivityIndicator,
   StatusBar,
-  View
+  View,
 } from 'react-native';
 import {updateProfile, userLogout} from '../actions/auth';
 import {connect} from 'react-redux';
@@ -40,13 +40,7 @@ class Profile extends React.Component {
     ];
     this.setState({icon_option: icon_options[random]});
     navigation.setOptions({
-      headerRight: () => (
-        <ProfileUpdateButton
-          update={false}
-          updateProfile={this.updateProfile}
-          loading={this.state.loading}
-        />
-      ),
+      headerBackTitleVisible: false,
     });
   }
 
@@ -58,20 +52,14 @@ class Profile extends React.Component {
       let update = false;
       update = this.extractData().update;
       const {navigation} = this.props;
-      navigation.setOptions({
-        headerRight: () => (
-          <ProfileUpdateButton
-            update={update}
-            updateProfile={this.updateProfile}
-            loading={this.state.loading}
-          />
-        ),
-      });
     }
   }
 
-  componentWillUnmount(){
-    console.log('unmount')
+  componentWillUnmount() {
+    // update profile when unmount
+    if (this.extractData().update) {
+      this.updateProfile();
+    }
   }
 
   setIcon = (data, type) => {
@@ -90,7 +78,7 @@ class Profile extends React.Component {
     const profile = await updateProfile(data);
     if (profile.errors) {
       // alert(profile.errors[0].message);
-      alert('Cannot update profile at this time, please try again later')
+      alert('Cannot update profile at this time, please try again later');
       if (profile.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -100,7 +88,7 @@ class Profile extends React.Component {
       }
       return;
     }
-    alert('update succeed');
+
     this.setState({loading: false});
   };
 
@@ -197,8 +185,8 @@ class Profile extends React.Component {
   };
 
   onBackdropPress = () => {
-    this.setState({modalVisible: false})
-  }
+    this.setState({modalVisible: false});
+  };
 
   render() {
     const {
@@ -249,27 +237,17 @@ class Profile extends React.Component {
 
           <TouchableOpacity
             style={styles.changePasswordButton}
-            disabled={!this.extractData().update}
-            onPress={this.updateProfile}>
-            <Text
-              style={
-                this.extractData().update
-                  ? {color: '#487eb0'}
-                  : {color: '#95a5a6'}
-              }>
-              Update profile
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.changePasswordButton}
             onPress={this.onChangePasswordPress}>
             <Text style={{color: '#487eb0'}}>Change password</Text>
           </TouchableOpacity>
 
           <Text style={{color: 'red'}}>{errorText}</Text>
           <ActivityIndicator animating={loading} />
-          <ProfileModal  modalVisible={modalVisible} onBackdropPress={this.onBackdropPress} onChangeMedia={this.setIcon} />
+          <ProfileModal
+            modalVisible={modalVisible}
+            onBackdropPress={this.onBackdropPress}
+            onChangeMedia={this.setIcon}
+          />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

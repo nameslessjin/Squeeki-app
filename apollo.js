@@ -51,8 +51,8 @@ export const apolloClient = (token) => {
   return client;
 };
 
-// export const http = 'http://squeeki.appspot.com/graphql';
+export const http = 'http://squeeki.appspot.com/graphql';
 
 export const http_upload = 'http://squeeki.appspot.com/uploadImage'
 
-export const http = 'http://192.168.86.24:8080/graphql'
+// export const http = 'http://192.168.86.24:8080/graphql'
