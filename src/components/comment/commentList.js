@@ -8,13 +8,13 @@ const extractKey = ({id}) => id;
 export default class CommentList extends React.Component {
   renderItem = ({item}) => {
 
-    const {onCommentLike, onOptionToggle, navigation} = this.props
+    const {onCommentLike, onOptionToggle, navigation, onCommentReplyPress} = this.props
     
     if (item.id) {
       if (item.type) {
         return <CommentPost post={item} option={false} navigation={navigation}/>;
       }
-      return <CommentCard comment={item} onCommentLike={onCommentLike} onOptionToggle={onOptionToggle}/>;
+      return <CommentCard comment={item} onCommentLike={onCommentLike} onOptionToggle={onOptionToggle} onCommentReplyPress={onCommentReplyPress}/>;
     }
     return;
   };

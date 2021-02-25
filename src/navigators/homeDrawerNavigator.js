@@ -124,7 +124,7 @@ function CustomDrawerContent(props) {
   const {displayName, icon} = auth.user;
   return (
     <DrawerContentScrollView {...props} style={{bottom: 50}} >
-      <DrawerItem
+      {displayName ? <DrawerItem
         label={displayName}
         labelStyle={{color: 'black'}}
         icon={() => (
@@ -135,7 +135,10 @@ function CustomDrawerContent(props) {
           </View>
         )}
         onPress = {() => navigation.navigate('Profile')}
-      />
+      /> : null}
+      <View style={{width: '100%', justifyContent: 'center', alignItems: 'center', height: 10}}>
+      <View style={{borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'grey', width: '85%'}} />
+      </View>
       <DrawerItemList {...props} />
       <DrawerItem
         label="Logout"
@@ -178,8 +181,8 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey',
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: 'grey',
     padding: 5,
 
   },

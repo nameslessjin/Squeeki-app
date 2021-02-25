@@ -4,8 +4,9 @@ import {
   deleteCommentMutation,
   likeCommentMutation,
   reportCommentMutation,
+  replyCommentMutation,
 } from './query/commentQuery';
-import {http} from '../../apollo'
+import {http} from '../../apollo';
 
 export const getComments = data => {
   const {postId, token, count} = data;
@@ -47,13 +48,12 @@ const loadComments = data => {
 };
 
 export const createComment = data => {
-  const {token, postId, comment, count} = data;
+  const {token, postId, content} = data;
 
   return async function(dispatch) {
     const commentInput = {
-      postId: postId,
-      content: comment,
-      count: count,
+      postId,
+      content,
     };
     const graphQl = {
       query: createCommentMutation,
@@ -188,6 +188,43 @@ export const reportComment = request => {
     if (result.errors) {
       return result;
     }
+
+    return 0;
+  };
+};
+
+export const replyComment = request => {
+  const {token, postId, content, replyId} = request;
+
+  return async function(dispatch) {
+    const input = {
+      postId,
+      replyId,
+      content,
+    };
+
+    const graphql = {
+      query: replyCommentMutation,
+      variables: {
+        input: input,
+      },
+    };
+
+    const req = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
 
     return 0;
   };
