@@ -2,7 +2,7 @@ import React from 'react';
 import {Image, View, StyleSheet} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default class CommentProfile extends React.Component {
+export default class ReplyProfile extends React.Component {
   state = {
     icon_option: 'emoticon-cool-outline',
   };
@@ -29,7 +29,7 @@ export default class CommentProfile extends React.Component {
         {icon != null ? (
           <Image source={{uri: icon.uri}} style={styles.userIcon} />
         ) : (
-          <MaterialIcons name={icon_option} size={40} />
+          <MaterialIcons name={icon_option} size={35} />
         )}
       </View>
     )
@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     userIcon: {
-        height: 40,
+        height: 35,
         aspectRatio: 1,
-        borderRadius: 20,
+        borderRadius: 17.5,
       },
 })

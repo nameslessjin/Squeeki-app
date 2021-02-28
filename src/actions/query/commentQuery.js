@@ -17,11 +17,56 @@ query getPostComments($postId: ID!, $count: Int!){
             }
             likeCount
             liked
+            num_of_replies
+            reply{
+                replies{
+                    id
+                    content
+                    createdAt
+                    user {
+                        id
+                        username
+                        displayName
+                        group_username
+                        icon{
+                            uri
+                        }
+                    }
+                    likeCount
+                    liked
+                }
+                count
+            }
         }
         count
     }
 }
 `;
+
+export const getRepliesQuery = `
+query getReplies($input: ReplyQueryInput!){
+    getReplies(input: $input){
+        replies{
+            id
+            content
+            createdAt
+            user {
+                id
+                username
+                displayName
+                group_username
+                icon{
+                    uri
+                }
+            }
+            likeCount
+            liked
+        }
+        count
+        num_of_replies
+    }
+}
+`
 
 export const createCommentMutation = `
 mutation createComment($commentInput: CommentInput!){
@@ -49,7 +94,11 @@ mutation createComment($commentInput: CommentInput!){
 `;
 export const deleteCommentMutation = `
 mutation deleteComment($commentId: ID!){
-    deleteComment(commentId: $commentId)
+    deleteComment(commentId: $commentId){
+        id
+        replyId
+        num_of_replies
+    }
 }
 `;
 
@@ -67,22 +116,6 @@ mutation reportComment($commentReportInput: CommentReportInput!){
 
 export const replyCommentMutation = `
 mutation replyComment($input: CommentInput!){
-    replyComment(input: $input){
-        id
-        content
-        createdAt
-        replyId
-        user{
-            id
-            username
-            displayName
-            group_username
-            icon {
-                uri
-            }
-        }
-        likeCount
-        liked
-    }
+    replyComment(input: $input)
 }
 `;

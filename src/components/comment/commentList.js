@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback} from 'react-native';
+import {FlatList, StyleSheet, View, Text, Platform} from 'react-native';
 import CommentCard from './commentCard';
 import CommentPost from './commentPost';
 
@@ -7,14 +7,34 @@ const extractKey = ({id}) => id;
 
 export default class CommentList extends React.Component {
   renderItem = ({item}) => {
+    const {
+      onCommentLike,
+      onOptionToggle,
+      navigation,
+      onCommentReplyPress,
+      num_of_replies,
+      replyId,
+      deleted_replyId
+    } = this.props;
 
-    const {onCommentLike, onOptionToggle, navigation, onCommentReplyPress} = this.props
-    
     if (item.id) {
       if (item.type) {
-        return <CommentPost post={item} option={false} navigation={navigation}/>;
+        return (
+          <CommentPost post={item} option={false} navigation={navigation} />
+        );
       }
-      return <CommentCard comment={item} onCommentLike={onCommentLike} onOptionToggle={onOptionToggle} onCommentReplyPress={onCommentReplyPress}/>;
+
+      return (
+        <CommentCard
+          comment={item}
+          onCommentLike={onCommentLike}
+          onOptionToggle={onOptionToggle}
+          onCommentReplyPress={onCommentReplyPress}
+          num_of_replies={num_of_replies}
+          replyId={replyId}
+          deleted_replyId={deleted_replyId}
+        />
+      );
     }
     return;
   };
@@ -27,7 +47,7 @@ export default class CommentList extends React.Component {
   };
 
   render() {
-    const {post, comments, onEndReached, sent, navigation} = this.props;
+    const {post, comments, onEndReached, sent, navigation, replyId} = this.props;
     let data = [];
     if (post.id) {
       if (post.allowComment) {
@@ -35,10 +55,10 @@ export default class CommentList extends React.Component {
         data = data.concat(comments);
       }
     } else {
-      return null
+      return null;
     }
 
-    if (sent) {
+    if (sent && !replyId) {
       this.scrollToTop(this.instance);
     }
     return post.allowComment ? (
@@ -51,7 +71,7 @@ export default class CommentList extends React.Component {
         alwaysBounceHorizontal={false}
         showsVerticalScrollIndicator={false}
         onEndReached={() => onEndReached()}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0}
       />
     ) : (
       <View
@@ -60,7 +80,7 @@ export default class CommentList extends React.Component {
           justifyContent: 'flex-start',
           alignItems: 'center',
         }}>
-        <CommentPost post={post} option={false} navigation={navigation}/>
+        <CommentPost post={post} option={false} navigation={navigation} />
         <Text style={styles.commentDisabled}>Comment disabled</Text>
       </View>
     );
@@ -70,7 +90,8 @@ export default class CommentList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    marginBottom: Platform.OS == 'ios' ? 55 : 20,
   },
   postOnlyContainer: {
     width: '100%',

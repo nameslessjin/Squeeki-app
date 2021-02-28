@@ -97,7 +97,9 @@ class SignIn extends React.Component {
     }
 
     if (signInResult.errors) {
-      this.setState({errorText: signInResult.errors[0].message});
+
+      console.log({errorText: signInResult.errors[0].message});
+      this.setState({errorText: 'Please update to the lastest version of Squeeki'})
 
       return;
     }
@@ -132,7 +134,7 @@ class SignIn extends React.Component {
           />
 
           {loading ? (
-            <View style={{marginTop: 15}}>
+            <View style={{marginTop: 15}}> 
               <ActivityIndicator animating={true} />
               <Text>Connecting ...</Text>
             </View>

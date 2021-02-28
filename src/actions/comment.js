@@ -5,6 +5,7 @@ import {
   likeCommentMutation,
   reportCommentMutation,
   replyCommentMutation,
+  getRepliesQuery
 } from './query/commentQuery';
 import {http} from '../../apollo';
 
@@ -34,7 +35,7 @@ export const getComments = data => {
       return comments;
     }
 
-    dispatch(loadComments(comments.data.getPostComments));
+    dispatch(loadComments({...comments.data.getPostComments, postId}));
 
     return 0;
   };
@@ -120,7 +121,7 @@ export const likeComment = request => {
 };
 
 export const deleteComment = request => {
-  const {commentId, token} = request;
+  const {commentId, token, replyId} = request;
 
   return async function(dispatch) {
     const graphql = {
@@ -145,7 +146,7 @@ export const deleteComment = request => {
       return result;
     }
 
-    dispatch(deleteCommentReducer(commentId));
+    dispatch(deleteCommentReducer(result.data.deleteComment));
 
     return 0;
   };
@@ -154,7 +155,7 @@ export const deleteComment = request => {
 const deleteCommentReducer = data => {
   return {
     type: 'deleteComment',
-    commentId: data,
+    i: data,
   };
 };
 
@@ -184,7 +185,6 @@ export const reportComment = request => {
     });
 
     const result = await req.json();
-
     if (result.errors) {
       return result;
     }
@@ -225,10 +225,77 @@ export const replyComment = request => {
       return result;
     }
 
+    const data = {
+      num_of_replies: result.data.replyComment,
+      commentId: replyId
+    }
+
+    dispatch(replyCommentReducer(data))
 
     return 0;
   };
 };
+
+const replyCommentReducer = data => {
+  return {
+    type: 'replyComment',
+    i: data
+  }
+}
+
+
+
+export const getReplies = request => {
+  const {token, replyId, postId, count } = request
+  
+  return async function(dispatch){
+    const input = {
+      replyId,
+      postId,
+      count
+    }
+
+    const graphql = {
+      query: getRepliesQuery,
+      variables: {
+        input: input
+      }
+    }
+
+    const req = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    const data = {
+      commentId: replyId,
+      reply: result.data.getReplies
+    }
+
+    dispatch(getRepliesReducer(data))
+
+    return result.data.getReplies
+
+  }
+
+}
+
+const getRepliesReducer = data => {
+  return {
+    type: 'getReplies',
+    i: data
+  }
+}
 
 export const cleanComment = () => {
   return {

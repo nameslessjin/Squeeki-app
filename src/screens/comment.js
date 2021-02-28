@@ -22,7 +22,7 @@ import {
   deleteComment,
   reportComment,
   likeComment,
-  replyComment
+  replyComment,
 } from '../actions/comment';
 import {userLogout} from '../actions/auth';
 import {getCommentsFunc} from '../functions/comment';
@@ -51,6 +51,8 @@ class Comment extends React.Component {
       this.getUserGroupPoint();
     }
     this.props.cleanComment();
+
+    // get post
   }
 
   state = {
@@ -64,7 +66,9 @@ class Comment extends React.Component {
     modalVisible: false,
     comment_uid: '',
     commentId: '',
-    replyId: null
+    replyId: null,
+    num_of_replies: 0,
+    deleted_replyId: null,
   };
 
   getUserGroupPoint = async () => {
@@ -91,14 +95,12 @@ class Comment extends React.Component {
   };
 
   getPostComment = async init => {
-    const {getPost, getComments, navigation, userLogout} = this.props;
+    const {getPost, navigation, userLogout} = this.props;
     const {postId} = this.props.route.params;
-    const {count} = this.props.comment.comments;
     const {token} = this.props.auth;
     const data = {
       token: token,
       postId: postId,
-      count: count,
     };
     const postData = await getPost(data);
     if (postData.errors) {
@@ -141,7 +143,6 @@ class Comment extends React.Component {
     }
   };
 
-
   onCommentDelete = async () => {
     const {navigation, auth, deleteComment} = this.props;
     const {commentId} = this.state;
@@ -152,7 +153,7 @@ class Comment extends React.Component {
 
     const req = await deleteComment(request);
     if (req.errors) {
-      // alert(req.errors[0].message);
+      console.log(req.errors[0].message);
       alert('Cannot delete comment at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
@@ -163,17 +164,15 @@ class Comment extends React.Component {
       }
       return;
     }
-
+    this.setState({deleted_replyId: commentId});
     this.onBackdropPress();
   };
 
-
   // action on reply button on the left side of input bar pressed
-  onCommentReplyPress = (replyId) => {
+  onCommentReplyPress = replyId => {
     this.inputRef.focus();
     this.setState({replyId: replyId});
   };
-
 
   onCommentReport = async content => {
     const {navigation, auth, reportComment} = this.props;
@@ -235,11 +234,13 @@ class Comment extends React.Component {
       content: newComment,
       token: token,
       postId: postId,
-      replyId
+      replyId,
     };
     this.setState({sent: true});
     Keyboard.dismiss();
-    const comment = replyId ? await replyComment(data) : await createComment(data);
+    const comment = replyId
+      ? await replyComment(data)
+      : await createComment(data);
     if (comment.errors) {
       console.log(comment.errors[0].message);
       alert('Cannot send comment at this time, please try again later');
@@ -250,6 +251,10 @@ class Comment extends React.Component {
           routes: [{name: 'SignIn'}],
         });
       }
+    }
+
+    if (replyId) {
+      this.setState({num_of_replies: comment});
     }
 
     this.setState({newComment: '', sent: false, replyId: null});
@@ -285,12 +290,15 @@ class Comment extends React.Component {
       sent,
       modalVisible,
       comment_uid,
-      replyId
+      replyId,
+      num_of_replies,
+      deleted_replyId
     } = this.state;
     const disabled = newComment.trim().length == 0;
     const {navigation, group, comment} = this.props;
-    const isReply = replyId ? true : false
+    const isReply = replyId ? true : false;
     getSundays();
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
@@ -298,6 +306,7 @@ class Comment extends React.Component {
           behavior={Platform.OS == 'ios' ? 'padding' : 'overflow'}
           keyboardVerticalOffset={35}>
           <StatusBar barStyle={'dark-content'} />
+
           <CommentList
             post={post}
             comments={comment.comments.comments}
@@ -307,8 +316,12 @@ class Comment extends React.Component {
             onOptionToggle={this.onOptionToggle}
             navigation={navigation}
             onCommentReplyPress={this.onCommentReplyPress}
+            replyId={replyId}
+            num_of_replies={num_of_replies}
+            deleted_replyId={deleted_replyId}
           />
-          {post.allowComment ? (
+
+          {post.allowComment && !modalVisible ? (
             <View style={styles.inputBarContainer}>
               {isReply ? (
                 <View
@@ -319,12 +332,8 @@ class Comment extends React.Component {
                     },
                   ]}>
                   <TouchableOpacity onPress={this.onCancelReply}>
-                    <View
-                      style={styles.replyButton}>
-                      <Text
-                        style={styles.replyText}>
-                        REPLY:
-                      </Text>
+                    <View style={styles.replyButton}>
+                      <Text style={styles.replyText}>REPLY:</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -364,7 +373,10 @@ class Comment extends React.Component {
                   },
                 ]}>
                 {sent ? (
-                  <ActivityIndicator animating={true} style={{marginBottom: 5}} />
+                  <ActivityIndicator
+                    animating={true}
+                    style={{marginBottom: 5}}
+                  />
                 ) : (
                   <TouchableOpacity
                     disabled={disabled}
@@ -417,7 +429,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: Platform.OS == 'ios' ? 55 : 20,
+    // position: 'relative',
+    bottom: Platform.OS == 'ios' ? 55 : 20,
     justifyContent: 'center',
   },
   textInputContainer: {
@@ -431,7 +444,7 @@ const styles = StyleSheet.create({
     borderColor: '#718093',
     borderRadius: 10,
     padding: 5,
-    paddingLeft: 8
+    paddingLeft: 8,
   },
   sendButtonContainer: {
     width: 35,
@@ -456,7 +469,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
-  }
+  },
 });
 
 const mapStateToProps = state => {
@@ -474,7 +487,7 @@ const mapDispatchToProps = dispatch => {
     deleteComment: data => dispatch(deleteComment(data)),
     reportComment: data => dispatch(reportComment(data)),
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
-    replyComment: data => dispatch(replyComment(data))
+    replyComment: data => dispatch(replyComment(data)),
   };
 };
 
