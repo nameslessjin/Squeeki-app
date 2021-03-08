@@ -67,8 +67,6 @@ class Comment extends React.Component {
     comment_uid: '',
     commentId: '',
     replyId: null,
-    num_of_replies: 0,
-    deleted_replyId: null,
   };
 
   getUserGroupPoint = async () => {
@@ -164,7 +162,6 @@ class Comment extends React.Component {
       }
       return;
     }
-    this.setState({deleted_replyId: commentId});
     this.onBackdropPress();
   };
 
@@ -253,10 +250,6 @@ class Comment extends React.Component {
       }
     }
 
-    if (replyId) {
-      this.setState({num_of_replies: comment});
-    }
-
     this.setState({newComment: '', sent: false, replyId: null});
   };
 
@@ -291,8 +284,6 @@ class Comment extends React.Component {
       modalVisible,
       comment_uid,
       replyId,
-      num_of_replies,
-      deleted_replyId
     } = this.state;
     const disabled = newComment.trim().length == 0;
     const {navigation, group, comment} = this.props;
@@ -317,8 +308,6 @@ class Comment extends React.Component {
             navigation={navigation}
             onCommentReplyPress={this.onCommentReplyPress}
             replyId={replyId}
-            num_of_replies={num_of_replies}
-            deleted_replyId={deleted_replyId}
           />
 
           {post.allowComment && !modalVisible ? (

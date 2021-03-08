@@ -11,7 +11,7 @@ import {
   getNominationPostQuery,
   getGroupPostForCheckInQuery,
 } from './query/postQuery';
-import {http, http_upload} from '../../apollo';
+import {http, http_upload} from '../../server_config';
 
 export const getGroupPosts = data => {
   const {groupId, token, count} = data;

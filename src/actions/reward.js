@@ -6,7 +6,7 @@ import {
   getMonthlyGiftCardCountQuery,
   lootRewardMutation
 } from './query/rewardQuery';
-import {http} from '../../apollo'
+import {http} from '../../server_config'
 
 export const createGroupReward = request => {
   const {token, groupId, from, type, content, name, chance, hide} = request;

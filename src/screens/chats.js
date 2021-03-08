@@ -11,31 +11,34 @@ import {connect} from 'react-redux';
 import {getChat} from '../actions/chat';
 import {userLogout} from '../actions/auth';
 import HeaderRightButton from '../components/chat/headerRightButton';
-import { getChatFunc } from '../functions/chat'
-import List from '../components/chat/chatList'
+import {getChatFunc} from '../functions/chat';
+import List from '../components/chat/chatList';
+import {socket} from '../../server_config';
 
 class Chats extends React.Component {
   state = {
     loading: false,
-    refreshing: false
+    refreshing: false,
   };
 
   componentDidMount() {
     const {navigation, group} = this.props;
     navigation.setOptions({
-      headerRight: () =>  group.group.auth.rank > 2 ? null : (
-        <HeaderRightButton
-          onPress={this.onHeaderRightButtonPress}
-          type={'create'}
-          disabled={false}
-        />
-      ),
+      headerRight: () =>
+        group.group.auth.rank > 2 ? null : (
+          <HeaderRightButton
+            onPress={this.onHeaderRightButtonPress}
+            type={'create'}
+            disabled={false}
+          />
+        ),
       headerBackTitleVisible: false,
       headerTitle: 'Chats',
     });
 
     this.loadChat(true);
   }
+
 
   onHeaderRightButtonPress = () => {
     const {navigation} = this.props;
@@ -51,13 +54,12 @@ class Chats extends React.Component {
       token: auth.token,
       getChat: getChat,
       navigation: navigation,
-      userLogout: userLogout
+      userLogout: userLogout,
     };
 
     this.setState({loading: true});
     const req = await getChatFunc(request);
-    this.setState({loading: false})
-
+    this.setState({loading: false});
   };
 
   onEndReached = () => {
@@ -70,21 +72,28 @@ class Chats extends React.Component {
     this.setState({refreshing: false});
   };
 
-  onChatPress = (chat) => {
-    const {navigation} = this.props
-    const {name, id, rank_req, icon} = chat
+  onChatPress = chat => {
+    const {navigation, group} = this.props;
+    const {name, id, rank_req, icon} = chat;
 
-    navigation.navigate('Chat', {
-      name,
-      chatId: id,
-      rank_req,
-      icon
-    })
-  }
+    const rank = group.group.auth.rank;
+
+    if (rank <= rank_req) {
+      // remove listeners to all chatrooms here
+      navigation.navigate('Chat', {
+        name,
+        chatId: id,
+        rank_req,
+        icon,
+      });
+    } else {
+      alert(`You can only enter this chat if you are rank ${rank_req} or above.`)
+    }
+  };
 
   render() {
-    const {chat} = this.props
-    const {refreshing} = this.state
+    const {chat} = this.props;
+    const {refreshing} = this.state;
     return (
       <TouchableWithoutFeedback>
         <View>

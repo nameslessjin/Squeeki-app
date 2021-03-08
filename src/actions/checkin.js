@@ -6,7 +6,7 @@ import {
   getGroupCheckInResultQuery,
   createUserCheckInBatchMutation
 } from './query/checkinQuery';
-import {http} from '../../apollo'
+import {http} from '../../server_config'
 
 export const createCheckIn = request => {
   const {

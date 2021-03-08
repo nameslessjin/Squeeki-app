@@ -12,9 +12,7 @@ export default class CommentList extends React.Component {
       onOptionToggle,
       navigation,
       onCommentReplyPress,
-      num_of_replies,
       replyId,
-      deleted_replyId
     } = this.props;
 
     if (item.id) {
@@ -30,9 +28,7 @@ export default class CommentList extends React.Component {
           onCommentLike={onCommentLike}
           onOptionToggle={onOptionToggle}
           onCommentReplyPress={onCommentReplyPress}
-          num_of_replies={num_of_replies}
           replyId={replyId}
-          deleted_replyId={deleted_replyId}
         />
       );
     }

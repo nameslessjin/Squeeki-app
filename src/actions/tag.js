@@ -4,7 +4,7 @@ import {
   addTagToGroupMutation,
   removeTagFromGroupMutation,
 } from './query/tagQuery';
-import {http} from '../../apollo'
+import {http} from '../../server_config'
 
 export const searchTag = request => {
   const {term, count} = request;

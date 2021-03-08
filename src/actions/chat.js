@@ -7,7 +7,7 @@ import {
   deleteUserChatMutation,
   switchOwnershipMutation,
 } from './query/chatQuery';
-import {http, http_upload} from '../../apollo'
+import {http, http_upload} from '../../server_config'
 
 export const getChat = request => {
   const {groupId, count, token} = request;

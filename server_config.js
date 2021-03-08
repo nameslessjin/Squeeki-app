@@ -2,7 +2,7 @@ import {split, HttpLink} from '@apollo/client';
 import {WebSocketLink} from '@apollo/client/link/ws';
 import {getMainDefinition} from '@apollo/client/utilities';
 import {ApolloClient, InMemoryCache} from '@apollo/client';
-
+import openSocket from 'socket.io-client'
 
 // initialize apollo client
 export const apolloClient = (token) => {
@@ -51,8 +51,24 @@ export const apolloClient = (token) => {
   return client;
 };
 
-export const http = 'http://squeeki.appspot.com/graphql';
+// export const http = 'http://squeeki.appspot.com/graphql';
+// export const http_no_graphql = 'http://squeeki.appspot.com'
 
 export const http_upload = 'http://squeeki.appspot.com/uploadImage'
 
-// export const http = 'http://192.168.86.24:8080/graphql'
+export const http = 'http://192.168.86.24:8080/graphql'
+export const http_no_graphql = 'http://192.168.86.24:8080'
+
+
+let io;
+export const socket = {
+  init: () => {
+    io = openSocket.io(http_no_graphql)
+  },
+  getIO: () => {
+    if (!io){
+      throw new Error('Socket Connection Not initialized!')
+    }
+    return io
+  }
+}

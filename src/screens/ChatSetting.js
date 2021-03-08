@@ -49,16 +49,19 @@ class ChatSetting extends React.Component {
         icon,
         chatId,
       });
+    } else {
+      navigation.setOptions({
+        headerRight: () => (
+          <HeaderRightButton
+            type={'done'}
+            disabled={true}
+            onPress={this.onCreateUpdateChat}
+          />
+        ),
+      });
     }
 
     navigation.setOptions({
-      headerRight: () => (
-        <HeaderRightButton
-          type={'done'}
-          disabled={true}
-          onPress={this.onCreateUpdateChat}
-        />
-      ),
       headerBackTitleVisible: false,
       headerTitle: 'Settings',
     });
@@ -67,15 +70,19 @@ class ChatSetting extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
       const {navigation} = this.props;
-      navigation.setOptions({
-        headerRight: () => (
-          <HeaderRightButton
-            type={'done'}
-            disabled={!this.validation()}
-            onPress={this.onCreateUpdateChat}
-          />
-        ),
-      });
+      const {chatId} = this.state;
+      if (!chatId) {
+        console.log(this.validation());
+        navigation.setOptions({
+          headerRight: () => (
+            <HeaderRightButton
+              type={'done'}
+              disabled={!this.validation()}
+              onPress={this.onCreateUpdateChat}
+            />
+          ),
+        });
+      }
     }
   }
 
@@ -172,7 +179,7 @@ class ChatSetting extends React.Component {
         icon: req.icon,
       });
     } else {
-      this.loadChat(true)
+      this.loadChat(true);
       navigation.navigate('Chats');
     }
   };
@@ -186,16 +193,13 @@ class ChatSetting extends React.Component {
       token: auth.token,
       getChat: getChat,
       navigation: navigation,
-      userLogout: userLogout
+      userLogout: userLogout,
     };
 
     this.setState({loading: true});
     const req = await getChatFunc(request);
-    this.setState({loading: false})
-
+    this.setState({loading: false});
   };
-
-
 
   onInputChange = (type, value) => {
     if (type == 'name') {

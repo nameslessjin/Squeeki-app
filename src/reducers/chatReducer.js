@@ -1,7 +1,7 @@
 const INITIAL_STATE = {
   chats: [],
   count: 0,
-  chat: null,
+  chat: null
 };
 
 export default (chatReducer = (state = INITIAL_STATE, action) => {

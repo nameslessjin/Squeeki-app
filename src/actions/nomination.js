@@ -8,7 +8,7 @@ import {
   getGroupNominationMostRecentResultsQuery,
   getGroupNominationResultsQuery
 } from './query/nominationQuery';
-import {http} from '../../apollo'
+import {http} from '../../server_config'
 
 export const getGroupNominations = data => {
   const {groupId, token} = data;

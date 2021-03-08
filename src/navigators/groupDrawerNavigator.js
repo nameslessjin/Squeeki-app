@@ -81,7 +81,7 @@ class GroupDrawerNavigator extends React.Component {
             props.navigation.navigate('Members');
           }}
         />
-        {/* <DrawerItem
+        <DrawerItem
           label="Chat"
           icon={() => (
             <MaterialIcons name="chat" color={'grey'} size={25} />
@@ -90,7 +90,7 @@ class GroupDrawerNavigator extends React.Component {
           onPress={() => {
             props.navigation.navigate('Chats');
           }}
-        /> */}
+        />
         <DrawerItem
           label="Nomination"
           icon={() => (

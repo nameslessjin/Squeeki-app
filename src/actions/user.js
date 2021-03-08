@@ -11,7 +11,7 @@ import {
   searchGroupMembersQuery,
 } from './query/userQuery';
 import {getGroup} from './group';
-import {http} from '../../apollo';
+import {http} from '../../server_config';
 
 export const getGroupMembers = data => {
   const {groupId, token, count, userIdList} = data;

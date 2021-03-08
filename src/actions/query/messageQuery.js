@@ -14,7 +14,7 @@ query getChatMessage($input: MessageQuery!){
                 avatar
             }
         }
-        count
+        pointer
     }
 }
 `;
@@ -33,7 +33,7 @@ export const getChatMessageQueryApollo = gql`
           avatar
         }
       }
-      count
+
     }
   }
 `;

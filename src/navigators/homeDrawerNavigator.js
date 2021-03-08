@@ -17,6 +17,9 @@ import {changeScreen} from '../actions/screen';
 import GroupRightButton from '../components/groups/headerRight';
 import {userLogout} from '../actions/auth';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { socket } from '../../server_config'
+
+
 
 class HomeDrawerNavigator extends React.Component {
 
@@ -62,6 +65,7 @@ class HomeDrawerNavigator extends React.Component {
     ];
     this.setState({icon_option: icon_options[random]});
 
+    socket.init()
   }
 
   getHeaderTitle = route => {

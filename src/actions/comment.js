@@ -7,7 +7,7 @@ import {
   replyCommentMutation,
   getRepliesQuery
 } from './query/commentQuery';
-import {http} from '../../apollo';
+import {http} from '../../server_config';
 
 export const getComments = data => {
   const {postId, token, count} = data;

@@ -1,14 +1,14 @@
 import {getChatMessageQuery, sendMessageMutation, chatMessageSubscription} from './query/messageQuery';
-import {http} from '../../apollo'
+import {http} from '../../server_config'
 // import { useSubscription, useQuery } from '@apollo/client'
 
 export const getChatMessage = request => {
-  const {chatId, token, count} = request;
+  const {chatId, token, pointer} = request;
 
   return async function(dispatch) {
     const input = {
       chatId: chatId,
-      count: count,
+      pointer: pointer,
     };
 
     const graphql = {

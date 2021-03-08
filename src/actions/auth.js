@@ -7,8 +7,8 @@ import {
   checkVerificationCodeQuery,
   resetPasswordMutation,
 } from '../actions/query/authQuery';
-import {http, http_upload} from '../../apollo';
-import AsyncStorage from '@react-native-community/async-storage';
+import {http, http_upload} from '../../server_config';
+// import AsyncStorage from '@react-native-community/async-storage';
 
 export const signup = data => {
   const {email, password, username, icon, refer_code} = data;
@@ -74,9 +74,9 @@ export const signin = data => {
     }
     dispatch(userSignIn(userData.data.login));
 
-    AsyncStorage.setItem('token', userData.data.login.token).catch(err =>
-      console.log(err),
-    );
+    // AsyncStorage.setItem('token', userData.data.login.token).catch(err =>
+    //   console.log(err),
+    // );
 
     return 0;
   };

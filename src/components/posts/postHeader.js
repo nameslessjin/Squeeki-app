@@ -80,8 +80,9 @@ export default class PostHeader extends React.Component {
 
     let currentUserAuthQualified = false;
 
+      // groupAuth: post owner, currentUserAuth: current user
     if (currentUserAuth && groupAuth) {
-      if (groupAuth.rank > 1 && currentUserAuth.rank <= rank_required) {
+      if ((groupAuth.rank > 1 && currentUserAuth.rank <= rank_required) || currentUserAuth.rank == 0) {
         currentUserAuthQualified = true;
       }
     }

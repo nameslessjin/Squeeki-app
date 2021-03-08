@@ -1,5 +1,5 @@
 import {getUserGroupPointQuery, getGroupPointLeaderBoardQuery} from './query/pointQuery';
-import {http} from '../../apollo'
+import {http} from '../../server_config'
 
 export const getUserGroupPoint = request => {
   const {token, groupId} = request;

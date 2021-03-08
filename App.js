@@ -5,8 +5,6 @@ import {
   getFocusedRouteNameFromRoute,
 } from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {ApolloProvider, ApolloClient, InMemoryCache, HttpLink} from '@apollo/client';
-import {apolloClient} from './apollo'
 
 // reducers import
 import {Provider} from 'react-redux';
@@ -119,16 +117,16 @@ function getHeaderTitle(route) {
 
 export default (App = () => {
 
-  const [token, setToken] = useState('')
+  // const [token, setToken] = useState('')
 
-  AsyncStorage.getItem('token').then(r => {
+  // AsyncStorage.getItem('token').then(r => {
 
-    if (r){
-      setToken(r)
-    }
-  }).catch(e => {
-    console.log(e)
-  })
+  //   if (r){
+  //     setToken(r)
+  //   }
+  // }).catch(e => {
+  //   console.log(e)
+  // })
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -139,7 +137,7 @@ export default (App = () => {
   }, []);
 
   return (
-    <ApolloProvider client={apolloClient(token)}>
+
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <NavigationContainer>
@@ -207,6 +205,6 @@ export default (App = () => {
           </NavigationContainer>
         </PersistGate>
       </Provider>
-    </ApolloProvider>
+
   );
 });

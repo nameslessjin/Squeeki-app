@@ -15,7 +15,7 @@ import {
   getGroupJoinRequestCountQuery,
   updateRankFeaturesMutation,
 } from './query/groupQuery';
-import {http, http_upload} from '../../apollo';
+import {http, http_upload} from '../../server_config';
 
 export const findUserGroupsByUserId = data => {
   const {token, count} = data;
