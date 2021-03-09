@@ -11,14 +11,14 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
-import {getChat} from '../actions/chat';
+import {getChat, getUserChat, updateChatInfo} from '../actions/chat';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import {getChatFunc} from '../functions/chat';
 import {GiftedChat} from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {sendMessage, getChatMessage} from '../actions/message';
 import {sendMessageFunc, getChatMessageFunc} from '../functions/message';
-import {socket} from '../../server_config'
+import {socket} from '../../server_config';
 
 class Chat extends React.Component {
   state = {
@@ -41,6 +41,7 @@ class Chat extends React.Component {
     ],
     content: '',
     pointer: null,
+    status: null,
   };
 
   componentDidMount() {
@@ -59,40 +60,66 @@ class Chat extends React.Component {
       headerTitle: route.params.name,
     });
 
+    // load status in the chat
+    this.getUserChat();
+    // load some messages
     this.loadChatMessage(true);
-    const channel = `chat${this.state.chatId}`
-    const io = socket.getIO()
+
+    // establish socket.io connection
+    const channel = `chat${this.state.chatId}`;
+    const io = socket.getIO();
     io.on(channel, data => {
-      if (data.action == 'create'){
-        this.addSubMessage(data.result)
+      if (data.action == 'create') {
+        console.log(data.result);
+        this.addSubMessage(data.result);
       }
-    })
+    });
   }
 
-  addSubMessage = (data) => {
-    const {message, pointer} = data
+  getUserChat = async () => {
+    const {auth, getUserChat} = this.props;
+    const {chatId} = this.state;
+
+    const request = {
+      token: auth.token,
+      chatId,
+    };
+
+    const req = await getUserChat(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Get User Status Error');
+      return;
+    }
+
+    this.setState({status: req});
+  };
+
+  addSubMessage = data => {
+    const {message, pointer} = data;
     this.setState(prevState => {
       return {
         pointer: prevState.pointer ? prevState.pointer : pointer,
-        messages: message.concat(prevState.messages)
-      }
-    })
-  }
+        messages: message.concat(prevState.messages),
+      };
+    });
+  };
 
-  updateSubMessage = (data) => {
-    const {message} = data
+  updateSubMessage = data => {
+    const {message} = data;
     this.setState(prevState => {
-      const updatedMessages = [...prevState.messages]
-      const updatedMessageIndex = updatedMessages.findIndex(m => m.id === message.id)
-      if (updatedMessageIndex > -1){
-        updatedMessages[updatedMessageIndex] = message
+      const updatedMessages = [...prevState.messages];
+      const updatedMessageIndex = updatedMessages.findIndex(
+        m => m.id === message.id,
+      );
+      if (updatedMessageIndex > -1) {
+        updatedMessages[updatedMessageIndex] = message;
       }
       return {
-        messages: updatedMessages
-      }
-
-    })
-  }
+        messages: updatedMessages,
+      };
+    });
+  };
 
   loadChatMessage = async init => {
     const {getChatMessage, navigation, userLogout, auth} = this.props;
@@ -110,7 +137,6 @@ class Chat extends React.Component {
     const req = await getChatMessageFunc(data);
 
     if (req) {
-      console.log(req);
       const {messages, pointer} = req;
       this.setState(prevState => {
         return {
@@ -177,10 +203,29 @@ class Chat extends React.Component {
 
   componentWillUnmount() {
     this.loadChat(true);
-    const channel = `chat${this.state.chatId}`
-    const io = socket.getIO()
-    io.off(channel)
+    const channel = `chat${this.state.chatId}`;
+    const io = socket.getIO();
+    io.off(channel);
+    this.subSocket();
   }
+
+  subSocket = () => {
+    const {group, chat, updateChatInfo} = this.props;
+    let socket_chat_id = chat.chats.filter(
+      c => c.rank_req >= group.group.auth.rank,
+    );
+    socket_chat_id = socket_chat_id.map(c => c.id);
+    const io = socket.getIO();
+    socket_chat_id.forEach(id => {
+      const channel = `chats${id}`;
+      io.on(channel, data => {
+        if (data.action == 'add') {
+          //this.update chat
+          updateChatInfo(data.result);
+        }
+      });
+    });
+  };
 
   onSettingPress = () => {
     const {name, rank_req, icon, chatId} = this.state;
@@ -215,10 +260,11 @@ class Chat extends React.Component {
 
   render() {
     const {auth} = this.props;
-    const {chatId, content, messages} = this.state;
+    const {chatId, content, messages, status} = this.state;
     const user = {
       _id: auth.user.id,
     };
+    console.log(status);
     return (
       <TouchableWithoutFeedback>
         <KeyboardAvoidingView style={styles.container}>
@@ -251,8 +297,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {auth, group} = state;
-  return {auth, group};
+  const {auth, group, chat} = state;
+  return {auth, group, chat};
 };
 
 const mapDispatchToProps = dispatch => {
@@ -261,6 +307,8 @@ const mapDispatchToProps = dispatch => {
     getChat: data => dispatch(getChat(data)),
     sendMessage: data => dispatch(sendMessage(data)),
     getChatMessage: data => dispatch(getChatMessage(data)),
+    getUserChat: data => dispatch(getUserChat(data)),
+    updateChatInfo: data => dispatch(updateChatInfo(data)),
   };
 };
 

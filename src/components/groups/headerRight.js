@@ -21,7 +21,7 @@ export default class GroupHeaderRight extends React.Component {
 
 const styles = StyleSheet.create({
     headerRightButton: {
-        marginRight: 15,
+        marginRight: 5,
         width: 35,
         height: 35,
     }

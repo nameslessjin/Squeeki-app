@@ -49,7 +49,8 @@ class RankSetting extends React.Component {
       group_setting_rank_required,
       manage_post_rank_required,
       manage_comment_rank_required,
-      manage_check_in_rank_required
+      manage_check_in_rank_required,
+      manage_chat_rank_required,
     } = this.state;
     const request = {
       token: auth.token,
@@ -65,7 +66,8 @@ class RankSetting extends React.Component {
         group_setting_rank_required,
         manage_post_rank_required,
         manage_comment_rank_required,
-        manage_check_in_rank_required
+        manage_check_in_rank_required,
+        manage_chat_rank_required,
       },
     };
     const req = await updateRankFeatures(request);
@@ -84,7 +86,8 @@ class RankSetting extends React.Component {
       group_setting_rank_required,
       manage_post_rank_required,
       manage_comment_rank_required,
-      manage_check_in_rank_required
+      manage_check_in_rank_required,
+      manage_chat_rank_required,
     } = this.state;
     const {rank_setting} = this.props.group.group;
 
@@ -98,8 +101,11 @@ class RankSetting extends React.Component {
       rank_setting.nominate_rank_required == nominate_rank_required &&
       rank_setting.group_setting_rank_required == group_setting_rank_required &&
       rank_setting.manage_post_rank_required == manage_post_rank_required &&
-      rank_setting.manage_comment_rank_required == manage_comment_rank_required &&
-      rank_setting.manage_check_in_rank_required == manage_check_in_rank_required
+      rank_setting.manage_comment_rank_required ==
+        manage_comment_rank_required &&
+      rank_setting.manage_check_in_rank_required ==
+        manage_check_in_rank_required &&
+      rank_setting.manage_chat_rank_required == manage_chat_rank_required
     ) {
       return false;
     }
@@ -137,12 +143,14 @@ class RankSetting extends React.Component {
       this.setState({nominate_rank_required: value});
     } else if (type == 'group') {
       this.setState({group_setting_rank_required: value});
-    } else if (type == 'manage_post'){
-      this.setState({manage_post_rank_required: value})
-    } else if (type == 'manage_comment'){
-      this.setState({manage_comment_rank_required: value})
-    } else if (type == 'manage_check_in'){
-      this.setState({manage_check_in_rank_required: value})
+    } else if (type == 'manage_post') {
+      this.setState({manage_post_rank_required: value});
+    } else if (type == 'manage_comment') {
+      this.setState({manage_comment_rank_required: value});
+    } else if (type == 'manage_check_in') {
+      this.setState({manage_check_in_rank_required: value});
+    } else if (type == 'manage_chat') {
+      this.setState({manage_chat_rank_required: value});
     }
   };
 
@@ -159,6 +167,7 @@ class RankSetting extends React.Component {
       manage_post_rank_required,
       manage_comment_rank_required,
       manage_check_in_rank_required,
+      manage_chat_rank_required,
       modalVisible,
       type,
     } = this.state;
@@ -202,6 +211,11 @@ class RankSetting extends React.Component {
           <RankFunction
             type={'manage_comment'}
             value={manage_comment_rank_required}
+            onPress={this.onPress}
+          />
+          <RankFunction
+            type={'manage_chat'}
+            value={manage_chat_rank_required}
             onPress={this.onPress}
           />
           <RankFunction

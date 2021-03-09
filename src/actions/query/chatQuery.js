@@ -8,6 +8,12 @@ query getChat($input: ChatQuery!){
             icon {
                 uri
             }
+            unread_message_count
+            last_message{
+                username
+                content
+                createdAt
+            }
         }
         count
     }
@@ -63,3 +69,21 @@ mutation switchOwnership($input: ChatMutation!){
     switchOwnership(input: $input)
 }
 `;
+
+export const getUserChatQuery = `
+query getUserChat($input: UserChatQuery!){
+    getUserChat(input: $input){
+        notification
+        is_owner
+        timeout
+    }
+}
+`
+
+export const getAllChatIdQuery = `
+query getAllChatId($input: ChatQuery!){
+    getAllChatId(input: $input){
+        id
+    }
+}
+`

@@ -24,7 +24,7 @@ export default class HeaderRightButton extends React.Component{
 
 const styles = StyleSheet.create({
     headerRightButton: {
-        marginRight: 15,
+        marginRight: 5,
         width: '100%',
         height: '100%',
         alignItems: 'center',

@@ -23,10 +23,11 @@ export default class HeaderRightButton extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: 50,
-    height: 50,
-    marginRight: 15,
+    width: 40,
+    height: 40,
+    // marginRight: 5,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    // backgroundColor: 'yellow'
   },
 });

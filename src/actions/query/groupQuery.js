@@ -57,6 +57,7 @@ query getGroup($groupId: ID!){
             manage_post_rank_required
             manage_comment_rank_required
             manage_check_in_rank_required
+            manage_chat_rank_required
         }
         createdAt
     }
@@ -120,6 +121,7 @@ mutation createGroup($GroupInput: GroupInput!){
             manage_post_rank_required
             manage_comment_rank_required
             manage_check_in_rank_required
+            manage_chat_rank_required
         }
         memberCount
         createdAt
@@ -165,6 +167,7 @@ mutation updateGroup($GroupInput: GroupInput!){
             manage_post_rank_required
             manage_comment_rank_required
             manage_check_in_rank_required
+            manage_chat_rank_required
         }
         memberCount
         createdAt
@@ -211,6 +214,7 @@ mutation joinGroup($groupId: ID!){
                 manage_post_rank_required
                 manage_comment_rank_required
                 manage_check_in_rank_required
+                manage_chat_rank_required
             }
             memberCount
             createdAt
