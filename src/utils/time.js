@@ -176,3 +176,30 @@ export const getSemester = (time) => {
   
     return { semester_begin: begin, semester_end: end };
   };
+
+export const chatTimeFormat = (input) => {
+  const time = new Date(parseInt(input));
+  const year = time.getFullYear();
+  const date = time.getDate();
+  const month = time.getMonth();
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const hour = time.getHours();
+  const minute = time.getMinutes()
+
+  const today = new Date()
+  const today_date = today.getDate();
+  const today_year = today.getFullYear()
+  const today_month = today.getMonth()
+
+  //check if it is today
+  if (today_date == date && today_month == month && today_year == year){
+    const format_hour = hour <= 12 ? hour : hour - 12
+    const format_minute = minute > 10 ? minute : `0${minute}`
+    const am = hour < 12 ? 'AM' : 'PM'
+    return `${format_hour}:${format_minute} ${am}`
+  } else {
+    return `${month+1}/${date}/${year}`
+  }
+
+
+}

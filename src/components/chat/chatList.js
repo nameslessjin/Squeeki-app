@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {chatTimeFormat} from '../../utils/time'
 
 const {width, height} = Dimensions.get('screen');
 
@@ -81,8 +82,8 @@ export default class ChatList extends React.Component {
                   <View
                     style={styles.chat_time_container}>
                     <Text style={{color: 'grey', fontSize: width * 0.034}}>
-                      12:58 AM
-                      {/* {last_message == null ? 'Now' : last_message.createdAt} */}
+                      {/* 12:58 AM */}
+                      {last_message == null ? 'Now' : chatTimeFormat(last_message.createdAt)}
                     </Text>
                   </View>
                 </View>
