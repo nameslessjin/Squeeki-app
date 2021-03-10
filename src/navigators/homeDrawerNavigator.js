@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/drawer';
 import Home from '../screens/home';
 import React from 'react';
-import {TouchableOpacity, StyleSheet, Text, Image, View} from 'react-native';
+import {TouchableOpacity, StyleSheet, Text, Image, View, Dimensions} from 'react-native';
 import {DrawerActions} from '@react-navigation/native';
 import HeaderLeftButton from '../components/home/headerLeft';
 import Groups from '../screens/groups';
@@ -19,7 +19,7 @@ import {userLogout} from '../actions/auth';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { socket } from '../../server_config'
 
-
+const {height} = Dimensions.get('screen');
 
 class HomeDrawerNavigator extends React.Component {
 
@@ -127,7 +127,7 @@ function CustomDrawerContent(props) {
   const {logout, navigation, auth, icon_option} = props;
   const {displayName, icon} = auth.user;
   return (
-    <DrawerContentScrollView {...props} style={{bottom: 50}} >
+    <DrawerContentScrollView {...props} style={{bottom: height * 0.05}} >
       {displayName ? <DrawerItem
         label={displayName}
         labelStyle={{color: 'black'}}
@@ -140,7 +140,7 @@ function CustomDrawerContent(props) {
         )}
         onPress = {() => navigation.navigate('Profile')}
       /> : null}
-      <View style={{width: '100%', justifyContent: 'center', alignItems: 'center', height: 10}}>
+      <View style={{width: '100%', justifyContent: 'center', alignItems: 'center', height: 7}}>
       <View style={{borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'grey', width: '85%'}} />
       </View>
       <DrawerItemList {...props} />

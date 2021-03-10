@@ -14,11 +14,17 @@ import {userLogout} from '../actions/auth';
 import {getChat, getUserChat, updateChatInfo} from '../actions/chat';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import {getChatFunc} from '../functions/chat';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {
+  GiftedChat,
+  InputToolbar,
+  Composer,
+  Actions,
+} from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {sendMessage, getChatMessage} from '../actions/message';
 import {sendMessageFunc, getChatMessageFunc} from '../functions/message';
 import {socket} from '../../server_config';
+import ChatMediaModal from '../components/chat/chatMediaModal';
 
 class Chat extends React.Component {
   state = {
@@ -27,21 +33,12 @@ class Chat extends React.Component {
     icon: null,
     chatId: null,
     ...this.props.route.params,
-    messages: [
-      // {
-      //   _id: 1,
-      //   text: 'Hello developer',
-      //   createdAt: new Date(),
-      //   user: {
-      //     _id: 2,
-      //     name: 'React Native',
-      //     avatar: 'https://placeimg.com/140/140/any',
-      //   },
-      // },
-    ],
+    messages: [],
     content: '',
     pointer: null,
     status: null,
+    isLoadEarlier: false,
+    modalVisible: false,
   };
 
   componentDidMount() {
@@ -134,8 +131,9 @@ class Chat extends React.Component {
       pointer: pointer,
     };
 
+    this.setState({isLoadEarlier: true});
     const req = await getChatMessageFunc(data);
-
+    this.setState({isLoadEarlier: false});
     if (req) {
       const {messages, pointer} = req;
       this.setState(prevState => {
@@ -258,15 +256,47 @@ class Chat extends React.Component {
     );
   };
 
+  renderActions = props => {
+    console.log(props);
+    return (
+      <TouchableOpacity
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          // backgroundColor: 'yellow',
+          marginLeft: 5,
+          marginBottom: props.bottomOffset - 23,
+        }}
+        onPress={this.onActionPress}>
+        <MaterialIcons size={30} name={'plus'} />
+      </TouchableOpacity>
+    );
+  };
+
+  onActionPress = () => {
+    this.setState({modalVisible: true});
+  };
+
+  onBackdropPress = () => {
+    this.setState({modalVisible: false});
+  };
+
   render() {
     const {auth} = this.props;
-    const {chatId, content, messages, status} = this.state;
+    const {
+      chatId,
+      content,
+      messages,
+      pointer,
+      isLoadEarlier,
+      modalVisible,
+    } = this.state;
     const user = {
       _id: auth.user.id,
     };
-    console.log(status);
+
     return (
-      <TouchableWithoutFeedback>
+      <View>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
           <GiftedChat
@@ -280,9 +310,19 @@ class Chat extends React.Component {
             alwaysShowSend={true}
             bottomOffset={35}
             renderSend={this.renderSend}
+            loadEarlier={pointer == 'Infinity' ? false : true}
+            onLoadEarlier={this.loadChatMessage}
+            isLoadingEarlier={isLoadEarlier}
+            infiniteScroll={true}
+            keyboardShouldPersistTaps={'never'}
+            renderActions={this.renderActions}
           />
         </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+        <ChatMediaModal
+          modalVisible={modalVisible}
+          onBackdropPress={this.onBackdropPress}
+        />
+      </View>
     );
   }
 }
