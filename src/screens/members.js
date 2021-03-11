@@ -58,7 +58,7 @@ class Users extends React.Component {
     }
 
     const {count, members} = req;
-    console.log(members)
+
     this.setState(prevState => {
       return {
         count: count,

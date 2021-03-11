@@ -1,11 +1,13 @@
 import React from 'react';
-import {StyleSheet, View, Text, TextInput, Platform} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Platform, Dimensions} from 'react-native';
 import {dateConversion} from '../../utils/time';
 import HeaderImageBackground from './ImageBackground';
 import {connect} from 'react-redux';
 import {leaveGroup} from '../../actions/group';
 import {userLogout} from '../../actions/auth';
 import GroupSettingModal from './groupSettingModal';
+
+const { height } = Dimensions.get('screen');
 
 class GroupSettingsHeader extends React.Component {
   state = {
@@ -158,7 +160,9 @@ class GroupSettingsHeader extends React.Component {
                 fontWeight: 'bold',
                 fontSize: 20,
                 width: '100%',
+                paddingVertical: 0,
                 paddingLeft: -1,
+                justifyContent: 'center'
               }}
               maxLength={60}
               multiline={true}
@@ -167,7 +171,7 @@ class GroupSettingsHeader extends React.Component {
               onChangeText={text => this.updateGroupName('display_name', text)}
               value={display_name}
               editable={auth_rank <= required_rank}
-              numberOfLines={2}
+              blurOnSubmit={true}
             />
           </View>
 
@@ -175,7 +179,7 @@ class GroupSettingsHeader extends React.Component {
             <Text style={{color: '#95a5a6'}}>@{groupId ? groupname : ''}</Text>
             {groupId ? null : (
               <TextInput
-                style={{width: '100%', marginLeft: 1}}
+                style={{width: '100%', marginLeft: 1, padding: 0}}
                 onChangeText={text => this.updateGroupName('groupname', text.trim())}
                 placeholder={'group_id (unique)'}
                 placeholderTextColor={'#7f8fa6'}
@@ -200,9 +204,9 @@ class GroupSettingsHeader extends React.Component {
               placeholderTextColor={'#7f8fa6'}
               onChangeText={text => this.updateShortDescription(text)}
               value={shortDescription}
-              style={{width: '100%', paddingLeft: -1}}
+              style={{width: '100%', paddingLeft: -1, padding: 0, maxHeight: height * 0.185}}
               editable={auth_rank <= required_rank}
-              numberOfLines={5}
+              scrollEnabled={false}
             />
           </View>
         </View>

@@ -74,10 +74,6 @@ export const signin = data => {
     }
     dispatch(userSignIn(userData.data.login));
 
-    // AsyncStorage.setItem('token', userData.data.login.token).catch(err =>
-    //   console.log(err),
-    // );
-
     return 0;
   };
 };

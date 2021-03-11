@@ -72,7 +72,7 @@ class ChatSetting extends React.Component {
       const {navigation} = this.props;
       const {chatId} = this.state;
       if (!chatId) {
-        console.log(this.validation());
+  
         navigation.setOptions({
           headerRight: () => (
             <HeaderRightButton

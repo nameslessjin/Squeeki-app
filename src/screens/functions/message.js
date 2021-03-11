@@ -42,10 +42,9 @@ const Chat = props => {
   const chatMessageSubscription = useSubscription(chatMessageSubscriptionApollo, {variables: chatId})
 
   if (error) {
-    console.log(error);
+
   }
 
-  console.log(chatMessageSubscription)
 
   if (data) {
     const {getChatMessage} = data;
@@ -63,7 +62,6 @@ const Chat = props => {
   }
 
   useEffect(() => {
-    // console.log('refetch')
     getChatMessage();
     // return () => {
     //   setMessages([])

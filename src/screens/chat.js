@@ -8,6 +8,8 @@ import {
   Text,
   TouchableOpacity,
   Animated,
+  Keyboard,
+  Dimensions
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -25,6 +27,8 @@ import {sendMessage, getChatMessage} from '../actions/message';
 import {sendMessageFunc, getChatMessageFunc} from '../functions/message';
 import {socket} from '../../server_config';
 import ChatMediaModal from '../components/chat/chatMediaModal';
+
+const {height} = Dimensions.get('screen')
 
 class Chat extends React.Component {
   state = {
@@ -67,7 +71,7 @@ class Chat extends React.Component {
     const io = socket.getIO();
     io.on(channel, data => {
       if (data.action == 'create') {
-        console.log(data.result);
+
         this.addSubMessage(data.result);
       }
     });
@@ -163,6 +167,7 @@ class Chat extends React.Component {
     };
 
     this.setState({content: ''});
+    Keyboard.dismiss()
     const req = sendMessageFunc(data);
   };
 
@@ -246,18 +251,18 @@ class Chat extends React.Component {
       <TouchableOpacity
         onPress={p.onSend}
         style={{marginBottom: 10, marginRight: 10}}
-        disabled={text.length == 0 || text.length > 200}>
+        disabled={text.length == 0 || text.length > 5000}>
         <MaterialIcons
           size={30}
           name={'arrow-up-drop-circle'}
-          color={text.length == 0 || text.length > 200 ? 'grey' : '#EA2027'}
+          color={text.length == 0 || text.length > 5000 ? 'grey' : '#EA2027'}
         />
       </TouchableOpacity>
     );
   };
 
   renderActions = props => {
-    console.log(props);
+
     return (
       <TouchableOpacity
         style={{
@@ -316,6 +321,8 @@ class Chat extends React.Component {
             infiniteScroll={true}
             keyboardShouldPersistTaps={'never'}
             renderActions={this.renderActions}
+            maxInputLength={5000}
+            maxComposerHeight={200}
           />
         </KeyboardAvoidingView>
         <ChatMediaModal

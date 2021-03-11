@@ -137,7 +137,7 @@ export const PostImagePicker = (setImage, from, cancel) => {
                     data: response.base64,
                     mediaType: 'photo'
                 }
-                console.log(response.fileSize)
+
                 setImage(source, 'image')
     
             }

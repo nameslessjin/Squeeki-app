@@ -38,9 +38,6 @@ export const apolloClient = (token) => {
     httpLink,
   );
 
-  // console.log('apollo here')
-  // console.log(splitLink)
-
   const client = new ApolloClient({
     // uri: 'http://192.168.86.24:8080/graphql',
     link: splitLink,

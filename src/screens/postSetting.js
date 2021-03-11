@@ -511,7 +511,7 @@ class PostSetting extends React.Component {
       create,
       modalVisible,
     } = this.state;
-    // console.log(this.state)
+
   
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>

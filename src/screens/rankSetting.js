@@ -71,7 +71,6 @@ class RankSetting extends React.Component {
       },
     };
     const req = await updateRankFeatures(request);
-    console.log(req);
   };
 
   validation = () => {

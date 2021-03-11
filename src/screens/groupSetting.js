@@ -124,7 +124,7 @@ class GroupSetting extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
       let update = false;
-      console.log(this.extractData());
+
       update = this.extractData().update;
       const {navigation} = this.props;
       const {auth} = this.props.group.group;

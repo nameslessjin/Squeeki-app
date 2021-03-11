@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/drawer';
 import Home from '../screens/home';
 import React from 'react';
-import {TouchableOpacity, StyleSheet, Text, Image, View, Dimensions} from 'react-native';
+import {TouchableOpacity, StyleSheet, Text, Image, View, Dimensions, Platform} from 'react-native';
 import {DrawerActions} from '@react-navigation/native';
 import HeaderLeftButton from '../components/home/headerLeft';
 import Groups from '../screens/groups';
@@ -127,7 +127,7 @@ function CustomDrawerContent(props) {
   const {logout, navigation, auth, icon_option} = props;
   const {displayName, icon} = auth.user;
   return (
-    <DrawerContentScrollView {...props} style={{bottom: height * 0.05}} >
+    <DrawerContentScrollView {...props} style={{bottom: Platform.OS == 'android' ? 0 : height * 0.05}} >
       {displayName ? <DrawerItem
         label={displayName}
         labelStyle={{color: 'black'}}

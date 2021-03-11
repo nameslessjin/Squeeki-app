@@ -209,11 +209,11 @@ class GroupHeader extends React.Component {
             <View style={underImageStyle}>
               <View style={{width: '70%'}}>
                 <View style={[component]}>
-                  <Text style={{fontWeight: 'bold', fontSize: 20}}>
+                  <Text style={{fontWeight: 'bold', fontSize: 20}} numberOfLines={2}>
                     {display_name}
                   </Text>
                 </View>
-                <Text style={{color: '#95a5a6'}}>
+                <Text style={{color: '#95a5a6'}} numberOfLines={2}>
                   @{groupname}
                 </Text>
                 <View style={[component, {marginTop: 1}]}>

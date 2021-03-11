@@ -191,7 +191,7 @@ class PostCard extends React.Component {
 
   onLikePress = async () => {
     const {auth, likePost, navigation} = this.props;
-    const {id, liked, likeCount} = this.state;
+    const {id} = this.state;
     const data = {
       postId: id,
       token: auth.token,

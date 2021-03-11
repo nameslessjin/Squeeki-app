@@ -17,8 +17,34 @@ export default class ReplyFooter extends React.Component {
       likeCount,
       onOptionToggle,
       onReplyPress,
-      commentId
+      commentId,
     } = this.props;
+
+
+    let likeCount_text = likeCount.toString()
+    if (likeCount >= 1000) {
+      likeCount_text =
+        Math.floor(likeCount / 1000) +
+        Math.floor(
+          (likeCount -
+            Math.floor(likeCount / 1000) * 1000) /
+            100,
+        ) /
+          10 +
+        'k';
+    }
+    
+    if (likeCount >= 1000000) {
+      likeCount_text =
+        Math.floor(likeCount / 1000000) +
+        Math.floor(
+          (likeCount -
+            Math.floor(likeCount / 1000000) * 1000000) /
+            100000,
+        ) /
+          10 +
+        'k';
+    }
 
     return (
       <View style={styles.container}>
@@ -30,14 +56,21 @@ export default class ReplyFooter extends React.Component {
               <MaterialIcons
                 name={liked ? 'heart' : 'heart-outline'}
                 size={20}
-                style={{color: liked ? '#e84118' : null}}
+                style={{color: liked ? '#e84118' : 'grey'}}
               />
-              <Text style={styles.iconText}>{likeCount}</Text>
+              {likeCount == 0 ? null : (
+                <Text
+                  style={styles.iconText}>
+                  {likeCount_text}
+                </Text>
+              )}
             </View>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={styles.replyButton} onPress={() => onReplyPress(commentId)}>
-            <Text style={styles.replyButtonText}>REPLY</Text>
+        <TouchableOpacity
+          style={styles.replyButton}
+          onPress={() => onReplyPress(commentId)}>
+          <Text style={styles.replyButtonText}>REPLY</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={onOptionToggle}>
           <View style={styles.iconSeparation}>
@@ -61,18 +94,18 @@ const styles = StyleSheet.create({
   },
   iconText: {
     marginLeft: 5,
-    fontSize: 12
+    fontSize: 12,
   },
   iconSeparation: {
     marginLeft: 0,
   },
   replyButton: {
-      paddingHorizontal: 3,
-      marginHorizontal: 10
+    paddingHorizontal: 3,
+    marginHorizontal: 10,
   },
   replyButtonText: {
-      fontWeight: '500',
-      color: '#2c3e50',
-      fontSize: 12
-  }
+    fontWeight: '500',
+    color: '#2c3e50',
+    fontSize: 12,
+  },
 });
