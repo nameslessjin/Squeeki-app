@@ -34,6 +34,18 @@ export default (chatReducer = (state = INITIAL_STATE, action) => {
         chats: updatedChats,
       };
 
+    case 'updateChat':
+      return {
+        ...state,
+        chat: action.i,
+      };
+
+    case 'getSingleChat':
+      return {
+        ...state,
+        chat: action.i,
+      };
+
     case 'logout':
       return {
         ...INITIAL_STATE,

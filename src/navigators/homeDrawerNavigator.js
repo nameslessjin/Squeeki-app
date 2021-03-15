@@ -11,13 +11,16 @@ import {DrawerActions} from '@react-navigation/native';
 import HeaderLeftButton from '../components/home/headerLeft';
 import Groups from '../screens/groups';
 import Terms from '../screens/terms';
+import Chats from '../screens/chats'
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {connect} from 'react-redux';
 import {changeScreen} from '../actions/screen';
 import GroupRightButton from '../components/groups/headerRight';
+import HeaderRightButton from '../components/chat/headerRightButton';
 import {userLogout} from '../actions/auth';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { socket } from '../../server_config'
+import ChatStackNavigator from './chatStackNavigator'
 
 const {height} = Dimensions.get('screen');
 
@@ -97,6 +100,10 @@ class HomeDrawerNavigator extends React.Component {
           <GroupRightButton onPress={this.onToggleGroupsRightButton} />
         ),
       });
+    } else if (name == 'Chats'){
+      navigation.setOptions({
+        headerRight: () => (<HeaderRightButton onPress={() => navigation.navigate('ChatSetting')} type={'create'}/>)
+      })
     }
   }
 
@@ -116,7 +123,7 @@ class HomeDrawerNavigator extends React.Component {
         drawerStyle={styles.drawerStyle}>
         <Drawer.Screen name="Home" component={Home} />
         <Drawer.Screen name="Groups" component={Groups} />
-        {/* <Drawer.Screen name="Profile" component={Profile} /> */}
+        <Drawer.Screen name="Chats" component={Chats} />
         <Drawer.Screen name="Terms" component={Terms} />
       </Drawer.Navigator>
     );

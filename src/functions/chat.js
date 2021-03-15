@@ -35,6 +35,8 @@ export const createUpdateChatFunc = async data => {
     createChat,
     updateChat,
     chatId,
+    allow_invite,
+    allow_modify
   } = data;
   const request = {
     groupId,
@@ -43,6 +45,8 @@ export const createUpdateChatFunc = async data => {
     icon: icon,
     token,
     chatId,
+    allow_invite,
+    allow_modify
   };
 
   let req = 0;
@@ -50,7 +54,7 @@ export const createUpdateChatFunc = async data => {
 
   if (req.errors) {
     console.log(req.errors[0].message);
-    alert('Cannot create chat in at this time, please try again later');
+    alert(chatId ? 'Cannot update chat in at this time, please try again later' : 'Cannot create chat in at this time, please try again later');
     if (req.errors[0].message == 'Not Authenticated') {
       userLogout();
       navigation.reset({
@@ -88,8 +92,6 @@ export const deleteLeaveChatFunc = async data => {
     }
     return 0;
   }
-
-  navigation.navigate('Chats');
 
   return 0;
 };

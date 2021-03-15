@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Animated,
   Keyboard,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -28,7 +28,7 @@ import {sendMessageFunc, getChatMessageFunc} from '../functions/message';
 import {socket} from '../../server_config';
 import ChatMediaModal from '../components/chat/chatMediaModal';
 
-const {height} = Dimensions.get('screen')
+const {height} = Dimensions.get('screen');
 
 class Chat extends React.Component {
   state = {
@@ -36,29 +36,32 @@ class Chat extends React.Component {
     rank_req: 7,
     icon: null,
     chatId: null,
-    ...this.props.route.params,
+    allow_invite: false,
+    allow_modify: false,
+    // ...this.props.route.params,
+    ...this.props.chat.chat,
     messages: [],
     content: '',
     pointer: null,
     status: null,
     isLoadEarlier: false,
     modalVisible: false,
+    image: {},
   };
 
   componentDidMount() {
     const {navigation, route, group} = this.props;
-
+    const {name, id} = this.state;
     navigation.setOptions({
-      headerRight: () =>
-        group.group.auth.rank > 2 ? null : (
-          <HeaderRightButton
-            type={'setting'}
-            disabled={false}
-            onPress={this.onSettingPress}
-          />
-        ),
       headerBackTitleVisible: false,
-      headerTitle: route.params.name,
+      headerTitle: name,
+      headerRight: () => (
+        <HeaderRightButton
+          type={'setting'}
+          disabled={false}
+          onPress={this.onSettingPress}
+        />
+      ),
     });
 
     // load status in the chat
@@ -67,11 +70,10 @@ class Chat extends React.Component {
     this.loadChatMessage(true);
 
     // establish socket.io connection
-    const channel = `chat${this.state.chatId}`;
+    const channel = `chat${id}`;
     const io = socket.getIO();
     io.on(channel, data => {
       if (data.action == 'create') {
-
         this.addSubMessage(data.result);
       }
     });
@@ -79,16 +81,16 @@ class Chat extends React.Component {
 
   getUserChat = async () => {
     const {auth, getUserChat} = this.props;
-    const {chatId} = this.state;
+    const {id} = this.state;
 
     const request = {
       token: auth.token,
-      chatId,
+      chatId: id,
     };
 
     const req = await getUserChat(request);
     if (req.errors) {
-      console.log(req.errors);
+      console.log(req.errors[0]);
       alert('Get User Status Error');
       return;
     }
@@ -124,11 +126,11 @@ class Chat extends React.Component {
 
   loadChatMessage = async init => {
     const {getChatMessage, navigation, userLogout, auth} = this.props;
-    const {chatId, pointer} = this.state;
+    const {pointer, id} = this.state;
 
     const data = {
       token: auth.token,
-      chatId,
+      chatId: id,
       getChatMessage,
       navigation,
       userLogout,
@@ -156,10 +158,10 @@ class Chat extends React.Component {
 
   onSend = async () => {
     const {sendMessage, navigation, userLogout, auth} = this.props;
-    const {content, chatId} = this.state;
+    const {content, id} = this.state;
     const data = {
       token: auth.token,
-      chatId,
+      chatId: id,
       content,
       sendMessage,
       navigation,
@@ -167,7 +169,7 @@ class Chat extends React.Component {
     };
 
     this.setState({content: ''});
-    Keyboard.dismiss()
+    Keyboard.dismiss();
     const req = sendMessageFunc(data);
   };
 
@@ -184,39 +186,53 @@ class Chat extends React.Component {
     };
 
     const req = await getChatFunc(request);
+
+    this.subSocket(req);
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps != this.props) {
-      const {navigation, route} = this.props;
-      const {params} = route;
-      if (params) {
-        const {name, rank_req, icon} = params;
-        this.setState({
-          name,
-          rank_req,
-          icon,
-        });
-        navigation.setOptions({
-          headerTitle: name,
-        });
-      }
+    if (prevProps.chat.chat != this.props.chat.chat) {
+      const {navigation} = this.props;
+      const {
+        name,
+        rank_req,
+        icon,
+        allow_invite,
+        allow_modify,
+      } = this.props.chat.chat;
+
+      this.setState({
+        name,
+        rank_req,
+        icon,
+        allow_invite,
+        allow_modify,
+      });
+      navigation.setOptions({
+        headerTitle: name,
+      });
     }
   }
 
   componentWillUnmount() {
     this.loadChat(true);
-    const channel = `chat${this.state.chatId}`;
+    const channel = `chat${this.state.id}`;
     const io = socket.getIO();
     io.off(channel);
-    this.subSocket();
   }
 
-  subSocket = () => {
-    const {group, chat, updateChatInfo} = this.props;
-    let socket_chat_id = chat.chats.filter(
-      c => c.rank_req >= group.group.auth.rank,
-    );
+  subSocket = req => {
+    const {group, updateChatInfo} = this.props;
+
+    // if not in group all chats in chat.chats
+    let socket_chat_id = req.chat;
+
+    // if in group only the one with proper rank
+    if (group.group.id) {
+      socket_chat_id = req.chat.filter(
+        c => c.rank_req >= group.group.auth.rank,
+      );
+    }
     socket_chat_id = socket_chat_id.map(c => c.id);
     const io = socket.getIO();
     socket_chat_id.forEach(id => {
@@ -231,13 +247,24 @@ class Chat extends React.Component {
   };
 
   onSettingPress = () => {
-    const {name, rank_req, icon, chatId} = this.state;
+    const {
+      name,
+      rank_req,
+      icon,
+      id,
+      status,
+      allow_invite,
+      allow_modify,
+    } = this.state;
     const {navigation} = this.props;
     navigation.navigate('ChatSetting', {
       name,
       rank_req,
       icon,
-      chatId,
+      chatId: id,
+      status,
+      allow_invite,
+      allow_modify,
     });
   };
 
@@ -262,7 +289,6 @@ class Chat extends React.Component {
   };
 
   renderActions = props => {
-
     return (
       <TouchableOpacity
         style={{
@@ -289,7 +315,6 @@ class Chat extends React.Component {
   render() {
     const {auth} = this.props;
     const {
-      chatId,
       content,
       messages,
       pointer,

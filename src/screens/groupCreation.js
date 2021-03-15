@@ -165,7 +165,7 @@ class GroupCreation extends React.Component {
   };
 
   validate = () => {
-    const {groupname, shortDescription} = this.state;
+    const {groupname, shortDescription, display_name} = this.state;
 
     const regexp = /^[a-zA-Z0-9_]+$/;
     if (groupname.search(regexp) === -1) {
@@ -176,7 +176,7 @@ class GroupCreation extends React.Component {
       return false;
     }
 
-    if (groupname.length < 6 || shortDescription.length < 20) {
+    if (groupname.length < 5 || shortDescription.length < 20 || display_name.trim().length < 6) {
       return false;
     }
 

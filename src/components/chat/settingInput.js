@@ -28,7 +28,7 @@ export default class RewardSettingInput extends React.Component {
   }
 
   render() {
-    const {type, value, onInputChange} = this.props;
+    const {type, value, onInputChange, disabled} = this.props;
     const {icon_option} = this.state;
     let title = 'Name';
     if (type == 'type') {
@@ -44,6 +44,7 @@ export default class RewardSettingInput extends React.Component {
     const icon = (
       <TouchableOpacity
         style={styles.imageStyle}
+        disabled={disabled}
         onPress={() => onInputChange('icon')}>
         {value && (type == 'icon') != null ? (
           <Image source={{uri: value.uri}} style={styles.imageStyle} />
@@ -67,7 +68,7 @@ export default class RewardSettingInput extends React.Component {
       <View style={styles.container}>
         <Text style={{color: 'grey'}}>{title}</Text>
         {type == 'type' ? (
-          <TouchableOpacity onPress={() => onInputChange(type)}>
+          <TouchableOpacity onPress={() => onInputChange(type)} disabled={disabled}>
             <View style={{marginLeft: 20}}>
               <Text style={{color: 'grey'}}>{value}</Text>
             </View>
@@ -81,6 +82,7 @@ export default class RewardSettingInput extends React.Component {
             maxlength={type == 'rank' ? 1 : 30}
             placeholder={type == 'name' ? 'Chat Name' : ''}
             placeholderTextColor={'#bdc3c7'}
+            editable={!disabled}
           />
         )}
       </View>
@@ -97,6 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     padding: 5,
+    paddingHorizontal: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'grey',
   },

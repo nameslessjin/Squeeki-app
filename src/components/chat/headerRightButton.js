@@ -14,7 +14,7 @@ export default class HeaderRightButton extends React.Component {
     }
 
     return (
-      <TouchableOpacity style={styles.container} onPress={onPress} disabled={disabled} >
+      <TouchableOpacity style={[styles.container, {marginRight: type == 'create' ? 0 : 5}]} onPress={onPress} disabled={disabled} >
         {icon}
       </TouchableOpacity>
     );

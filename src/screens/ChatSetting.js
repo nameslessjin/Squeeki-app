@@ -16,6 +16,7 @@ import {
   createChat,
   updateChat,
   deleteLeaveChat,
+  updateChatInfo,
 } from '../actions/chat';
 import {
   createUpdateChatFunc,
@@ -24,6 +25,8 @@ import {
 } from '../functions/chat';
 import Input from '../components/chat/settingInput';
 import ChatIconModal from '../components/chat/chatIconModal';
+import {socket} from '../../server_config';
+import ToggleSetting from '../components/chat/toggleSetting';
 
 class ChatSetting extends React.Component {
   state = {
@@ -35,19 +38,33 @@ class ChatSetting extends React.Component {
     origin: null,
     modalVisible: false,
     deleted: false,
+    allow_invite: false,
+    allow_modify: false,
+    status: null,
   };
 
   componentDidMount() {
     const {navigation, route} = this.props;
 
     if (route.params) {
-      const {name, rank_req, icon, chatId} = route.params;
+      const {
+        name,
+        rank_req,
+        icon,
+        chatId,
+        allow_invite,
+        allow_modify,
+        status,
+      } = route.params;
       this.setState({
         origin: route.params,
         name,
         rank_req,
         icon,
         chatId,
+        allow_invite,
+        allow_modify,
+        status,
       });
     } else {
       navigation.setOptions({
@@ -72,7 +89,6 @@ class ChatSetting extends React.Component {
       const {navigation} = this.props;
       const {chatId} = this.state;
       if (!chatId) {
-  
         navigation.setOptions({
           headerRight: () => (
             <HeaderRightButton
@@ -87,48 +103,95 @@ class ChatSetting extends React.Component {
   }
 
   componentWillUnmount() {
-    const {chatId, name, rank_req, icon, deleted} = this.state;
-    const {navigation, group} = this.props;
+    const {
+      chatId,
+      name,
+      rank_req,
+      icon,
+      deleted,
+      status,
+      allow_modify,
+    } = this.state;
+    const {navigation} = this.props;
 
     // if it is to update chat setting
     if (chatId) {
       if (!deleted) {
-        navigation.navigate('Chat', {
-          name,
-          rank_req,
-          icon,
-        });
+        // update chat setting if condition met
+        // const {group}
+        const {group} = this.props.group;
+        let update = true;
+
+        if (group.id) {
+          if (group.auth.rank > group.rank_setting.manage_chat_rank_required) {
+            update = false;
+          }
+        } else {
+          // check if it is group owner.  if not then null
+          if (!status.is_owner && !allow_modify) {
+            update = false;
+          }
+        }
+
+        update = this.validation();
+
+        if (update) {
+          this.onCreateUpdateChat();
+        }
+      } else {
+        // if delete or leave current chat then reload chats
+        this.loadChat(true);
       }
     }
   }
 
   validation = () => {
-    let {name, type, rank_req, icon, origin} = this.state;
+    let {
+      name,
+      type,
+      rank_req,
+      icon,
+      origin,
+      allow_invite,
+      allow_modify,
+    } = this.state;
     if (name.length < 3) {
       return false;
     }
 
-    if (rank_req > 7 || rank_req < 0) {
-      return false;
-    }
+    if (rank_req) {
+      if (rank_req > 7 || rank_req < 0) {
+        return false;
+      }
 
-    if (rank_req.length == 0) {
-      return false;
+      if (rank_req.length == 0) {
+        return false;
+      }
     }
 
     if (origin) {
-      // check icon first
+      // if both icon and original icon exist
       if (icon && origin.icon) {
         if (icon.uri != origin.icon.uri) {
           return true;
-        } else {
-          // check other conditions later
-          if (name != origin.name || rank_req != origin.rank_req) {
-            return true;
-          } else {
-            return false;
-          }
         }
+      }
+
+      // if icon exist and original icon is  null
+      if (icon && origin.icon == null) {
+        return true;
+      }
+
+      // check changes in other conditions
+      if (
+        name != origin.name ||
+        rank_req != origin.rank_req ||
+        allow_invite != origin.allow_invite ||
+        allow_modify != origin.allow_modify
+      ) {
+        return true;
+      } else {
+        return false;
       }
     }
 
@@ -144,12 +207,22 @@ class ChatSetting extends React.Component {
       createChat,
       updateChat,
     } = this.props;
-    const {name, rank_req, icon, chatId, origin} = this.state;
+    const {
+      name,
+      rank_req,
+      icon,
+      chatId,
+      origin,
+      allow_modify,
+      allow_invite,
+    } = this.state;
 
     const request = {
       groupId: group.group.id,
       name: name.trim(),
-      rank_req,
+      rank_req: group.group.id ? rank_req : null,
+      allow_modify,
+      allow_invite,
       icon: origin
         ? origin.icon
           ? origin.icon.uri == icon.uri
@@ -167,17 +240,12 @@ class ChatSetting extends React.Component {
 
     this.setState({loading: true});
     const req = await createUpdateChatFunc(request);
-    this.setState({loading: false});
+    if (!chatId) {
+      this.setState({loading: false});
+    }
 
     if (chatId) {
-      this.setState({
-        origin: {
-          name: req.name,
-          rank_req: req.rank_req,
-          icon: req.icon,
-        },
-        icon: req.icon,
-      });
+      navigation.navigate('Chat');
     } else {
       this.loadChat(true);
       navigation.navigate('Chats');
@@ -196,21 +264,39 @@ class ChatSetting extends React.Component {
       userLogout: userLogout,
     };
 
-    this.setState({loading: true});
     const req = await getChatFunc(request);
-    this.setState({loading: false});
+
+    this.subSocket(req);
+  };
+
+  subSocket = req => {
+    const {group, updateChatInfo} = this.props;
+
+    // if not in group all chats in chat.chats
+    let socket_chat_id = req.chat;
+
+    // if in group only the one with proper rank
+    if (group.group.id) {
+      socket_chat_id = req.chat.filter(
+        c => c.rank_req >= group.group.auth.rank,
+      );
+    }
+    socket_chat_id = socket_chat_id.map(c => c.id);
+    const io = socket.getIO();
+    socket_chat_id.forEach(id => {
+      const channel = `chats${id}`;
+      io.on(channel, data => {
+        if (data.action == 'add') {
+          //this.update chat
+          updateChatInfo(data.result);
+        }
+      });
+    });
   };
 
   onInputChange = (type, value) => {
     if (type == 'name') {
       this.setState({name: value});
-    } else if (type == 'type') {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          type: prevState.type == 'group' ? 'personal' : 'group',
-        };
-      });
     } else if (type == 'rank') {
       this.setState({rank_req: value ? parseInt(value) : ''});
     } else if (type == 'icon') {
@@ -236,9 +322,11 @@ class ChatSetting extends React.Component {
 
   deleteLeaveChat = async () => {
     const {chatId} = this.state;
+    const {navigation} = this.props;
     this.setState({loading: true, deleted: true});
     const request = await deleteLeaveChatFunc({...this.props, chatId});
     this.setState({loading: false});
+    navigation.navigate('Chats');
   };
 
   setIcon = (data, type) => {
@@ -247,6 +335,17 @@ class ChatSetting extends React.Component {
 
   onBackdropPress = () => {
     this.setState({modalVisible: false});
+  };
+
+  onToggle = type => {
+    this.setState(prevState => {
+      return {
+        allow_invite:
+          type == 'invite' ? !prevState.allow_invite : prevState.allow_invite,
+        allow_modify:
+          type == 'modify' ? !prevState.allow_modify : prevState.allow_modify,
+      };
+    });
   };
 
   render() {
@@ -258,10 +357,40 @@ class ChatSetting extends React.Component {
       modalVisible,
       loading,
       chatId,
+      allow_invite,
+      allow_modify,
+      status,
     } = this.state;
 
     // if in group
     const {group} = this.props.group;
+
+    let deleteButton = (
+      <Input type={'delete'} onInputChange={this.onInputChange} />
+    );
+
+    let disabled = false;
+
+    if (!chatId) {
+      deleteButton = null;
+    } else {
+      if (group.id) {
+        if (group.auth.rank > group.rank_setting.manage_chat_rank_required) {
+          deleteButton = null;
+          disabled = true;
+        }
+      } else {
+
+        if (!status.is_owner) {
+          deleteButton = <Input type={'leave'} onInputChange={this.onInputChange} />;
+        }
+        if (!status.is_owner && !allow_modify) {
+          disabled = true;
+        }
+      }
+    }
+
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
@@ -270,20 +399,43 @@ class ChatSetting extends React.Component {
             type={'icon'}
             value={icon}
             onInputChange={this.onInputChange}
+            disabled={disabled}
           />
           <Input
             type={'name'}
             value={name}
             onInputChange={this.onInputChange}
+            disabled={disabled}
           />
-          <Input
-            type={'rank'}
-            value={rank_req.toString()}
-            onInputChange={this.onInputChange}
-          />
-          {group.auth.rank <= 1 && chatId ? (
-            <Input type={'delete'} onInputChange={this.onInputChange} />
+
+          {group.id ? (
+            <Input
+              type={'rank'}
+              value={rank_req.toString()}
+              onInputChange={this.onInputChange}
+              disabled={disabled}
+            />
           ) : null}
+
+          {group.id ? null : (
+            <ToggleSetting
+              type={'invite'}
+              on={allow_invite}
+              onToggle={this.onToggle}
+              disabled={disabled}
+            />
+          )}
+          {group.id ? null : (
+            <ToggleSetting
+              type={'modify'}
+              on={allow_modify}
+              onToggle={this.onToggle}
+              disabled={disabled}
+            />
+          )}
+
+          {deleteButton}
+
           {loading ? (
             <ActivityIndicator animating={loading} style={{marginTop: 20}} />
           ) : null}
@@ -319,6 +471,7 @@ const mapDispatchToProps = dispatch => {
     updateChat: data => dispatch(updateChat(data)),
     getChat: data => dispatch(getChat(data)),
     deleteLeaveChat: data => dispatch(deleteLeaveChat(data)),
+    updateChatInfo: data => dispatch(updateChatInfo(data)),
   };
 };
 

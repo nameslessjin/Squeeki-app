@@ -222,3 +222,61 @@ export const PostVideoPicker = (setImage, from, cancel) => {
         })
     }
 } 
+
+
+export const MessageImagePicker = (setImage, from, cancel) => {
+    const options = {
+        mediaType: 'photo',
+        quality: 1.0,
+        maxWidth: 1080,
+        maxHeight: 1080,
+        includeBase64: true
+    }
+
+    if (from == 'library') {
+        launchImageLibrary(options, response => {
+            if (response.didCancel){
+                cancel()
+            } else if (response.error){
+                console.log('Image Picker Error: ', response.error)
+            } else {
+                let name = response.uri.split('/')
+                name = name[name.length-1]
+                let source = {
+                    uri: response.uri,
+                    width: response.height,
+                    height: response.width,
+                    type: response.type,
+                    filename: name,
+                    data: response.base64,
+                    mediaType: 'photo'
+                }
+
+                setImage(source, 'image')
+    
+            }
+        })
+    } else {
+        launchCamera(options, response => {
+            if (response.didCancel){
+                cancel()
+            } else if (response.error){
+                console.log('Image Picker Error: ', response.error)
+            } else {
+                let name = response.uri.split('/')
+                name = name[name.length-1]
+                let source = {
+                    uri: response.uri,
+                    width: response.height,
+                    height: response.width,
+                    type: response.type,
+                    filename: name,
+                    data: response.base64,
+                    mediaType: 'photo'
+                }
+                setImage(source, 'image')
+    
+            }
+        })
+    }
+}

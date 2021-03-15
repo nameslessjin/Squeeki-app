@@ -7,7 +7,8 @@ import {
   deleteUserChatMutation,
   switchOwnershipMutation,
   getUserChatQuery,
-  getAllChatIdQuery
+  getAllChatIdQuery,
+  getSingleChatQuery
 } from './query/chatQuery';
 import {http, http_upload} from '../../server_config';
 
@@ -55,7 +56,7 @@ const getChatReducer = data => {
 };
 
 export const createChat = request => {
-  const {groupId, name, rank_req, icon, token} = request;
+  const {groupId, name, rank_req, icon, token, allow_invite, allow_modify} = request;
 
   return async function(dispatch) {
     let iconData = null;
@@ -88,6 +89,8 @@ export const createChat = request => {
       groupId,
       name,
       rank_req,
+      allow_invite,
+      allow_modify,
       icon: iconData
         ? {
             name: iconData.name,
@@ -153,7 +156,7 @@ export const deleteLeaveChat = request => {
 };
 
 export const updateChat = request => {
-  const {name, rank_req, icon, chatId, token} = request;
+  const {name, rank_req, icon, chatId, token, allow_invite, allow_modify} = request;
 
   return async function(dispatch) {
     let iconData = null;
@@ -186,6 +189,8 @@ export const updateChat = request => {
       chatId,
       name,
       rank_req,
+      allow_invite,
+      allow_modify,
       icon: iconData
         ? {
             name: iconData.name,
@@ -216,9 +221,17 @@ export const updateChat = request => {
       return result;
     }
 
+    dispatch(updateChatReducer(result.data.updateChat))
     return result.data.updateChat;
   };
 };
+
+const updateChatReducer = i => {
+  return {
+    type: 'updateChat',
+    i: i
+  }
+}
 
 export const createUserChat = request => {
   const {token, chatId, userIds} = request;
@@ -401,6 +414,45 @@ export const updateChatInfo = request => {
 const updateChatInfoReducer = i => {
   return{
     type: 'updateChatInfo',
+    i: i
+  }
+}
+
+export const getSingleChat = request => {
+  const {token, chatId} = request
+  return async function(dispatch){
+    const input = {
+      chatId
+    }
+
+    const graphql = {
+      query: getSingleChatQuery,
+      variables: {input: input}
+    }
+
+    const req = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(getSingleChatReducer(result.data.getSingleChat))
+    return 0
+  }
+}
+
+const getSingleChatReducer =  i => {
+  return {
+    type: 'getSingleChat',
     i: i
   }
 }

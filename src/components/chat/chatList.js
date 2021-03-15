@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {chatTimeFormat} from '../../utils/time'
+import {chatTimeFormat} from '../../utils/time';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -55,11 +55,27 @@ export default class ChatList extends React.Component {
 
     const {icon_option} = this.state;
     const {onChatPress, userGroupAuthRank} = this.props;
+
+    let message_preview =
+      last_message == null
+        ? 'Not messages yet.'
+        : `${last_message.username}: ${last_message.content}`;
+
+    if (rank_req != null) {
+      if (rank_req < userGroupAuthRank) {
+        message_preview = `This chat requires rank ${rank_req} or above`;
+      }
+    }
+
     return (
       <View style={[styles.chat_container]}>
-        <View style={styles.chat_sub_container}>
-          <TouchableOpacity onPress={() => onChatPress(item)}>
-            <View style={{width: '100%', flexDirection: 'row'}}>
+        <TouchableOpacity onPress={() => onChatPress(item)}>
+          <View style={styles.chat_sub_container}>
+            <View
+              style={{
+                width: '100%',
+                flexDirection: 'row',
+              }}>
               <View style={styles.imgHolder}>
                 {icon != null ? (
                   <Image source={{uri: icon.uri}} style={styles.imageStyle} />
@@ -69,40 +85,30 @@ export default class ChatList extends React.Component {
               </View>
 
               <View style={styles.rightStyle}>
-                <View
-                  style={styles.chat_right_up_container}>
-                  <View
-                    style={styles.chat_name_container}>
-                    <Text
-                      style={styles.chat_name_style}
-                      numberOfLines={2}>
+                <View style={styles.chat_right_up_container}>
+                  <View style={styles.chat_name_container}>
+                    <Text style={styles.chat_name_style} numberOfLines={2}>
                       {name}
                     </Text>
                   </View>
-                  <View
-                    style={styles.chat_time_container}>
+                  <View style={styles.chat_time_container}>
                     <Text style={{color: 'grey', fontSize: width * 0.034}}>
                       {/* 12:58 AM */}
-                      {last_message == null ? 'Now' : chatTimeFormat(last_message.createdAt)}
+                      {last_message == null
+                        ? 'Now'
+                        : chatTimeFormat(last_message.createdAt)}
                     </Text>
                   </View>
                 </View>
-                <View
-                  style={styles.chat_right_bottom_container}>
+                <View style={styles.chat_right_bottom_container}>
                   <View style={{height: '100%', width: '85%', paddingLeft: 3}}>
                     <Text style={{color: 'grey'}} numberOfLines={2}>
-                      {rank_req < userGroupAuthRank
-                        ? `This chat requires rank ${rank_req} or above`
-                        : last_message == null
-                        ? 'Not messages yet.'
-                        : `${last_message.username}: ${last_message.content}`}
+                      {message_preview}
                     </Text>
                   </View>
-                  <View
-                    style={styles.unread_message_container}>
+                  <View style={styles.unread_message_container}>
                     {unread_message_count == 0 ? null : (
-                      <View
-                        style={styles.unread_message}>
+                      <View style={styles.unread_message}>
                         <Text style={{color: 'white', fontSize: width * 0.034}}>
                           {unread_message_count_text}
                         </Text>
@@ -112,8 +118,8 @@ export default class ChatList extends React.Component {
                 </View>
               </View>
             </View>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -158,7 +164,6 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   imageStyle: {
     height: width * 0.18,

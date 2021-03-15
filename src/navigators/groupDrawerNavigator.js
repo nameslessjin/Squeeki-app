@@ -90,6 +90,7 @@ class GroupDrawerNavigator extends React.Component {
           onPress={() => {
             props.navigation.navigate('Chats');
           }}
+          
         />
         <DrawerItem
           label="Nomination"

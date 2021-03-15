@@ -5,6 +5,8 @@ query getChat($input: ChatQuery!){
             id
             name
             rank_req
+            allow_modify
+            allow_invite
             icon {
                 uri
             }
@@ -26,6 +28,8 @@ mutation createChat($input: ChatMutation!){
         id
         name
         rank_req
+        allow_modify
+        allow_invite
         icon {
             uri
         }
@@ -45,6 +49,8 @@ mutation updateChat($input: ChatMutation!){
         id
         name
         rank_req
+        allow_modify
+        allow_invite
         icon {
             uri
         }
@@ -84,6 +90,21 @@ export const getAllChatIdQuery = `
 query getAllChatId($input: ChatQuery!){
     getAllChatId(input: $input){
         id
+    }
+}
+`
+
+export const getSingleChatQuery = `
+query getSingleChat($input: ChatQuery!){
+    getSingleChat(input: $input){
+        id
+        name
+        rank_req
+        allow_modify
+        allow_invite
+        icon {
+            uri
+        }
     }
 }
 `

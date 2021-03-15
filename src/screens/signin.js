@@ -9,7 +9,7 @@ import {
   Keyboard,
   StatusBar,
   ActivityIndicator,
-  View
+  View,
 } from 'react-native';
 
 import SignInTextInput from '../components/signin/textinput';
@@ -27,7 +27,6 @@ class SignIn extends React.Component {
     errorText: '',
     loading: false,
   };
-
 
   componentDidMount() {
     const {auth} = this.props;
@@ -78,7 +77,6 @@ class SignIn extends React.Component {
   };
 
   login = async init => {
-
     const {email, password} = this.state;
     const data = {
       email: init ? email : null,
@@ -88,18 +86,28 @@ class SignIn extends React.Component {
 
     let signInResult = 0;
     try {
-      this.setState({loading: true})
+      this.setState({loading: true});
       signInResult = await this.props.signIn(data);
       this.setState({loading: false});
     } catch (err) {
-      this.setState({errorText: 'Timed out.  Please try again later.', loading: false});
+      this.setState({
+        errorText: 'Timed out.  Please try again later.',
+        loading: false,
+      });
       return;
     }
 
     if (signInResult.errors) {
-
       console.log({errorText: signInResult.errors[0].message});
-      this.setState({errorText: 'Please update to the lastest version of Squeeki'})
+      if (
+        signInResult.errors[0].message == 'Username and password do not match'
+      ) {
+        this.setState({errorText: 'Username and password do not match'});
+      } else {
+        this.setState({
+          errorText: 'Please update to the lastest version of Squeeki',
+        });
+      }
 
       return;
     }
@@ -108,7 +116,6 @@ class SignIn extends React.Component {
       index: 0,
       routes: [{name: 'Home'}],
     });
-
   };
 
   render() {
@@ -134,7 +141,7 @@ class SignIn extends React.Component {
           />
 
           {loading ? (
-            <View style={{marginTop: 15}}> 
+            <View style={{marginTop: 15}}>
               <ActivityIndicator animating={true} />
               <Text>Connecting ...</Text>
             </View>
