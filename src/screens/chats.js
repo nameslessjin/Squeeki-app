@@ -13,6 +13,7 @@ import {
   getAllChatId,
   updateChatInfo,
   getSingleChat,
+  resetChatReducer
 } from '../actions/chat';
 import {userLogout} from '../actions/auth';
 import HeaderRightButton from '../components/chat/headerRightButton';
@@ -60,6 +61,17 @@ class Chats extends React.Component {
     this.loadChat(true);
   }
 
+  componentDidUpdate(prevProps){
+    const {currentScreen} = this.props;
+    const prevScreen = prevProps.currentScreen;
+    if (
+      currentScreen.currentScreen == 'Chats' &&
+      prevScreen.currentScreen != 'Chats'
+    ) {
+      this.loadChat(true);
+    }
+  }
+
   onHeaderRightButtonPress = () => {
     const {navigation} = this.props;
     navigation.navigate('ChatSetting');
@@ -67,6 +79,7 @@ class Chats extends React.Component {
 
   componentWillUnmount() {
     this.unsubSocket();
+    // this.props.resetChatReducer();
   }
 
   unsubSocket = () => {
@@ -182,7 +195,7 @@ class Chats extends React.Component {
       }
       this.unsubSocket();
       // remove listeners to all chatrooms here
-      navigation.navigate('ChatStackNavigator');
+      navigation.navigate('ChatDrawerNavigator');
     }
   };
 
@@ -209,8 +222,8 @@ class Chats extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const {auth, group, chat} = state;
-  return {auth, group, chat};
+  const {auth, group, chat, currentScreen} = state;
+  return {auth, group, chat, currentScreen};
 };
 
 const mapDispatchToProps = dispatch => {
@@ -220,6 +233,7 @@ const mapDispatchToProps = dispatch => {
     getAllChatId: data => dispatch(getAllChatId(data)),
     updateChatInfo: data => dispatch(updateChatInfo(data)),
     getSingleChat: data => dispatch(getSingleChat(data)),
+    resetChatReducer: () => dispatch(resetChatReducer())
   };
 };
 

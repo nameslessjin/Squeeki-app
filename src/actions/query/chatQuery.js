@@ -7,6 +7,7 @@ query getChat($input: ChatQuery!){
             rank_req
             allow_modify
             allow_invite
+            is_multi
             icon {
                 uri
             }
@@ -30,6 +31,7 @@ mutation createChat($input: ChatMutation!){
         rank_req
         allow_modify
         allow_invite
+        is_multi
         icon {
             uri
         }
@@ -51,6 +53,7 @@ mutation updateChat($input: ChatMutation!){
         rank_req
         allow_modify
         allow_invite
+        is_multi
         icon {
             uri
         }
@@ -102,6 +105,7 @@ query getSingleChat($input: ChatQuery!){
         rank_req
         allow_modify
         allow_invite
+        is_multi
         icon {
             uri
         }

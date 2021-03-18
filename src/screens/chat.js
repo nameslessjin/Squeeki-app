@@ -53,19 +53,18 @@ class Chat extends React.Component {
     const {navigation, route, group} = this.props;
     const {name, id} = this.state;
     navigation.setOptions({
-      headerBackTitleVisible: false,
-      headerTitle: name,
-      headerRight: () => (
-        <HeaderRightButton
-          type={'setting'}
-          disabled={false}
-          onPress={this.onSettingPress}
-        />
-      ),
+      headerShown: false
+      // headerBackTitleVisible: false,
+      // headerTitle: name,
+      // headerRight: () => (
+      //   <HeaderRightButton
+      //     type={'setting'}
+      //     disabled={false}
+      //     onPress={this.onSettingPress}
+      //   />
+      // ),
     });
 
-    // load status in the chat
-    this.getUserChat();
     // load some messages
     this.loadChatMessage(true);
 
@@ -78,25 +77,6 @@ class Chat extends React.Component {
       }
     });
   }
-
-  getUserChat = async () => {
-    const {auth, getUserChat} = this.props;
-    const {id} = this.state;
-
-    const request = {
-      token: auth.token,
-      chatId: id,
-    };
-
-    const req = await getUserChat(request);
-    if (req.errors) {
-      console.log(req.errors[0]);
-      alert('Get User Status Error');
-      return;
-    }
-
-    this.setState({status: req});
-  };
 
   addSubMessage = data => {
     const {message, pointer} = data;
@@ -208,9 +188,9 @@ class Chat extends React.Component {
         allow_invite,
         allow_modify,
       });
-      navigation.setOptions({
-        headerTitle: name,
-      });
+      // navigation.setOptions({
+      //   headerTitle: name,
+      // });
     }
   }
 
@@ -243,28 +223,6 @@ class Chat extends React.Component {
           updateChatInfo(data.result);
         }
       });
-    });
-  };
-
-  onSettingPress = () => {
-    const {
-      name,
-      rank_req,
-      icon,
-      id,
-      status,
-      allow_invite,
-      allow_modify,
-    } = this.state;
-    const {navigation} = this.props;
-    navigation.navigate('ChatSetting', {
-      name,
-      rank_req,
-      icon,
-      chatId: id,
-      status,
-      allow_invite,
-      allow_modify,
     });
   };
 
@@ -306,6 +264,7 @@ class Chat extends React.Component {
 
   onActionPress = () => {
     this.setState({modalVisible: true});
+    
   };
 
   onBackdropPress = () => {

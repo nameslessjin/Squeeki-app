@@ -43,6 +43,7 @@ export const getChat = request => {
       return result;
     }
 
+
     dispatch(getChatReducer(result.data.getChat));
     return result.data.getChat;
   };
@@ -454,5 +455,11 @@ const getSingleChatReducer =  i => {
   return {
     type: 'getSingleChat',
     i: i
+  }
+}
+
+export const resetChatReducer = () => {
+  return {
+    type: 'resetChat',
   }
 }

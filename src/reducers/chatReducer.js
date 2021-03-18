@@ -12,7 +12,7 @@ export default (chatReducer = (state = INITIAL_STATE, action) => {
         ...state,
         count: action.i.count,
         chats:
-          action.i.count == 10
+          action.i.count == 50
             ? action.i.chat
             : state.chats.concat(action.i.chat),
       };
@@ -45,6 +45,11 @@ export default (chatReducer = (state = INITIAL_STATE, action) => {
         ...state,
         chat: action.i,
       };
+    
+    case 'resetChat':
+      return {
+        ...INITIAL_STATE
+      }
 
     case 'logout':
       return {

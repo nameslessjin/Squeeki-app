@@ -27,6 +27,7 @@ import Input from '../components/chat/settingInput';
 import ChatIconModal from '../components/chat/chatIconModal';
 import {socket} from '../../server_config';
 import ToggleSetting from '../components/chat/toggleSetting';
+import { StackActions } from '@react-navigation/native';
 
 class ChatSetting extends React.Component {
   state = {
@@ -245,10 +246,10 @@ class ChatSetting extends React.Component {
     }
 
     if (chatId) {
-      navigation.navigate('Chat');
+      // navigation.navigate('Chat');
     } else {
       this.loadChat(true);
-      navigation.navigate('Chats');
+      navigation.dispatch(StackActions.pop(1))
     }
   };
 
@@ -326,7 +327,7 @@ class ChatSetting extends React.Component {
     this.setState({loading: true, deleted: true});
     const request = await deleteLeaveChatFunc({...this.props, chatId});
     this.setState({loading: false});
-    navigation.navigate('Chats');
+    navigation.dispatch(StackActions.pop(2))
   };
 
   setIcon = (data, type) => {
