@@ -3,8 +3,8 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 export const backgroundImagePicker = (setImage, from, cancel) => {
     const options = {
         quality: 1.0,
-        maxWidth: 1080,
-        maxHeight: 1080,
+        maxWidth: 900,
+        maxHeight: 900,
         includeBase64: true
     }
 
@@ -58,8 +58,8 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
 export const iconImagePicker = (setImage, from, cancel) => {
     const options = {
         quality: 1.0,
-        maxWidth: 1080,
-        maxHeight: 1080,
+        maxWidth: 900,
+        maxHeight: 900,
         includeBase64: true
     }
 
@@ -114,8 +114,8 @@ export const PostImagePicker = (setImage, from, cancel) => {
     const options = {
         mediaType: 'photo',
         quality: 1.0,
-        maxWidth: 1080,
-        maxHeight: 1080,
+        maxWidth: 900,
+        maxHeight: 900,
         includeBase64: true
     }
 
@@ -228,8 +228,8 @@ export const MessageImagePicker = (setImage, from, cancel) => {
     const options = {
         mediaType: 'photo',
         quality: 1.0,
-        maxWidth: 1080,
-        maxHeight: 1080,
+        maxWidth: 900,
+        maxHeight: 900,
         includeBase64: true
     }
 

@@ -35,7 +35,6 @@ class Chat extends React.Component {
     name: '',
     rank_req: 7,
     icon: null,
-    chatId: null,
     allow_invite: false,
     allow_modify: false,
     // ...this.props.route.params,
@@ -53,7 +52,7 @@ class Chat extends React.Component {
     const {navigation, route, group} = this.props;
     const {name, id} = this.state;
     navigation.setOptions({
-      headerShown: false
+      headerShown: false,
       // headerBackTitleVisible: false,
       // headerTitle: name,
       // headerRight: () => (
@@ -263,8 +262,12 @@ class Chat extends React.Component {
   };
 
   onActionPress = () => {
+    Keyboard.dismiss();
     this.setState({modalVisible: true});
-    
+  };
+
+  onChangeMedia = value => {
+    this.setState({image: {...value}});
   };
 
   onBackdropPress = () => {
@@ -283,7 +286,7 @@ class Chat extends React.Component {
     const user = {
       _id: auth.user.id,
     };
-
+    console.log(this.state)
     return (
       <View>
         <KeyboardAvoidingView style={styles.container}>
@@ -312,6 +315,7 @@ class Chat extends React.Component {
         <ChatMediaModal
           modalVisible={modalVisible}
           onBackdropPress={this.onBackdropPress}
+          onChangeMedia={this.onChangeMedia}
         />
       </View>
     );
