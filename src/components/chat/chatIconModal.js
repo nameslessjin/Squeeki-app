@@ -7,12 +7,12 @@ import {
   Text,
   Modal,
 } from 'react-native';
-import {MessageImagePicker} from '../../utils/imagePicker';
+import {iconImagePicker} from '../../utils/imagePicker';
 
 export default class ChatIconModal extends React.Component {
   onPress = type => {
     const {onBackdropPress, onChangeMedia} = this.props;
-    MessageImagePicker(onChangeMedia, type, onBackdropPress);
+    iconImagePicker(onChangeMedia, type, onBackdropPress);
   };
 
   render() {

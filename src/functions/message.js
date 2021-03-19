@@ -1,10 +1,11 @@
 export const sendMessageFunc = async data => {
-  const {token, chatId, content, sendMessage, navigation, userLogout} = data;
+  const {token, chatId, content, sendMessage, navigation, userLogout, media} = data;
 
   const request = {
     token,
     chatId,
     content,
+    media
   };
 
   const req = await sendMessage(request);

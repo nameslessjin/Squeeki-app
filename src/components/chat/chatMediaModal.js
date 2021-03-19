@@ -7,15 +7,15 @@ import {
   Text,
   Modal,
 } from 'react-native';
-import {MessageImagePicker, PostVideoPicker} from '../../utils/imagePicker';
+import {MessageImagePicker} from '../../utils/imagePicker';
 // import PhotoEditor from 'react-native-photo-editor'
 // import RNFS from 'react-native-fs'
 
 export default class PostSettingModal extends React.Component {
   onPress = type => {
-    const {onBackdropPress, onChangeMedia} = this.props;
+    const {onBackdropPress, onMediaUpload} = this.props;
     
-    MessageImagePicker(onChangeMedia, type, onBackdropPress);
+    MessageImagePicker(onMediaUpload, type, onBackdropPress);
   };
 
 

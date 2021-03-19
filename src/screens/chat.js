@@ -145,6 +145,7 @@ class Chat extends React.Component {
       sendMessage,
       navigation,
       userLogout,
+      media: null,
     };
 
     this.setState({content: ''});
@@ -266,13 +267,34 @@ class Chat extends React.Component {
     this.setState({modalVisible: true});
   };
 
-  onChangeMedia = value => {
+  onChangeMedia = value => { 
     this.setState({image: {...value}});
   };
 
   onBackdropPress = () => {
     this.setState({modalVisible: false});
   };
+
+  onMediaUpload = (media) => {
+    this.setState({modalVisible: false})
+
+    const {sendMessage, navigation, userLogout, auth} = this.props;
+    const {id} = this.state;
+    const data = {
+      token: auth.token,
+      chatId: id,
+      media,
+      content: '',
+      sendMessage,
+      navigation,
+      userLogout,
+    };
+
+    Keyboard.dismiss();
+    const req = sendMessageFunc(data);
+
+
+  }
 
   render() {
     const {auth} = this.props;
@@ -286,7 +308,7 @@ class Chat extends React.Component {
     const user = {
       _id: auth.user.id,
     };
-    console.log(this.state)
+
     return (
       <View>
         <KeyboardAvoidingView style={styles.container}>
@@ -315,7 +337,7 @@ class Chat extends React.Component {
         <ChatMediaModal
           modalVisible={modalVisible}
           onBackdropPress={this.onBackdropPress}
-          onChangeMedia={this.onChangeMedia}
+          onMediaUpload={this.onMediaUpload}
         />
       </View>
     );

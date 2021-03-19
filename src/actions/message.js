@@ -1,5 +1,5 @@
 import {getChatMessageQuery, sendMessageMutation, chatMessageSubscription} from './query/messageQuery';
-import {http} from '../../server_config'
+import {http, http_upload} from '../../server_config'
 // import { useSubscription, useQuery } from '@apollo/client'
 
 export const getChatMessage = request => {
@@ -48,10 +48,34 @@ export const sendMessage = request => {
   const {token, content, chatId, media} = request;
 
   return async function(dispatch) {
+    let media_url = null
+    if (media != null){
+      const {type, data} = media
+      const mediaForm = new FormData()
+      mediaForm.append('fileType', type)
+      mediaForm.append('fileData', data)
+      mediaForm.append('fileCategory', 'messagePhotos')
+      const mediaUpload = await fetch(http_upload, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'multipart/form-data',
+        },
+        body: mediaForm
+      })
+      if (mediaUpload.status == 500){
+        alert('uploading photo failed')
+        return 1
+      }
+
+      const mediaData = await mediaUpload.json()
+      media_url = mediaData
+    }
+
     const input = {
       content,
       chatId,
-      media,
+      media: media_url,
     };
 
     const graphql = {

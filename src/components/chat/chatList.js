@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-  Platform
+  Platform,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {chatTimeFormat} from '../../utils/time';
@@ -60,6 +60,8 @@ export default class ChatList extends React.Component {
     let message_preview =
       last_message == null
         ? 'Not messages yet.'
+        : last_message.content.length == 0
+        ? `${last_message.username}: [Photo/Video]`
         : `${last_message.username}: ${last_message.content}`;
 
     if (rank_req != null) {
@@ -165,7 +167,6 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    
   },
   imageStyle: {
     height: width * 0.18,
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
     width: width - 10 - width * 0.18,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 5
+    paddingTop: 5,
   },
   chat_name_style: {
     fontSize: 15,
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    maxHeight:  35,
+    maxHeight: 35,
   },
   chat_right_bottom_container: {
     height: 35,
