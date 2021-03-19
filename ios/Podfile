@@ -7,6 +7,46 @@ target 'Squeeki' do
   config = use_native_modules!
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'RNPhotoEditor', :path => '../node_modules/react-native-photo-editor/ios'
+
+  use_frameworks! :linkage => :static
+
+  pod 'iOSPhotoEditor', :git => 'https://github.com/prscX/photo-editor', :branch => 'master'
+
+  # waiting for update version
+  use_flipper! ({'Flipper-Folly' => '2.3.0'})
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
+  post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      if target.name.include?('iOSPhotoEditor')
+        target.build_configurations.each do |config|
+          config.build_settings['SWIFT_VERSION'] = '5'
+        end
+      end
+    end
+  end
+
+  # Follow [Flipper iOS Setup Guidelines](https://fbflipper.com/docs/getting-started/ios-native)
+  # This is required because iOSPhotoEditor is implemented using Swift and we have to use use_frameworks! in Podfile
+  $static_framework = ['FlipperKit', 'Flipper', 'Flipper-Folly',
+    'CocoaAsyncSocket', 'ComponentKit', 'Flipper-DoubleConversion',
+    'Flipper-Glog', 'Flipper-PeerTalk', 'Flipper-RSocket', 'Yoga', 'YogaKit',
+    'CocoaLibEvent', 'OpenSSL-Universal', 'boost-for-react-native']
+  
+  pre_install do |installer|
+    Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+    installer.pod_targets.each do |pod|
+        if $static_framework.include?(pod.name)
+          def pod.build_type;
+            Pod::BuildType.static_library
+          end
+        end
+      end
+  end
+
+
   target 'SqueekiTests' do
     inherit! :complete
     # Pods for testing
@@ -16,10 +56,10 @@ target 'Squeeki' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
-  use_flipper!
-  post_install do |installer|
-    flipper_post_install(installer)
-  end
+  # use_flipper!
+  # post_install do |installer|
+  #   flipper_post_install(installer)
+  # end
 end
 
 target 'Squeeki-tvOS' do

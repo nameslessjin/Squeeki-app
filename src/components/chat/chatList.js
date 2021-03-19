@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  Platform
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {chatTimeFormat} from '../../utils/time';
@@ -164,6 +165,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'flex-start',
+    
   },
   imageStyle: {
     height: width * 0.18,
@@ -180,37 +182,39 @@ const styles = StyleSheet.create({
     width: width - 10 - width * 0.18,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingTop: 5
   },
   chat_name_style: {
     fontSize: 15,
     fontWeight: '500',
   },
   chat_name_container: {
-    height: '100%',
+    height: 35,
     width: '75%',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'flex-start',
     paddingLeft: 3,
+    // backgroundColor: 'green'
   },
   chat_right_up_container: {
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: '35%',
+    maxHeight:  35,
   },
   chat_right_bottom_container: {
-    height: '65%',
+    height: 35,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    paddingTop: 5,
+    // paddingTop: 5,
   },
   chat_time_container: {
     width: '25%',
     height: '100%',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'flex-end',
     paddingHorizontal: 5,
   },

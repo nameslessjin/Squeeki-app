@@ -1,4 +1,7 @@
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
+import PhotoEditor from 'react-native-photo-editor'
+import RNFS from 'react-native-fs'
+
 
 export const backgroundImagePicker = (setImage, from, cancel) => {
     const options = {
@@ -183,7 +186,8 @@ export const PostVideoPicker = (setImage, from, cancel) => {
             } else if (response.error){
                 console.log('Video Picker Error: ', response.error)
             } else {
-                let name = response.uri.split('/')
+                const uri = response.uri
+                let name = uri.split('/')
                 name = name[name.length-1]
                 let source = {
                     uri: response.uri,
@@ -194,7 +198,10 @@ export const PostVideoPicker = (setImage, from, cancel) => {
                     data: response.base64,
                     mediaType: 'photo'
                 }
-                setImage(source, 'image')
+
+
+
+                // setImage(source, 'image')
     
             }
         })
@@ -240,7 +247,8 @@ export const MessageImagePicker = (setImage, from, cancel) => {
             } else if (response.error){
                 console.log('Image Picker Error: ', response.error)
             } else {
-                let name = response.uri.split('/')
+                const uri = response.uri
+                let name = uri.split('/')
                 name = name[name.length-1]
                 let source = {
                     uri: response.uri,
@@ -251,6 +259,28 @@ export const MessageImagePicker = (setImage, from, cancel) => {
                     data: response.base64,
                     mediaType: 'photo'
                 }
+
+                const path = RNFS.DocumentDirectoryPath + `/${response.filename}`
+                const picked = {
+                    path: path,
+                    type: response.type
+                }
+
+                RNFS.exists(path)
+                .then(res => {
+                    if (res){
+                        RNFS.unlink(path)
+                    }
+                })
+                .then(() => {
+                    RNFS.moveFile(uri, path)
+                    .then(() => {
+                        editPhoto(picked)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                })
 
                 setImage(source, 'image')
     
@@ -279,4 +309,18 @@ export const MessageImagePicker = (setImage, from, cancel) => {
             }
         })
     }
+}
+
+const editPhoto = image => {
+    const {path} = image
+    PhotoEditor.Edit({
+        path: path,
+        hiddenControls: ['share', 'sticker'],
+        onDone: (imagePath) => {
+            
+        },
+        onCancel: () => {
+            
+        }
+    })
 }
