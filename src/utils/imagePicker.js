@@ -254,6 +254,48 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
           type: response.type,
         };
 
+        RNFS.exists(path)
+          .then(res => {
+            if (res) {
+              RNFS.unlink(path);
+            }
+          })
+          .then(() => {
+            RNFS.moveFile(uri, path)
+              .then(() => {
+                editPhoto(picked, onMediaUpload);
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          });
+      }
+    });
+  } else {
+    launchCamera(options, response => {
+      if (response.didCancel) {
+        cancel();
+      } else if (response.error) {
+        console.log('Image Picker Error: ', response.error);
+      } else {
+        const uri = response.uri;
+        let name = uri.split('/');
+        name = name[name.length - 1];
+        let source = {
+          uri: response.uri,
+          width: response.height,
+          height: response.width,
+          type: response.type,
+          filename: name,
+          data: response.base64,
+          mediaType: 'photo',
+        };
+
+        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const picked = {
+          path: path,
+          type: response.type,
+        };
 
         RNFS.exists(path)
           .then(res => {
@@ -270,32 +312,6 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
                 console.log(err);
               });
           });
-
-
-      }
-    });
-  } else {
-    launchCamera(options, response => {
-      if (response.didCancel) {
-        cancel();
-      } else if (response.error) {
-        console.log('Image Picker Error: ', response.error);
-      } else {
-        let name = response.uri.split('/');
-        name = name[name.length - 1];
-        let source = {
-          uri: response.uri,
-          width: response.height,
-          height: response.width,
-          type: response.type,
-          filename: name,
-          data: response.base64,
-          mediaType: 'photo',
-        };
-        
-
-
-
       }
     });
   }
@@ -310,12 +326,11 @@ const editPhoto = (image, onMediaUpload) => {
     onDone: imagePath => {
       RNFS.readFile(imagePath, 'base64')
         .then(res => {
-            const upload = {
-                data: res,
-                type: type,
-            }
-            onMediaUpload(upload)
-
+          const upload = {
+            data: res,
+            type: type,
+          };
+          onMediaUpload(upload);
         })
         .catch(err => console.log(err));
     },
