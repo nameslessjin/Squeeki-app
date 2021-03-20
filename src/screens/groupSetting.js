@@ -394,6 +394,7 @@ class GroupSetting extends React.Component {
             <ActivityIndicator
               style={{marginTop: 30}}
               animating={this.state.loading}
+              color={'grey'}
             />
           </KeyboardAvoidingView>
         </ScrollView>

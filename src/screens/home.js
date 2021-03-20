@@ -119,7 +119,7 @@ class Home extends React.Component {
           )}
 
           {this.state.loading ? (
-            <ActivityIndicator animating={true} />
+            <ActivityIndicator animating={true} color={'grey'}/>
           ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

@@ -122,7 +122,7 @@ class HomeDrawerNavigator extends React.Component {
         drawerStyle={styles.drawerStyle}>
         <Drawer.Screen name="Home" component={Home} />
         <Drawer.Screen name="Groups" component={Groups} />
-        <Drawer.Screen name="Chats" component={Chats} />
+        {/* <Drawer.Screen name="Chats" component={Chats} /> */}
         <Drawer.Screen name="Terms" component={Terms} />
       </Drawer.Navigator>
     );

@@ -1,5 +1,10 @@
-import {getChatMessageQuery, sendMessageMutation, chatMessageSubscription} from './query/messageQuery';
-import {http, http_upload} from '../../server_config'
+import {
+  getChatMessageQuery,
+  sendMessageMutation,
+  chatMessageSubscription,
+  updateUserMessageMutation,
+} from './query/messageQuery';
+import {http, http_upload} from '../../server_config';
 // import { useSubscription, useQuery } from '@apollo/client'
 
 export const getChatMessage = request => {
@@ -48,28 +53,28 @@ export const sendMessage = request => {
   const {token, content, chatId, media} = request;
 
   return async function(dispatch) {
-    let media_url = null
-    if (media != null){
-      const {type, data} = media
-      const mediaForm = new FormData()
-      mediaForm.append('fileType', type)
-      mediaForm.append('fileData', data)
-      mediaForm.append('fileCategory', 'messagePhotos')
+    let media_url = null;
+    if (media != null) {
+      const {type, data} = media;
+      const mediaForm = new FormData();
+      mediaForm.append('fileType', type);
+      mediaForm.append('fileData', data);
+      mediaForm.append('fileCategory', 'messagePhotos');
       const mediaUpload = await fetch(http_upload, {
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + token,
           'Content-Type': 'multipart/form-data',
         },
-        body: mediaForm
-      })
-      if (mediaUpload.status == 500){
-        alert('uploading photo failed')
-        return 1
+        body: mediaForm,
+      });
+      if (mediaUpload.status == 500) {
+        alert('uploading photo failed');
+        return 1;
       }
 
-      const mediaData = await mediaUpload.json()
-      media_url = mediaData
+      const mediaData = await mediaUpload.json();
+      media_url = mediaData;
     }
 
     const input = {
@@ -98,6 +103,42 @@ export const sendMessage = request => {
 
     if (result.errors) {
       return result;
+    }
+
+    return 0;
+  };
+};
+
+export const updateUserMessage = request => {
+  const {token, messageId, status, chatId} = request;
+
+  return async function(dispatch) {
+    const input = {
+      messageId,
+      status,
+      chatId
+    };
+
+    const graphql = {
+      query: updateUserMessageMutation,
+      variables: {
+        input: input,
+      },
+    };
+
+    const req = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(graphql)
+    });
+
+    const result = await req.json();
+
+    if (result.errors){
+      return result
     }
 
     return 0;

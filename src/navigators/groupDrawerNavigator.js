@@ -82,7 +82,7 @@ class GroupDrawerNavigator extends React.Component {
           }}
         />
         <DrawerItem
-          label="Chat"
+          label="Chats"
           icon={() => (
             <MaterialIcons name="chat" color={'grey'} size={25} />
           )}

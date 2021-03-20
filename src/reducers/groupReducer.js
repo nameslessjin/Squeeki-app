@@ -12,9 +12,9 @@ export default (groupReducer = (state = INITIAL_STATE, action) => {
         groups: {
           count: action.data.count,
           groups:
-            action.data.count > 10 && action.data.count == state.groups.count
+            action.data.count > 20 && action.data.count == state.groups.count
               ? state.groups.groups
-              : action.data.count == 10
+              : action.data.count == 20
               ? action.data.groups
               : state.groups.groups.concat(action.data.groups),
         },

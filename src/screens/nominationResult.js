@@ -127,7 +127,7 @@ class NominationResult extends React.Component {
           onEndReached={this.onEndReached}
           onNomineePress={this.onNomineePress}
         />
-        {loading ? <ActivityIndicator/> : null}
+        {loading ? <ActivityIndicator  animating={true} color={'grey'} /> : null}
       </View>
     );
   }

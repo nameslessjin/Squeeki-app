@@ -242,7 +242,7 @@ class Profile extends React.Component {
           </TouchableOpacity>
 
           <Text style={{color: 'red'}}>{errorText}</Text>
-          <ActivityIndicator animating={loading} />
+          <ActivityIndicator animating={loading} color={'grey'}/>
           <ProfileModal
             modalVisible={modalVisible}
             onBackdropPress={this.onBackdropPress}

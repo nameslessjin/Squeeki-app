@@ -588,7 +588,7 @@ class PostSetting extends React.Component {
               postId={postId}
             />
           )}
-          <ActivityIndicator animating={loading} />
+          <ActivityIndicator animating={loading} color={'grey'}/>
 
           <PostSettingModal
             modalVisible={modalVisible}

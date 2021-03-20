@@ -186,7 +186,7 @@ class ChangePassword extends React.Component {
           </TouchableOpacity>
 
           <Text style={{color: 'red'}}>{errorText}</Text>
-          <ActivityIndicator animating={loading} style={{marginTop: 5}} />
+          <ActivityIndicator animating={loading} style={{marginTop: 5}} color={'grey'}/>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

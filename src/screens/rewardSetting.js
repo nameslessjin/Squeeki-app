@@ -197,7 +197,7 @@ class RewardSetting extends React.Component {
             onInputChange={this.onInputChange}
             onQuestionMarkPress={this.onQuestionMarkPress}
           />
-          <ActivityIndicator animating={loading} />
+          <ActivityIndicator animating={loading} color={'grey'}/>
           <RewardModal modalVisible={modalVisible} onBackdropPress={this.onBackdropPress} />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

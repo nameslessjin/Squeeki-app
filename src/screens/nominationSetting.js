@@ -336,7 +336,7 @@ class NominationSetting extends React.Component {
             </TouchableOpacity>
           ) : null}
           {loading ? (
-            <ActivityIndicator style={{marginTop: 10}} animating={true} />
+            <ActivityIndicator style={{marginTop: 10}} animating={true} color={'grey'}/>
           ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

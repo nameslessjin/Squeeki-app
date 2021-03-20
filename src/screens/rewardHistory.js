@@ -2,9 +2,6 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  Text,
-  KeyboardAvoidingViewBase,
-  ActivityIndicator,
   StatusBar,
 } from 'react-native';
 import {connect} from 'react-redux';

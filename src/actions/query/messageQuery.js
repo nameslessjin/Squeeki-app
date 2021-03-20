@@ -1,4 +1,3 @@
-import {gql} from '@apollo/client';
 
 export const getChatMessageQuery = `
 query getChatMessage($input: MessageQuery!){
@@ -7,6 +6,7 @@ query getChatMessage($input: MessageQuery!){
             _id
             text
             image
+            status
             createdAt
             user {
                 _id
@@ -26,5 +26,12 @@ mutation sendMessage($input: MessageMutation!){
     sendMessage(input: $input)
 }
 `;
+
+export const updateUserMessageMutation = `
+mutation updateUserMessage($input: UserMessageMutation!){
+  updateUserMessage(input: $input)
+}
+
+`
 
 

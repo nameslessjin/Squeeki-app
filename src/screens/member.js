@@ -375,7 +375,7 @@ class Member extends React.Component {
             editable={allowToChangeGroupUsername}
           />
           {loading ? (
-            <ActivityIndicator style={{marginTop: 200}} animating={loading} />
+            <ActivityIndicator style={{marginTop: 200}} animating={loading} color={'grey'}/>
           ) : (
             <View style={{marginTop: 200}}>
               <OptionButtons

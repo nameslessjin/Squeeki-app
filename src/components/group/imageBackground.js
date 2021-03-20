@@ -121,7 +121,7 @@ export default class HeaderImageBackground extends React.Component {
         <View style={[styles.profileImgStyle]}>
           <View style={styles.imageStyle}>{iconImage}</View>
           {loading ? (
-            <ActivityIndicator animating={loading} />
+            <ActivityIndicator animating={loading} color={'grey'}/>
           ) : (
             <GroupButton
               auth={auth}

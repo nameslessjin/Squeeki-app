@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import {color} from 'react-native-reanimated';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { countFormat } from '../../utils/format'
 
 export default class CommentFooter extends React.Component {
   render() {
@@ -21,36 +22,12 @@ export default class CommentFooter extends React.Component {
       commentId,
     } = this.props;
 
-    let likeCount_text = likeCount.toString()
-    if (likeCount >= 1000) {
-      likeCount_text =
-        Math.floor(likeCount / 1000) +
-        Math.floor(
-          (likeCount -
-            Math.floor(likeCount / 1000) * 1000) /
-            100,
-        ) /
-          10 +
-        'k';
-    }
-    
-    if (likeCount >= 1000000) {
-      likeCount_text =
-        Math.floor(likeCount / 1000000) +
-        Math.floor(
-          (likeCount -
-            Math.floor(likeCount / 1000000) * 1000000) /
-            100000,
-        ) /
-          10 +
-        'm';
-    }
-
+    const likeCount_text = countFormat(likeCount)  
 
     return (
       <View style={styles.container}>
         {loading ? (
-          <ActivityIndicator animating={true} />
+          <ActivityIndicator animating={true} color={'grey'}/>
         ) : (
           <TouchableOpacity onPress={onCommentLike}>
             <View style={styles.iconContainer}>

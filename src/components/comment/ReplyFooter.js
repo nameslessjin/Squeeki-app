@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { countFormat } from '../../utils/format'
 
 export default class ReplyFooter extends React.Component {
   render() {
@@ -21,35 +22,12 @@ export default class ReplyFooter extends React.Component {
     } = this.props;
 
 
-    let likeCount_text = likeCount.toString()
-    if (likeCount >= 1000) {
-      likeCount_text =
-        Math.floor(likeCount / 1000) +
-        Math.floor(
-          (likeCount -
-            Math.floor(likeCount / 1000) * 1000) /
-            100,
-        ) /
-          10 +
-        'k';
-    }
-    
-    if (likeCount >= 1000000) {
-      likeCount_text =
-        Math.floor(likeCount / 1000000) +
-        Math.floor(
-          (likeCount -
-            Math.floor(likeCount / 1000000) * 1000000) /
-            100000,
-        ) /
-          10 +
-        'k';
-    }
+    const likeCount_text =  countFormat(likeCount)
 
     return (
       <View style={styles.container}>
         {loading ? (
-          <ActivityIndicator animating={true} />
+          <ActivityIndicator animating={true}  color={'grey'}/>
         ) : (
           <TouchableOpacity onPress={onReplyLike}>
             <View style={styles.iconContainer}>

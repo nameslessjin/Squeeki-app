@@ -438,7 +438,7 @@ class ChatSetting extends React.Component {
           {deleteButton}
 
           {loading ? (
-            <ActivityIndicator animating={loading} style={{marginTop: 20}} />
+            <ActivityIndicator animating={loading} style={{marginTop: 20}} color={'grey'} />
           ) : null}
           <ChatIconModal
             modalVisible={modalVisible}

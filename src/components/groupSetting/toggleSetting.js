@@ -38,7 +38,7 @@ export default class ToggleSetting extends React.Component {
       <View style={styles.container}>
         <Text style={{color: disabled ? 'grey' : 'black'}}>{title}</Text>
         {loading ? (
-          <ActivityIndicator loading={loading} />
+          <ActivityIndicator loading={loading} color={'grey'}/>
         ) : (
           <TouchableWithoutFeedback
             disabled={disabled}

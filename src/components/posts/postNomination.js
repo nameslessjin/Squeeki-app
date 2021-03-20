@@ -25,7 +25,7 @@ export default class PostNomination extends React.Component {
           nominated for{' '}
           <Text style={{fontWeight: 'bold'}}>{nomination.nomination_name}</Text>
         </Text>
-        {voting ? <ActivityIndicator/> : voteButton}
+        {voting ? <ActivityIndicator color={'grey'} animating={true}/> : voteButton}
       </View>
     );
   }

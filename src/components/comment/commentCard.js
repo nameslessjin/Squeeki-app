@@ -132,7 +132,7 @@ class CommentCard extends React.Component {
             {/* //reply list */}
             {replies.length < num_of_replies ? (
               reply_loading ? (
-                <ActivityIndicator animating={true} />
+                <ActivityIndicator animating={true} color={'grey'} />
               ) : (
                 <TouchableOpacity onPress={this.onGetReplies}>
                   <View

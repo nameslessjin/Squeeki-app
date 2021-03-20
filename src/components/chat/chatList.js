@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {chatTimeFormat} from '../../utils/time';
+import {countFormat} from '../../utils/format'
 
 const {width, height} = Dimensions.get('screen');
 
@@ -37,22 +38,7 @@ export default class ChatList extends React.Component {
   renderItem = ({item}) => {
     const {name, icon, rank_req, id, last_message, unread_message_count} = item;
 
-    let unread_message_count_text = unread_message_count.toString();
-    if (unread_message_count >= 1000) {
-      unread_message_count_text =
-        Math.floor(unread_message_count / 1000) +
-        Math.floor(
-          (unread_message_count -
-            Math.floor(unread_message_count / 1000) * 1000) /
-            100,
-        ) /
-          10 +
-        'k+';
-    }
-
-    if (unread_message_count >= 10000) {
-      unread_message_count_text = '10k+';
-    }
+    const unread_message_count_text = countFormat(unread_message_count) 
 
     const {icon_option} = this.state;
     const {onChatPress, userGroupAuthRank} = this.props;

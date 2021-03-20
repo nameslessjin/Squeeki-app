@@ -93,7 +93,7 @@ class Reward extends React.Component {
         <View style={styles.container}>
           <View style={styles.rewardContainer}>
             {loading ? (
-              <ActivityIndicator animating={loading} size={'large'}  />
+              <ActivityIndicator animating={loading} size={'large'} color={'grey'} />
             ) : reward.id ? (
               <Card item={reward} route={'reward'} />
             ) : (

@@ -322,7 +322,6 @@ const editPhoto = (image, onMediaUpload) => {
 
   PhotoEditor.Edit({
     path: path,
-    hiddenControls: ['share', 'sticker'],
     onDone: imagePath => {
       RNFS.readFile(imagePath, 'base64')
         .then(res => {

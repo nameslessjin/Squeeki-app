@@ -52,7 +52,7 @@ export default class RequestList extends React.Component {
           </View>
           <View style={styles.buttonsContainer}>
             {loading == 'deny' ? (
-              <ActivityIndicator animating={true} />
+              <ActivityIndicator animating={true} color={'grey'}/>
             ) : (
               <TouchableOpacity onPress={() => onRespond(id, 'deny')}>
                 <View
@@ -68,7 +68,7 @@ export default class RequestList extends React.Component {
               </TouchableOpacity>
             )}
             {loading == 'confirm' ? (
-              <ActivityIndicator animating={true} />
+              <ActivityIndicator animating={true} color={'grey'}/>
             ) : (
               <TouchableOpacity onPress={() => onRespond(id, 'confirm')}>
                 <View

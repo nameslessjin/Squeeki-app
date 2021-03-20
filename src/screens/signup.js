@@ -169,7 +169,7 @@ class SignUp extends React.Component {
               value={rePassword}
             />
             {loading ? (
-              <ActivityIndicator animating={true} style={{marginTop: 20}} />
+              <ActivityIndicator animating={true} style={{marginTop: 20}} color={'grey'}/>
             ) : (
               <SignUpButton onPress={this.onPress} />
             )}

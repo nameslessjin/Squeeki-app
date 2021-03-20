@@ -11,6 +11,7 @@ import {
   Keyboard,
   Dimensions,
 } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {getChat, getUserChat, updateChatInfo} from '../actions/chat';
@@ -23,7 +24,11 @@ import {
   Actions,
 } from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {sendMessage, getChatMessage} from '../actions/message';
+import {
+  sendMessage,
+  getChatMessage,
+  updateUserMessage,
+} from '../actions/message';
 import {sendMessageFunc, getChatMessageFunc} from '../functions/message';
 import {socket} from '../../server_config';
 import ChatMediaModal from '../components/chat/chatMediaModal';
@@ -73,6 +78,8 @@ class Chat extends React.Component {
     io.on(channel, data => {
       if (data.action == 'create') {
         this.addSubMessage(data.result);
+      } else if (data.action == 'message_status_update') {
+        this.updateUserMessage(data.result);
       }
     });
   }
@@ -85,17 +92,38 @@ class Chat extends React.Component {
         messages: message.concat(prevState.messages),
       };
     });
+
+    // set message to read here
+    const {auth, updateUserMessage} = this.props;
+    const {id} = this.state;
+    const request = {
+      token: auth.token,
+      messageId: message[0]._id,
+      chatId: id,
+      status: 'read',
+    };
+
+    updateUserMessage(request);
   };
 
-  updateSubMessage = data => {
-    const {message} = data;
+  updateUserMessage = data => {
+    const {userId, messageId, status} = data.update;
+
+    const {id} = this.props.auth.user;
     this.setState(prevState => {
-      const updatedMessages = [...prevState.messages];
+      let updatedMessages = [...prevState.messages];
       const updatedMessageIndex = updatedMessages.findIndex(
-        m => m.id === message.id,
+        m => m._id === messageId,
       );
+
       if (updatedMessageIndex > -1) {
-        updatedMessages[updatedMessageIndex] = message;
+        if (id == userId) {
+          if (status == 'delete') {
+            updatedMessages = updatedMessages.filter(m => m._id != messageId);
+          } else {
+            updatedMessages[updatedMessageIndex].status = status;
+          }
+        }
       }
       return {
         messages: updatedMessages,
@@ -151,6 +179,39 @@ class Chat extends React.Component {
     this.setState({content: ''});
     Keyboard.dismiss();
     const req = sendMessageFunc(data);
+  };
+
+  onLongPress = (context, message) => {
+    const {updateUserMessage, auth} = this.props;
+    const {id} = this.state;
+    if (message.text.length > 0) {
+      const options = ['Copy', 'Delete', 'Cancel'];
+      const cancelButtonIndex = options.length - 1;
+      context.actionSheet().showActionSheetWithOptions(
+        {
+          options,
+          cancelButtonIndex,
+        },
+        buttonIndex => {
+          switch (buttonIndex) {
+            case 0:
+              Clipboard.setString(message.text);
+              break;
+            case 1:
+              const request = {
+                token: auth.token,
+                messageId: message._id,
+                chatId: id,
+                status: 'delete',
+              };
+
+              updateUserMessage(request);
+
+              break;
+          }
+        },
+      );
+    }
   };
 
   loadChat = async () => {
@@ -267,7 +328,7 @@ class Chat extends React.Component {
     this.setState({modalVisible: true});
   };
 
-  onChangeMedia = value => { 
+  onChangeMedia = value => {
     this.setState({image: {...value}});
   };
 
@@ -275,8 +336,8 @@ class Chat extends React.Component {
     this.setState({modalVisible: false});
   };
 
-  onMediaUpload = (media) => {
-    this.setState({modalVisible: false})
+  onMediaUpload = media => {
+    this.setState({modalVisible: false});
 
     const {sendMessage, navigation, userLogout, auth} = this.props;
     const {id} = this.state;
@@ -292,9 +353,7 @@ class Chat extends React.Component {
 
     Keyboard.dismiss();
     const req = sendMessageFunc(data);
-
-
-  }
+  };
 
   render() {
     const {auth} = this.props;
@@ -308,6 +367,7 @@ class Chat extends React.Component {
     const user = {
       _id: auth.user.id,
     };
+    console.log(messages)
 
     return (
       <View>
@@ -332,6 +392,9 @@ class Chat extends React.Component {
             renderActions={this.renderActions}
             maxInputLength={5000}
             maxComposerHeight={200}
+            onLongPress={(context, message) =>
+              this.onLongPress(context, message)
+            }
           />
         </KeyboardAvoidingView>
         <ChatMediaModal
@@ -366,6 +429,7 @@ const mapDispatchToProps = dispatch => {
     getChatMessage: data => dispatch(getChatMessage(data)),
     getUserChat: data => dispatch(getUserChat(data)),
     updateChatInfo: data => dispatch(updateChatInfo(data)),
+    updateUserMessage: data => dispatch(updateUserMessage(data)),
   };
 };
 

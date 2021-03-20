@@ -221,7 +221,7 @@ class CheckInSetting extends React.Component {
             value={duration}
             onInputChange={this.onInputChange}
           />
-          <ActivityIndicator animating={loading} />
+          <ActivityIndicator animating={loading} color={'grey'}/>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

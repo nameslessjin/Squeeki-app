@@ -7,7 +7,7 @@ export default class GroupHeaderRight extends React.Component {
 
       const {onPress, update, loading} = this.props
       const disabled = !(update && !loading)
-    return  loading ? <ActivityIndicator animating={true} style={styles.headerRightButton} /> : (
+    return  loading ? <ActivityIndicator animating={true} style={styles.headerRightButton} color={'grey'} /> : (
       <TouchableOpacity
         style={styles.headerRightButton}
         onPress={onPress}

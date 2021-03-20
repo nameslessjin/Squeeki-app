@@ -96,7 +96,7 @@ class NominationCard extends React.Component {
                 <Text style={{color: '#2980b9'}}>Edit</Text>
               </TouchableOpacity>
               {loading ? (
-                <ActivityIndicator animating={true} />
+                <ActivityIndicator animating={true} color={'grey'} />
               ) : (
                 <TouchableOpacity onPress={this.onTurnPress}>
                   <Text style={{color: on ? '#27ae60' : 'red'}}>

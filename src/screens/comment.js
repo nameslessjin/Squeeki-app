@@ -365,6 +365,7 @@ class Comment extends React.Component {
                   <ActivityIndicator
                     animating={true}
                     style={{marginBottom: 5}}
+                    color={'grey'}
                   />
                 ) : (
                   <TouchableOpacity
