@@ -77,16 +77,13 @@ class GroupSetting extends React.Component {
       backgroundImg: group.backgroundImg,
     };
 
-    if (icon) {
-      if (icon.uri == origin.icon.uri) {
-        icon = null;
-      }
+    // if icon picked and origin icon exist
+    if (icon == origin.icon) {
+      icon = null;
     }
 
-    if (backgroundImg) {
-      if (backgroundImg.uri == origin.backgroundImg.uri) {
-        backgroundImg = null;
-      }
+    if (backgroundImg == origin.backgroundImg) {
+      backgroundImg = null;
     }
 
     if (display_name == origin.display_name) {

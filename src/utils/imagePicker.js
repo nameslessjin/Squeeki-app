@@ -17,7 +17,8 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        let name = response.uri.split('/');
+        const uri = response.uri
+        let name = uri.split('/');
         name = name[name.length - 1];
         let source = {
           uri: response.uri,
@@ -26,9 +27,30 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
           type: response.type,
           filename: name,
           data: response.base64,
+          mediaType: 'photo',
         };
 
-        setImage(source, 'background');
+        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const picked = {
+          path: path,
+          type: response.type,
+        };
+
+        RNFS.exists(path)
+          .then(res => {
+            if (res) {
+              RNFS.unlink(path);
+            }
+          })
+          .then(() => {
+            RNFS.moveFile(uri, path)
+              .then(() => {
+                editPhoto(picked, setImage, 'background');
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          });
       }
     });
   } else {
@@ -38,7 +60,8 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        let name = response.uri.split('/');
+        const uri = response.uri
+        let name = uri.split('/');
         name = name[name.length - 1];
         let source = {
           uri: response.uri,
@@ -47,9 +70,30 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
           type: response.type,
           filename: name,
           data: response.base64,
+          mediaType: 'photo',
         };
 
-        setImage(source, 'background');
+        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const picked = {
+          path: path,
+          type: response.type,
+        };
+
+        RNFS.exists(path)
+          .then(res => {
+            if (res) {
+              RNFS.unlink(path);
+            }
+          })
+          .then(() => {
+            RNFS.moveFile(uri, path)
+              .then(() => {
+                editPhoto(picked, setImage, 'background');
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          });
       }
     });
   }
@@ -70,7 +114,8 @@ export const iconImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        let name = response.uri.split('/');
+        const uri = response.uri
+        let name = uri.split('/');
         name = name[name.length - 1];
         let source = {
           uri: response.uri,
@@ -79,9 +124,30 @@ export const iconImagePicker = (setImage, from, cancel) => {
           type: response.type,
           filename: name,
           data: response.base64,
+          mediaType: 'photo',
         };
 
-        setImage(source, 'icon');
+        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const picked = {
+          path: path,
+          type: response.type,
+        };
+
+        RNFS.exists(path)
+          .then(res => {
+            if (res) {
+              RNFS.unlink(path);
+            }
+          })
+          .then(() => {
+            RNFS.moveFile(uri, path)
+              .then(() => {
+                editPhoto(picked, setImage, 'icon');
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          });
       }
     });
   } else {
@@ -91,7 +157,8 @@ export const iconImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        let name = response.uri.split('/');
+        const uri = response.uri
+        let name = uri.split('/');
         name = name[name.length - 1];
         let source = {
           uri: response.uri,
@@ -100,9 +167,30 @@ export const iconImagePicker = (setImage, from, cancel) => {
           type: response.type,
           filename: name,
           data: response.base64,
+          mediaType: 'photo',
         };
 
-        setImage(source, 'icon');
+        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const picked = {
+          path: path,
+          type: response.type,
+        };
+
+        RNFS.exists(path)
+          .then(res => {
+            if (res) {
+              RNFS.unlink(path);
+            }
+          })
+          .then(() => {
+            RNFS.moveFile(uri, path)
+              .then(() => {
+                editPhoto(picked, setImage, 'icon');
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          });
       }
     });
   }
@@ -124,7 +212,8 @@ export const PostImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        let name = response.uri.split('/');
+        const uri = response.uri;
+        let name = uri.split('/');
         name = name[name.length - 1];
         let source = {
           uri: response.uri,
@@ -136,7 +225,27 @@ export const PostImagePicker = (setImage, from, cancel) => {
           mediaType: 'photo',
         };
 
-        setImage(source, 'image');
+        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const picked = {
+          path: path,
+          type: response.type,
+        };
+
+        RNFS.exists(path)
+          .then(res => {
+            if (res) {
+              RNFS.unlink(path);
+            }
+          })
+          .then(() => {
+            RNFS.moveFile(uri, path)
+              .then(() => {
+                editPhoto(picked, setImage, 'image');
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          });
       }
     });
   } else {
@@ -146,7 +255,8 @@ export const PostImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        let name = response.uri.split('/');
+        const uri = response.uri;
+        let name = uri.split('/');
         name = name[name.length - 1];
         let source = {
           uri: response.uri,
@@ -157,7 +267,28 @@ export const PostImagePicker = (setImage, from, cancel) => {
           data: response.base64,
           mediaType: 'photo',
         };
-        setImage(source, 'image');
+
+        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const picked = {
+          path: path,
+          type: response.type,
+        };
+
+        RNFS.exists(path)
+          .then(res => {
+            if (res) {
+              RNFS.unlink(path);
+            }
+          })
+          .then(() => {
+            RNFS.moveFile(uri, path)
+              .then(() => {
+                editPhoto(picked, setImage, 'image');
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          });
       }
     });
   }
@@ -248,7 +379,7 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
           mediaType: 'photo',
         };
 
-        const path = RNFS.DocumentDirectoryPath + `/${response.filename}`;
+        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
         const picked = {
           path: path,
           type: response.type,
@@ -317,7 +448,7 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
   }
 };
 
-const editPhoto = (image, onMediaUpload) => {
+const editPhoto = (image, func, input_type) => {
   const {path, type} = image;
 
   PhotoEditor.Edit({
@@ -328,8 +459,9 @@ const editPhoto = (image, onMediaUpload) => {
           const upload = {
             data: res,
             type: type,
+            uri: imagePath,
           };
-          onMediaUpload(upload);
+          func(upload, input_type);
         })
         .catch(err => console.log(err));
     },
