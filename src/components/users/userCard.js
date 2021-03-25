@@ -47,6 +47,7 @@ export default class UserCard extends React.Component {
       onPress,
       checked,
       group_username,
+      in_chat
     } = this.props;
     const {icon_option} = this.state;
 
@@ -58,11 +59,14 @@ export default class UserCard extends React.Component {
       prev_route != 'PostSetting' &&
       prev_route != 'CheckInResult'
     ) {
-      in_group_message = 'In your group';
+      in_group_message = 'In group';
       disable = true;
     } else if (checked && prev_route == 'CheckInResult') {
-      in_group_message = 'Checked in';
+      in_group_message = 'Checked';
       disable = true;
+    } else if (in_chat){
+      disable = true;
+      in_group_message = 'In Chat'
     }
 
     let displayNameSize = 16;

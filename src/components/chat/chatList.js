@@ -19,11 +19,15 @@ const {width, height} = Dimensions.get('screen');
 const extractKey = ({id}) => id;
 
 export default class ChatList extends React.Component {
-  state = {
-    icon_option: 'emoticon-cool-outline',
-  };
 
-  componentDidMount() {
+
+  renderItem = ({item}) => {
+    const {name, icon, rank_req, id, last_message, unread_message_count} = item;
+
+    const unread_message_count_text = countFormat(unread_message_count) 
+
+    const {onChatPress, userGroupAuthRank} = this.props;
+
     const random = Math.floor(Math.random() * 5);
     const icon_options = [
       'emoticon-cool-outline',
@@ -32,16 +36,8 @@ export default class ChatList extends React.Component {
       'emoticon-wink-outline',
       'emoticon-tongue-outline',
     ];
-    this.setState({icon_option: icon_options[random]});
-  }
 
-  renderItem = ({item}) => {
-    const {name, icon, rank_req, id, last_message, unread_message_count} = item;
-
-    const unread_message_count_text = countFormat(unread_message_count) 
-
-    const {icon_option} = this.state;
-    const {onChatPress, userGroupAuthRank} = this.props;
+    const icon_option = icon_options[random]
 
     let message_preview =
       last_message == null

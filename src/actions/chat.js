@@ -8,7 +8,8 @@ import {
   switchOwnershipMutation,
   getUserChatQuery,
   getAllChatIdQuery,
-  getSingleChatQuery
+  getSingleChatQuery,
+  getAllUserChatQuery,
 } from './query/chatQuery';
 import {http, http_upload} from '../../server_config';
 
@@ -43,7 +44,6 @@ export const getChat = request => {
       return result;
     }
 
-
     dispatch(getChatReducer(result.data.getChat));
     return result.data.getChat;
   };
@@ -57,7 +57,15 @@ const getChatReducer = data => {
 };
 
 export const createChat = request => {
-  const {groupId, name, rank_req, icon, token, allow_invite, allow_modify} = request;
+  const {
+    groupId,
+    name,
+    rank_req,
+    icon,
+    token,
+    allow_invite,
+    allow_modify,
+  } = request;
 
   return async function(dispatch) {
     let iconData = null;
@@ -157,7 +165,15 @@ export const deleteLeaveChat = request => {
 };
 
 export const updateChat = request => {
-  const {name, rank_req, icon, chatId, token, allow_invite, allow_modify} = request;
+  const {
+    name,
+    rank_req,
+    icon,
+    chatId,
+    token,
+    allow_invite,
+    allow_modify,
+  } = request;
 
   return async function(dispatch) {
     let iconData = null;
@@ -222,7 +238,7 @@ export const updateChat = request => {
       return result;
     }
 
-    dispatch(updateChatReducer(result.data.updateChat))
+    dispatch(updateChatReducer(result.data.updateChat));
     return result.data.updateChat;
   };
 };
@@ -230,9 +246,9 @@ export const updateChat = request => {
 const updateChatReducer = i => {
   return {
     type: 'updateChat',
-    i: i
-  }
-}
+    i: i,
+  };
+};
 
 export const createUserChat = request => {
   const {token, chatId, userIds} = request;
@@ -249,6 +265,7 @@ export const createUserChat = request => {
         input: input,
       },
     };
+    console.log(graphql)
 
     const req = await fetch(http, {
       method: 'POST',
@@ -260,7 +277,7 @@ export const createUserChat = request => {
     });
 
     const result = await req.json();
-
+    console.log(result)
     if (result.errors) {
       return result;
     }
@@ -367,22 +384,21 @@ export const getUserChat = request => {
       return result;
     }
 
-    return result.data.getUserChat
-
+    return result.data.getUserChat;
   };
 };
 
 export const getAllChatId = request => {
-  const {token, groupId} = request
+  const {token, groupId} = request;
   return async function(dispatch) {
     const input = {
-      groupId
-    }
+      groupId,
+    };
 
     const graphql = {
       query: getAllChatIdQuery,
-      variables: {input: input}
-    }
+      variables: {input: input},
+    };
 
     const req = await fetch(http, {
       method: 'POST',
@@ -399,37 +415,35 @@ export const getAllChatId = request => {
       return result;
     }
 
-    return result.data.getAllChatId
-  }
-}
+    return result.data.getAllChatId;
+  };
+};
 
 export const updateChatInfo = request => {
-
-  return async function(dispatch){
-
-    dispatch(updateChatInfoReducer(request))
-    return 0
-  }
-}
+  return async function(dispatch) {
+    dispatch(updateChatInfoReducer(request));
+    return 0;
+  };
+};
 
 const updateChatInfoReducer = i => {
-  return{
+  return {
     type: 'updateChatInfo',
-    i: i
-  }
-}
+    i: i,
+  };
+};
 
 export const getSingleChat = request => {
-  const {token, chatId} = request
-  return async function(dispatch){
+  const {token, chatId} = request;
+  return async function(dispatch) {
     const input = {
-      chatId
-    }
+      chatId,
+    };
 
     const graphql = {
       query: getSingleChatQuery,
-      variables: {input: input}
-    }
+      variables: {input: input},
+    };
 
     const req = await fetch(http, {
       method: 'POST',
@@ -446,20 +460,55 @@ export const getSingleChat = request => {
       return result;
     }
 
-    dispatch(getSingleChatReducer(result.data.getSingleChat))
-    return 0
-  }
-}
+    dispatch(getSingleChatReducer(result.data.getSingleChat));
+    return 0;
+  };
+};
 
-const getSingleChatReducer =  i => {
+const getSingleChatReducer = i => {
   return {
     type: 'getSingleChat',
-    i: i
-  }
-}
+    i: i,
+  };
+};
 
 export const resetChatReducer = () => {
   return {
     type: 'resetChat',
-  }
-}
+  };
+};
+
+export const getAllUserChat = request => {
+  const {token, chatId, count} = request;
+
+  return async function(dispatch) {
+    const input = {
+      chatId,
+      count,
+    };
+
+    const graphql = {
+      query: getAllUserChatQuery,
+      variables: {
+        input: input,
+      },
+    };
+
+    const req = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.getAllUserChat;
+  };
+};

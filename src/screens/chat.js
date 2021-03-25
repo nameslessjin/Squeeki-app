@@ -32,6 +32,11 @@ import {
 import {sendMessageFunc, getChatMessageFunc} from '../functions/message';
 import {socket} from '../../server_config';
 import ChatMediaModal from '../components/chat/chatMediaModal';
+import {
+  RenderSend,
+  RenderActions,
+  OnLongPress,
+} from '../components/chat/render';
 
 const {height} = Dimensions.get('screen');
 
@@ -184,34 +189,15 @@ class Chat extends React.Component {
   onLongPress = (context, message) => {
     const {updateUserMessage, auth} = this.props;
     const {id} = this.state;
-    if (message.text.length > 0) {
-      const options = ['Copy', 'Delete', 'Cancel'];
-      const cancelButtonIndex = options.length - 1;
-      context.actionSheet().showActionSheetWithOptions(
-        {
-          options,
-          cancelButtonIndex,
-        },
-        buttonIndex => {
-          switch (buttonIndex) {
-            case 0:
-              Clipboard.setString(message.text);
-              break;
-            case 1:
-              const request = {
-                token: auth.token,
-                messageId: message._id,
-                chatId: id,
-                status: 'delete',
-              };
+    const props = {
+      id,
+      updateUserMessage,
+      auth,
+      context,
+      message,
+    };
 
-              updateUserMessage(request);
-
-              break;
-          }
-        },
-      );
-    }
+    OnLongPress(props);
   };
 
   loadChat = async () => {
@@ -249,9 +235,6 @@ class Chat extends React.Component {
         allow_invite,
         allow_modify,
       });
-      // navigation.setOptions({
-      //   headerTitle: name,
-      // });
     }
   }
 
@@ -293,34 +276,20 @@ class Chat extends React.Component {
 
   renderSend = p => {
     const text = this.state.content.trim();
-    return (
-      <TouchableOpacity
-        onPress={p.onSend}
-        style={{marginBottom: 10, marginRight: 10}}
-        disabled={text.length == 0 || text.length > 5000}>
-        <MaterialIcons
-          size={30}
-          name={'arrow-up-drop-circle'}
-          color={text.length == 0 || text.length > 5000 ? 'grey' : '#EA2027'}
-        />
-      </TouchableOpacity>
-    );
+    const props = {
+      text,
+      onSend: p.onSend,
+    };
+    return <RenderSend {...props} />;
   };
 
   renderActions = props => {
-    return (
-      <TouchableOpacity
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          // backgroundColor: 'yellow',
-          marginLeft: 5,
-          marginBottom: props.bottomOffset - 23,
-        }}
-        onPress={this.onActionPress}>
-        <MaterialIcons size={30} name={'plus'} />
-      </TouchableOpacity>
-    );
+    const p = {
+      bottomOffset: props.bottomOffset,
+      onActionPress: this.onActionPress,
+    };
+
+    return <RenderActions {...p} />;
   };
 
   onActionPress = () => {
@@ -355,6 +324,7 @@ class Chat extends React.Component {
     const req = sendMessageFunc(data);
   };
 
+
   render() {
     const {auth} = this.props;
     const {
@@ -367,7 +337,6 @@ class Chat extends React.Component {
     const user = {
       _id: auth.user.id,
     };
-    console.log(messages)
 
     return (
       <View>
@@ -395,6 +364,7 @@ class Chat extends React.Component {
             onLongPress={(context, message) =>
               this.onLongPress(context, message)
             }
+            scrollToBottom={true}
           />
         </KeyboardAvoidingView>
         <ChatMediaModal

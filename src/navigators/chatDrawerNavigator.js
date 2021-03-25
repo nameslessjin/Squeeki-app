@@ -70,6 +70,18 @@ class ChatDrawerkNavigator extends React.Component {
     });
   };
 
+  onMemberPress = () => {
+    const {id, allow_invite, allow_modify} = this.props.chat.chat;
+    const {status} = this.state;
+    const {navigation} = this.props;
+    navigation.navigate('ChatMembers', {
+      chatId: id,
+      allow_invite,
+      allow_modify,
+      status,
+    });
+  };
+
   getUserChat = async () => {
     const {auth, getUserChat, chat} = this.props;
     const {id} = chat.chat;
@@ -93,6 +105,14 @@ class ChatDrawerkNavigator extends React.Component {
     return (
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
+        <DrawerItem
+          label="Members"
+          icon={() => (
+            <MaterialIcons name="account-group" color={'grey'} size={25} />
+          )}
+          labelStyle={styles.labelStyle}
+          onPress={this.onMemberPress}
+        />
         <DrawerItem
           label="Settings"
           icon={() => <MaterialIcons name="cog" color={'grey'} size={25} />}

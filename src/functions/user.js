@@ -103,10 +103,11 @@ export const searchUserFunc = async data => {
     groupId,
     userIdList,
     inGroup,
-    checkin_id
+    checkin_id,
+    chatId
   } = data;
 
-  if (searchTerm.length >= 3) {
+  // if (searchTerm.length >= 3) {
     const input = {
       searchTerm: searchTerm,
       token: auth.token,
@@ -114,7 +115,8 @@ export const searchUserFunc = async data => {
       count: count,
       userIdList: userIdList,
       inGroup: inGroup,
-      checkin_id: checkin_id
+      checkin_id: checkin_id,
+      chatId
     };
 
     const searchResult = await searchUser(input);
@@ -132,6 +134,6 @@ export const searchUserFunc = async data => {
     }
 
     return searchResult;
-  }
-  return 0;
+  // }
+  // return 0;
 };

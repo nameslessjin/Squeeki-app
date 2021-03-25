@@ -3,16 +3,16 @@ import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
 
 export default class OptionButtons extends React.Component {
   render() {
-    const {onDeleteMember, allowToDeleteMember, allowToMakeOwner, onMakeOwner} = this.props;
+    const {allowToDeleteMember, allowToMakeOwner, optionAlert} = this.props;
 
     const removeButton = allowToDeleteMember ? (
-      <TouchableOpacity onPress={onDeleteMember}>
+      <TouchableOpacity onPress={() => optionAlert('remove')}>
         <Text style={styles.removeButton}>Remove</Text>
       </TouchableOpacity>
     ) : null;
 
     const makeOwnerButton = allowToMakeOwner ? (
-        <TouchableOpacity onPress={onMakeOwner}>
+        <TouchableOpacity onPress={() => optionAlert('ownership')}>
             <Text style={styles.makeOwnerButton}>Make Owner</Text>
         </TouchableOpacity>
     ) : null

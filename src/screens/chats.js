@@ -34,7 +34,7 @@ class Chats extends React.Component {
       headerTitle: 'Chats',
     });
 
-    if (group.group.id) {
+    if (group.group.auth) {
       const {auth, rank_setting} = group.group;
       navigation.setOptions({
         headerRight: () =>
@@ -89,7 +89,7 @@ class Chats extends React.Component {
     let socket_chat_id = chat.chats;
 
     // if in group only the one with proper rank
-    if (group.group.id) {
+    if (group.group.auth) {
       socket_chat_id = chat.chats.filter(
         c => c.rank_req >= group.group.auth.rank,
       );
@@ -129,7 +129,7 @@ class Chats extends React.Component {
     let socket_chat_id = req.chat;
 
     // if in group only the one with proper rank
-    if (group.group.id) {
+    if (group.group.auth) {
       socket_chat_id = req.chat.filter(
         c => c.rank_req >= group.group.auth.rank,
       );
@@ -185,7 +185,7 @@ class Chats extends React.Component {
 
     if (req) {
       const {rank_req} = req
-      if (group.group.id) {
+      if (group.group.auth) {
         if (group.group.auth.rank > rank_req) {
           alert(
             `You can only enter this chat if you are rank ${rank_req} or above.`,
@@ -213,7 +213,7 @@ class Chats extends React.Component {
             refreshing={refreshing}
             onEndReached={this.onEndReached}
             onChatPress={this.onChatPress}
-            userGroupAuthRank={group.group.id ? group.group.auth.rank : null}
+            userGroupAuthRank={group.group.auth ? group.group.auth.rank : null}
           />
         </View>
       </TouchableWithoutFeedback>

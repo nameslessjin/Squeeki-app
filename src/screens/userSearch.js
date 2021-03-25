@@ -14,6 +14,7 @@ import UserSearchBar from '../components/users/userSearch/searchBar';
 import DoneButton from '../components/users/userSearch/doneButton';
 import {searchUser, addMembers, getGroupMembers} from '../actions/user';
 import {userCheckInBatch, getGroupCheckInResult} from '../actions/checkin';
+import {createUserChat} from '../actions/chat';
 import {searchUserFunc, getGroupMembersFunc} from '../functions/user';
 import UserList from '../components/users/userList';
 import DisplayNameList from '../components/users/userSearch/displayNameList';
@@ -24,6 +25,8 @@ class UserSearch extends React.Component {
     usersData: [],
     count: 0,
     chosenUser: [],
+    group: null,
+    chatId: null,
   };
 
   componentDidMount() {
@@ -32,11 +35,15 @@ class UserSearch extends React.Component {
     const {params} = this.props.route;
     if (params) {
       // group and pre_route is passed in every instance
-      this.setState({group: params.group, prev_route: params.prev_route});
-      if (params.prev_route == 'PostSetting') {
-        this.loadGroupMembers(true);
+      const {group, prev_route, chatId} = params;
+      this.setState({group: group, prev_route: prev_route, chatId});
+
+      // // if it is chat from group then load group members
+      if ((prev_route == 'chatMembers' || prev_route == 'CheckInResult' || prev_route == 'PostSetting') && group != null) {
+        this.onSearchChange('')
       }
     }
+
     const button =
       params.prev_route == 'PostSetting' ? null : (
         <DoneButton
@@ -48,13 +55,16 @@ class UserSearch extends React.Component {
       headerTitle:
         params.prev_route == 'PostSetting' ? 'Pick nominee' : 'Search User',
       headerRight: () => button,
-      headerBackTitleVisible: false
+      headerBackTitleVisible: false,
     });
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     const {navigation} = this.props;
-    const {chosenUser, prev_route} = this.state;
+    const {chosenUser, prev_route, searchTerm} = this.state;
+    if (prevState.searchTerm != searchTerm){
+      this.setState({usersData: [], count: 0})
+    }
     const button =
       prev_route == 'PostSetting' ? null : (
         <DoneButton
@@ -67,6 +77,7 @@ class UserSearch extends React.Component {
     });
   }
 
+
   componentWillUnmount() {
     const {prev_route} = this.state;
     if (prev_route == 'PostSetting') {
@@ -74,9 +85,12 @@ class UserSearch extends React.Component {
       this.loadGroupMembers(true);
     } else if (prev_route == 'CheckInResult') {
       this.loadCheckInResult(true);
+    } else if (prev_route == 'chatMembers') {
+      // load chat members for individual chats and group chats
     }
   }
 
+  // for unmount only
   loadGroupMembers = init => {
     const {
       navigation,
@@ -86,29 +100,25 @@ class UserSearch extends React.Component {
       route,
       user,
     } = this.props;
-    let group = this.state.group;
-
+    // let {group} = this.state;
+    // console.log(this.state)
+    const group = route.params.group
     let userIdList = [];
-    if (route.params) {
-      const {prev_route} = route.params;
-      if (prev_route == 'PostSetting' || prev_route == 'CheckInResult') {
-        group = route.params.group;
-      }
-      userIdList = userIdList || [];
-    }
 
     const data = {
       token: auth.token,
       groupId: group.id,
       navigation: navigation,
       userLogout: userLogout,
-      count: init ? 0 : user.members.count,
+      count: 0,
       getGroupMembers: getGroupMembers,
       userIdList: userIdList,
     };
+    console.log(this.props);
     getGroupMembersFunc(data);
   };
 
+  // for unmount only
   loadCheckInResult = async init => {
     const {
       userLogout,
@@ -129,7 +139,7 @@ class UserSearch extends React.Component {
     const req = await getGroupCheckInResult(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load users at this time, please try again later')
+      alert('Cannot load users at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -142,7 +152,7 @@ class UserSearch extends React.Component {
   };
 
   onAddMembers = async () => {
-    const {chosenUser, group} = this.state;
+    const {chosenUser, group, chatId} = this.state;
     const chosenUserIds = chosenUser.map(u => u.id);
     const {
       auth,
@@ -151,6 +161,7 @@ class UserSearch extends React.Component {
       addMembers,
       route,
       userCheckInBatch,
+      createUserChat,
     } = this.props;
     let request = {};
     let req = 0;
@@ -173,12 +184,21 @@ class UserSearch extends React.Component {
           groupId: group.id,
         };
         req = await addMembers(request);
+      } else if (prev_route == 'chatMembers') {
+        // add members on chat members
+        request = {
+          token: auth.token,
+          userIds: chosenUserIds,
+          chatId,
+        };
+        // either change addMembers or write a function for add chatMembers
+        req = await createUserChat(request);
       }
     }
 
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot add members at this time, please try again later')
+      alert('Cannot add members at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -197,97 +217,41 @@ class UserSearch extends React.Component {
   onSearchChange = async text => {
     const term = text.trim();
 
-    this.setState({searchTerm: text});
+    const {usersData, searchTerm} = this.state;    
+    this.setState({searchTerm: text})
 
-    if (term.length < 3) {
+    const count = searchTerm != text ? 0 : this.state.count
+    const {searchUser, auth, navigation, userLogout, route} = this.props;
+    const {prev_route, group, chatId} = route.params;
+    
+    const groupId = group ? group.id : null;
+
+    // search for general users
+    if (term.length < 3 && (prev_route=='members' || (prev_route == 'chatMembers' && group == null) )) {
+      console.log(prev_route == 'chatMembers' && group == null)
       this.setState({usersData: [], count: 0});
       return;
     }
-
-    const {searchUser, auth, navigation, userLogout, route} = this.props;
-    const {group} = this.state;
-    const groupId = group ? group.id : 'null';
+    console.log('Outside')
 
     let userIdList = [];
     let inGroup = false;
     let checkin_id = null;
-    if (route.params) {
-      const {prev_route} = route.params;
+
+
       userIdList = route.params.userIdList || [];
-      if (prev_route == 'PostSetting' || prev_route == 'CheckInResult') {
-        inGroup = true;
-      }
-
-      if (prev_route == 'CheckInResult') {
-        checkin_id = route.params.checkin_id;
-      }
-    }
-
-    const data = {
-      searchUser: searchUser,
-      auth: auth,
-      navigation: navigation,
-      userLogout: userLogout,
-      count: 0,
-      searchTerm: term,
-      groupId: groupId,
-      userIdList: userIdList,
-      inGroup: inGroup,
-      checkin_id: checkin_id,
-    };
-
-    const searchResult = await searchUserFunc(data);
-
-    if (searchResult != 0) {
-      const {users, count} = searchResult;
-      this.setState({
-        usersData: users.map(u => {
-          return {
-            ...u,
-            chosen: false,
-          };
-        }),
-        count: count,
-      });
-    }
-
-    return;
-  };
-
-  onEndReached = async () => {
-    const {searchTerm, count, usersData, prev_route} = this.state;
-    const {searchUser, auth, navigation, userLogout, route} = this.props;
-    const {group} = this.state;
-    const groupId = group ? group.id : 'null';
-
-    let userIdList = [];
-
-    if (route.params) {
-      userIdList = route.params.userIdList || [];
-    }
-
-    // perform load group members when it is not searching
-    if (prev_route == 'PostSetting' && usersData.length == 0) {
-      this.loadGroupMembers(false);
-      return
-    }
-
-    if (searchTerm < 3) {
-      this.setState({usersData: [], count: null});
-      return;
-    }
-
-    let inGroup = false;
-    let checkin_id = null;
-
-    // under specific condition, only search within the group
-    if (prev_route == 'PostSetting' || prev_route == 'CheckInResult') {
+    if (
+      prev_route == 'PostSetting' ||
+      prev_route == 'CheckInResult' ||
+      (group != null && prev_route == 'chatMembers')
+    ) {
       inGroup = true;
     }
 
     if (prev_route == 'CheckInResult') {
       checkin_id = route.params.checkin_id;
     }
+    
 
     const data = {
       searchUser: searchUser,
@@ -295,29 +259,42 @@ class UserSearch extends React.Component {
       navigation: navigation,
       userLogout: userLogout,
       count: count,
-      searchTerm: searchTerm,
+      searchTerm: term,
       groupId: groupId,
       userIdList: userIdList,
       inGroup: inGroup,
       checkin_id: checkin_id,
+      chatId: chatId,
     };
 
     const searchResult = await searchUserFunc(data);
+
     if (searchResult != 0) {
       const {users, count} = searchResult;
-      const newUsers = usersData.concat(
-        users.map(u => {
-          return {
-            ...u,
-            chosen: false,
-          };
-        }),
-      );
-      this.setState({
-        usersData: newUsers,
-        count: count,
+      const format_users = users.map(u => {
+        return {
+          ...u,
+          chosen: false
+        }
+      })
+      const newUsers = usersData.concat(format_users);
+      
+      this.setState(prevState => {
+        return {
+          usersData: searchTerm == text ? newUsers : format_users,
+          count: count,
+        }
+
       });
     }
+
+    return;
+  };
+
+  onEndReached = async () => {
+    const {searchTerm} = this.state;
+
+    this.onSearchChange(searchTerm);
   };
 
   onChooseUser = user => {
@@ -366,13 +343,8 @@ class UserSearch extends React.Component {
   };
 
   render() {
-    const {searchTerm, usersData, chosenUser, prev_route} = this.state;
+    const {searchTerm, usersData, chosenUser, prev_route, group} = this.state;
     const {navigation, user, auth} = this.props;
-    let userList = usersData;
-
-    if (prev_route == 'PostSetting' && usersData.length == 0) {
-      userList = user.members.members;
-    }
 
     let search_view = (
       <KeyboardAvoidingView style={styles.container}>
@@ -389,7 +361,7 @@ class UserSearch extends React.Component {
           </View>
         )}
         <UserList
-          usersData={userList}
+          usersData={usersData}
           onEndReached={this.onEndReached}
           navigation={navigation}
           onChooseUser={this.onChooseUser}
@@ -441,8 +413,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {auth, group, user, checkin} = state;
-  return {auth, group, user, checkin};
+  const {auth, user, checkin} = state;
+  return {auth, user, checkin};
 };
 
 const mapDispatchToProps = dispatch => {
@@ -453,6 +425,7 @@ const mapDispatchToProps = dispatch => {
     getGroupMembers: data => dispatch(getGroupMembers(data)),
     userCheckInBatch: data => dispatch(userCheckInBatch(data)),
     getGroupCheckInResult: data => dispatch(getGroupCheckInResult(data)),
+    createUserChat: data => dispatch(createUserChat(data)),
   };
 };
 

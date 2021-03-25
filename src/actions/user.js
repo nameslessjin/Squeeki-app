@@ -229,6 +229,7 @@ export const searchUser = data => {
     userIdList,
     inGroup,
     checkin_id,
+    chatId
   } = data;
 
   return async function(dispatch) {
@@ -239,6 +240,7 @@ export const searchUser = data => {
       userIdList: userIdList,
       inGroup: inGroup,
       checkin_id: checkin_id,
+      chatId
     };
 
     const graphql = {

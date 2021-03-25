@@ -63,6 +63,7 @@ import Chat from './src/screens/chat';
 import RankSetting from './src/screens/rankSetting'
 import Profile from './src/screens/profile'
 import ChatDrawerNavigator from './src/navigators/chatDrawerNavigator'
+import ChatMembers from './src/screens/chatMembers'
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -202,6 +203,7 @@ export default (App = () => {
               <Stack.Screen name="ChatSetting" component={ChatSetting}/>
               <Stack.Screen name="RankSetting" component={RankSetting} />
               <Stack.Screen name="Profile" component={Profile}/>
+              <Stack.Screen name="ChatMembers" component={ChatMembers} />
             </Stack.Navigator>
           </NavigationContainer>
         </PersistGate>

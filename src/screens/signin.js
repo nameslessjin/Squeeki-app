@@ -100,9 +100,10 @@ class SignIn extends React.Component {
     if (signInResult.errors) {
       console.log({errorText: signInResult.errors[0].message});
       if (
-        signInResult.errors[0].message == 'Username and password do not match'
+        signInResult.errors[0].message == 'Username and password do not match' ||
+        signInResult.errors[0].message == "User not found"
       ) {
-        this.setState({errorText: 'Username and password do not match'});
+        this.setState({errorText: signInResult.errors[0].message});
       } else {
         this.setState({
           errorText: 'Please update to the lastest version of Squeeki',

@@ -62,19 +62,19 @@ mutation updateChat($input: ChatMutation!){
 `;
 
 export const createUserChatMutation = `
-mutation createUserChat($input: ChatMutation!){
+mutation createUserChat($input: UserChatMutation!){
     createUserChat(input: $input)
 }
 `;
 
 export const deleteUserChatMutation = `
-mutation deleteUserChat($input: ChatMutation!){
+mutation deleteUserChat($input: UserChatMutation!){
     deleteUserChat(input: $input)
 }
 `;
 
 export const switchOwnershipMutation = `
-mutation switchOwnership($input: ChatMutation!){
+mutation switchOwnership($input: UserChatMutation!){
     switchOwnership(input: $input)
 }
 `;
@@ -109,6 +109,23 @@ query getSingleChat($input: ChatQuery!){
         icon {
             uri
         }
+    }
+}
+`
+export const getAllUserChatQuery = `
+query getAllUserChat($input: UserChatQuery!){
+    getAllUserChat(input: $input){
+        users {
+            userId
+            notification
+            is_owner
+            timeout
+            lastActiveAt
+            displayName
+            username
+            icon
+        }
+        count
     }
 }
 `

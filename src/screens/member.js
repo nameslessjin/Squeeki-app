@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   ActivityIndicator,
   StatusBar,
+  Alert,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {connect} from 'react-redux';
@@ -145,6 +146,7 @@ class Member extends React.Component {
       }
       return;
     }
+    this.getGroup();
     this.loadGroupMembers();
     navigation.goBack();
   };
@@ -172,6 +174,7 @@ class Member extends React.Component {
       }
       return;
     }
+    this.getGroup();
     this.loadGroupMembers();
     navigation.goBack();
   };
@@ -318,7 +321,38 @@ class Member extends React.Component {
     }
   };
 
+  optionAlert = type => {
+    if (type == 'ownership') {
+      Alert.alert(
+        'Switch Ownership',
+        'Do you want to make this user the new owner of this group?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {text: 'Confirm', onPress: this.onMakeOwner},
+        ],
+      );
+    }
+
+    if (type == 'remove') {
+      Alert.alert(
+        'Remove user',
+        'Do you want to remove this user from this group?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {text: 'Confirm', onPress: this.onDeleteMember, style: "destructive"},
+        ],
+      );
+    }
+  };
+
   render() {
+    // here is selected member
     const {
       icon,
       id,
@@ -330,17 +364,22 @@ class Member extends React.Component {
       icon_option,
       group_username,
     } = this.state;
-    //group auth is your auth in the group
+
+    // auth here is auth of group member
     const {group} = this.props.group;
     const {manage_member_rank_required} = group.rank_setting;
 
-    // auth here is auth of group member
     const {user} = this.props.auth;
+
     const allowToModifyMember = group.auth.rank <= manage_member_rank_required;
     const allowToMakeOwner = group.auth.rank <= 1 && auth.rank > 1;
     const allowToChangeGroupUsername =
       user.id == id || group.auth.rank <= manage_member_rank_required;
     const isSelf = user.id == id;
+    const allowToDeleteMember =
+      !isSelf &&
+      group.auth.rank <= manage_member_rank_required &&
+      group.auth.rank <= auth.rank;
 
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
@@ -375,14 +414,19 @@ class Member extends React.Component {
             editable={allowToChangeGroupUsername}
           />
           {loading ? (
-            <ActivityIndicator style={{marginTop: 200}} animating={loading} color={'grey'}/>
+            <ActivityIndicator
+              style={{marginTop: 200}}
+              animating={loading}
+              color={'grey'}
+            />
           ) : (
             <View style={{marginTop: 200}}>
               <OptionButtons
-                onDeleteMember={this.onDeleteMember}
-                allowToDeleteMember={allowToModifyMember}
+                // onDeleteMember={this.onDeleteMember}
+                allowToDeleteMember={allowToDeleteMember}
                 allowToMakeOwner={allowToMakeOwner}
-                onMakeOwner={this.onMakeOwner}
+                optionAlert={this.optionAlert}
+                // onMakeOwner={this.onMakeOwner}
               />
             </View>
           )}

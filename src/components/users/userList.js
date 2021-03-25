@@ -11,7 +11,9 @@ export default class UserList extends React.Component {
 
   renderItem = ({item}) => {
     const {navigation, onChooseUser, prev_route} = this.props;
-
+    if (item.id == 'empty'){
+      return <View style={{width: '100%', height: 50, backgroundColor: 'white'}}/>
+    }
     return (
       <UserCard
         {...item}
@@ -29,16 +31,22 @@ export default class UserList extends React.Component {
       onRefresh,
       refreshing,
       chosenUser,
-      currentUserId
+      currentUserId,
     } = this.props;
 
-    const users = usersData.map(u => {
-      return {
-        ...u,
-        chosen: chosenUser ? chosenUser.findIndex(c => c.id == u.id) != -1 ? true : false : false,
-      };
-    }).filter(u => u.id != currentUserId);
-
+    let users = usersData
+      .map(u => {
+        return {
+          ...u,
+          chosen: chosenUser
+            ? chosenUser.findIndex(c => c.id == u.id) != -1
+              ? true
+              : false
+            : false,
+        };
+      })
+      .filter(u => u.id != currentUserId);
+    users = users.length < 10 ? users : users.concat({id: 'empty'})
     return (
       <FlatList
         style={styles.container}
@@ -60,7 +68,6 @@ export default class UserList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: '100%'
-    
+    height: '100%',
   },
 });

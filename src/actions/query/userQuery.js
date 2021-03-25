@@ -114,6 +114,7 @@ query searchUser($searchUserInput: SearchUserInput!){
             }
             in_group
             checked
+            in_chat
         }
         count
     }
