@@ -20,9 +20,9 @@ export default class InputPicker extends React.Component {
   ];
 
   typeOptions = [
-    {id: '0', label: 'Post', value: 'post'},
+    {id: '0', label: 'General', value: 'general'},
     {id: '1', label: 'Event', value: 'event'},
-    {id: '2', label: 'Request', value: 'request'},
+    {id: '2', label: 'Task', value: 'task'},
   ];
 
   commentOptions = [

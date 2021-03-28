@@ -156,7 +156,7 @@ export default class PostHeader extends React.Component {
     }
 
     let typeBackgroundColor = 'white';
-    if (type == 'request') {
+    if (type == 'task') {
       typeBackgroundColor = '#e84118';
     } else if (type == 'event') {
       typeBackgroundColor = '#273c75';

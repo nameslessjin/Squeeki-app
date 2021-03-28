@@ -40,7 +40,6 @@ export default class CommentProfile extends React.Component {
 const styles = StyleSheet.create({
     container: {
         width: '15%',
-        // maxHeight: 200,
         alignItems: 'flex-start',
     },
     userIcon: {

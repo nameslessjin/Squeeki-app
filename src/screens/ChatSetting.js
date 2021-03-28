@@ -17,6 +17,7 @@ import {
   updateChat,
   deleteLeaveChat,
   updateChatInfo,
+  getUserChat
 } from '../actions/chat';
 import {
   createUpdateChatFunc,
@@ -41,7 +42,7 @@ class ChatSetting extends React.Component {
     deleted: false,
     allow_invite: false,
     allow_modify: false,
-    status: null,
+    status: {},
   };
 
   componentDidMount() {
@@ -55,7 +56,6 @@ class ChatSetting extends React.Component {
         chatId,
         allow_invite,
         allow_modify,
-        status,
       } = route.params;
       this.setState({
         origin: route.params,
@@ -65,8 +65,8 @@ class ChatSetting extends React.Component {
         chatId,
         allow_invite,
         allow_modify,
-        status,
       });
+      this.getUserChat(chatId)
     } else {
       navigation.setOptions({
         headerRight: () => (
@@ -145,6 +145,24 @@ class ChatSetting extends React.Component {
       }
     }
   }
+
+  getUserChat = async (chatId) => {
+    const {auth, getUserChat} = this.props;
+
+    const request = {
+      token: auth.token,
+      chatId,
+    };
+
+    const req = await getUserChat(request);
+    if (req.errors) {
+      console.log(req.errors[0]);
+      alert('Get User Status Error');
+      return;
+    }
+
+    this.setState({status: req});
+  };
 
   validation = () => {
     let {
@@ -473,6 +491,7 @@ const mapDispatchToProps = dispatch => {
     getChat: data => dispatch(getChat(data)),
     deleteLeaveChat: data => dispatch(deleteLeaveChat(data)),
     updateChatInfo: data => dispatch(updateChatInfo(data)),
+    getUserChat: data => dispatch(getUserChat(data)),
   };
 };
 

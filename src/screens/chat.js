@@ -37,6 +37,7 @@ import {
   RenderActions,
   OnLongPress,
 } from '../components/chat/render';
+import {timeDifferentInMandS} from '../utils/time'
 
 const {height} = Dimensions.get('screen');
 
@@ -47,6 +48,7 @@ class Chat extends React.Component {
     icon: null,
     allow_invite: false,
     allow_modify: false,
+    available: false,
     // ...this.props.route.params,
     ...this.props.chat.chat,
     messages: [],
@@ -56,6 +58,7 @@ class Chat extends React.Component {
     isLoadEarlier: false,
     modalVisible: false,
     image: {},
+    status: {},
   };
 
   componentDidMount() {
@@ -76,6 +79,7 @@ class Chat extends React.Component {
 
     // load some messages
     this.loadChatMessage(true);
+    this.getUserChat(id);
 
     // establish socket.io connection
     const channel = `chat${id}`;
@@ -85,8 +89,38 @@ class Chat extends React.Component {
         this.addSubMessage(data.result);
       } else if (data.action == 'message_status_update') {
         this.updateUserMessage(data.result);
+      } else if (data.action == 'user_status_update'){
+        this.updateUserStatus(data.result)
       }
     });
+  }
+
+  getUserChat = async chatId => {
+    const {auth, getUserChat} = this.props;
+
+    const request = {
+      token: auth.token,
+      chatId,
+    };
+
+    const req = await getUserChat(request);
+    if (req.errors) {
+      console.log(req.errors[0]);
+      alert('Get User Status Error');
+      return;
+    }
+
+    this.setState({status: req});
+  };
+
+  updateUserStatus = data => {
+    const {status, userId} = data
+    const {id} = this.props.auth.user
+    const time = new Date(status.timeout)
+    if (id == userId){
+      this.setState({status: {...status, timeout: time.getTime()}})
+    }
+  
   }
 
   addSubMessage = data => {
@@ -170,7 +204,29 @@ class Chat extends React.Component {
 
   onSend = async () => {
     const {sendMessage, navigation, userLogout, auth} = this.props;
-    const {content, id} = this.state;
+    const {content, id, status, messages} = this.state;
+    console.log(status.timeout)
+    const time_out = new Date(parseInt(status.timeout));
+    const different = time_out - Date.now();
+    console.log(time_out)
+    console.log(different)
+    const {day, hour, minute, second}  = timeDifferentInMandS(time_out)
+
+    this.setState({content: ''});
+    Keyboard.dismiss();
+    if (different > 0) {
+      const system_message = {
+        _id: messages.length.toString(),
+        text: `You have been timed out for ${day}d ${hour}h ${minute}m ${second}s`,
+        createdAt: new Date(),
+        system: true,
+      };
+      this.setState(prevState => ({
+        messages: [system_message].concat(prevState.messages),
+      }));
+      return;
+    }
+
     const data = {
       token: auth.token,
       chatId: id,
@@ -180,9 +236,6 @@ class Chat extends React.Component {
       userLogout,
       media: null,
     };
-
-    this.setState({content: ''});
-    Keyboard.dismiss();
     const req = sendMessageFunc(data);
   };
 
@@ -223,6 +276,7 @@ class Chat extends React.Component {
       const {
         name,
         rank_req,
+        available,
         icon,
         allow_invite,
         allow_modify,
@@ -231,6 +285,7 @@ class Chat extends React.Component {
       this.setState({
         name,
         rank_req,
+        available,
         icon,
         allow_invite,
         allow_modify,
@@ -251,11 +306,9 @@ class Chat extends React.Component {
     // if not in group all chats in chat.chats
     let socket_chat_id = req.chat;
 
-    // if in group only the one with proper rank
+    // if in group only the one with proper rank or people who are added
     if (group.group.id) {
-      socket_chat_id = req.chat.filter(
-        c => c.rank_req >= group.group.auth.rank,
-      );
+      socket_chat_id = req.chat.filter(c => c.available);
     }
     socket_chat_id = socket_chat_id.map(c => c.id);
     const io = socket.getIO();
@@ -324,7 +377,6 @@ class Chat extends React.Component {
     const req = sendMessageFunc(data);
   };
 
-
   render() {
     const {auth} = this.props;
     const {
@@ -333,6 +385,7 @@ class Chat extends React.Component {
       pointer,
       isLoadEarlier,
       modalVisible,
+      status
     } = this.state;
     const user = {
       _id: auth.user.id,
@@ -344,6 +397,7 @@ class Chat extends React.Component {
           <StatusBar barStyle={'dark-content'} />
           <GiftedChat
             messages={messages}
+            renderUsernameOnMessage={true}
             text={content}
             user={user}
             onInputTextChanged={this.onInputChange}

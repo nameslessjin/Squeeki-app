@@ -7,29 +7,33 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from 'react-native';
-import {timeDifferentInMandS} from '../../utils/time';
+import {timeDifferentInMandS, countDownFormat} from '../../utils/time';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class CheckinCard extends React.Component {
 
-  timeFormat = time => {
-    const {day, hour, minute, second} = time;
-    let timeDisplay =
-      day + 'd ' + hour + 'h ' + minute + 'm ' + second + 's ';
-    if (day == 0) {
-      timeDisplay = hour + 'h ' + minute + 'm ' + second + 's ';
-      if (hour == 0) {
-        timeDisplay = minute + 'm ' + second + 's ';
-        if (minute == 0) {
-          timeDisplay = second + 's ';
-        }
-      }
+  state = {
+    time: false
+  }
+
+  componentDidMount() {
+    const {endAt} = this.props.item
+    const self = this
+    this.interval = setInterval(() => {
+      const time = timeDifferentInMandS(endAt);
+      self.setState({time})
+    }, 1000)
+  }
+
+  componentDidUpdate(){
+    if (!this.state.time){
+      clearInterval(this.interval)
     }
-    if (!time) {
-      timeDisplay = 'Ended';
-    }
-    return timeDisplay;
-  };
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.interval)
+  }
 
   onDelete = () => {
     const {onDeleteCheckIn, item} = this.props;
@@ -69,10 +73,9 @@ export default class CheckinCard extends React.Component {
       checked,
       userId,
     } = item;
-    const time = timeDifferentInMandS(endAt);
-
-    const timeDisplay = this.timeFormat(time);
-
+    const {time} = this.state
+    const timeDisplay = countDownFormat(time);
+    const allowToCheckResult = checked || auth.rank <= rank_required
     return (
       <TouchableWithoutFeedback>
         <View style={styles.card}>
@@ -104,11 +107,11 @@ export default class CheckinCard extends React.Component {
           </Text>
           <Text style={styles.text}>Local: {location ? 'ON' : 'OFF'}</Text>
           <Text style={styles.text}>Attended: {count}</Text>
-          <Text style={styles.text}>Points: {point}</Text>
+          {/* <Text style={styles.text}>Points: {point}</Text> */}
           <Text style={styles.text}>End At: {timeDisplay}</Text>
 
           <View style={styles.checkin}>
-            {checked ? (
+            {(checked && time) || (!time && allowToCheckResult) ? (
               <TouchableOpacity onPress={() => onResultPress({checkin_id: id, userId: userId})}>
                 <View>
                   <Text style={[styles.checkinText]}>Result</Text>

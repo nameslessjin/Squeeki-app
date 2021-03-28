@@ -166,22 +166,18 @@ const mapDispatchToProps = dispatch => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    // maxHeight: 200,
     minHeight: 100,
     flexDirection: 'row',
     paddingHorizontal: 5,
     paddingVertical: 10,
     // get rid of margin
     marginVertical: 10,
-    // backgroundColor: 'yellow'
   },
   commentContainer: {
     width: '100%',
-    // maxHeight: 100,
   },
   rightContainer: {
     width: '85%',
-    // maxHeight: 200,
   },
   commentStyle: {
     lineHeight: 20,

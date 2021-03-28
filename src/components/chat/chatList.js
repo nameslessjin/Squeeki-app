@@ -22,7 +22,7 @@ export default class ChatList extends React.Component {
 
 
   renderItem = ({item}) => {
-    const {name, icon, rank_req, id, last_message, unread_message_count} = item;
+    const {name, icon, rank_req, id, last_message, unread_message_count, available} = item;
 
     const unread_message_count_text = countFormat(unread_message_count) 
 
@@ -46,15 +46,17 @@ export default class ChatList extends React.Component {
         ? `${last_message.username}: [Photo/Video]`
         : `${last_message.username}: ${last_message.content}`;
 
+    let allow_to_join = true
     if (rank_req != null) {
-      if (rank_req < userGroupAuthRank) {
+      if (!available) {
         message_preview = `This chat requires rank ${rank_req} or above`;
+        allow_to_join = false
       }
     }
 
     return (
-      <View style={[styles.chat_container]}>
-        <TouchableOpacity onPress={() => onChatPress(item)}>
+      <View style={[styles.chat_container,{backgroundColor: allow_to_join ? 'white' : 'silver'}]}>
+        <TouchableOpacity onPress={() => onChatPress(item)} disabled={!allow_to_join} >
           <View style={styles.chat_sub_container}>
             <View
               style={{

@@ -79,7 +79,7 @@ class Chats extends React.Component {
 
   componentWillUnmount() {
     this.unsubSocket();
-    // this.props.resetChatReducer();
+    this.props.resetChatReducer();
   }
 
   unsubSocket = () => {
@@ -88,10 +88,10 @@ class Chats extends React.Component {
     // if not in group all chats in chat.chats
     let socket_chat_id = chat.chats;
 
-    // if in group only the one with proper rank
+    // if in group only the one with proper rank or people who added to chat
     if (group.group.auth) {
       socket_chat_id = chat.chats.filter(
-        c => c.rank_req >= group.group.auth.rank,
+        c => c.available,
       );
     }
     socket_chat_id = socket_chat_id.map(c => c.id);
@@ -128,13 +128,15 @@ class Chats extends React.Component {
     // if not in group all chats in chat.chats
     let socket_chat_id = req.chat;
 
-    // if in group only the one with proper rank
+    // if in group only the one with proper rank or people who are added
     if (group.group.auth) {
       socket_chat_id = req.chat.filter(
-        c => c.rank_req >= group.group.auth.rank,
+        c => c.available == true,
       );
     }
+
     socket_chat_id = socket_chat_id.map(c => c.id);
+  
     const io = socket.getIO();
 
     socket_chat_id.forEach(id => {
@@ -174,8 +176,7 @@ class Chats extends React.Component {
       alert('load chat failed at this time, please try again later');
       return false;
     }
-
-    return true;
+    return req;
   };
 
   onChatPress = async chat => {
@@ -184,9 +185,9 @@ class Chats extends React.Component {
     const req = await this.getSingleChat(id);
 
     if (req) {
-      const {rank_req} = req
+      const {rank_req, available} = req
       if (group.group.auth) {
-        if (group.group.auth.rank > rank_req) {
+        if (!available) {
           alert(
             `You can only enter this chat if you are rank ${rank_req} or above.`,
           );

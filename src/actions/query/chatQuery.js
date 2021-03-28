@@ -7,6 +7,7 @@ query getChat($input: ChatQuery!){
             rank_req
             allow_modify
             allow_invite
+            available
             is_multi
             icon {
                 uri
@@ -31,6 +32,7 @@ mutation createChat($input: ChatMutation!){
         rank_req
         allow_modify
         allow_invite
+        available
         is_multi
         icon {
             uri
@@ -53,6 +55,7 @@ mutation updateChat($input: ChatMutation!){
         rank_req
         allow_modify
         allow_invite
+        available
         is_multi
         icon {
             uri
@@ -84,6 +87,7 @@ query getUserChat($input: UserChatQuery!){
     getUserChat(input: $input){
         notification
         is_owner
+        rank
         timeout
     }
 }
@@ -105,6 +109,7 @@ query getSingleChat($input: ChatQuery!){
         rank_req
         allow_modify
         allow_invite
+        available
         is_multi
         icon {
             uri
@@ -119,6 +124,7 @@ query getAllUserChat($input: UserChatQuery!){
             userId
             notification
             is_owner
+            rank
             timeout
             lastActiveAt
             displayName
@@ -128,4 +134,11 @@ query getAllUserChat($input: UserChatQuery!){
         count
     }
 }
+`
+
+export const timeoutUserMutation = `
+mutation timeoutUser($input: UserChatMutation!){
+    timeoutUser(input: $input)
+}
+
 `

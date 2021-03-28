@@ -87,6 +87,10 @@ class UserSearch extends React.Component {
       this.loadCheckInResult(true);
     } else if (prev_route == 'chatMembers') {
       // load chat members for individual chats and group chats
+      const {navigation} = this.props
+      navigation.navigate('ChatMembers', {
+        refresh: true
+      })
     }
   }
 
@@ -100,8 +104,7 @@ class UserSearch extends React.Component {
       route,
       user,
     } = this.props;
-    // let {group} = this.state;
-    // console.log(this.state)
+
     const group = route.params.group
     let userIdList = [];
 
@@ -114,7 +117,7 @@ class UserSearch extends React.Component {
       getGroupMembers: getGroupMembers,
       userIdList: userIdList,
     };
-    console.log(this.props);
+    
     getGroupMembersFunc(data);
   };
 
@@ -228,11 +231,10 @@ class UserSearch extends React.Component {
 
     // search for general users
     if (term.length < 3 && (prev_route=='members' || (prev_route == 'chatMembers' && group == null) )) {
-      console.log(prev_route == 'chatMembers' && group == null)
+ 
       this.setState({usersData: [], count: 0});
       return;
     }
-    console.log('Outside')
 
     let userIdList = [];
     let inGroup = false;

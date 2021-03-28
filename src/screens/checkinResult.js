@@ -69,7 +69,7 @@ class CheckInResult extends React.Component {
 
     const req = await getGroupCheckInResult(request);
     if (req.errors) {
-      // alert(req.errors[0].message);
+      console.log(req.errors[0].message);
       alert('Cannot load users at this time, please try again later')
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();

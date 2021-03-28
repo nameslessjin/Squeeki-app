@@ -24,7 +24,11 @@ export default class UserChatList extends React.Component {
       username,
       icon,
     } = item;
+    const {onMemberCardPress, user_id} = this.props;
     const random = Math.floor(Math.random() * 5);
+    const time_out = new Date(parseInt(timeout));
+    const different = time_out - Date.now();
+
     let icon_options = [
       'emoticon-cool-outline',
       'emoticon-poop',
@@ -49,7 +53,9 @@ export default class UserChatList extends React.Component {
     const time = dateConversion(lastActiveAt);
 
     return (
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => onMemberCardPress(userId)}
+        disabled={user_id == userId}>
         <View style={styles.user_container}>
           {icon != null ? (
             <Image source={{uri: icon}} style={styles.image} />
@@ -60,21 +66,25 @@ export default class UserChatList extends React.Component {
               style={{height: 115}}
             />
           )}
-          {is_owner ? (
-            <Text style={{fontSize: displayNameSize, marginTop: 10}}>
-              <View style={{width: 15, height: 15}} />
-              {displayName}
+          <Text style={{fontSize: displayNameSize, marginTop: 10}}>
+            {is_owner ? <View style={{width: 15, height: 15}} /> : null}
+            {different > 0 ? <View style={{width: 15, height: 15}} /> : null}
+            {displayName}
+            {is_owner ? (
               <MaterialIcons
                 name={'medal'}
                 size={displayNameSize}
                 color={'gold'}
               />
-            </Text>
-          ) : (
-            <Text style={{fontSize: displayNameSize, marginTop: 10}}>
-              {displayName}
-            </Text>
-          )}
+            ) : null}
+            {different > 0 ? (
+              <MaterialIcons
+                color={'red'}
+                name={'timer-sand-full'}
+                size={displayNameSize}
+              />
+            ) : null}
+          </Text>
           {/* <Text style={{}}>{username}</Text> */}
           <Text style={{color: 'grey', fontSize: 11, marginTop: 3}}>
             Last seen: {time}

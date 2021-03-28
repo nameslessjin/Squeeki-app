@@ -10,6 +10,7 @@ import {
   getAllChatIdQuery,
   getSingleChatQuery,
   getAllUserChatQuery,
+  timeoutUserMutation,
 } from './query/chatQuery';
 import {http, http_upload} from '../../server_config';
 
@@ -265,7 +266,6 @@ export const createUserChat = request => {
         input: input,
       },
     };
-    console.log(graphql)
 
     const req = await fetch(http, {
       method: 'POST',
@@ -277,7 +277,7 @@ export const createUserChat = request => {
     });
 
     const result = await req.json();
-    console.log(result)
+
     if (result.errors) {
       return result;
     }
@@ -287,7 +287,7 @@ export const createUserChat = request => {
 };
 
 export const deleteUserChat = request => {
-  const {token, chatId, userIds} = request;
+  const {token, chatId, userIds, groupId} = request;
 
   return async function(dispatch) {
     const input = {
@@ -461,7 +461,7 @@ export const getSingleChat = request => {
     }
 
     dispatch(getSingleChatReducer(result.data.getSingleChat));
-    return 0;
+    return result.data.getSingleChat;
   };
 };
 
@@ -479,12 +479,13 @@ export const resetChatReducer = () => {
 };
 
 export const getAllUserChat = request => {
-  const {token, chatId, count} = request;
+  const {token, chatId, count, groupId} = request;
 
   return async function(dispatch) {
     const input = {
       chatId,
       count,
+      groupId,
     };
 
     const graphql = {
@@ -510,5 +511,41 @@ export const getAllUserChat = request => {
     }
 
     return result.data.getAllUserChat;
+  };
+};
+
+export const timeoutUser = request => {
+  const {duration, chatId, userIds, token} = request;
+
+  return async function(dispatch) {
+    const input = {
+      chatId,
+      userIds,
+      duration,
+    };
+
+    const graphql = {
+      query: timeoutUserMutation,
+      variables: {
+        input: input,
+      },
+    };
+
+    const req = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    return 0
   };
 };

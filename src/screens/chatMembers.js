@@ -5,11 +5,18 @@ import {
   View,
   StyleSheet,
   Text,
+  Alert,
 } from 'react-native';
-import {getAllUserChat} from '../actions/chat';
+import {
+  getAllUserChat,
+  deleteUserChat,
+  timeoutUser,
+  getUserChat,
+} from '../actions/chat';
 import {connect} from 'react-redux';
 import UserChatList from '../components/userChat/userChatList';
 import HeaderRight from '../components/chat/headerRightButton';
+import ChatMemberModal from '../components/chat/chatMemberModal';
 
 class ChatMembers extends React.Component {
   state = {
@@ -17,52 +24,87 @@ class ChatMembers extends React.Component {
     count: 0,
     ...this.props.route.params,
     refreshing: false,
+    refresh: false,
+    modalVisible: false,
+    userId: null,
   };
 
   componentDidMount() {
-    const {navigation, group} = this.props;
-    const {status, allow_invite, allow_modify} = this.props.route.params;
-    
-    let disabled = status.is_owner ? false : !allow_invite;
-
-    if (group.group.auth){
-      const {auth, rank_setting} = group.group
-      disabled = auth.rank > rank_setting
-    }
+    const {navigation} = this.props;
 
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Members',
-      headerRight: () =>
-        disabled ? null : (
-          <HeaderRight
-            type={'create'}
-            disabled={disabled}
-            onPress={this.onAddHeaderPress}
-          />
-        ),
     });
     this.loadUserChat(true);
+    this.getUserChat()
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    const {route, navigation, group} = this.props;
+    if (route.params.refresh) {
+      navigation.setParams({refresh: false});
+      this.loadUserChat(true);
+    }
+    if (prevState.status != this.state.status && this.state.status) {
+      const {status, allow_invite} = this.state
+      let disabled = status.is_owner ? false : !allow_invite;
+      if (group.group.auth) {
+        const {auth, rank_setting} = group.group;
+        disabled = auth.rank > rank_setting.manage_chat_rank_required;
+      }
+      navigation.setOptions({
+        headerRight: () =>
+          disabled ? null : (
+            <HeaderRight
+              type={'create'}
+              disabled={disabled}
+              onPress={this.onAddHeaderPress}
+            />
+          ),
+      });
+    }
+  }
+
+  getUserChat = async () => {
+    const {auth, getUserChat, chat} = this.props;
+    const {chatId} = this.state;
+
+    const request = {
+      token: auth.token,
+      chatId,
+    };
+
+    const req = await getUserChat(request);
+    if (req.errors) {
+      console.log(req.errors[0]);
+      alert('Get User Status Error');
+      return;
+    }
+
+    this.setState({status: req});
+  };
 
   onAddHeaderPress = () => {
     const {navigation, group} = this.props;
     const {chatId} = this.state;
-    
+
     navigation.navigate('SearchUser', {
       prev_route: 'chatMembers',
       chatId,
-      group: group.group.id ? group.group : null
+      group: group.group.id ? group.group : null,
     });
   };
 
   loadUserChat = async init => {
-    const {auth, getAllUserChat} = this.props;
+    const {auth, getAllUserChat, group} = this.props;
     const {chatId, count} = this.state;
+
     const request = {
       token: auth.token,
       chatId,
       count: init ? 0 : count,
+      groupId: group.group ? group.group.id : null,
     };
 
     const req = await getAllUserChat(request);
@@ -81,6 +123,69 @@ class ChatMembers extends React.Component {
     });
   };
 
+  deleteUserChat = async () => {
+    const {auth, deleteUserChat} = this.props;
+    const {userId, chatId} = this.state;
+    const request = {
+      token: auth.token,
+      userIds: [userId],
+      chatId,
+    };
+    const req = await deleteUserChat(request);
+
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot delete user from chat at this time');
+      return;
+    }
+
+    if (req == 0) {
+      this.setState(prevState => {
+        return {
+          users: prevState.users.filter(u => u.userId != userId),
+        };
+      });
+    }
+  };
+
+  timeoutUser = async duration => {
+    const {auth, timeoutUser} = this.props;
+    const {userId, chatId} = this.state;
+    const request = {
+      token: auth.token,
+      userIds: [userId],
+      chatId,
+      duration,
+    };
+    const req = await timeoutUser(request);
+
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot timeout user right now');
+      return;
+    }
+
+    if (req == 0) {
+      this.setState(prevState => {
+        return {
+          users: prevState.users.map(u => {
+            if (u.userId == userId) {
+              let timeout = new Date();
+              timeout = Math.floor(timeout.getTime() / 1000);
+              duration = parseInt(duration);
+              timeout = (timeout + duration) * 1000;
+              return {
+                ...u,
+                timeout,
+              };
+            }
+            return u;
+          }),
+        };
+      });
+    }
+  };
+
   onRefresh = () => {
     this.setState({refreshing: true});
     this.loadUserChat(true);
@@ -91,8 +196,57 @@ class ChatMembers extends React.Component {
     this.loadUserChat(false);
   };
 
+  onBackdropPress = () => {
+    this.setState({modalVisible: false});
+  };
+
+  onMemberCardPress = userId => {
+    this.setState({modalVisible: true, userId});
+  };
+
+  onOptionSelect = (type, value) => {
+    if (type == 'delete') {
+      Alert.alert(
+        'Remove user',
+        'Do you want to remove this user from this chat?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {text: 'Confirm', onPress: this.deleteUserChat, style: 'destructive'},
+        ],
+      );
+    }
+
+    if (type == 'timeout') {
+      const duration = value.toString();
+      this.timeoutUser(duration);
+    }
+
+    if (type == 'dm') {
+    }
+    this.onBackdropPress();
+  };
+
   render() {
-    const {users, refreshing} = this.state;
+    const {users, refreshing, modalVisible, userId} = this.state;
+    const {group, auth} = this.props;
+
+    let func_disabled = false;
+
+    if (userId) {
+      const user = users.filter(u => u.userId == userId)[0];
+      func_disabled = user.is_owner;
+
+      if (group.group.auth) {
+        const {auth, rank_setting} = group.group;
+        func_disabled = !(
+          auth.rank <= rank_setting.manage_chat_rank_required &&
+          user.rank >= auth.rank
+        );
+      }
+    }
 
     return (
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -103,8 +257,18 @@ class ChatMembers extends React.Component {
               refreshing={refreshing}
               onRefresh={this.onRefresh}
               onEndReached={this.onEndReached}
+              onMemberCardPress={this.onMemberCardPress}
+              user_id={auth.user.id}
             />
           </View>
+          {modalVisible ? (
+            <ChatMemberModal
+              modalVisible={modalVisible}
+              onBackdropPress={this.onBackdropPress}
+              func_disabled={func_disabled}
+              onOptionSelect={this.onOptionSelect}
+            />
+          ) : null}
         </View>
       </TouchableWithoutFeedback>
     );
@@ -121,6 +285,9 @@ const mapStateToProps = state => {
 const mapStateToDispatch = dispatch => {
   return {
     getAllUserChat: data => dispatch(getAllUserChat(data)),
+    deleteUserChat: data => dispatch(deleteUserChat(data)),
+    timeoutUser: data => dispatch(timeoutUser(data)),
+    getUserChat: data => dispatch(getUserChat(data)),
   };
 };
 

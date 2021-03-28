@@ -8,7 +8,6 @@ import {
 } from '@react-navigation/drawer';
 import {StyleSheet, Text, View} from 'react-native';
 import {DrawerActions} from '@react-navigation/native';
-import {getUserChat} from '../actions/chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import HeaderRightButton from '../components/group/headerRight';
 import {connect} from 'react-redux';
@@ -21,24 +20,32 @@ class ChatDrawerkNavigator extends React.Component {
   };
 
   componentDidMount() {
-    const {navigation, chat} = this.props;
+    const {navigation} = this.props;
+    const {chat} = this.props.chat;
+    let name = 'Chat';
+    if (chat) {
+      name = chat.name;
+    }
 
     navigation.setOptions({
       headerRight: () => (
         <HeaderRightButton onPress={this.onToggleHeaderRightButton} />
       ),
       headerBackTitleVisible: false,
-      headerTitle: chat.chat.name,
+      headerTitle: name,
     });
 
-    // load status in the chat
-    this.getUserChat();
   }
   componentDidUpdate(prevProps) {
     const {navigation} = this.props;
     if (prevProps.chat.chat != this.props.chat.chat) {
+      const {chat} = this.props.chat;
+      let name = 'Chat';
+      if (chat) {
+        name = chat.name;
+      }
       navigation.setOptions({
-        headerTitle: this.props.chat.chat.name,
+        headerTitle: name,
       });
     }
   }
@@ -57,14 +64,12 @@ class ChatDrawerkNavigator extends React.Component {
       allow_invite,
       allow_modify,
     } = this.props.chat.chat;
-    const {status} = this.state;
     const {navigation} = this.props;
     navigation.navigate('ChatSetting', {
       name,
       rank_req,
       icon,
       chatId: id,
-      status,
       allow_invite,
       allow_modify,
     });
@@ -72,34 +77,14 @@ class ChatDrawerkNavigator extends React.Component {
 
   onMemberPress = () => {
     const {id, allow_invite, allow_modify} = this.props.chat.chat;
-    const {status} = this.state;
     const {navigation} = this.props;
     navigation.navigate('ChatMembers', {
       chatId: id,
       allow_invite,
       allow_modify,
-      status,
     });
   };
-
-  getUserChat = async () => {
-    const {auth, getUserChat, chat} = this.props;
-    const {id} = chat.chat;
-
-    const request = {
-      token: auth.token,
-      chatId: id,
-    };
-
-    const req = await getUserChat(request);
-    if (req.errors) {
-      console.log(req.errors[0]);
-      alert('Get User Status Error');
-      return;
-    }
-
-    this.setState({status: req});
-  };
+  
 
   CustomDrawerContent = props => {
     return (
@@ -124,7 +109,11 @@ class ChatDrawerkNavigator extends React.Component {
   };
 
   render() {
-    const {name} = this.props.chat.chat;
+    const {chat} = this.props.chat;
+    let name = 'Chat';
+    if (chat) {
+      name = chat.name;
+    }
     return (
       <Drawer.Navigator
         initialRouteName={'Chat'}

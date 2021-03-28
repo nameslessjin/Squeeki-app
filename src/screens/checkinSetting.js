@@ -23,7 +23,7 @@ class CheckInSetting extends React.Component {
     isLocal: false,
     password: '',
     duration: '5',
-    point: 200,
+    point: 100,
     lat: null,
     long: null,
     loading: false
