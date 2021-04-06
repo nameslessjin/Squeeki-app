@@ -18,6 +18,16 @@ const extractKey = ({id}) => id;
 export default class RankSettingModal extends React.Component {
   state = {};
 
+  ranks = [
+    {id: '1', name: 1},
+    {id: '2', name: 2},
+    {id: '3', name: 3},
+    {id: '4', name: 4},
+    {id: '5', name: 5},
+    {id: '6', name: 6},
+    {id: '7', name: 7},
+  ];
+
   onBackdropPress = () => {
     const {onBackdropPress} = this.props;
     onBackdropPress();
@@ -30,31 +40,23 @@ export default class RankSettingModal extends React.Component {
   };
 
   renderItem = i => {
-    const {name} = i.item;
+    const {index, item} =i
+    const {name} = item;
+    console.log(index == this.ranks.length - 1)
     return (
-      <TouchableOpacity onPress={() => this.onRankChange(name)}>
-        <View
-          style={[
-            styles.rank,
-            {borderBottomWidth: name == 7 ? 0 : StyleSheet.hairlineWidth},
-          ]}>
-          <Text style={{color: '#3498db'}}>{name}</Text>
-        </View>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity onPress={() => this.onRankChange(name)}>
+          <View style={[styles.rank]}>
+            <Text style={{color: '#3498db'}}>{name}</Text>
+          </View>
+        </TouchableOpacity>
+        {index != this.ranks.length - 1 ? <View style={styles.underline} /> : null}
+      </View>
     );
   };
 
   render() {
     const {modalVisible, onBackdropPress} = this.props;
-    const ranks = [
-      {id: '1', name: 1},
-      {id: '2', name: 2},
-      {id: '3', name: 3},
-      {id: '4', name: 4},
-      {id: '5', name: 5},
-      {id: '6', name: 6},
-      {id: '7', name: 7},
-    ];
 
     return (
       <View style={styles.centeredView}>
@@ -68,7 +70,7 @@ export default class RankSettingModal extends React.Component {
                       <Text>Minimum rank required</Text>
                     </View>
                     <FlatList
-                      data={ranks}
+                      data={this.ranks}
                       renderItem={this.renderItem}
                       alwaysBounceVertical={false}
                       alwaysBounceHorizontal={false}
@@ -114,8 +116,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: width * 0.7,
     height: 45,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey'
   },
   rank_display: {
     width: '100%',
@@ -127,5 +127,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 40,
+  },
+  underline: {
+    width: width * 0.7,
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'grey',
   },
 });

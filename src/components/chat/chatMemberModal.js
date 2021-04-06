@@ -37,10 +37,6 @@ export default class ChatMemberModal extends React.Component {
           <View
             style={[
               styles.options,
-              {
-                borderBottomWidth:
-                  lastId == index ? 0 : StyleSheet.hairlineWidth,
-              },
             ]}>
             <Text style={{color: '#3498db'}}>{name}</Text>
           </View>
@@ -163,7 +159,7 @@ const styles = StyleSheet.create({
   },
   underline: {
     width: 300,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 0.5,
     borderBottomColor: 'grey',
   },
   button: {
@@ -171,16 +167,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 50,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey',
   },
   options: {
     alignItems: 'center',
     justifyContent: 'center',
     width: 300,
     height: 45,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey',
   },
   view: {
     backgroundColor: 'white',

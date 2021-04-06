@@ -82,7 +82,7 @@ export default class ChatList extends React.Component {
                     <Text style={{color: 'grey', fontSize: width * 0.034}}>
                       {/* 12:58 AM */}
                       {last_message == null
-                        ? 'Now'
+                        ? null
                         : chatTimeFormat(last_message.createdAt)}
                     </Text>
                   </View>
