@@ -174,6 +174,7 @@ class SignUp extends React.Component {
               <SignUpButton onPress={this.onPress} />
             )}
             <View style={styles.term}>
+              <Text>By signning up, you agree to</Text>
               <TouchableOpacity
                 style={styles.termButton}
                 onPress={this.onTermsPressed}>
@@ -210,6 +211,7 @@ const styles = StyleSheet.create({
   },
   term: {
     marginTop: 30,
+    alignItems: 'center'
   },
   text: {
     color: '#b2bec3',

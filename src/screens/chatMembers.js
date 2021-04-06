@@ -12,6 +12,7 @@ import {
   deleteUserChat,
   timeoutUser,
   getUserChat,
+  switchOwnership
 } from '../actions/chat';
 import {connect} from 'react-redux';
 import UserChatList from '../components/userChat/userChatList';
@@ -204,6 +205,53 @@ class ChatMembers extends React.Component {
     this.setState({modalVisible: true, userId});
   };
 
+  onSwitchOwner = async() => {
+    const {switchOwnership, auth} = this.props
+    const {userId, chatId} = this.state
+    const request = {
+      token: auth.token,
+      userIds: [userId],
+      chatId
+    }
+
+    const req = await switchOwnership(request)
+    if (req.errors){
+      console.log(req.errors)
+      alert('Cannot switch ownership at this moment, please try again later.')
+      return
+    }
+
+    if (req == 0){
+      // update your status and new owner's status
+      this.setState(prevState => {
+        const new_users = prevState.users.map(u => {
+          if (u.userId == userId){
+            return {
+              ...u,
+              is_owner: true
+            }
+          }
+          if (u.userId == auth.user.id){
+            return {
+              ...u,
+              is_owner: false
+            }
+          }
+          return u
+        })
+        return {
+          users: new_users,
+          status: {
+            ...prevState.status,
+            is_owner: false
+          }
+        }
+      })
+
+    }
+
+  }
+
   onOptionSelect = (type, value) => {
     if (type == 'delete') {
       Alert.alert(
@@ -226,11 +274,27 @@ class ChatMembers extends React.Component {
 
     if (type == 'dm') {
     }
+
+    if (type == 'ownership'){
+      // switch ownership
+      Alert.alert(
+        'Switch Ownership',
+        'Do you want to make this user the new chat owner?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {text: 'Confirm', onPress: this.onSwitchOwner, style: 'default'},
+        ],
+      );
+        
+    }
     this.onBackdropPress();
   };
 
   render() {
-    const {users, refreshing, modalVisible, userId} = this.state;
+    const {users, refreshing, modalVisible, userId, status} = this.state;
     const {group, auth} = this.props;
 
     let func_disabled = false;
@@ -267,6 +331,7 @@ class ChatMembers extends React.Component {
               onBackdropPress={this.onBackdropPress}
               func_disabled={func_disabled}
               onOptionSelect={this.onOptionSelect}
+              is_owner={status.is_owner}
             />
           ) : null}
         </View>
@@ -288,6 +353,7 @@ const mapStateToDispatch = dispatch => {
     deleteUserChat: data => dispatch(deleteUserChat(data)),
     timeoutUser: data => dispatch(timeoutUser(data)),
     getUserChat: data => dispatch(getUserChat(data)),
+    switchOwnership: data => dispatch(switchOwnership(data))
   };
 };
 

@@ -56,8 +56,10 @@ export default class ChatMemberModal extends React.Component {
       onBackdropPress,
       func_disabled,
       onOptionSelect,
+      is_owner,
     } = this.props;
     const {is_timeout} = this.state;
+    console.log(is_owner)
 
     return (
       <View style={[styles.centeredView]}>
@@ -95,6 +97,16 @@ export default class ChatMemberModal extends React.Component {
                   )}
 
                   {func_disabled ? null : <View style={styles.underline} />}
+
+                  {is_owner ? (
+                    <TouchableOpacity onPress={() => onOptionSelect('ownership')}>
+                      <View style={styles.button}>
+                        <Text>Make Owner</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : null}
+
+                  {is_owner ? <View style={styles.underline} /> : null}
 
                   {func_disabled ? null : (
                     <TouchableOpacity onPress={() => onOptionSelect('delete')}>
@@ -152,6 +164,7 @@ const styles = StyleSheet.create({
   underline: {
     width: 300,
     borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'grey',
   },
   button: {
     width: 300,
