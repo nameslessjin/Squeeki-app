@@ -12,7 +12,7 @@ import {
   deleteUserChat,
   timeoutUser,
   getUserChat,
-  switchOwnership
+  switchOwnership,
 } from '../actions/chat';
 import {connect} from 'react-redux';
 import UserChatList from '../components/userChat/userChatList';
@@ -38,7 +38,7 @@ class ChatMembers extends React.Component {
       headerTitle: 'Members',
     });
     this.loadUserChat(true);
-    this.getUserChat()
+    this.getUserChat();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -48,7 +48,7 @@ class ChatMembers extends React.Component {
       this.loadUserChat(true);
     }
     if (prevState.status != this.state.status && this.state.status) {
-      const {status, allow_invite} = this.state
+      const {status, allow_invite} = this.state;
       let disabled = status.is_owner ? false : !allow_invite;
       if (group.group.auth) {
         const {auth, rank_setting} = group.group;
@@ -205,52 +205,50 @@ class ChatMembers extends React.Component {
     this.setState({modalVisible: true, userId});
   };
 
-  onSwitchOwner = async() => {
-    const {switchOwnership, auth} = this.props
-    const {userId, chatId} = this.state
+  onSwitchOwner = async () => {
+    const {switchOwnership, auth} = this.props;
+    const {userId, chatId} = this.state;
     const request = {
       token: auth.token,
       userIds: [userId],
-      chatId
+      chatId,
+    };
+
+    const req = await switchOwnership(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot switch ownership at this moment, please try again later.');
+      return;
     }
 
-    const req = await switchOwnership(request)
-    if (req.errors){
-      console.log(req.errors)
-      alert('Cannot switch ownership at this moment, please try again later.')
-      return
-    }
-
-    if (req == 0){
+    if (req == 0) {
       // update your status and new owner's status
       this.setState(prevState => {
         const new_users = prevState.users.map(u => {
-          if (u.userId == userId){
+          if (u.userId == userId) {
             return {
               ...u,
-              is_owner: true
-            }
+              is_owner: true,
+            };
           }
-          if (u.userId == auth.user.id){
+          if (u.userId == auth.user.id) {
             return {
               ...u,
-              is_owner: false
-            }
+              is_owner: false,
+            };
           }
-          return u
-        })
+          return u;
+        });
         return {
           users: new_users,
           status: {
             ...prevState.status,
-            is_owner: false
-          }
-        }
-      })
-
+            is_owner: false,
+          },
+        };
+      });
     }
-
-  }
+  };
 
   onOptionSelect = (type, value) => {
     if (type == 'delete') {
@@ -275,7 +273,7 @@ class ChatMembers extends React.Component {
     if (type == 'dm') {
     }
 
-    if (type == 'ownership'){
+    if (type == 'ownership') {
       // switch ownership
       Alert.alert(
         'Switch Ownership',
@@ -288,27 +286,33 @@ class ChatMembers extends React.Component {
           {text: 'Confirm', onPress: this.onSwitchOwner, style: 'default'},
         ],
       );
-        
     }
     this.onBackdropPress();
   };
 
   render() {
-    const {users, refreshing, modalVisible, userId, status} = this.state;
+    const {users, refreshing, modalVisible, userId, status, rank_req} = this.state;
     const {group, auth} = this.props;
 
     let func_disabled = false;
-
+    let can_remove_user = false
     if (userId) {
       const user = users.filter(u => u.userId == userId)[0];
-      func_disabled = user.is_owner;
+      if (user) {
+        func_disabled = user.is_owner;
+      }
 
+      can_remove_user = !func_disabled
       if (group.group.auth) {
         const {auth, rank_setting} = group.group;
+
+        // if you have the chat management rank and the selected user rank is greater than yours
         func_disabled = !(
           auth.rank <= rank_setting.manage_chat_rank_required &&
           user.rank >= auth.rank
         );
+        // if func is not disabled and if user is within the rank requirement
+        can_remove_user = user.rank <= rank_req ? false : !func_disabled
       }
     }
 
@@ -332,6 +336,7 @@ class ChatMembers extends React.Component {
               func_disabled={func_disabled}
               onOptionSelect={this.onOptionSelect}
               is_owner={status.is_owner}
+              can_remove_user={can_remove_user}
             />
           ) : null}
         </View>
@@ -353,7 +358,7 @@ const mapStateToDispatch = dispatch => {
     deleteUserChat: data => dispatch(deleteUserChat(data)),
     timeoutUser: data => dispatch(timeoutUser(data)),
     getUserChat: data => dispatch(getUserChat(data)),
-    switchOwnership: data => dispatch(switchOwnership(data))
+    switchOwnership: data => dispatch(switchOwnership(data)),
   };
 };
 

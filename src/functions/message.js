@@ -12,6 +12,11 @@ export const sendMessageFunc = async data => {
 
   if (req.errors) {
     console.log(req.errors)
+    if (req.errors[0].message == 'You are currently not in the chat'){
+      alert('You are removed from the chat.')
+      navigation.goBack();
+      return
+    }
     alert('Cannot send message at this time, please try again later.')
     if (req.errors[0].message == 'Not Authenticated') {
       userLogout();

@@ -2,28 +2,18 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  TouchableWithoutFeedback,
   KeyboardAvoidingView,
   StatusBar,
-  Text,
-  TouchableOpacity,
-  Animated,
   Keyboard,
   Dimensions,
 } from 'react-native';
-import Clipboard from '@react-native-clipboard/clipboard';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {getChat, getUserChat, updateChatInfo} from '../actions/chat';
-import HeaderRightButton from '../components/chat/headerRightButton';
 import {getChatFunc} from '../functions/chat';
 import {
   GiftedChat,
-  InputToolbar,
-  Composer,
-  Actions,
 } from 'react-native-gifted-chat';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   sendMessage,
   getChatMessage,
@@ -205,11 +195,9 @@ class Chat extends React.Component {
   onSend = async () => {
     const {sendMessage, navigation, userLogout, auth} = this.props;
     const {content, id, status, messages} = this.state;
-    console.log(status.timeout)
+
     const time_out = new Date(parseInt(status.timeout));
     const different = time_out - Date.now();
-    console.log(time_out)
-    console.log(different)
     const {day, hour, minute, second}  = timeDifferentInMandS(time_out)
 
     this.setState({content: ''});

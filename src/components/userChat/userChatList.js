@@ -6,9 +6,12 @@ import {
   TouchableOpacity,
   Image,
   Text,
+  Dimensions
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {dateConversion} from '../../utils/time';
+
+const {width} = Dimensions.get('screen')
 
 const extractKey = ({userId}) => userId;
 
@@ -96,9 +99,9 @@ export default class UserChatList extends React.Component {
 
   render() {
     const {users, onEndReached, onRefresh, refreshing} = this.props;
-
     return (
       <FlatList
+
         style={styles.container}
         data={users}
         renderItem={this.renderItem}
@@ -128,7 +131,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 5,
+    marginVertical: 5,
+    marginHorizontal: (width - 177 * 2)/4
     // marginHorizontal: 10,
   },
   image: {

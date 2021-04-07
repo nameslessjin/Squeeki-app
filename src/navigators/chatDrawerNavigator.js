@@ -76,12 +76,13 @@ class ChatDrawerkNavigator extends React.Component {
   };
 
   onMemberPress = () => {
-    const {id, allow_invite, allow_modify} = this.props.chat.chat;
+    const {id, allow_invite, allow_modify, rank_req} = this.props.chat.chat;
     const {navigation} = this.props;
     navigation.navigate('ChatMembers', {
       chatId: id,
       allow_invite,
       allow_modify,
+      rank_req
     });
   };
   

@@ -53,9 +53,10 @@ export default class ChatMemberModal extends React.Component {
       func_disabled,
       onOptionSelect,
       is_owner,
+      can_remove_user
     } = this.props;
     const {is_timeout} = this.state;
-    console.log(is_owner)
+
 
     return (
       <View style={[styles.centeredView]}>
@@ -104,15 +105,15 @@ export default class ChatMemberModal extends React.Component {
 
                   {is_owner ? <View style={styles.underline} /> : null}
 
-                  {func_disabled ? null : (
+                  {can_remove_user ? (
                     <TouchableOpacity onPress={() => onOptionSelect('delete')}>
                       <View style={styles.button}>
-                        <Text>Delete</Text>
+                        <Text>Remove</Text>
                       </View>
                     </TouchableOpacity>
-                  )}
+                  ): null}
 
-                  {func_disabled ? null : <View style={styles.underline} />}
+                  {can_remove_user ? <View style={styles.underline} /> : null}
 
                   <TouchableOpacity onPress={() => onBackdropPress()}>
                     <View style={styles.button}>
