@@ -165,7 +165,6 @@ class Users extends React.Component {
           group={group.group}
           onSearchChange={this.onSearchChange}
           search_term={search_term}
-          // searched_users={searched_users}
         />
       </View>
     );

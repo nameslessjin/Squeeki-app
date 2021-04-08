@@ -14,10 +14,12 @@ import UserSearchBar from '../components/users/userSearch/searchBar';
 import DoneButton from '../components/users/userSearch/doneButton';
 import {searchUser, addMembers, getGroupMembers} from '../actions/user';
 import {userCheckInBatch, getGroupCheckInResult} from '../actions/checkin';
+import {getSingleChat} from '../actions/chat';
 import {createUserChat} from '../actions/chat';
 import {searchUserFunc, getGroupMembersFunc} from '../functions/user';
 import UserList from '../components/users/userList';
 import DisplayNameList from '../components/users/userSearch/displayNameList';
+import { StackActions } from '@react-navigation/native';
 
 class UserSearch extends React.Component {
   state = {
@@ -39,13 +41,18 @@ class UserSearch extends React.Component {
       this.setState({group: group, prev_route: prev_route, chatId});
 
       // // if it is chat from group then load group members
-      if ((prev_route == 'chatMembers' || prev_route == 'CheckInResult' || prev_route == 'PostSetting') && group != null) {
-        this.onSearchChange('')
+      if (
+        (prev_route == 'chatMembers' ||
+          prev_route == 'CheckInResult' ||
+          prev_route == 'PostSetting') &&
+        group != null
+      ) {
+        this.onSearchChange('');
       }
     }
 
     const button =
-      params.prev_route == 'PostSetting' ? null : (
+      params.prev_route == 'PostSetting' || params.prev_route == 'DM' ? null : (
         <DoneButton
           disabled={chosenUser.length == 0}
           onPress={this.onAddMembers}
@@ -62,11 +69,11 @@ class UserSearch extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const {navigation} = this.props;
     const {chosenUser, prev_route, searchTerm} = this.state;
-    if (prevState.searchTerm != searchTerm){
-      this.setState({usersData: [], count: 0})
+    if (prevState.searchTerm != searchTerm) {
+      this.setState({usersData: [], count: 0});
     }
     const button =
-      prev_route == 'PostSetting' ? null : (
+      prev_route == 'PostSetting' || prev_route == 'DM' ? null : (
         <DoneButton
           disabled={chosenUser.length == 0}
           onPress={this.onAddMembers}
@@ -77,7 +84,6 @@ class UserSearch extends React.Component {
     });
   }
 
-
   componentWillUnmount() {
     const {prev_route} = this.state;
     if (prev_route == 'PostSetting') {
@@ -87,10 +93,12 @@ class UserSearch extends React.Component {
       this.loadCheckInResult(true);
     } else if (prev_route == 'chatMembers') {
       // load chat members for individual chats and group chats
-      const {navigation} = this.props
+      const {navigation} = this.props;
       navigation.navigate('ChatMembers', {
-        refresh: true
-      })
+        refresh: true,
+      });
+    } else if (prev_route == 'DM') {
+      // for direct message
     }
   }
 
@@ -105,7 +113,7 @@ class UserSearch extends React.Component {
       user,
     } = this.props;
 
-    const group = route.params.group
+    const group = route.params.group;
     let userIdList = [];
 
     const data = {
@@ -117,7 +125,7 @@ class UserSearch extends React.Component {
       getGroupMembers: getGroupMembers,
       userIdList: userIdList,
     };
-    
+
     getGroupMembersFunc(data);
   };
 
@@ -220,18 +228,22 @@ class UserSearch extends React.Component {
   onSearchChange = async text => {
     const term = text.trim();
 
-    const {usersData, searchTerm} = this.state;    
-    this.setState({searchTerm: text})
+    const {usersData, searchTerm} = this.state;
+    this.setState({searchTerm: text});
 
-    const count = searchTerm != text ? 0 : this.state.count
+    const count = searchTerm != text ? 0 : this.state.count;
     const {searchUser, auth, navigation, userLogout, route} = this.props;
     const {prev_route, group, chatId} = route.params;
-    
+
     const groupId = group ? group.id : null;
 
     // search for general users
-    if (term.length < 3 && (prev_route=='members' || (prev_route == 'chatMembers' && group == null) )) {
- 
+    if (
+      term.length < 3 &&
+      (prev_route == 'members' ||
+        prev_route == 'DM' ||
+        (prev_route == 'chatMembers' && group == null))
+    ) {
       this.setState({usersData: [], count: 0});
       return;
     }
@@ -240,8 +252,7 @@ class UserSearch extends React.Component {
     let inGroup = false;
     let checkin_id = null;
 
-
-      userIdList = route.params.userIdList || [];
+    userIdList = route.params.userIdList || [];
     if (
       prev_route == 'PostSetting' ||
       prev_route == 'CheckInResult' ||
@@ -253,7 +264,6 @@ class UserSearch extends React.Component {
     if (prev_route == 'CheckInResult') {
       checkin_id = route.params.checkin_id;
     }
-    
 
     const data = {
       searchUser: searchUser,
@@ -276,17 +286,16 @@ class UserSearch extends React.Component {
       const format_users = users.map(u => {
         return {
           ...u,
-          chosen: false
-        }
-      })
+          chosen: false,
+        };
+      });
       const newUsers = usersData.concat(format_users);
-      
+
       this.setState(prevState => {
         return {
           usersData: searchTerm == text ? newUsers : format_users,
           count: count,
-        }
-
+        };
       });
     }
 
@@ -335,12 +344,21 @@ class UserSearch extends React.Component {
       });
     }
     this.setState({chosenUser: newChosenUser, usersData: newUsersData});
+    // if choose a nominee then navigate to the next page
     if (prev_route == 'PostSetting' && newChosenUser.length == 1) {
       navigation.navigate('Nomination', {
         chosenUser: newChosenUser[0],
         prev_route: 'PostSetting',
         groupId: group.id,
       });
+    }
+    // if choose a person to DM then navigate to a chat page
+    if (prev_route == 'DM' && newChosenUser.length == 1) {
+      // when the person is pressed.  Load person to person status/create if doesn't exist
+      // Try to get existing Single Chat
+      // if single chat exist load everything like it is a single chat but for DM
+      // if single chat does not exist, create one and delete if the DM is empty
+      // navigation.dispatch(StackActions.replace('ChatDrawerNavigator'))
     }
   };
 
@@ -354,7 +372,9 @@ class UserSearch extends React.Component {
         <View style={styles.optionArea}>
           <UserSearchBar onChange={this.onSearchChange} value={searchTerm} />
         </View>
-        {chosenUser.length == 0 || prev_route == 'PostSetting' ? null : (
+        {chosenUser.length == 0 ||
+        prev_route == 'PostSetting' ||
+        prev_route == 'DM' ? null : (
           <View style={styles.chosenList}>
             <DisplayNameList
               chosenUser={chosenUser}
@@ -428,6 +448,7 @@ const mapDispatchToProps = dispatch => {
     userCheckInBatch: data => dispatch(userCheckInBatch(data)),
     getGroupCheckInResult: data => dispatch(getGroupCheckInResult(data)),
     createUserChat: data => dispatch(createUserChat(data)),
+    getSingleChat: data => dispatch(getSingleChat(data)),
   };
 };
 

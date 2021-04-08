@@ -6,12 +6,20 @@ import {
 } from '@react-navigation/drawer';
 import Home from '../screens/home';
 import React from 'react';
-import {TouchableOpacity, StyleSheet, Text, Image, View, Dimensions, Platform} from 'react-native';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  Image,
+  View,
+  Dimensions,
+  Platform,
+} from 'react-native';
 import {DrawerActions} from '@react-navigation/native';
 import HeaderLeftButton from '../components/home/headerLeft';
 import Groups from '../screens/groups';
 import Terms from '../screens/terms';
-import Chats from '../screens/chats'
+import Chats from '../screens/chats';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {connect} from 'react-redux';
 import {changeScreen} from '../actions/screen';
@@ -19,15 +27,14 @@ import GroupRightButton from '../components/groups/headerRight';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import {userLogout} from '../actions/auth';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { socket } from '../../server_config'
+import {socket} from '../../server_config';
 
 const {height} = Dimensions.get('screen');
 
 class HomeDrawerNavigator extends React.Component {
-
   state = {
     icon_option: 'emoticon-cool-outline',
-  }
+  };
 
   onToggleHeaderLeftButton = () => {
     const {navigation} = this.props;
@@ -67,7 +74,7 @@ class HomeDrawerNavigator extends React.Component {
     ];
     this.setState({icon_option: icon_options[random]});
 
-    socket.init()
+    socket.init();
   }
 
   getHeaderTitle = route => {
@@ -99,10 +106,20 @@ class HomeDrawerNavigator extends React.Component {
           <GroupRightButton onPress={this.onToggleGroupsRightButton} />
         ),
       });
-    } else if (name == 'Chats'){
+    } else if (name == 'Chats') {
       navigation.setOptions({
-        headerRight: () => (<HeaderRightButton onPress={() => navigation.navigate('ChatSetting')} type={'create'}/>)
-      })
+        headerRight: () => (
+          <HeaderRightButton
+            onPress={() =>
+              navigation.navigate('Home', {
+                screen: 'Chats',
+                params: {modalVisible: true},
+              })
+            }
+            type={'create'}
+          />
+        ),
+      });
     }
   }
 
@@ -112,12 +129,17 @@ class HomeDrawerNavigator extends React.Component {
 
   render() {
     const {logout, auth} = this.props;
-    const {icon_option} = this.state
+    const {icon_option} = this.state;
     return (
       <Drawer.Navigator
         initialRouteName="Home"
         drawerContent={props => (
-          <CustomDrawerContent {...props} logout={logout} auth={auth} icon_option={icon_option}/>
+          <CustomDrawerContent
+            {...props}
+            logout={logout}
+            auth={auth}
+            icon_option={icon_option}
+          />
         )}
         drawerStyle={styles.drawerStyle}>
         <Drawer.Screen name="Home" component={Home} />
@@ -133,21 +155,40 @@ function CustomDrawerContent(props) {
   const {logout, navigation, auth, icon_option} = props;
   const {displayName, icon} = auth.user;
   return (
-    <DrawerContentScrollView {...props} style={{bottom: Platform.OS == 'android' ? 0 : height * 0.05}} >
-      {displayName ? <DrawerItem
-        label={displayName}
-        labelStyle={{color: 'black'}}
-        icon={() => (
-          <View style={styles.profile}>
-            {icon != null ?
-            <Image source={{uri: icon.uri}} style={styles.imageStyle} />: <MaterialIcons name={icon_option} size={75} />}
-            <Text style={styles.displayName} >{displayName}</Text>
-          </View>
-        )}
-        onPress = {() => navigation.navigate('Profile')}
-      /> : null}
-      <View style={{width: '100%', justifyContent: 'center', alignItems: 'center', height: 7}}>
-      <View style={{borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'grey', width: '85%'}} />
+    <DrawerContentScrollView
+      {...props}
+      style={{bottom: Platform.OS == 'android' ? 0 : height * 0.05}}>
+      {displayName ? (
+        <DrawerItem
+          label={displayName}
+          labelStyle={{color: 'black'}}
+          icon={() => (
+            <View style={styles.profile}>
+              {icon != null ? (
+                <Image source={{uri: icon.uri}} style={styles.imageStyle} />
+              ) : (
+                <MaterialIcons name={icon_option} size={75} />
+              )}
+              <Text style={styles.displayName}>{displayName}</Text>
+            </View>
+          )}
+          onPress={() => navigation.navigate('Profile')}
+        />
+      ) : null}
+      <View
+        style={{
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 7,
+        }}>
+        <View
+          style={{
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            borderBottomColor: 'grey',
+            width: '85%',
+          }}
+        />
       </View>
       <DrawerItemList {...props} />
       <DrawerItem
@@ -171,7 +212,7 @@ const styles = StyleSheet.create({
   drawerStyle: {
     width: '50%',
     flex: 1,
-    paddingTop: 0
+    paddingTop: 0,
   },
   labelStyle: {
     color: 'red',
@@ -194,12 +235,11 @@ const styles = StyleSheet.create({
     // borderBottomWidth: StyleSheet.hairlineWidth,
     // borderBottomColor: 'grey',
     padding: 5,
-
   },
   displayName: {
     marginTop: 5,
-    fontSize: 18
-  }
+    fontSize: 18,
+  },
 });
 
 const mapStateToProps = state => {
