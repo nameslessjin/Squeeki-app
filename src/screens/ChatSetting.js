@@ -23,10 +23,10 @@ import {
   createUpdateChatFunc,
   getChatFunc,
   deleteLeaveChatFunc,
+  subSocket
 } from '../functions/chat';
 import Input from '../components/chat/settingInput';
 import ChatIconModal from '../components/chat/chatIconModal';
-import {socket} from '../../server_config';
 import ToggleSetting from '../components/chat/toggleSetting';
 import { StackActions } from '@react-navigation/native';
 
@@ -301,16 +301,8 @@ class ChatSetting extends React.Component {
       );
     }
     socket_chat_id = socket_chat_id.map(c => c.id);
-    const io = socket.getIO();
-    socket_chat_id.forEach(id => {
-      const channel = `chats${id}`;
-      io.on(channel, data => {
-        if (data.action == 'add') {
-          //this.update chat
-          updateChatInfo(data.result);
-        }
-      });
-    });
+
+    subSocket(socket_chat_id, updateChatInfo)
   };
 
   onInputChange = (type, value) => {

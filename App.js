@@ -200,6 +200,7 @@ export default (App = () => {
               <Stack.Screen name="GroupRules" component={GroupRules} />
               <Stack.Screen name="ChatDrawerNavigator" component={ChatDrawerNavigator} />
               <Stack.Screen name='Chats' component={Chats}  />
+              <Stack.Screen name='Chat' component={Chat}/>
               <Stack.Screen name="ChatSetting" component={ChatSetting}/>
               <Stack.Screen name="RankSetting" component={RankSetting} />
               <Stack.Screen name="Profile" component={Profile}/>

@@ -9,6 +9,7 @@ import {
   makeOwnerMutation,
   getStatusInGroupQuery,
   searchGroupMembersQuery,
+  getUserRelationQuery
 } from './query/userQuery';
 import {getGroup} from './group';
 import {http} from '../../server_config';
@@ -387,3 +388,39 @@ export const getStatusInGroup = data => {
     return result.data.getStatusInGroup;
   };
 };
+
+export const getUserRelation = data => {
+  const {token, second_userId } = data
+
+  return async function(dispatch){
+    const input = {
+      second_userId: second_userId
+    }
+
+    const graphql = {
+      query: getUserRelationQuery,
+      variables: {
+        input: input
+      }
+    }
+
+    const req = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(graphql)
+    })
+
+    const result = await req.json();
+
+    if (result.errors){
+      return result
+    }
+
+    return result.data.getUserRelation
+
+  }
+
+}

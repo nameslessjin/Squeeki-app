@@ -17,9 +17,8 @@ import {
 } from '../actions/chat';
 import {userLogout} from '../actions/auth';
 import HeaderRightButton from '../components/chat/headerRightButton';
-import {getChatFunc} from '../functions/chat';
+import {getChatFunc, unsubSocket, subSocket} from '../functions/chat';
 import List from '../components/chat/chatList';
-import {socket} from '../../server_config';
 import NewChatModal from '../components/chat/newChatModal';
 
 class Chats extends React.Component {
@@ -86,7 +85,6 @@ class Chats extends React.Component {
 
   unsubSocket = () => {
     const {chat, group} = this.props;
-
     // if not in group all chats in chat.chats
     let socket_chat_id = chat.chats;
 
@@ -95,11 +93,7 @@ class Chats extends React.Component {
       socket_chat_id = chat.chats.filter(c => c.available);
     }
     socket_chat_id = socket_chat_id.map(c => c.id);
-    const io = socket.getIO();
-    socket_chat_id.forEach(id => {
-      const channel = `chats${id}`;
-      io.off(channel);
-    });
+    unsubSocket(socket_chat_id);
   };
 
   loadChat = async init => {
@@ -132,20 +126,8 @@ class Chats extends React.Component {
     if (group.group.auth) {
       socket_chat_id = req.chat.filter(c => c.available == true);
     }
-
     socket_chat_id = socket_chat_id.map(c => c.id);
-
-    const io = socket.getIO();
-
-    socket_chat_id.forEach(id => {
-      const channel = `chats${id}`;
-      io.on(channel, data => {
-        if (data.action == 'add') {
-          //this.update chat
-          updateChatInfo(data.result);
-        }
-      });
-    });
+    subSocket(socket_chat_id, updateChatInfo);
     this.setState({loading: false});
   };
 
@@ -159,12 +141,13 @@ class Chats extends React.Component {
     this.setState({refreshing: false});
   };
 
-  getSingleChat = async chatId => {
+  getSingleChat = async ({chatId, is_dm}) => {
     const {getSingleChat, auth} = this.props;
 
     const request = {
       token: auth.token,
       chatId,
+      is_dm
     };
 
     const req = await getSingleChat(request);
@@ -179,8 +162,8 @@ class Chats extends React.Component {
 
   onChatPress = async chat => {
     const {navigation, group} = this.props;
-    const {id} = chat;
-    const req = await this.getSingleChat(id);
+    const {id, is_dm} = chat;
+    const req = await this.getSingleChat({chatId: id, is_dm});
 
     if (req) {
       const {rank_req, available} = req;
@@ -194,7 +177,12 @@ class Chats extends React.Component {
       }
       this.unsubSocket();
       // remove listeners to all chatrooms here
-      navigation.navigate('ChatDrawerNavigator');
+      const {is_dm} = req
+      if (is_dm){
+        navigation.navigate('Chat');
+      } else {
+        navigation.navigate('ChatDrawerNavigator');
+      }
     }
   };
 

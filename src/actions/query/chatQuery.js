@@ -8,7 +8,7 @@ query getChat($input: ChatQuery!){
             allow_modify
             allow_invite
             available
-            is_multi
+            is_dm
             icon {
                 uri
             }
@@ -33,7 +33,7 @@ mutation createChat($input: ChatMutation!){
         allow_modify
         allow_invite
         available
-        is_multi
+        is_dm
         icon {
             uri
         }
@@ -56,7 +56,7 @@ mutation updateChat($input: ChatMutation!){
         allow_modify
         allow_invite
         available
-        is_multi
+        is_dm
         icon {
             uri
         }
@@ -110,7 +110,7 @@ query getSingleChat($input: ChatQuery!){
         allow_modify
         allow_invite
         available
-        is_multi
+        is_dm
         icon {
             uri
         }

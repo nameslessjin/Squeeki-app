@@ -11,6 +11,7 @@ import {DrawerActions} from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import HeaderRightButton from '../components/group/headerRight';
 import {connect} from 'react-redux';
+import { getUserRelation } from '../actions/user'
 
 const Drawer = createDrawerNavigator();
 
@@ -134,6 +135,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getUserChat: data => dispatch(getUserChat(data)),
+    getUserRelation: data => dispatch(getUserRelation(data))
   };
 };
 

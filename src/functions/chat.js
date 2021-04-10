@@ -1,3 +1,5 @@
+import {socket} from '../../server_config';
+
 export const getChatFunc = async data => {
   const {groupId, token, getChat, navigation, userLogout, count} = data;
   const request = {
@@ -8,7 +10,7 @@ export const getChatFunc = async data => {
 
   const req = await getChat(request);
   if (req.errors) {
-    console.log(req.errors)
+    console.log(req.errors);
     alert('Cannot load chat in at this time, please try again later');
     if (req.errors[0].message == 'Not Authenticated') {
       userLogout();
@@ -36,7 +38,7 @@ export const createUpdateChatFunc = async data => {
     updateChat,
     chatId,
     allow_invite,
-    allow_modify
+    allow_modify,
   } = data;
   const request = {
     groupId,
@@ -46,7 +48,7 @@ export const createUpdateChatFunc = async data => {
     token,
     chatId,
     allow_invite,
-    allow_modify
+    allow_modify,
   };
 
   let req = 0;
@@ -54,7 +56,11 @@ export const createUpdateChatFunc = async data => {
 
   if (req.errors) {
     console.log(req.errors[0].message);
-    alert(chatId ? 'Cannot update chat in at this time, please try again later' : 'Cannot create chat in at this time, please try again later');
+    alert(
+      chatId
+        ? 'Cannot update chat in at this time, please try again later'
+        : 'Cannot create chat in at this time, please try again later',
+    );
     if (req.errors[0].message == 'Not Authenticated') {
       userLogout();
       navigation.reset({
@@ -94,4 +100,25 @@ export const deleteLeaveChatFunc = async data => {
   }
 
   return 0;
+};
+
+export const unsubSocket = (socket_chat_id) => {
+  const io = socket.getIO();
+  socket_chat_id.forEach(id => {
+    const channel = `chats${id}`;
+    io.off(channel);
+  });
+};
+
+export const subSocket = (socket_chat_id, callback) => {
+  const io = socket.getIO();
+  socket_chat_id.forEach(id => {
+    const channel = `chats${id}`;
+    io.on(channel, data => {
+      if (data.action == 'add') {
+        //this.update chat
+        callback(data.result);
+      }
+    });
+  });
 };

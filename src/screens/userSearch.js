@@ -20,6 +20,7 @@ import {searchUserFunc, getGroupMembersFunc} from '../functions/user';
 import UserList from '../components/users/userList';
 import DisplayNameList from '../components/users/userSearch/displayNameList';
 import { StackActions } from '@react-navigation/native';
+import { unsubSocket } from '../functions/chat'
 
 class UserSearch extends React.Component {
   state = {
@@ -352,14 +353,44 @@ class UserSearch extends React.Component {
         groupId: group.id,
       });
     }
+
     // if choose a person to DM then navigate to a chat page
     if (prev_route == 'DM' && newChosenUser.length == 1) {
-      // when the person is pressed.  Load person to person status/create if doesn't exist
+      // when the person is pressed.  Load person to person status/create if doesn't exist (process)(probable do this in the next page)
       // Try to get existing Single Chat
+
+      const second_userId = newChosenUser[0].id
+      this.getSingleChat(second_userId)
       // if single chat exist load everything like it is a single chat but for DM
-      // if single chat does not exist, create one and delete if the DM is empty
-      // navigation.dispatch(StackActions.replace('ChatDrawerNavigator'))
+      // if single chat does not exist, get one without chatId, create an official one when send message
     }
+  };
+
+
+  getSingleChat = async second_userId => {
+    const {getSingleChat, auth, navigation, chat} = this.props;
+
+    const request = {
+      token: auth.token,
+      second_userId,
+    };
+
+    const req = await getSingleChat(request);
+
+    if (req.errors) {
+      console.log(req.errors[0]);
+      alert('load chat failed at this time, please try again later');
+      return false;
+    }
+
+    if (req){
+      // unsub socket
+      const {chat} = this.props
+      const socket_chat_id = chat.chats;
+      unsubSocket(socket_chat_id)
+      navigation.dispatch(StackActions.replace('Chat', {second_userId: second_userId}))
+    }
+
   };
 
   render() {
@@ -435,8 +466,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {auth, user, checkin} = state;
-  return {auth, user, checkin};
+  const {auth, user, checkin, chat} = state;
+  return {auth, user, checkin, chat};
 };
 
 const mapDispatchToProps = dispatch => {

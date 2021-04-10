@@ -9,11 +9,14 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
-import {getChat, getUserChat, updateChatInfo} from '../actions/chat';
-import {getChatFunc} from '../functions/chat';
 import {
-  GiftedChat,
-} from 'react-native-gifted-chat';
+  getChat,
+  getUserChat,
+  updateChatInfo,
+  createChat,
+} from '../actions/chat';
+import {getChatFunc, subSocket} from '../functions/chat';
+import {GiftedChat} from 'react-native-gifted-chat';
 import {
   sendMessage,
   getChatMessage,
@@ -27,7 +30,8 @@ import {
   RenderActions,
   OnLongPress,
 } from '../components/chat/render';
-import {timeDifferentInMandS} from '../utils/time'
+import {timeDifferentInMandS} from '../utils/time';
+import HeaderRightButton from '../components/chat/headerRightButton';
 
 const {height} = Dimensions.get('screen');
 
@@ -39,7 +43,7 @@ class Chat extends React.Component {
     allow_invite: false,
     allow_modify: false,
     available: false,
-    // ...this.props.route.params,
+    ...this.props.route.params,
     ...this.props.chat.chat,
     messages: [],
     content: '',
@@ -53,36 +57,43 @@ class Chat extends React.Component {
 
   componentDidMount() {
     const {navigation, route, group} = this.props;
-    const {name, id} = this.state;
+    const {name, id, icon, is_dm} = this.state;
     navigation.setOptions({
       headerShown: false,
-      // headerBackTitleVisible: false,
-      // headerTitle: name,
-      // headerRight: () => (
-      //   <HeaderRightButton
-      //     type={'setting'}
-      //     disabled={false}
-      //     onPress={this.onSettingPress}
-      //   />
-      // ),
     });
+    if (id == null || is_dm) {
+      navigation.setOptions({
+        headerShown: true,
+        headerBackTitleVisible: false,
+        headerTitle: name,
+        headerRight: () => (
+          <HeaderRightButton
+            type={'icon'}
+            disabled={false}
+            icon_url={icon == null ? null : icon.uri}
+          />
+        ),
+      });
+    }
 
-    // load some messages
-    this.loadChatMessage(true);
-    this.getUserChat(id);
+    if (id) {
+      // load some messages
+      this.loadChatMessage(true);
+      this.getUserChat(id);
 
-    // establish socket.io connection
-    const channel = `chat${id}`;
-    const io = socket.getIO();
-    io.on(channel, data => {
-      if (data.action == 'create') {
-        this.addSubMessage(data.result);
-      } else if (data.action == 'message_status_update') {
-        this.updateUserMessage(data.result);
-      } else if (data.action == 'user_status_update'){
-        this.updateUserStatus(data.result)
-      }
-    });
+      // establish socket.io connection
+      const channel = `chat${id}`;
+      const io = socket.getIO();
+      io.on(channel, data => {
+        if (data.action == 'create') {
+          this.addSubMessage(data.result);
+        } else if (data.action == 'message_status_update') {
+          this.updateUserMessage(data.result);
+        } else if (data.action == 'user_status_update') {
+          this.updateUserStatus(data.result);
+        }
+      });
+    }
   }
 
   getUserChat = async chatId => {
@@ -104,14 +115,13 @@ class Chat extends React.Component {
   };
 
   updateUserStatus = data => {
-    const {status, userId} = data
-    const {id} = this.props.auth.user
-    const time = new Date(status.timeout)
-    if (id == userId){
-      this.setState({status: {...status, timeout: time.getTime()}})
+    const {status, userId} = data;
+    const {id} = this.props.auth.user;
+    const time = new Date(status.timeout);
+    if (id == userId) {
+      this.setState({status: {...status, timeout: time.getTime()}});
     }
-  
-  }
+  };
 
   addSubMessage = data => {
     const {message, pointer} = data;
@@ -193,12 +203,12 @@ class Chat extends React.Component {
   };
 
   onSend = async () => {
-    const {sendMessage, navigation, userLogout, auth} = this.props;
-    const {content, id, status, messages} = this.state;
+    const {sendMessage, navigation, userLogout, auth, createChat} = this.props;
+    let {content, id, status, messages, second_userId} = this.state;
 
     const time_out = new Date(parseInt(status.timeout));
     const different = time_out - Date.now();
-    const {day, hour, minute, second}  = timeDifferentInMandS(time_out)
+    const {day, hour, minute, second} = timeDifferentInMandS(time_out);
 
     this.setState({content: ''});
     Keyboard.dismiss();
@@ -215,16 +225,49 @@ class Chat extends React.Component {
       return;
     }
 
-    const data = {
-      token: auth.token,
-      chatId: id,
-      content,
-      sendMessage,
-      navigation,
-      userLogout,
-      media: null,
-    };
-    const req = sendMessageFunc(data);
+    if (id == null) {
+      // create chat and user Chat first await
+      const request = {
+        second_userId,
+        token: auth.token,
+      };
+
+      const req = await createChat(request);
+      if (req.errors) {
+        console.log(req.errors);
+        alert('Cannot send message right now, please try again later');
+        return;
+      }
+
+      console.log(req);
+      id = req.id;
+
+      // establish socket.io connection
+      const channel = `chat${id}`;
+      const io = socket.getIO();
+      io.on(channel, data => {
+        if (data.action == 'create') {
+          this.addSubMessage(data.result);
+        } else if (data.action == 'message_status_update') {
+          this.updateUserMessage(data.result);
+        } else if (data.action == 'user_status_update') {
+          this.updateUserStatus(data.result);
+        }
+      });
+    }
+
+    if (id != null) {
+      const data = {
+        token: auth.token,
+        chatId: id,
+        content,
+        sendMessage,
+        navigation,
+        userLogout,
+        media: null,
+      };
+      sendMessageFunc(data);
+    }
   };
 
   onLongPress = (context, message) => {
@@ -262,6 +305,7 @@ class Chat extends React.Component {
     if (prevProps.chat.chat != this.props.chat.chat) {
       const {navigation} = this.props;
       const {
+        id,
         name,
         rank_req,
         available,
@@ -271,6 +315,7 @@ class Chat extends React.Component {
       } = this.props.chat.chat;
 
       this.setState({
+        id,
         name,
         rank_req,
         available,
@@ -299,16 +344,8 @@ class Chat extends React.Component {
       socket_chat_id = req.chat.filter(c => c.available);
     }
     socket_chat_id = socket_chat_id.map(c => c.id);
-    const io = socket.getIO();
-    socket_chat_id.forEach(id => {
-      const channel = `chats${id}`;
-      io.on(channel, data => {
-        if (data.action == 'add') {
-          //this.update chat
-          updateChatInfo(data.result);
-        }
-      });
-    });
+
+    subSocket(socket_chat_id, updateChatInfo);
   };
 
   onInputChange = text => {
@@ -373,7 +410,7 @@ class Chat extends React.Component {
       pointer,
       isLoadEarlier,
       modalVisible,
-      status
+      status,
     } = this.state;
     const user = {
       _id: auth.user.id,
@@ -442,6 +479,7 @@ const mapDispatchToProps = dispatch => {
     getUserChat: data => dispatch(getUserChat(data)),
     updateChatInfo: data => dispatch(updateChatInfo(data)),
     updateUserMessage: data => dispatch(updateUserMessage(data)),
+    createChat: data => dispatch(createChat(data)),
   };
 };
 

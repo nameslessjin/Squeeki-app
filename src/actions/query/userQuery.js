@@ -138,3 +138,16 @@ mutation makeMemberOwner($memberId: String!, $groupId: String!){
     makeMemberOwner(memberId: $memberId, groupId: $groupId)
 }
 `;
+
+export const getUserRelationQuery = `
+query getUserRelation($input: UserRelationInput!){
+    getUserRelation(input: $input){
+        to {
+            is_dm_blocked
+        }
+        from {
+            is_dm_blocked
+        }
+    }
+}
+`

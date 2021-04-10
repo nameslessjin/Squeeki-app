@@ -66,6 +66,7 @@ export const createChat = request => {
     token,
     allow_invite,
     allow_modify,
+    second_userId
   } = request;
 
   return async function(dispatch) {
@@ -101,6 +102,7 @@ export const createChat = request => {
       rank_req,
       allow_invite,
       allow_modify,
+      second_userId,
       icon: iconData
         ? {
             name: iconData.name,
@@ -131,7 +133,9 @@ export const createChat = request => {
       return result;
     }
 
-    return 0;
+    dispatch(getSingleChatReducer(result.data.createChat));
+    console.log(result.data.createChat)
+    return result.data.createChat;
   };
 };
 
@@ -434,10 +438,12 @@ const updateChatInfoReducer = i => {
 };
 
 export const getSingleChat = request => {
-  const {token, chatId} = request;
+  const {token, chatId, second_userId, is_dm} = request;
   return async function(dispatch) {
     const input = {
       chatId,
+      second_userId,
+      is_dm
     };
 
     const graphql = {
