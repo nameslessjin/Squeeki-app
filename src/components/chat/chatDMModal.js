@@ -8,25 +8,22 @@ import {
   Modal,
   FlatList,
   Dimensions,
+  Image,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const extractKey = ({id}) => id.toString();
-export default class newChatModal extends React.Component {
-  options = [
-    {id: 0, name: 'Start A Chatroom', icon: 'account-multiple-plus', type: 'chatroom'},
-    {id: 1, name: 'Direct Message', icon: 'message-text', type: 'DM'},
-  ];
-
+export default class ChatDMModal extends React.Component {
   onPress = type => {
-    const {navigateToOptions, onBackdropPress} = this.props;
+    const {onPress, onBackdropPress} = this.props;
     onBackdropPress();
-    navigateToOptions(type)
+    onPress(type);
   };
 
   renderOptions = i => {
-    const {index, item} = i;
-    const {name, icon, onPress, type} = item;
+    const {item} = i;
+    const {name, icon, type, on, id, icon_2} = item;
+
     return (
       <View style={[styles.options]}>
         <TouchableOpacity onPress={() => this.onPress(type)}>
@@ -36,9 +33,28 @@ export default class newChatModal extends React.Component {
               width: '100%',
               flexDirection: 'row',
             }}>
-            <MaterialIcons name={icon} size={35} />
+            <MaterialIcons
+              name={id == 0 ? (on ? icon_2 : icon) : icon}
+              size={35}
+              color={id == 0 ? (on ? 'grey' : 'red') : on ? 'red' : 'grey'}
+            />
             <View style={[styles.underline, styles.modalTextView]}>
-              <Text style={styles.modalText}>{name}</Text>
+              <Text
+                style={[
+                  styles.modalText,
+                  {
+                    color:
+                      id == 0
+                        ? on
+                          ? 'grey'
+                          : 'red'
+                        : on
+                        ? 'red'
+                        : 'grey',
+                  },
+                ]}>
+                {name}
+              </Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -47,7 +63,54 @@ export default class newChatModal extends React.Component {
   };
 
   render() {
-    const {modalVisible, onBackdropPress} = this.props;
+    const {
+      modalVisible,
+      onBackdropPress,
+      name,
+      icon_url,
+      status,
+      user_relation,
+    } = this.props;
+    const random = Math.floor(Math.random() * 5);
+    const icon_options = [
+      'emoticon-cool-outline',
+      'emoticon-poop',
+      'emoticon-kiss-outline',
+      'emoticon-wink-outline',
+      'emoticon-tongue-outline',
+    ];
+
+    let options = [
+      {
+        id: 1,
+        name: 'Block',
+        icon: 'cancel',
+        type: 'block',
+        on: user_relation.to.is_dm_blocked,
+      },
+    ];
+
+    if (status.timeout) {
+      const notification = [
+        {
+          id: 0,
+          name: 'Notification',
+          icon: 'bell-off',
+          icon_2: 'bell',
+          type: 'notification',
+          on: status.notification,
+        },
+      ];
+      options = notification.concat(options)
+    }
+
+    const icon_option = icon_options[random];
+    const icon =
+      icon_url == null ? (
+        <MaterialIcons name={icon_option} size={30} />
+      ) : (
+        <Image source={{uri: icon_url}} style={styles.imageStyle} />
+      );
 
     return (
       <View style={[styles.centeredView]}>
@@ -57,13 +120,15 @@ export default class newChatModal extends React.Component {
               <TouchableWithoutFeedback>
                 <View style={styles.modalView}>
                   <View style={[styles.modalHeader, styles.underline]}>
-                    <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                      Start
+                    {icon}
+                    <Text
+                      style={{fontWeight: 'bold', fontSize: 16, marginLeft: 5}}>
+                      {name}
                     </Text>
                   </View>
 
                   <FlatList
-                    data={this.options}
+                    data={options}
                     keyExtractor={extractKey}
                     renderItem={this.renderOptions}
                     scrollEnabled={false}
@@ -116,6 +181,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   underline: {
     width: '100%',
@@ -151,5 +217,13 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     marginBottom: 100,
+  },
+  imageStyle: {
+    height: 30,
+    aspectRatio: 1,
+    borderRadius: 37,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

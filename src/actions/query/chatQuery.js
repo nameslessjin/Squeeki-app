@@ -142,3 +142,9 @@ mutation timeoutUser($input: UserChatMutation!){
 }
 
 `
+
+export const changeUserChatNotificationMutation = `
+mutation changeUserChatNotification($input: UserChatMutation!){
+    changeUserChatNotification(input: $input)
+}
+`

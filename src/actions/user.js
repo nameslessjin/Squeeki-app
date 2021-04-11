@@ -9,7 +9,8 @@ import {
   makeOwnerMutation,
   getStatusInGroupQuery,
   searchGroupMembersQuery,
-  getUserRelationQuery
+  getUserRelationQuery,
+  updateUserRelationMutation
 } from './query/userQuery';
 import {getGroup} from './group';
 import {http} from '../../server_config';
@@ -390,11 +391,12 @@ export const getStatusInGroup = data => {
 };
 
 export const getUserRelation = data => {
-  const {token, second_userId } = data
+  const {token, second_userId, chatId } = data
 
   return async function(dispatch){
     const input = {
-      second_userId: second_userId
+      second_userId,
+      chatId
     }
 
     const graphql = {
@@ -423,4 +425,41 @@ export const getUserRelation = data => {
 
   }
 
+}
+
+export const updateUserRelation = data => {
+  const {token, second_userId, is_dm_blocked, chatId} = data
+
+  return async function(dispatch){
+    const input = {
+      second_userId,
+      is_dm_blocked,
+      chatId
+    }
+
+    const graphql = {
+      query: updateUserRelationMutation,
+      variables: {
+        input: input
+      }
+    }
+
+    const req = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(graphql)
+    })
+
+    const result = await req.json();
+
+    if (result.errors){
+      return result
+    }
+
+    return result.data.updateUserRelation
+
+  }
 }

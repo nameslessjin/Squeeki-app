@@ -356,13 +356,11 @@ class UserSearch extends React.Component {
 
     // if choose a person to DM then navigate to a chat page
     if (prev_route == 'DM' && newChosenUser.length == 1) {
-      // when the person is pressed.  Load person to person status/create if doesn't exist (process)(probable do this in the next page)
       // Try to get existing Single Chat
-
-      const second_userId = newChosenUser[0].id
-      this.getSingleChat(second_userId)
       // if single chat exist load everything like it is a single chat but for DM
       // if single chat does not exist, get one without chatId, create an official one when send message
+      const second_userId = newChosenUser[0].id
+      this.getSingleChat(second_userId)
     }
   };
 

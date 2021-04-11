@@ -1,9 +1,11 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, Keyboard} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Clipboard from '@react-native-clipboard/clipboard';
 
+
 export const RenderSend = props => {
+
   const {text, onSend} = props;
   return (
     <TouchableOpacity

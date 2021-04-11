@@ -11,6 +11,7 @@ import {
   getSingleChatQuery,
   getAllUserChatQuery,
   timeoutUserMutation,
+  changeUserChatNotificationMutation,
 } from './query/chatQuery';
 import {http, http_upload} from '../../server_config';
 
@@ -66,7 +67,7 @@ export const createChat = request => {
     token,
     allow_invite,
     allow_modify,
-    second_userId
+    second_userId,
   } = request;
 
   return async function(dispatch) {
@@ -134,7 +135,7 @@ export const createChat = request => {
     }
 
     dispatch(getSingleChatReducer(result.data.createChat));
-    console.log(result.data.createChat)
+    console.log(result.data.createChat);
     return result.data.createChat;
   };
 };
@@ -443,7 +444,7 @@ export const getSingleChat = request => {
     const input = {
       chatId,
       second_userId,
-      is_dm
+      is_dm,
     };
 
     const graphql = {
@@ -552,6 +553,37 @@ export const timeoutUser = request => {
       return result;
     }
 
-    return 0
+    return 0;
+  };
+};
+
+export const changeUserChatNotification = request => {
+  const {token, chatId} = request;
+
+  return async function(dispatch) {
+    const input = {chatId};
+    const graphql = {
+      query: changeUserChatNotificationMutation,
+      variables: {
+        input: input,
+      },
+    };
+
+    const req = await fetch(http, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphql),
+    });
+
+    const result = await req.json();
+
+    if (result.errors) {
+      return result;
+    }
+
+    return 0;
   };
 };

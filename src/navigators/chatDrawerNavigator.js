@@ -11,7 +11,8 @@ import {DrawerActions} from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import HeaderRightButton from '../components/group/headerRight';
 import {connect} from 'react-redux';
-import { getUserRelation } from '../actions/user'
+import {getUserRelation} from '../actions/user';
+import {getUserChat, changeUserChatNotification} from '../actions/chat';
 
 const Drawer = createDrawerNavigator();
 
@@ -26,6 +27,7 @@ class ChatDrawerkNavigator extends React.Component {
     let name = 'Chat';
     if (chat) {
       name = chat.name;
+      this.getUserChat(chat.id);
     }
 
     navigation.setOptions({
@@ -35,8 +37,26 @@ class ChatDrawerkNavigator extends React.Component {
       headerBackTitleVisible: false,
       headerTitle: name,
     });
-
   }
+
+  getUserChat = async chatId => {
+    const {auth, getUserChat} = this.props;
+
+    const request = {
+      token: auth.token,
+      chatId,
+    };
+
+    const req = await getUserChat(request);
+    if (req.errors) {
+      console.log(req.errors[0]);
+      alert('Get User Status Error');
+      return;
+    }
+
+    this.setState({status: req});
+  };
+
   componentDidUpdate(prevProps) {
     const {navigation} = this.props;
     if (prevProps.chat.chat != this.props.chat.chat) {
@@ -83,15 +103,58 @@ class ChatDrawerkNavigator extends React.Component {
       chatId: id,
       allow_invite,
       allow_modify,
-      rank_req
+      rank_req,
     });
   };
-  
+
+  changeUserChatNotification = async () => {
+    const {changeUserChatNotification, auth, chat} = this.props;
+    const {id} = chat.chat;
+    const request = {
+      token: auth.token,
+      chatId: id,
+    };
+    const req = await changeUserChatNotification(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert(
+        'Cannot change notification setting right now, please try again later.',
+      );
+      return;
+    }
+    if (req == 0) {
+      this.setState(prevState => ({
+        status: {
+          ...prevState.status,
+          notification: !prevState.status.notification,
+        },
+      }));
+    }
+  };
 
   CustomDrawerContent = props => {
+    const {notification} = this.state.status;
+    const {group} = this.props.group;
     return (
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
+        {group.id ? null : (
+          <DrawerItem
+            label="Notification"
+            icon={() => (
+              <MaterialIcons
+                name={notification ? 'bell' : 'bell-off'}
+                color={notification ? 'grey' : 'red'}
+                size={25}
+              />
+            )}
+            labelStyle={[
+              styles.labelStyle,
+              {color: notification ? 'grey' : 'red'},
+            ]}
+            onPress={this.changeUserChatNotification}
+          />
+        )}
         <DrawerItem
           label="Members"
           icon={() => (
@@ -129,13 +192,15 @@ class ChatDrawerkNavigator extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const {chat, auth} = state;
-  return {auth, chat};
+  const {chat, auth, group} = state;
+  return {auth, chat, group};
 };
 const mapDispatchToProps = dispatch => {
   return {
     getUserChat: data => dispatch(getUserChat(data)),
-    getUserRelation: data => dispatch(getUserRelation(data))
+    getUserRelation: data => dispatch(getUserRelation(data)),
+    changeUserChatNotification: data =>
+      dispatch(changeUserChatNotification(data)),
   };
 };
 

@@ -14,6 +14,7 @@ import {
   getUserChat,
   updateChatInfo,
   createChat,
+  changeUserChatNotification,
 } from '../actions/chat';
 import {getChatFunc, subSocket} from '../functions/chat';
 import {GiftedChat} from 'react-native-gifted-chat';
@@ -22,6 +23,7 @@ import {
   getChatMessage,
   updateUserMessage,
 } from '../actions/message';
+import {getUserRelation, updateUserRelation} from '../actions/user';
 import {sendMessageFunc, getChatMessageFunc} from '../functions/message';
 import {socket} from '../../server_config';
 import ChatMediaModal from '../components/chat/chatMediaModal';
@@ -32,6 +34,7 @@ import {
 } from '../components/chat/render';
 import {timeDifferentInMandS} from '../utils/time';
 import HeaderRightButton from '../components/chat/headerRightButton';
+import ChatDMModal from '../components/chat/chatDMModal';
 
 const {height} = Dimensions.get('screen');
 
@@ -48,16 +51,26 @@ class Chat extends React.Component {
     messages: [],
     content: '',
     pointer: null,
-    status: null,
     isLoadEarlier: false,
     modalVisible: false,
+    chatDMModalVisible: false,
     image: {},
-    status: {},
+    status: {
+      notification: true,
+    },
+    user_relation: {
+      to: {
+        is_dm_block: false,
+      },
+      from: {
+        is_dm_block: false,
+      },
+    },
   };
 
   componentDidMount() {
     const {navigation, route, group} = this.props;
-    const {name, id, icon, is_dm} = this.state;
+    const {name, id, icon, is_dm, second_userId} = this.state;
     navigation.setOptions({
       headerShown: false,
     });
@@ -71,14 +84,24 @@ class Chat extends React.Component {
             type={'icon'}
             disabled={false}
             icon_url={icon == null ? null : icon.uri}
+            onPress={() => this.setState({chatDMModalVisible: true})}
           />
         ),
       });
+      //Load person to person status/create if doesn't exist (process)(probable do this in the next page)
+      if (second_userId) {
+        this.getUserRelation({second_userId});
+      }
     }
 
     if (id) {
       // load some messages
       this.loadChatMessage(true);
+
+      if (is_dm) {
+        this.getUserRelation({chatId: id});
+      }
+
       this.getUserChat(id);
 
       // establish socket.io connection
@@ -91,10 +114,49 @@ class Chat extends React.Component {
           this.updateUserMessage(data.result);
         } else if (data.action == 'user_status_update') {
           this.updateUserStatus(data.result);
+        } else if (data.action == 'user_relation_update') {
+          console.log('user_relation_update')
+          this.updateUserRelation(data.result);
         }
       });
     }
   }
+
+  updateUserRelation = data => {
+    const {from, second_userId} = data;
+    const {id} = this.props.auth.user;
+    console.log(data)
+    console.log(id)
+    if (id == second_userId) {
+      this.setState(prevState => {
+        return {
+          user_relation: {
+            ...prevState.user_relation,
+            from: from,
+          },
+        };
+      });
+    }
+  };
+
+  getUserRelation = async ({second_userId, chatId}) => {
+    const {auth, getUserRelation} = this.props;
+
+    const request = {
+      token: auth.token,
+      chatId,
+      second_userId,
+    };
+
+    const req = await getUserRelation(request);
+    if (req.errors) {
+      console.log(req.errors[0]);
+      alert('Get User Status Error');
+      return;
+    }
+
+    this.setState({user_relation: req});
+  };
 
   getUserChat = async chatId => {
     const {auth, getUserChat} = this.props;
@@ -204,27 +266,57 @@ class Chat extends React.Component {
 
   onSend = async () => {
     const {sendMessage, navigation, userLogout, auth, createChat} = this.props;
-    let {content, id, status, messages, second_userId} = this.state;
-
-    const time_out = new Date(parseInt(status.timeout));
-    const different = time_out - Date.now();
-    const {day, hour, minute, second} = timeDifferentInMandS(time_out);
+    let {
+      content,
+      id,
+      status,
+      messages,
+      second_userId,
+      user_relation,
+      name,
+    } = this.state;
 
     this.setState({content: ''});
     Keyboard.dismiss();
-    if (different > 0) {
-      const system_message = {
-        _id: messages.length.toString(),
-        text: `You have been timed out for ${day}d ${hour}h ${minute}m ${second}s`,
-        createdAt: new Date(),
-        system: true,
-      };
-      this.setState(prevState => ({
-        messages: [system_message].concat(prevState.messages),
-      }));
-      return;
+
+    // check out user timeout in group chat
+    if (status.timeout) {
+      const time_out = new Date(parseInt(status.timeout));
+      const different = time_out - Date.now();
+      const {day, hour, minute, second} = timeDifferentInMandS(time_out);
+
+      if (different > 0) {
+        const system_message = {
+          _id: messages.length.toString(),
+          text: `You have been timed out for ${day}d ${hour}h ${minute}m ${second}s`,
+          createdAt: new Date(),
+          system: true,
+        };
+        this.setState(prevState => ({
+          messages: [system_message].concat(prevState.messages),
+        }));
+        return;
+      }
     }
 
+    // check if user is blocked by the other user in a DM
+    if (user_relation.from) {
+      const {is_dm_blocked} = user_relation.from;
+      if (is_dm_blocked) {
+        const system_message = {
+          _id: messages.length.toString(),
+          text: `You have been blocked by ${name}`,
+          createdAt: new Date(),
+          system: true,
+        };
+        this.setState(prevState => ({
+          messages: [system_message].concat(prevState.messages),
+        }));
+        return;
+      }
+    }
+
+    // if a DM between two users never exist.  Create a chat and get chatId
     if (id == null) {
       // create chat and user Chat first await
       const request = {
@@ -239,8 +331,10 @@ class Chat extends React.Component {
         return;
       }
 
-      console.log(req);
       id = req.id;
+
+      this.getUserChat(id);
+      this.getUserRelation({second_userId});
 
       // establish socket.io connection
       const channel = `chat${id}`;
@@ -352,24 +446,6 @@ class Chat extends React.Component {
     this.setState({content: text});
   };
 
-  renderSend = p => {
-    const text = this.state.content.trim();
-    const props = {
-      text,
-      onSend: p.onSend,
-    };
-    return <RenderSend {...props} />;
-  };
-
-  renderActions = props => {
-    const p = {
-      bottomOffset: props.bottomOffset,
-      onActionPress: this.onActionPress,
-    };
-
-    return <RenderActions {...p} />;
-  };
-
   onActionPress = () => {
     Keyboard.dismiss();
     this.setState({modalVisible: true});
@@ -380,7 +456,7 @@ class Chat extends React.Component {
   };
 
   onBackdropPress = () => {
-    this.setState({modalVisible: false});
+    this.setState({modalVisible: false, chatDMModalVisible: false});
   };
 
   onMediaUpload = media => {
@@ -402,6 +478,58 @@ class Chat extends React.Component {
     const req = sendMessageFunc(data);
   };
 
+  onUserPress = async type => {
+    const {auth, changeUserChatNotification, updateUserRelation} = this.props;
+    const {id, user_relation, second_userId} = this.state;
+    let req = null;
+    if (type == 'notification') {
+      const request = {
+        token: auth.token,
+        chatId: id,
+      };
+      req = await changeUserChatNotification(request);
+      if (req.errors) {
+        console.log(req.errors);
+        alert(
+          'Cannot change notification setting right now, please try again later.',
+        );
+        return;
+      }
+      if (req == 0) {
+        this.setState(prevState => ({
+          status: {
+            ...prevState.status,
+            notification: !prevState.status.notification,
+          },
+        }));
+      }
+    } else if (type == 'block') {
+      const {is_dm_blocked} = user_relation.to;
+      const request = {
+        token: auth.token,
+        second_userId,
+        is_dm_blocked: !is_dm_blocked,
+        chatId: id,
+      };
+      console.log(request);
+      req = await updateUserRelation(request);
+      if (req.errors) {
+        console.log(req.errors);
+        alert('Cannot change setting right now, please try again later.');
+        return;
+      }
+      if (req) {
+        this.setState(prevState => {
+          const new_user_relation = {...prevState.user_relation, to: req};
+          console.log(new_user_relation);
+          return {
+            user_relation: new_user_relation,
+          };
+        });
+      }
+    }
+  };
+
   render() {
     const {auth} = this.props;
     const {
@@ -410,11 +538,16 @@ class Chat extends React.Component {
       pointer,
       isLoadEarlier,
       modalVisible,
+      user_relation,
+      chatDMModalVisible,
       status,
+      name,
+      icon,
     } = this.state;
     const user = {
       _id: auth.user.id,
     };
+    console.log(this.state);
 
     return (
       <View>
@@ -431,13 +564,20 @@ class Chat extends React.Component {
             keyboardShouldPersistTaps={'never'}
             alwaysShowSend={true}
             bottomOffset={35}
-            renderSend={this.renderSend}
+            renderSend={p => (
+              <RenderSend text={this.state.content.trim()} onSend={p.onSend} />
+            )}
             loadEarlier={pointer == 'Infinity' ? false : true}
             onLoadEarlier={this.loadChatMessage}
             isLoadingEarlier={isLoadEarlier}
             infiniteScroll={true}
             keyboardShouldPersistTaps={'never'}
-            renderActions={this.renderActions}
+            renderActions={p => (
+              <RenderActions
+                bottomOffset={p.bottomOffset}
+                onActionPress={this.onActionPress}
+              />
+            )}
             maxInputLength={5000}
             maxComposerHeight={200}
             onLongPress={(context, message) =>
@@ -450,6 +590,15 @@ class Chat extends React.Component {
           modalVisible={modalVisible}
           onBackdropPress={this.onBackdropPress}
           onMediaUpload={this.onMediaUpload}
+        />
+        <ChatDMModal
+          modalVisible={chatDMModalVisible}
+          onBackdropPress={this.onBackdropPress}
+          name={name}
+          icon_url={icon != null ? icon.uri : null}
+          status={status}
+          user_relation={user_relation}
+          onPress={this.onUserPress}
         />
       </View>
     );
@@ -480,6 +629,10 @@ const mapDispatchToProps = dispatch => {
     updateChatInfo: data => dispatch(updateChatInfo(data)),
     updateUserMessage: data => dispatch(updateUserMessage(data)),
     createChat: data => dispatch(createChat(data)),
+    getUserRelation: data => dispatch(getUserRelation(data)),
+    changeUserChatNotification: data =>
+      dispatch(changeUserChatNotification(data)),
+    updateUserRelation: data => dispatch(updateUserRelation(data)),
   };
 };
 

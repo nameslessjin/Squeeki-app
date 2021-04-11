@@ -151,3 +151,11 @@ query getUserRelation($input: UserRelationInput!){
     }
 }
 `
+
+export const updateUserRelationMutation = `
+mutation updateUserRelation($input: UserRelationInput!){
+    updateUserRelation(input: $input){
+        is_dm_blocked
+    }
+}
+`
