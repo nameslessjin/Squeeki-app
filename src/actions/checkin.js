@@ -4,9 +4,9 @@ import {
   createUserCheckInMutation,
   deleteCheckInMutation,
   getGroupCheckInResultQuery,
-  createUserCheckInBatchMutation
+  createUserCheckInBatchMutation,
 } from './query/checkinQuery';
-import {http} from '../../server_config'
+import {httpCall} from './utils/httpCall';
 
 export const createCheckIn = request => {
   const {
@@ -42,16 +42,7 @@ export const createCheckIn = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -77,16 +68,7 @@ export const getGroupCheckIn = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -118,7 +100,7 @@ export const userCheckIn = request => {
       password: password,
       checkin_id: checkin_id,
       groupId: groupId,
-      auth: auth
+      auth: auth,
     };
 
     const graphql = {
@@ -128,22 +110,13 @@ export const userCheckIn = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
     }
 
-    dispatch(userCheckInReducer(checkin_id))
+    dispatch(userCheckInReducer(checkin_id));
 
     return 0;
   };
@@ -152,14 +125,14 @@ export const userCheckIn = request => {
 const userCheckInReducer = data => {
   return {
     type: 'userCheckIn',
-    checkin_id: data
-  }
-}
+    checkin_id: data,
+  };
+};
 
 export const deleteCheckIn = request => {
-  const {token, checkin_id} = request
+  const {token, checkin_id} = request;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const graphql = {
       query: deleteCheckInMutation,
       variables: {
@@ -167,16 +140,7 @@ export const deleteCheckIn = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -184,71 +148,59 @@ export const deleteCheckIn = request => {
 
     dispatch(deleteCheckInReducer(checkin_id));
     return 0;
-
-  }
-}
+  };
+};
 
 const deleteCheckInReducer = data => {
   return {
     type: 'deleteGroupCheckin',
     checkin_id: data,
   };
-}
+};
 
 export const getGroupCheckInResult = request => {
-  const {token, count, checkin_id} = request
+  const {token, count, checkin_id} = request;
 
-  return async function(dispatch){
-
+  return async function(dispatch) {
     const input = {
       checkin_id: checkin_id,
-      count: count
-    }
+      count: count,
+    };
 
     const graphql = {
       query: getGroupCheckInResultQuery,
       variables: {
-        input: input
-      }
-    }
-
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
+        input: input,
       },
-      body: JSON.stringify(graphql),
-    });
+    };
 
-    const result = await req.json();
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
     }
 
-    dispatch(getGroupCheckInResultReducer(result.data.getGroupCheckInResult))
+    dispatch(getGroupCheckInResultReducer(result.data.getGroupCheckInResult));
     return 0;
-  }
-}
+  };
+};
 
 const getGroupCheckInResultReducer = data => {
   return {
     type: 'getGroupCheckInResult',
-    i: data
-  }
-}
+    i: data,
+  };
+};
 
 export const userCheckInBatch = request => {
-  const {token, userId, groupId, checkin_id} = request
+  const {token, userId, groupId, checkin_id} = request;
 
-  return async function(dispatch){
-
+  return async function(dispatch) {
     const input = {
       checkin_id: checkin_id,
       groupId: groupId,
-      userId: userId
-    }
+      userId: userId,
+    };
 
     const graphql = {
       query: createUserCheckInBatchMutation,
@@ -257,22 +209,12 @@ export const userCheckInBatch = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
     }
 
     return 0;
-  }
-
-}
+  };
+};

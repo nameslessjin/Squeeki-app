@@ -11,7 +11,8 @@ import {
   getNominationPostQuery,
   getGroupPostForCheckInQuery,
 } from './query/postQuery';
-import {http, http_upload} from '../../server_config';
+import {http_upload} from '../../server_config';
+import {httpCall} from './utils/httpCall'
 
 export const getGroupPosts = data => {
   const {groupId, token, count} = data;
@@ -28,20 +29,13 @@ export const getGroupPosts = data => {
       },
     };
 
-    const groupPosts = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-    const postsData = await groupPosts.json();
-    if (postsData.errors) {
-      return postsData;
+    const result = await httpCall(token, graphql)
+
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(getGroupPostsData(postsData.data.getGroupPosts));
+    dispatch(getGroupPostsData(result.data.getGroupPosts));
 
     return 0;
   };
@@ -64,21 +58,12 @@ export const getFeed = data => {
       },
     };
 
-    const feed = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const feedData = await feed.json();
-    if (feedData.errors) {
-      return feedData;
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(getFeedData(feedData.data.getFeed));
+    dispatch(getFeedData(result.data.getFeed));
 
     return 0;
   };
@@ -101,20 +86,12 @@ export const getPost = data => {
       },
     };
 
-    const postFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-    const postData = await postFetch.json();
-    if (postData.errors) {
-      return postData;
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
     }
 
-    const post = postData.data.getPost;
+    const post = result.data.getPost;
     const expiration_date = new Date(parseInt(post.priority_expiration_date));
     const diff = expiration_date - Date.now();
     let duration = 0;
@@ -189,25 +166,16 @@ export const createPost = data => {
       priority_expiration_date: priority_expiration_date,
     };
 
-    const graphQl = {
+    const graphql = {
       query: createPostMutation,
       variables: {
         postInput: postInput,
       },
     };
 
-    const post = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-
-    const postData = await post.json();
-    if (postData.errors) {
-      return postData;
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
     }
 
     return 0;
@@ -308,27 +276,18 @@ export const updatePost = data => {
       priority_expiration_date: priority_expiration_date,
     };
 
-    const graphQl = {
+    const graphql = {
       query: updatePostMutation,
       variables: {
         postInput: postInput,
       },
     };
 
-    const post = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-
-    const postData = await post.json();
-    if (postData.errors) {
-      return postData;
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
     }
-    dispatch(updatePostReducer(postData.data.updatePost));
+    dispatch(updatePostReducer(result.data.updatePost));
     return 0;
   };
 };
@@ -344,26 +303,17 @@ export const deletePost = data => {
   const {postId, token} = data;
 
   return async function(dispatch) {
-    const graphQl = {
+    const graphql = {
       query: deletePostMutation,
       variables: {
         postId: postId,
       },
     };
 
-    const post = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
+    const result = await httpCall(token, graphql)
 
-    const postData = await post.json();
-
-    if (postData.errors) {
-      return postData;
+    if (result.errors) {
+      return result;
     }
 
     dispatch(DeletePost(postId));
@@ -383,26 +333,17 @@ export const likePost = data => {
   const {postId, token} = data;
 
   return async function(dispatch) {
-    const graphQl = {
+    const graphql = {
       query: likePostMutation,
       variables: {
         postId: postId,
       },
     };
 
-    const post = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
+    const result = await httpCall(token, graphql)
 
-    const postData = await post.json();
-
-    if (postData.errors) {
-      return postData;
+    if (result.errors) {
+      return result;
     }
 
     return 0;
@@ -413,26 +354,17 @@ export const changePostNotification = data => {
   const {token, postId} = data;
 
   return async function(dispatch) {
-    const graphQl = {
+    const graphql = {
       query: changePostNotificationMutation,
       variables: {
         postId: postId,
       },
     };
 
-    const notification = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
+    const result = await httpCall(token, graphql)
 
-    const notificationResult = await notification.json();
-
-    if (notificationResult.errors) {
-      return notificationResult;
+    if (result.errors) {
+      return result;
     }
 
     return 0;
@@ -454,18 +386,9 @@ export const reportPost = data => {
       },
     };
 
-    const report = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const reportResult = await report.json();
-    if (reportResult.errors) {
-      return reportResult;
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
     }
     return 0;
   };
@@ -491,16 +414,7 @@ export const getNominationPost = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
     if (result.errors) {
       return result;
     }
@@ -524,16 +438,7 @@ export const getGroupPostForCheckIn = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
     if (result.errors) {
       return result;
     }

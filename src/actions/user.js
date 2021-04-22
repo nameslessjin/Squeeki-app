@@ -14,6 +14,7 @@ import {
 } from './query/userQuery';
 import {getGroup} from './group';
 import {http} from '../../server_config';
+import {httpCall} from './utils/httpCall'
 
 export const getGroupMembers = data => {
   const {groupId, token, count, userIdList} = data;
@@ -32,24 +33,15 @@ export const getGroupMembers = data => {
       },
     };
 
-    const groupMembers = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const membersData = await groupMembers.json();
-    if (membersData.errors) {
-      return membersData;
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
     }
 
     if (count == 0) {
-      dispatch(getGroupMembersToReducer(membersData.data.getGroupMembers));
+      dispatch(getGroupMembersToReducer(result.data.getGroupMembers));
     } else {
-      dispatch(loadMoreGroupMembers(membersData.data.getGroupMembers));
+      dispatch(loadMoreGroupMembers(result.data.getGroupMembers));
     }
 
     return 0;
@@ -86,21 +78,12 @@ export const searchGroupMembers = data => {
       },
     };
 
-    const request = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const req = await request.json()
-    if (req.errors){
-      return req
+    const result = await httpCall(token, graphql)
+    if (result.errors){
+      return result
     }
 
-    return req.data.searchGroupMembers
+    return result.data.searchGroupMembers
 
   };
 };
@@ -128,25 +111,16 @@ export const updateMember = data => {
       group_username,
     };
 
-    const graphQl = {
+    const graphql = {
       query: updateMemberMutation,
       variables: {
         memberInput: memberInput,
       },
     };
 
-    const updateMember = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-
-    const updateData = await updateMember.json();
-    if (updateData.errors) {
-      return updateData;
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
     }
     return 0;
   };
@@ -161,28 +135,20 @@ export const changeGroupNotification = data => {
       notificationPriority: notificationPriority,
     };
 
-    const graphQl = {
+    const graphql = {
       query: changeGroupNotificationMutation,
       variables: {
         input: input,
       },
     };
 
-    const group = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-    const groupData = await group.json();
+    const result = await httpCall(token, graphql)
 
-    if (groupData.errors) {
-      return groupData;
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(getGroup(groupData.data.changeGroupNotification));
+    dispatch(getGroup(result.data.changeGroupNotification));
 
     return 0;
   };
@@ -197,25 +163,17 @@ export const registerDeviceForNotification = data => {
       deviceId: deviceId,
     };
 
-    const graphQl = {
+    const graphql = {
       query: registerDeviceForNotificationMutation,
       variables: {
         input: input,
       },
     };
 
-    const userNotification = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-    const userNotificationData = await userNotification.json();
+    const result = await httpCall(token, graphql)
 
-    if (userNotificationData.errors) {
-      return userNotificationData;
+    if (result.errors) {
+      return result;
     }
 
     return 0;
@@ -251,22 +209,15 @@ export const searchUser = data => {
         searchUserInput: searchUserInput,
       },
     };
-    let users = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
 
-    const usersData = await users.json();
-    if (usersData.errors) {
-      return usersData;
+    const result = await httpCall(token, graphql)
+
+    if (result.errors) {
+      return result;
     }
 
-    users = usersData.data.searchUser;
-    return users;
+
+    return result.data.searchUser;
   };
 };
 
@@ -286,18 +237,9 @@ export const addMembers = data => {
       },
     };
 
-    let users = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const usersData = await users.json();
-    if (usersData.errors) {
-      return usersData;
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
     }
     return 0;
   };
@@ -314,18 +256,9 @@ export const deleteMember = data => {
       },
     };
 
-    let users = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const usersData = await users.json();
-    if (usersData.errors) {
-      return usersData;
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
     }
     return 0;
   };
@@ -343,16 +276,7 @@ export const makeOwner = data => {
       },
     };
 
-    let mutation = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await mutation.json();
+    const result = await httpCall(token, graphql)
     if (result.errors) {
       return result;
     }
@@ -371,16 +295,7 @@ export const getStatusInGroup = data => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -406,16 +321,7 @@ export const getUserRelation = data => {
       }
     }
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(graphql)
-    })
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors){
       return result
@@ -444,16 +350,7 @@ export const updateUserRelation = data => {
       }
     }
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(graphql)
-    })
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors){
       return result

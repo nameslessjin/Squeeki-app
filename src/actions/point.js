@@ -1,5 +1,5 @@
 import {getUserGroupPointQuery, getGroupPointLeaderBoardQuery} from './query/pointQuery';
-import {http} from '../../server_config'
+import {httpCall} from './utils/httpCall'
 
 export const getUserGroupPoint = request => {
   const {token, groupId} = request;
@@ -12,16 +12,7 @@ export const getUserGroupPoint = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -59,16 +50,7 @@ export const getGroupPointLeaderBoard = request => {
       }
     }
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;

@@ -5,10 +5,13 @@ import {
   Image,
   Text,
   TouchableWithoutFeedback,
+  Dimensions
 } from 'react-native';
 import {connect} from 'react-redux'
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { dateConversion } from '../../../utils/time'
+
+const {width} = Dimensions.get('screen');
 
 class MemberCard extends React.Component {
 
@@ -85,8 +88,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
-    margin: 5
+    margin: 5,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    elevation: 5,
+    shadowRadius: 1,
+    shadowColor: 'grey',
+    shadowOpacity: 0.5,
+    marginHorizontal: (width - 177 * 2) / 4,
   },
   image: {
     height: 100,

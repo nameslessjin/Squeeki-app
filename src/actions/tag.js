@@ -4,7 +4,7 @@ import {
   addTagToGroupMutation,
   removeTagFromGroupMutation,
 } from './query/tagQuery';
-import {http} from '../../server_config'
+import {httpCall} from './utils/httpCall'
 
 export const searchTag = request => {
   const {term, count} = request;
@@ -22,15 +22,7 @@ export const searchTag = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(null, graphql)
 
     if (result.errors) {
       return result;
@@ -56,16 +48,7 @@ export const createTag = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -96,16 +79,7 @@ export const addTagToGroup = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -144,16 +118,7 @@ export const removeTagFromGroup = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;

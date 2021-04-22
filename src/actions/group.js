@@ -15,33 +15,26 @@ import {
   getGroupJoinRequestCountQuery,
   updateRankFeaturesMutation,
 } from './query/groupQuery';
-import {http, http_upload} from '../../server_config';
+import {http_upload} from '../../server_config';
+import {httpCall} from './utils/httpCall'
 
 export const findUserGroupsByUserId = data => {
   const {token, count} = data;
   return async function(dispatch) {
-    const graphQl = {
+    const graphql = {
       query: findUserGroupsByUserIdQuery,
       variables: {
         count: count,
       },
     };
-    // api request
-    const groups = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-    const groupsData = await groups.json();
+    
+    const result = await httpCall(token, graphql)
 
-    if (groupsData.errors) {
-      return groupsData;
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(getUserGroups(groupsData.data.getMyGroups));
+    dispatch(getUserGroups(result.data.getMyGroups));
 
     return 0;
   };
@@ -57,31 +50,22 @@ const getUserGroups = data => {
 export const getSingleGroupById = data => {
   const {id, token} = data;
   return async function(dispatch) {
-    const graphQl = {
+    const graphql = {
       query: getSingleGroupByIdQuery,
       variables: {
         groupId: id,
       },
     };
 
-    // api request
-    const group = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-    const groupData = await group.json();
+    const result = await httpCall(token, graphql)
 
-    if (groupData.errors) {
-      return groupData;
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(getGroup(groupData.data.getGroup));
+    dispatch(getGroup(result.data.getGroup));
 
-    return groupData;
+    return result;
   };
 };
 
@@ -100,29 +84,20 @@ export const searchGroup = data => {
       count: count,
     };
 
-    const graphQl = {
+    const graphql = {
       query: searchGroupQuery,
       variables: {
         input: input,
       },
     };
 
-    let groups = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-    const groupsData = await groups.json();
+    const result = await httpCall(token, graphql)
 
-    if (groupsData.errors) {
-      return groupsData;
+    if (result.errors) {
+      return result;
     }
 
-    groups = groupsData.data.searchGroup;
-    return groups;
+    return result.data.searchGroup;
   };
 };
 
@@ -220,29 +195,20 @@ export const createGroup = data => {
       tagIds,
     };
 
-    const graphQl = {
+    const graphql = {
       query: createGroupMutation,
       variables: {
         GroupInput: groupInput,
       },
     };
 
-    // api request
-    const group = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-    const groupData = await group.json();
+    const result = await httpCall(token, graphql)
 
-    if (groupData.errors) {
-      return groupData;
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(getGroup(groupData.data.createGroup));
+    dispatch(getGroup(result.data.createGroup));
 
     return 0;
   };
@@ -338,29 +304,20 @@ export const updateGroup = data => {
       icon: newgroupIcon,
     };
 
-    const graphQl = {
+    const graphql = {
       query: updateGroupMutation,
       variables: {
         GroupInput: groupInput,
       },
     };
 
-    // api request
-    const group = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-    const groupData = await group.json();
+    const result = await httpCall(token, graphql)
 
-    if (groupData.errors) {
-      return groupData;
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(getGroup(groupData.data.updateGroup));
+    dispatch(getGroup(result.data.updateGroup));
 
     return 0;
   };
@@ -370,28 +327,20 @@ export const joinGroup = data => {
   const {groupId, token} = data;
 
   return async function(dispatch) {
-    const graphQl = {
+    const graphql = {
       query: joinGroupMutation,
       variables: {
         groupId: groupId,
       },
     };
 
-    const group = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-    const groupData = await group.json();
+    const result = await httpCall(token, graphql)
 
-    if (groupData.errors) {
+    if (result.errors) {
       return groupData;
     }
 
-    dispatch(JoinGroup(groupData.data.joinGroup));
+    dispatch(JoinGroup(result.data.joinGroup));
 
     return 0;
   };
@@ -408,29 +357,21 @@ export const leaveGroup = data => {
   const {groupId, token} = data;
 
   return async function(dispatch) {
-    const graphQl = {
+    const graphql = {
       query: leaveGroupMutation,
       variables: {
         groupId: groupId,
       },
     };
 
-    const group = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
-    const groupData = await group.json();
+    const result = await httpCall(token, graphql)
 
-    if (groupData.errors) {
-      return groupData;
+    if (result.errors) {
+      return result;
     }
 
     dispatch(getPosts({posts: [], count: 0}));
-    dispatch(LeaveGroup(groupData.data.leaveGroup));
+    dispatch(LeaveGroup(result.data.leaveGroup));
     return 0;
   };
 };
@@ -438,25 +379,16 @@ export const leaveGroup = data => {
 export const setGroupVisibility = data => {
   const {groupId, token} = data;
   return async function(dispatch) {
-    const graphQl = {
+    const graphql = {
       query: setGroupVisibilityMutation,
       variables: {
         groupId: groupId,
       },
     };
 
-    const group = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
+    const result = await httpCall(token, graphql)
 
-    const groupData = await group.json();
-
-    if (groupData.errors) {
+    if (result.errors) {
       return groupData;
     }
 
@@ -475,16 +407,7 @@ export const setGroupRequestToJoin = data => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -509,16 +432,7 @@ export const getGroupJoinRequest = data => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -576,16 +490,7 @@ export const onRespondJoinRequest = data => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -611,16 +516,7 @@ export const onGroupRulesUpdate = data => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -640,17 +536,7 @@ export const getGroupRules = data => {
         groupId: groupId,
       },
     };
-
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
     if (result.errors) {
       return result;
     }
@@ -669,16 +555,7 @@ export const getGroupJoinRequestCount = data => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
     if (result.errors) {
       return result;
     }
@@ -712,16 +589,7 @@ export const updateRankFeatures = data => {
         input: input,
       },
     };
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;

@@ -6,7 +6,7 @@ import {
   getMonthlyGiftCardCountQuery,
   lootRewardMutation
 } from './query/rewardQuery';
-import {http} from '../../server_config'
+import {httpCall} from './utils/httpCall'
 
 export const createGroupReward = request => {
   const {token, groupId, from, type, content, name, chance, hide} = request;
@@ -29,16 +29,7 @@ export const createGroupReward = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -65,16 +56,7 @@ export const getGroupReward = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -102,16 +84,7 @@ export const deleteGroupReward = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -146,16 +119,7 @@ export const getUserGroupRewardHistory = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -180,16 +144,7 @@ export const getMonthlyGiftCardCount = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -210,16 +165,7 @@ export const lootReward = request => {
       }
     }
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;

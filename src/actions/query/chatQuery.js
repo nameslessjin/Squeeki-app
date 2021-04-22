@@ -148,3 +148,22 @@ mutation changeUserChatNotification($input: UserChatMutation!){
     changeUserChatNotification(input: $input)
 }
 `
+
+export const searchUserChatQuery = `
+query searchUserChat($input: UserChatQuery!){
+    searchUserChat(input: $input){
+        users {
+            userId
+            notification
+            is_owner
+            rank
+            timeout
+            lastActiveAt
+            displayName
+            username
+            icon
+        }
+        count
+    }
+}
+`

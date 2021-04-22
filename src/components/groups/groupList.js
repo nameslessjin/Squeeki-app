@@ -36,5 +36,6 @@ export default class GroupList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
+    paddingTop: 20
   },
 });

@@ -13,13 +13,8 @@ export default class MemberList extends React.Component {
       const {onSearchChange, search_term} = this.props
       return (
         <View
-          style={{
-            width: '100%',
-            height: 50,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <SearchBar onChange={onSearchChange} value={search_term}/>
+          style={styles.searchBar}>
+          <SearchBar onChange={onSearchChange} value={search_term} />
         </View>
       );
     }
@@ -82,4 +77,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginVertical: 5,
   },
+  searchBar: {
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });

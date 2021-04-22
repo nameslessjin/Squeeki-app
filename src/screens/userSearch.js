@@ -437,6 +437,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     height: '100%',
     width: '100%',
+    backgroundColor: 'white'
   },
   optionArea: {
     width: '90%',
@@ -446,6 +447,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: Platform.OS == 'ios' ? 10 : 20,
+    // backgroundColor: 'white'
   },
   addButton: {
     backgroundColor: 'orange',

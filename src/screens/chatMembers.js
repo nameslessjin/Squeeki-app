@@ -28,6 +28,7 @@ class ChatMembers extends React.Component {
     refresh: false,
     modalVisible: false,
     userId: null,
+    search_term: ''
   };
 
   componentDidMount() {
@@ -318,7 +319,7 @@ class ChatMembers extends React.Component {
 
     return (
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, backgroundColor: 'white'}}>
           <View style={{padding: 7, alignItems: 'center'}}>
             <UserChatList
               users={users}

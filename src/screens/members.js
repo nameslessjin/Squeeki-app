@@ -156,7 +156,7 @@ class Users extends React.Component {
     const members = searched_users.length == 0 ? user.members.members : searched_users;
 
     return (
-      <View style={{width: '100%', height: '100%'}}>
+      <View style={{width: '100%', height: '100%', backgroundColor: 'white'}}>
         <StatusBar barStyle={'dark-content'} />
         <MemberList
           members={members}

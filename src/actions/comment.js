@@ -7,7 +7,7 @@ import {
   replyCommentMutation,
   getRepliesQuery
 } from './query/commentQuery';
-import {http} from '../../server_config';
+import {httpCall} from './utils/httpCall'
 
 export const getComments = data => {
   const {postId, token, count} = data;
@@ -20,22 +20,13 @@ export const getComments = data => {
       },
     };
 
-    const commentData = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
+    const result = await httpCall(token, graphql)
 
-    const comments = await commentData.json();
-
-    if (comments.errors) {
-      return comments;
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(loadComments({...comments.data.getPostComments, postId}));
+    dispatch(loadComments({...result.data.getPostComments, postId}));
 
     return 0;
   };
@@ -56,28 +47,20 @@ export const createComment = data => {
       postId,
       content,
     };
-    const graphQl = {
+    const graphql = {
       query: createCommentMutation,
       variables: {
         commentInput: commentInput,
       },
     };
 
-    const commentPost = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
+    const result = await httpCall(token, graphql)
 
-    const commentData = await commentPost.json();
-    if (commentData.errors) {
-      return commentData;
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(createCommentToReducer(commentData.data.createComment));
+    dispatch(createCommentToReducer(result.data.createComment));
 
     return 0;
   };
@@ -101,16 +84,7 @@ export const likeComment = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -131,16 +105,7 @@ export const deleteComment = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -175,16 +140,8 @@ export const reportComment = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
+    const result = await httpCall(token, graphql)
 
-    const result = await req.json();
     if (result.errors) {
       return result;
     }
@@ -210,16 +167,7 @@ export const replyComment = request => {
       },
     };
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+   const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;
@@ -262,16 +210,7 @@ export const getReplies = request => {
       }
     }
 
-    const req = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const result = await req.json();
+    const result = await httpCall(token, graphql)
 
     if (result.errors) {
       return result;

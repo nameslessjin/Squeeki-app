@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     height: '100%',
     width: '100%',
-    // backgroundColor: '#ffffff',
+    backgroundColor: '#ffffff',
   },
   optionArea: {
     width: '90%',

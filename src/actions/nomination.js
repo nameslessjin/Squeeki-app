@@ -8,7 +8,7 @@ import {
   getGroupNominationMostRecentResultsQuery,
   getGroupNominationResultsQuery
 } from './query/nominationQuery';
-import {http} from '../../server_config'
+import {httpCall} from './utils/httpCall'
 
 export const getGroupNominations = data => {
   const {groupId, token} = data;
@@ -21,21 +21,13 @@ export const getGroupNominations = data => {
       },
     };
 
-    const nominationFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
+    const result = await httpCall(token, graphql)
 
-    const nomination = await nominationFetch.json();
-    if (nomination.errors) {
-      return nomination;
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(getGroupNominationsReducer(nomination.data.getGroupNominations));
+    dispatch(getGroupNominationsReducer(result.data.getGroupNominations));
     return 0;
   };
 };
@@ -66,18 +58,9 @@ export const createNomination = data => {
       },
     };
 
-    const nominationFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const nomination = await nominationFetch.json();
-    if (nomination.errors) {
-      return nomination;
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
     }
 
     return 0;
@@ -104,18 +87,10 @@ export const updateNomination = data => {
       },
     };
 
-    const nominationFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
+    const result = await httpCall(token, graphql)
 
-    const nomination = await nominationFetch.json();
-    if (nomination.errors) {
-      return nomination;
+    if (result.errors) {
+      return result;
     }
 
     return 0;
@@ -133,18 +108,10 @@ export const deleteNomination = data => {
       },
     };
 
-    const nominationFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
+    const result = await httpCall(token, graphql)
 
-    const nomination = await nominationFetch.json();
-    if (nomination.errors) {
-      return nomination;
+    if (result.errors) {
+      return result;
     }
 
     return 0;
@@ -162,18 +129,10 @@ export const turnNomination = data => {
       },
     };
 
-    const nominationFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
+    const result = await httpCall(token, graphql)
 
-    const nomination = await nominationFetch.json();
-    if (nomination.errors) {
-      return nomination;
+    if (result.errors) {
+      return result;
     }
 
     dispatch(turnNominationReducer(id));
@@ -207,17 +166,9 @@ export const voteNominee = data => {
       },
     };
 
-    const voteFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
+    const result = await httpCall(token, graphql)
 
-    const vote = await voteFetch.json();
-    if (vote.errors) {
+    if (result.errors) {
       return vote;
     }
 
@@ -240,19 +191,8 @@ export const getGroupNominationMostRecentResults = data => {
       },
     };
 
-
-
-    const nominationFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const nomination = await nominationFetch.json();
-    return nomination;
+    const result = await httpCall(token, graphql)
+    return result;
   };
 };
 
@@ -272,17 +212,8 @@ export const getGroupNominationResults = data => {
       }
     }
 
-    const nominationFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
-
-    const nomination = await nominationFetch.json();
-    return nomination;
+    const result = await httpCall(token, graphql)
+    return result;
 
 
   }

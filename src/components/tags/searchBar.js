@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
       width: 1,
       height: 1,
     },
+    elevation: 5,
     shadowRadius: 2,
     shadowColor: 'grey',
     shadowOpacity: 0.5,

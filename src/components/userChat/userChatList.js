@@ -6,12 +6,13 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {dateConversion} from '../../utils/time';
+import SearchBar from '../users/userSearch/searchBar';
 
-const {width} = Dimensions.get('screen')
+const {width} = Dimensions.get('screen');
 
 const extractKey = ({userId}) => userId;
 
@@ -26,7 +27,18 @@ export default class UserChatList extends React.Component {
       displayName,
       username,
       icon,
+      id,
     } = item;
+
+    if (id == 'search_bar') {
+      return (
+        <View
+          style={styles.searchBar}>
+          <SearchBar/>
+        </View>
+      );
+    }
+
     const {onMemberCardPress, user_id} = this.props;
     const random = Math.floor(Math.random() * 5);
     const time_out = new Date(parseInt(timeout));
@@ -99,9 +111,9 @@ export default class UserChatList extends React.Component {
 
   render() {
     const {users, onEndReached, onRefresh, refreshing} = this.props;
+
     return (
       <FlatList
-
         style={styles.container}
         data={users}
         renderItem={this.renderItem}
@@ -132,12 +144,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 5,
-    marginHorizontal: (width - 177 * 2)/4
-    // marginHorizontal: 10,
+    marginHorizontal: (width - 177 * 2) / 4,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    elevation: 5,
+    shadowRadius: 1,
+    shadowColor: 'grey',
+    shadowOpacity: 0.5,
+
   },
   image: {
     height: 100,
     aspectRatio: 1,
     borderRadius: 50,
   },
+  searchBar: {
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });

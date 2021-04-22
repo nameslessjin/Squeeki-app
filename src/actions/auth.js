@@ -7,7 +7,8 @@ import {
   checkVerificationCodeQuery,
   resetPasswordMutation,
 } from '../actions/query/authQuery';
-import {http, http_upload} from '../../server_config';
+import {http_upload} from '../../server_config';
+import {httpCall} from './utils/httpCall';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 export const signup = data => {
@@ -22,26 +23,19 @@ export const signup = data => {
       refer_code: refer_code,
     };
 
-    const graphQL = {
+    const graphql = {
       query: signupQuery,
       variables: {
         userInput: userInput,
       },
     };
 
-    const user = await fetch(http, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQL),
-    });
+    const result = await httpCall(null, graphql);
 
-    const userData = await user.json();
-    if (userData.errors) {
-      return userData;
+    if (result.errors) {
+      return result;
     }
-    dispatch(userSignIn(userData.data.signup));
+    dispatch(userSignIn(result.data.signup));
     // AsyncStorage.setItem('token', userData.data.signup.token);
     return 0;
   };
@@ -50,7 +44,7 @@ export const signup = data => {
 export const signin = data => {
   const {email, password, token} = data;
   return async function(dispatch) {
-    const graphQL = {
+    const graphql = {
       query: signinQuery,
       variables: {
         email: email,
@@ -59,20 +53,12 @@ export const signin = data => {
       },
     };
 
-    const user = await fetch(http, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQL),
-    });
+    const result = await httpCall(null, graphql);
 
-    const userData = await user.json();
-
-    if (userData.errors) {
-      return userData;
+    if (result.errors) {
+      return result;
     }
-    dispatch(userSignIn(userData.data.login));
+    dispatch(userSignIn(result.data.login));
 
     return 0;
   };
@@ -137,28 +123,20 @@ export const updateProfile = data => {
       displayName: newDisplayName,
     };
 
-    const graphQl = {
+    const graphql = {
       query: updateProfileMutation,
       variables: {
         userInput: userInput,
       },
     };
 
-    const user = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
+    const result = await httpCall(token, graphql)
 
-    const userData = await user.json();
-    if (userData.errors) {
-      return userData;
+    if (result.errors) {
+      return result;
     }
 
-    dispatch(userSignIn(userData.data.updateProfile));
+    dispatch(userSignIn(result.data.updateProfile));
     return 0;
   };
 };
@@ -184,26 +162,17 @@ export const changePassword = data => {
       newPassword: newPassword,
     };
 
-    const graphQl = {
+    const graphql = {
       query: changePasswordMutation,
       variables: {
         userInput: userInput,
       },
     };
 
-    const user = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQl),
-    });
+    const result = await httpCall(token, graphql)
 
-    const userData = await user.json();
-
-    if (userData.errors) {
-      return userData;
+    if (result.errors) {
+      return result;
     }
     return 0;
   };
@@ -220,17 +189,10 @@ export const requireVerificationCode = data => {
       },
     };
 
-    const verificationFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
+    const result = await httpCall(null, graphql)
 
-    const verification = await verificationFetch.json();
-    if (verification.errors) {
-      return verification;
+    if (result.errors) {
+      return result;
     }
     return 0;
   };
@@ -247,20 +209,13 @@ export const checkVerificationCode = data => {
       },
     };
 
-    const verificationFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
+    const result = await httpCall(null, graphql)
 
-    const verification = await verificationFetch.json();
-    if (verification.errors) {
-      return verification;
+    if (result.errors) {
+      return result;
     }
 
-    return verification.data.checkVerificationCode;
+    return result.data.checkVerificationCode;
   };
 };
 
@@ -274,18 +229,10 @@ export const resetPassword = data => {
       },
     };
 
-    const resetFetch = await fetch(http, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphql),
-    });
+    const result = await httpCall(token, graphql)
 
-    const reset = await resetFetch.json();
-    if (reset.errors) {
-      return reset;
+    if (result.errors) {
+      return result;
     }
 
     return 0;

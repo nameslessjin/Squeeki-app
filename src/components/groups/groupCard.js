@@ -101,6 +101,7 @@ class GroupCard extends React.Component {
                   @{groupname}
                 </Text>
               ) : null}
+
             </View>
             <View style={memberCountStyle}>
               <MaterialIcons
@@ -127,14 +128,15 @@ const styles = StyleSheet.create({
     maxHeight: 140,
     width: '100%',
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    // backgroundColor: 'silver',
     justifyContent: 'space-around',
   },
   imgHolder: {
     aspectRatio: 1,
     height: 100,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     marginLeft: 5,
     marginRight: 3,
   },

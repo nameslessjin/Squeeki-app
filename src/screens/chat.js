@@ -6,6 +6,7 @@ import {
   StatusBar,
   Keyboard,
   Dimensions,
+  AppState,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -66,6 +67,7 @@ class Chat extends React.Component {
         is_dm_block: false,
       },
     },
+    appState: AppState.currentState,
   };
 
   componentDidMount() {
@@ -115,18 +117,19 @@ class Chat extends React.Component {
         } else if (data.action == 'user_status_update') {
           this.updateUserStatus(data.result);
         } else if (data.action == 'user_relation_update') {
-          console.log('user_relation_update')
           this.updateUserRelation(data.result);
         }
       });
     }
+
+    //AppState.  When change from inactive to active.  Load new messages
+    AppState.addEventListener('change', this._handleAppStateChange);
   }
 
   updateUserRelation = data => {
     const {from, second_userId} = data;
     const {id} = this.props.auth.user;
-    console.log(data)
-    console.log(id)
+
     if (id == second_userId) {
       this.setState(prevState => {
         return {
@@ -425,7 +428,21 @@ class Chat extends React.Component {
     const channel = `chat${this.state.id}`;
     const io = socket.getIO();
     io.off(channel);
+
+    // AppState listener
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
+
+  _handleAppStateChange = nextAppState => {
+    const {appState, id} = this.state;
+    if (appState.match(/(inactive|background)/) && nextAppState === 'active') {
+      // reload chat message
+      if (id) {
+        this.loadChatMessage(true);
+      }
+    }
+    this.setState({appState: nextAppState});
+  };
 
   subSocket = req => {
     const {group, updateChatInfo} = this.props;
@@ -511,7 +528,7 @@ class Chat extends React.Component {
         is_dm_blocked: !is_dm_blocked,
         chatId: id,
       };
-      console.log(request);
+
       req = await updateUserRelation(request);
       if (req.errors) {
         console.log(req.errors);
@@ -521,7 +538,7 @@ class Chat extends React.Component {
       if (req) {
         this.setState(prevState => {
           const new_user_relation = {...prevState.user_relation, to: req};
-          console.log(new_user_relation);
+
           return {
             user_relation: new_user_relation,
           };
@@ -547,7 +564,6 @@ class Chat extends React.Component {
     const user = {
       _id: auth.user.id,
     };
-    console.log(this.state);
 
     return (
       <View>
@@ -568,7 +584,7 @@ class Chat extends React.Component {
               <RenderSend text={this.state.content.trim()} onSend={p.onSend} />
             )}
             loadEarlier={pointer == 'Infinity' ? false : true}
-            onLoadEarlier={this.loadChatMessage}
+            onLoadEarlier={() => this.loadChatMessage(false)}
             isLoadingEarlier={isLoadEarlier}
             infiniteScroll={true}
             keyboardShouldPersistTaps={'never'}

@@ -138,23 +138,23 @@ class ChatDrawerkNavigator extends React.Component {
     return (
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
-        {group.id ? null : (
-          <DrawerItem
-            label="Notification"
-            icon={() => (
-              <MaterialIcons
-                name={notification ? 'bell' : 'bell-off'}
-                color={notification ? 'grey' : 'red'}
-                size={25}
-              />
-            )}
-            labelStyle={[
-              styles.labelStyle,
-              {color: notification ? 'grey' : 'red'},
-            ]}
-            onPress={this.changeUserChatNotification}
-          />
-        )}
+
+        <DrawerItem
+          label="Notification"
+          icon={() => (
+            <MaterialIcons
+              name={notification ? 'bell' : 'bell-off'}
+              color={notification ? 'grey' : 'red'}
+              size={25}
+            />
+          )}
+          labelStyle={[
+            styles.labelStyle,
+            {color: notification ? 'grey' : 'red'},
+          ]}
+          onPress={this.changeUserChatNotification}
+        />
+
         <DrawerItem
           label="Members"
           icon={() => (
