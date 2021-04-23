@@ -76,13 +76,13 @@ export default class ChatMemberModal extends React.Component {
                 </View>
               ) : (
                 <View style={[styles.modalView]}>
-                  {/* <TouchableOpacity onPress={() => onOptionSelect('dm')}>
+                  <TouchableOpacity onPress={() => onOptionSelect('dm')}>
                     <View style={styles.button}>
                       <Text>Direct Message</Text>
                     </View>
                   </TouchableOpacity>
 
-                  <View style={styles.underline} /> */}
+                  <View style={styles.underline} />
 
                   {func_disabled ? null : (
                     <TouchableOpacity

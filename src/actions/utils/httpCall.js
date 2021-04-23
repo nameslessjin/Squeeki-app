@@ -1,4 +1,4 @@
-import {http, http_upload, http_no_graphql} from '../../../server_config'
+import {http, http_upload} from '../../../server_config'
 
 export const httpCall = async(token, graphql) => {
 

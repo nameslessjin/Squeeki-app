@@ -16,6 +16,7 @@ import {
   updateChatInfo,
   createChat,
   changeUserChatNotification,
+  getSingleChat,
 } from '../actions/chat';
 import {getChatFunc, subSocket} from '../functions/chat';
 import {GiftedChat} from 'react-native-gifted-chat';
@@ -207,7 +208,9 @@ class Chat extends React.Component {
       status: 'read',
     };
 
-    updateUserMessage(request);
+    setTimeout(() => {
+      updateUserMessage(request);
+    }, 300)
   };
 
   updateUserMessage = data => {
@@ -245,9 +248,9 @@ class Chat extends React.Component {
       getChatMessage,
       navigation,
       userLogout,
-      pointer: pointer,
+      pointer: init ? null : pointer,
     };
-
+    console.log(pointer)
     this.setState({isLoadEarlier: true});
     const req = await getChatMessageFunc(data);
     this.setState({isLoadEarlier: false});
@@ -257,7 +260,7 @@ class Chat extends React.Component {
         return {
           ...prevState,
           pointer: pointer,
-          messages: prevState.messages.concat(
+          messages: (init ? [] : prevState.messages).concat(
             messages.map(m => {
               return {...m, createdAt: new Date(parseInt(m.createdAt))};
             }),
@@ -424,14 +427,47 @@ class Chat extends React.Component {
   }
 
   componentWillUnmount() {
-    this.loadChat(true);
     const channel = `chat${this.state.id}`;
     const io = socket.getIO();
     io.off(channel);
-
     // AppState listener
     AppState.removeEventListener('change', this._handleAppStateChange);
+
+    // if user is directed from another chat.  Go back and load the previous chat
+    const {prev_chatId} = this.state;
+
+    // for now assume all prev_chat is group chat not DM
+    if (prev_chatId) {
+      this.getSingleChat(prev_chatId);
+      return;
+    }
+
+    this.loadChat(true);
   }
+
+  getSingleChat = async (chatId, second_userId, is_dm) => {
+    const {getSingleChat, auth, navigation} = this.props;
+    const {id} = this.state;
+    const request = {
+      token: auth.token,
+      chatId,
+      second_userId,
+    };
+
+    const req = await getSingleChat(request);
+
+    if (req.errors) {
+      console.log(req.errors[0]);
+      alert('load chat failed at this time, please try again later');
+      return false;
+    }
+
+    if (second_userId) {
+      if (req) {
+        navigation.navigate('Chat', {second_userId, prev_chatId: id});
+      }
+    }
+  };
 
   _handleAppStateChange = nextAppState => {
     const {appState, id} = this.state;
@@ -547,6 +583,20 @@ class Chat extends React.Component {
     }
   };
 
+  onPressAvatar = async props => {
+    const {_id} = props;
+    const {auth, navigation} = this.props;
+    const {id} = auth.user;
+    const {second_userId, is_dm} = this.state;
+
+    // if user press on self or if user press second user in DM, do nothing
+    if (_id == id || _id == second_userId || is_dm) {
+      this.setState({chatDMModalVisible: true});
+      return;
+    }
+    this.getSingleChat(null, _id);
+  };
+
   render() {
     const {auth} = this.props;
     const {
@@ -600,6 +650,7 @@ class Chat extends React.Component {
               this.onLongPress(context, message)
             }
             scrollToBottom={true}
+            onPressAvatar={this.onPressAvatar}
           />
         </KeyboardAvoidingView>
         <ChatMediaModal
@@ -649,6 +700,7 @@ const mapDispatchToProps = dispatch => {
     changeUserChatNotification: data =>
       dispatch(changeUserChatNotification(data)),
     updateUserRelation: data => dispatch(updateUserRelation(data)),
+    getSingleChat: data => dispatch(getSingleChat(data)),
   };
 };
 

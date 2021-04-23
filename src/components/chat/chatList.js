@@ -12,19 +12,27 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {chatTimeFormat} from '../../utils/time';
-import {countFormat} from '../../utils/format'
+import {countFormat} from '../../utils/format';
+import {SwipeListView} from 'react-native-swipe-list-view';
 
 const {width, height} = Dimensions.get('screen');
 
 const extractKey = ({id}) => id;
 
 export default class ChatList extends React.Component {
-
-
   renderItem = ({item}) => {
-    const {name, icon, rank_req, id, last_message, unread_message_count, available} = item;
+    const {
+      name,
+      icon,
+      rank_req,
+      id,
+      last_message,
+      unread_message_count,
+      available,
+      is_pinned,
+    } = item;
 
-    const unread_message_count_text = countFormat(unread_message_count) 
+    const unread_message_count_text = countFormat(unread_message_count);
 
     const {onChatPress, userGroupAuthRank} = this.props;
 
@@ -37,7 +45,7 @@ export default class ChatList extends React.Component {
       'emoticon-tongue-outline',
     ];
 
-    const icon_option = icon_options[random]
+    const icon_option = icon_options[random];
 
     let message_preview =
       last_message == null
@@ -46,17 +54,28 @@ export default class ChatList extends React.Component {
         ? `${last_message.username}: [Photo/Video]`
         : `${last_message.username}: ${last_message.content}`;
 
-    let allow_to_join = true
+    let allow_to_join = true;
     if (rank_req != null) {
       if (!available) {
         message_preview = `This chat requires rank ${rank_req} or above`;
-        allow_to_join = false
+        allow_to_join = false;
       }
     }
 
+    let backgroundColor = 'white';
+    if (allow_to_join) {
+      if (is_pinned) {
+        backgroundColor = '#fab1a0';
+      }
+    } else {
+      backgroundColor = 'silver';
+    }
+
     return (
-      <View style={[styles.chat_container,{backgroundColor: allow_to_join ? 'white' : 'silver'}]}>
-        <TouchableOpacity onPress={() => onChatPress(item)} disabled={!allow_to_join} >
+      <View style={[styles.chat_container, {backgroundColor: backgroundColor}]}>
+        <TouchableOpacity
+          onPress={() => onChatPress(item)}
+          disabled={!allow_to_join}>
           <View style={styles.chat_sub_container}>
             <View
               style={{
@@ -115,7 +134,7 @@ export default class ChatList extends React.Component {
     const {onRefresh, refreshing, onEndReached, chat} = this.props;
 
     return (
-      <FlatList
+      <SwipeListView
         style={styles.container}
         data={chat}
         keyExtractor={extractKey}
@@ -127,6 +146,19 @@ export default class ChatList extends React.Component {
         onEndReachedThreshold={0.1}
         keyboardShouldPersistTaps={'handled'}
         showsVerticalScrollIndicator={false}
+        // leftOpenValue={75}
+        disableRightSwipe={true}
+        rightOpenValue={-100}
+        renderHiddenItem={(data, rowMap) => {
+          console.log(data);
+          console.log(rowMap);
+          return (
+            <View style={styles.rowBack}>
+              <Text>Left</Text>
+              <Text>Right</Text>
+            </View>
+          );
+        }}
       />
     );
   }
@@ -217,5 +249,13 @@ const styles = StyleSheet.create({
     minWidth: '55%',
     height: '51%',
     padding: 1,
+  },
+  rowBack: {
+    alignItems: 'center',
+    backgroundColor: '#DDD',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 15,
   },
 });

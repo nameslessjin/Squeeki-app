@@ -12,7 +12,8 @@ import {
   getAllUserChatQuery,
   timeoutUserMutation,
   changeUserChatNotificationMutation,
-  searchUserChatQuery
+  searchUserChatQuery,
+  updatePinChatMutation
 } from './query/chatQuery';
 import {httpCall} from './utils/httpCall'
 import {http_upload} from '../../server_config';
@@ -501,3 +502,25 @@ export const searchUserChat = request => {
 
   }
 }
+
+export const updatePinChat = request => {
+  const {token, chatId} = request;
+
+  return async function(dispatch) {
+    const input = {chatId};
+    const graphql = {
+      query: updatePinChatMutation,
+      variables: {
+        input: input,
+      },
+    };
+
+    const result = await httpCall(token, graphql)
+
+    if (result.errors) {
+      return result;
+    }
+
+    return 0;
+  };
+};

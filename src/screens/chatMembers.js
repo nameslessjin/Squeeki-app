@@ -13,11 +13,14 @@ import {
   timeoutUser,
   getUserChat,
   switchOwnership,
+  searchUserChat,
+  getSingleChat,
 } from '../actions/chat';
 import {connect} from 'react-redux';
 import UserChatList from '../components/userChat/userChatList';
 import HeaderRight from '../components/chat/headerRightButton';
 import ChatMemberModal from '../components/chat/chatMemberModal';
+import SearchBar from '../components/users/userSearch/searchBar';
 
 class ChatMembers extends React.Component {
   state = {
@@ -28,7 +31,7 @@ class ChatMembers extends React.Component {
     refresh: false,
     modalVisible: false,
     userId: null,
-    search_term: ''
+    search_term: '',
   };
 
   componentDidMount() {
@@ -38,7 +41,8 @@ class ChatMembers extends React.Component {
       headerBackTitleVisible: false,
       headerTitle: 'Members',
     });
-    this.loadUserChat(true);
+    // this.loadUserChat(true);
+    this.onSearchChange('');
     this.getUserChat();
   }
 
@@ -46,7 +50,8 @@ class ChatMembers extends React.Component {
     const {route, navigation, group} = this.props;
     if (route.params.refresh) {
       navigation.setParams({refresh: false});
-      this.loadUserChat(true);
+      // this.loadUserChat(true);
+      this.onSearchChange('');
     }
     if (prevState.status != this.state.status && this.state.status) {
       const {status, allow_invite} = this.state;
@@ -195,7 +200,9 @@ class ChatMembers extends React.Component {
   };
 
   onEndReached = () => {
-    this.loadUserChat(false);
+    const {search_term} = this.state;
+    this.onSearchChange(search_term);
+    // this.loadUserChat(false);
   };
 
   onBackdropPress = () => {
@@ -251,6 +258,28 @@ class ChatMembers extends React.Component {
     }
   };
 
+  getSingleChat = async second_userId => {
+    const {getSingleChat, auth, navigation} = this.props;
+    const {chatId} = this.state
+
+    const request = {
+      token: auth.token,
+      second_userId,
+    };
+
+    const req = await getSingleChat(request);
+
+    if (req.errors) {
+      console.log(req.errors[0]);
+      alert('load chat failed at this time, please try again later');
+      return false;
+    }
+
+    if (req) {
+      navigation.navigate('Chat', {second_userId, prev_chatId: chatId});
+    }
+  };
+
   onOptionSelect = (type, value) => {
     if (type == 'delete') {
       Alert.alert(
@@ -272,6 +301,8 @@ class ChatMembers extends React.Component {
     }
 
     if (type == 'dm') {
+      const {userId} = this.state;
+      this.getSingleChat(userId);
     }
 
     if (type == 'ownership') {
@@ -291,19 +322,63 @@ class ChatMembers extends React.Component {
     this.onBackdropPress();
   };
 
+  onSearchChange = async text => {
+    const {search_term, chatId} = this.state;
+
+    const term = text.trim();
+    this.setState({search_term: text});
+
+    const count = search_term != text ? 0 : this.state.count;
+    const {searchUserChat, auth, group} = this.props;
+    console.log(group);
+    const groupId = group.group ? group.group.id : null;
+
+    const request = {
+      search_term: term,
+      groupId,
+      chatId,
+      count,
+      token: auth.token,
+    };
+
+    const req = await searchUserChat(request);
+
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Search user failed, please try again later.');
+      return;
+    }
+
+    this.setState(prevState => {
+      return {
+        users:
+          search_term == text ? prevState.users.concat(req.users) : req.users,
+        count: req.count,
+      };
+    });
+  };
+
   render() {
-    const {users, refreshing, modalVisible, userId, status, rank_req} = this.state;
+    const {
+      users,
+      refreshing,
+      modalVisible,
+      userId,
+      status,
+      rank_req,
+      search_term,
+    } = this.state;
     const {group, auth} = this.props;
 
     let func_disabled = false;
-    let can_remove_user = false
+    let can_remove_user = false;
     if (userId) {
       const user = users.filter(u => u.userId == userId)[0];
       if (user) {
         func_disabled = user.is_owner;
       }
 
-      can_remove_user = !func_disabled
+      can_remove_user = !func_disabled;
       if (group.group.auth) {
         const {auth, rank_setting} = group.group;
 
@@ -313,14 +388,15 @@ class ChatMembers extends React.Component {
           user.rank >= auth.rank
         );
         // if func is not disabled and if user is within the rank requirement
-        can_remove_user = user.rank <= rank_req ? false : !func_disabled
+        can_remove_user = user.rank <= rank_req ? false : !func_disabled;
       }
     }
 
     return (
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={{flex: 1, backgroundColor: 'white'}}>
-          <View style={{padding: 7, alignItems: 'center'}}>
+        <View style={styles.container}>
+          <View style={styles.list}>
+            <SearchBar value={search_term} onChange={this.onSearchChange} />
             <UserChatList
               users={users}
               refreshing={refreshing}
@@ -346,7 +422,16 @@ class ChatMembers extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  list: {
+    padding: 7,
+    alignItems: 'center',
+  },
+});
 
 const mapStateToProps = state => {
   const {auth, group} = state;
@@ -360,6 +445,8 @@ const mapStateToDispatch = dispatch => {
     timeoutUser: data => dispatch(timeoutUser(data)),
     getUserChat: data => dispatch(getUserChat(data)),
     switchOwnership: data => dispatch(switchOwnership(data)),
+    searchUserChat: data => dispatch(searchUserChat(data)),
+    getSingleChat: data => dispatch(getSingleChat(data)),
   };
 };
 

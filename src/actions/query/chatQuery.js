@@ -9,6 +9,7 @@ query getChat($input: ChatQuery!){
             allow_invite
             available
             is_dm
+            is_pinned
             icon {
                 uri
             }
@@ -165,5 +166,11 @@ query searchUserChat($input: UserChatQuery!){
         }
         count
     }
+}
+`
+
+export const updatePinChatMutation = `
+mutation updatePinChat($input: UserChatMutation!){
+    updatePinChat(input: $input)
 }
 `

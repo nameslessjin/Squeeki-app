@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   StatusBar,
   ScrollView,
+  AppState,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {
@@ -26,6 +27,7 @@ class Chats extends React.Component {
     loading: false,
     refreshing: false,
     modalVisible: false,
+    appState: AppState.currentState,
   };
 
   componentDidMount() {
@@ -49,6 +51,7 @@ class Chats extends React.Component {
       });
     }
     this.loadChat(true);
+    AppState.addEventListener('change', this._handleAppStateChange);
   }
 
   componentDidUpdate(prevProps) {
@@ -81,7 +84,17 @@ class Chats extends React.Component {
   componentWillUnmount() {
     this.unsubSocket();
     this.props.resetChatReducer();
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
+
+  _handleAppStateChange = nextAppState => {
+    const {appState} = this.state;
+    if (appState.match(/(inactive|background)/) && nextAppState === 'active') {
+      // reload chat
+      this.loadChat(true);
+    }
+    this.setState({appState: nextAppState});
+  };
 
   unsubSocket = () => {
     const {chat, group} = this.props;
@@ -147,7 +160,7 @@ class Chats extends React.Component {
     const request = {
       token: auth.token,
       chatId,
-      is_dm
+      is_dm,
     };
 
     const req = await getSingleChat(request);
@@ -177,8 +190,8 @@ class Chats extends React.Component {
       }
       this.unsubSocket();
       // remove listeners to all chatrooms here
-      const {is_dm} = req
-      if (is_dm){
+      const {is_dm} = req;
+      if (is_dm) {
         navigation.navigate('Chat');
       } else {
         navigation.navigate('ChatDrawerNavigator');

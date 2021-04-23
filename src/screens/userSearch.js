@@ -366,7 +366,7 @@ class UserSearch extends React.Component {
 
 
   getSingleChat = async second_userId => {
-    const {getSingleChat, auth, navigation, chat} = this.props;
+    const {getSingleChat, auth, navigation} = this.props;
 
     const request = {
       token: auth.token,
@@ -388,7 +388,6 @@ class UserSearch extends React.Component {
       unsubSocket(socket_chat_id)
       navigation.dispatch(StackActions.replace('Chat', {second_userId: second_userId}))
     }
-
   };
 
   render() {

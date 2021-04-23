@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {dateConversion} from '../../utils/time';
-import SearchBar from '../users/userSearch/searchBar';
 
 const {width} = Dimensions.get('screen');
 
@@ -29,15 +28,6 @@ export default class UserChatList extends React.Component {
       icon,
       id,
     } = item;
-
-    if (id == 'search_bar') {
-      return (
-        <View
-          style={styles.searchBar}>
-          <SearchBar/>
-        </View>
-      );
-    }
 
     const {onMemberCardPress, user_id} = this.props;
     const random = Math.floor(Math.random() * 5);
@@ -136,6 +126,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     // backgroundColor: 'green'
+    marginTop: 5
   },
   user_container: {
     width: 170,
