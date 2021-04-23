@@ -9,11 +9,12 @@ import {
   Image,
   Dimensions,
   Platform,
+  TouchableHighlight,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {chatTimeFormat} from '../../utils/time';
 import {countFormat} from '../../utils/format';
-import {SwipeListView} from 'react-native-swipe-list-view';
+import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -30,6 +31,7 @@ export default class ChatList extends React.Component {
       unread_message_count,
       available,
       is_pinned,
+      notification
     } = item;
 
     const unread_message_count_text = countFormat(unread_message_count);
@@ -71,59 +73,118 @@ export default class ChatList extends React.Component {
       backgroundColor = 'silver';
     }
 
-    return (
-      <View style={[styles.chat_container, {backgroundColor: backgroundColor}]}>
-        <TouchableOpacity
-          onPress={() => onChatPress(item)}
-          disabled={!allow_to_join}>
-          <View style={styles.chat_sub_container}>
-            <View
-              style={{
-                width: '100%',
-                flexDirection: 'row',
-              }}>
-              <View style={styles.imgHolder}>
-                {icon != null ? (
-                  <Image source={{uri: icon.uri}} style={styles.imageStyle} />
-                ) : (
-                  <MaterialIcons name={icon_option} size={width * 0.18} />
-                )}
-              </View>
 
-              <View style={styles.rightStyle}>
-                <View style={styles.chat_right_up_container}>
-                  <View style={styles.chat_name_container}>
-                    <Text style={styles.chat_name_style} numberOfLines={2}>
-                      {name}
-                    </Text>
-                  </View>
-                  <View style={styles.chat_time_container}>
-                    <Text style={{color: 'grey', fontSize: width * 0.034}}>
-                      {/* 12:58 AM */}
-                      {last_message == null
-                        ? null
-                        : chatTimeFormat(last_message.createdAt)}
-                    </Text>
-                  </View>
+    return (
+        <View
+          style={[styles.chat_container, {backgroundColor: backgroundColor}]}>
+          <TouchableOpacity
+            onPress={() => onChatPress(item)}
+            disabled={!allow_to_join}>
+            <View style={styles.chat_sub_container}>
+              <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                }}>
+                <View style={styles.imgHolder}>
+                  {icon != null ? (
+                    <Image source={{uri: icon.uri}} style={styles.imageStyle} />
+                  ) : (
+                    <MaterialIcons name={icon_option} size={width * 0.18} />
+                  )}
                 </View>
-                <View style={styles.chat_right_bottom_container}>
-                  <View style={{height: '100%', width: '85%', paddingLeft: 3}}>
-                    <Text style={{color: 'grey'}} numberOfLines={2}>
-                      {message_preview}
-                    </Text>
+
+                <View style={styles.rightStyle}>
+                  <View style={styles.chat_right_up_container}>
+                    <View style={styles.chat_name_container}>
+                      <Text style={styles.chat_name_style} numberOfLines={2}>
+                        {name}
+                      </Text>
+                    </View>
+                    <View style={styles.chat_time_container}>
+                      <Text style={{color: 'grey', fontSize: width * 0.034}}>
+                        {/* 12:58 AM */}
+                        {last_message == null
+                          ? null
+                          : chatTimeFormat(last_message.createdAt)}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.unread_message_container}>
-                    {unread_message_count == 0 ? null : (
-                      <View style={styles.unread_message}>
-                        <Text style={{color: 'white', fontSize: width * 0.034}}>
-                          {unread_message_count_text}
-                        </Text>
-                      </View>
-                    )}
+                  <View style={styles.chat_right_bottom_container}>
+                    <View
+                      style={{height: '100%', width: '85%', paddingLeft: 3}}>
+                      <Text style={{color: 'grey'}} numberOfLines={2}>
+                        {message_preview}
+                      </Text>
+                    </View>
+                    <View style={styles.unread_message_container}>
+                      {unread_message_count == 0 ? null : (
+                        <View style={styles.unread_message}>
+                          <Text
+                            style={{color: 'white', fontSize: width * 0.034}}>
+                            {unread_message_count_text}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
                   </View>
                 </View>
               </View>
             </View>
+          </TouchableOpacity>
+        </View>
+    );
+  };
+
+  onHiddenItemPress = (chatId, type) => {
+    const {changeUserChatNotification, updatePinChat} = this.props;
+
+    if (type == 'mute') {
+      changeUserChatNotification(chatId);
+    }
+
+    if (type == 'pin') {
+      updatePinChat(chatId);
+    }
+  };
+
+  renderHiddenItem = (data, rowMap) => {
+    const {
+      rank_req,
+      id,
+      available,
+      is_pinned,
+      notification,
+    } = data.item;
+
+    let allow_to_join = true
+    if (rank_req != null) {
+      if (!available) {
+        allow_to_join = false;
+      }
+    }
+
+    const is_pinned_disabled = allow_to_join ? false : !is_pinned
+    const notification_disabled = allow_to_join ? false : !notification
+
+    return (
+      <View style={styles.rowBack}>
+        {/* <TouchableOpacity onPress={() => this.onHiddenItemPress(id, 'hide')}>
+          <View style={[styles.hiddenItem, {backgroundColor: '#a7ecee'}]}>
+            <MaterialIcons name={'eye-off'} size={30} color={'white'} />
+            <Text>Hide</Text>
+          </View>
+        </TouchableOpacity> */}
+        <TouchableOpacity  disabled={notification_disabled} onPress={() => this.onHiddenItemPress(id, 'mute')}>
+          <View style={[styles.hiddenItem, {backgroundColor: notification ? 'white' : 'red'}]}>
+            <MaterialIcons name={'bell'} size={30} color={notification ? 'red' : 'white'} />
+            <Text style={{marginTop: 2, color: notification ? 'red' : 'white'}}>{notification ? 'on' : 'off'}</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity disabled={is_pinned_disabled} onPress={() => this.onHiddenItemPress(id, 'pin')}>
+          <View style={[styles.hiddenItem, {backgroundColor: is_pinned ? 'white' : 'purple'}]}>
+            <MaterialIcons name={'pin'} size={30} color={is_pinned ? 'purple' : 'white'} />
+            <Text style={{marginTop: 2, color: is_pinned ? 'purple' : 'white'}}>{is_pinned ? 'on' : 'off'}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -146,19 +207,13 @@ export default class ChatList extends React.Component {
         onEndReachedThreshold={0.1}
         keyboardShouldPersistTaps={'handled'}
         showsVerticalScrollIndicator={false}
-        // leftOpenValue={75}
         disableRightSwipe={true}
-        rightOpenValue={-100}
-        renderHiddenItem={(data, rowMap) => {
-          console.log(data);
-          console.log(rowMap);
-          return (
-            <View style={styles.rowBack}>
-              <Text>Left</Text>
-              <Text>Right</Text>
-            </View>
-          );
-        }}
+        rightOpenValue={-160}
+        renderHiddenItem={this.renderHiddenItem}
+        closeOnRowPress={true}
+        closeOnRowOpen={true}
+        closeOnRowBeginSwipe={true}
+        closeOnScroll={true}
       />
     );
   }
@@ -255,7 +310,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#DDD',
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingLeft: 15,
+    justifyContent: 'flex-end',
+  },
+  hiddenItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 85,
+    width: 80,
+    backgroundColor: 'purple',
   },
 });

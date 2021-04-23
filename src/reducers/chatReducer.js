@@ -17,6 +17,25 @@ export default (chatReducer = (state = INITIAL_STATE, action) => {
             : state.chats.concat(action.i.chat),
       };
 
+    case 'updateChatStatusInChats':
+      return {
+        ...state,
+        chats: state.chats.map(c => {
+          if (c.id === action.i.chatId) {
+            return {
+              ...c,
+              is_pinned:
+                action.i.type == 'is_pinned' ? !c.is_pinned : c.is_pinned,
+              notification:
+                action.i.type == 'notification'
+                  ? !c.notification
+                  : c.notification,
+            };
+          }
+          return c;
+        }),
+      };
+
     case 'updateChatInfo':
       const updatedChatIndex = updatedChats.findIndex(
         c => c.id === action.i.chatId,
@@ -45,11 +64,11 @@ export default (chatReducer = (state = INITIAL_STATE, action) => {
         ...state,
         chat: action.i,
       };
-    
+
     case 'resetChat':
       return {
-        ...INITIAL_STATE
-      }
+        ...INITIAL_STATE,
+      };
 
     case 'logout':
       return {

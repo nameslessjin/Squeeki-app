@@ -15,6 +15,8 @@ import {
   updateChatInfo,
   getSingleChat,
   resetChatReducer,
+  changeUserChatNotification,
+  updatePinChat,
 } from '../actions/chat';
 import {userLogout} from '../actions/auth';
 import HeaderRightButton from '../components/chat/headerRightButton';
@@ -199,6 +201,37 @@ class Chats extends React.Component {
     }
   };
 
+  changeUserChatNotification = async chatId => {
+    const {changeUserChatNotification, auth} = this.props;
+    const request = {
+      token: auth.token,
+      chatId,
+    };
+    const req = await changeUserChatNotification(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert(
+        'Cannot change notification setting right now, please try again later.',
+      );
+      return;
+    }
+  };
+
+  updatePinChat = async chatId => {
+    const {updatePinChat, auth} = this.props;
+    const request = {
+      token: auth.token,
+      chatId,
+    };
+
+    const req = await updatePinChat(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot pin/unpin chat right now, please try again later.');
+      return;
+    }
+  };
+
   render() {
     const {chat, group, route} = this.props;
     const {refreshing} = this.state;
@@ -215,6 +248,8 @@ class Chats extends React.Component {
             onEndReached={this.onEndReached}
             onChatPress={this.onChatPress}
             userGroupAuthRank={group.group.auth ? group.group.auth.rank : null}
+            changeUserChatNotification={this.changeUserChatNotification}
+            updatePinChat={this.updatePinChat}
           />
           <NewChatModal
             onBackdropPress={this.onBackdropPress}
@@ -240,6 +275,9 @@ const mapDispatchToProps = dispatch => {
     updateChatInfo: data => dispatch(updateChatInfo(data)),
     getSingleChat: data => dispatch(getSingleChat(data)),
     resetChatReducer: () => dispatch(resetChatReducer()),
+    changeUserChatNotification: data =>
+      dispatch(changeUserChatNotification(data)),
+    updatePinChat: data => dispatch(updatePinChat(data)),
   };
 };
 

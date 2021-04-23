@@ -10,6 +10,7 @@ query getChat($input: ChatQuery!){
             available
             is_dm
             is_pinned
+            notification
             icon {
                 uri
             }

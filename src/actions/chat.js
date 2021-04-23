@@ -470,6 +470,8 @@ export const changeUserChatNotification = request => {
       return result;
     }
 
+    dispatch(updateChatStatusInChats({chatId, type: 'notification'}))
+
     return 0;
   };
 };
@@ -521,6 +523,15 @@ export const updatePinChat = request => {
       return result;
     }
 
+    dispatch(updateChatStatusInChats({chatId, type: 'is_pinned'}))
+
     return 0;
   };
 };
+
+const updateChatStatusInChats = i => {
+  return {
+    type: 'updateChatStatusInChats',
+    i: i,
+  };
+}
