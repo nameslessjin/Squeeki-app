@@ -106,13 +106,13 @@ class HomeDrawerNavigator extends React.Component {
           <GroupRightButton onPress={this.onToggleGroupsRightButton} />
         ),
       });
-    } else if (name == 'Chats') {
+    } else if (name == 'Chatrooms') {
       navigation.setOptions({
         headerRight: () => (
           <HeaderRightButton
             onPress={() =>
               navigation.navigate('Home', {
-                screen: 'Chats',
+                screen: 'Chatrooms',
                 params: {modalVisible: true},
               })
             }
@@ -144,7 +144,7 @@ class HomeDrawerNavigator extends React.Component {
         drawerStyle={styles.drawerStyle}>
         <Drawer.Screen name="Home" component={Home} />
         <Drawer.Screen name="Groups" component={Groups} />
-        <Drawer.Screen name="Chats" component={Chats} />
+        <Drawer.Screen name="Chatrooms" component={Chats} />
         <Drawer.Screen name="Terms" component={Terms} />
       </Drawer.Navigator>
     );

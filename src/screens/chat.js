@@ -210,7 +210,7 @@ class Chat extends React.Component {
 
     setTimeout(() => {
       updateUserMessage(request);
-    }, 300)
+    }, 500)
   };
 
   updateUserMessage = data => {

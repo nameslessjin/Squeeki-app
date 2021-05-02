@@ -72,7 +72,7 @@ class SignUp extends React.Component {
     const regexp = /^[a-zA-Z0-9_]+$/;
     if (
       username.search(regexp) === -1 ||
-      groupname.substring(groupname.length - 1) == '_' ||
+      username.substring(username.length - 1) == '_' ||
       !validator.isLength(username.trim(), {min: 6, max: 30})
     ) {
       this.setState({
@@ -99,6 +99,7 @@ class SignUp extends React.Component {
     if (!this.validation()) {
       return;
     }
+    console.log('Here')
 
     const data = {
       email: email,
