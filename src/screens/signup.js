@@ -99,7 +99,7 @@ class SignUp extends React.Component {
     if (!this.validation()) {
       return;
     }
-    console.log('Here')
+    console.log('Here');
 
     const data = {
       email: email,
@@ -117,10 +117,12 @@ class SignUp extends React.Component {
       return;
     }
 
-    this.props.navigation.reset({
-      index: 0,
-      routes: [{name: 'Home'}],
-    });
+    setTimeout(() => {
+      this.props.navigation.reset({
+        index: 0,
+        routes: [{name: 'Home'}],
+      });
+    }, 500);
   };
 
   onTermsPressed = () => {
@@ -170,7 +172,11 @@ class SignUp extends React.Component {
               value={rePassword}
             />
             {loading ? (
-              <ActivityIndicator animating={true} style={{marginTop: 20}} color={'grey'}/>
+              <ActivityIndicator
+                animating={true}
+                style={{marginTop: 20}}
+                color={'grey'}
+              />
             ) : (
               <SignUpButton onPress={this.onPress} />
             )}
@@ -212,7 +218,7 @@ const styles = StyleSheet.create({
   },
   term: {
     marginTop: 30,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   text: {
     color: '#b2bec3',
