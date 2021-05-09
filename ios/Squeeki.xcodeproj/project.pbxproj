@@ -236,6 +236,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				3197ACFFE12F98A83DB6D1F6 /* [CP] Copy Pods Resources */,
+				E6ACCC871A4B370F69F373C1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -259,6 +260,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				D27DA99A8265EBA8F357C6D5 /* [CP] Copy Pods Resources */,
 				98F10244A1356DE14C2BCE8D /* [CP-User] [RNFB] Core Configuration */,
+				F5ADE2030038BAB416A84893 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -657,6 +659,42 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Squeeki/Pods-Squeeki-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E6ACCC871A4B370F69F373C1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Squeeki-SqueekiTests/Pods-Squeeki-SqueekiTests-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Squeeki-SqueekiTests/Pods-Squeeki-SqueekiTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F5ADE2030038BAB416A84893 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Squeeki/Pods-Squeeki-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Squeeki/Pods-Squeeki-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {

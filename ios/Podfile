@@ -14,7 +14,8 @@ target 'Squeeki' do
   pod 'iOSPhotoEditor', :git => 'https://github.com/prscX/photo-editor', :branch => 'master'
 
   # waiting for update version
-  use_flipper! ({'Flipper-Folly' => '2.3.0'})
+  # use_flipper! ({'Flipper-Folly' => '2.3.0'})
+  use_flipper!({ 'Flipper-Folly' => '2.5.3', 'Flipper' => '0.87.0', 'Flipper-RSocket' => '1.3.1' })
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
