@@ -12,6 +12,15 @@ const extractKey = ({id}) => id;
 
 export default class NotificationSettings extends React.Component {
 
+    state = {
+        options: [
+          {id: 'All'},
+          {id: 'Groups'},
+          {id: 'My Posts'},
+          {id: 'My Comments'},
+          {id: 'Chats'}
+        ],
+      };
 
     componentDidMount(){
         const {navigation} = this.props
@@ -19,7 +28,7 @@ export default class NotificationSettings extends React.Component {
             headerBackTitleVisible: false,
             headerTitle: 'Notifications'
         })
-        
+
     }
 
 

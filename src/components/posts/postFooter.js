@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {countFormat} from '../../utils/format'
+import {countFormat} from '../../utils/format';
 
 const {width} = Dimensions.get('screen');
 
@@ -33,8 +33,8 @@ export default class PostFooter extends React.Component {
 
     const {footerContainer, IconContainer, IconText} = styles;
 
-    const likeCount_text = countFormat(likeCount)
-    const commentCount_text = countFormat(commentCount)
+    const likeCount_text = countFormat(likeCount);
+    const commentCount_text = countFormat(commentCount);
 
     return (
       <View style={footerContainer}>
@@ -56,21 +56,24 @@ export default class PostFooter extends React.Component {
               )}
             </View>
           </TouchableOpacity>
-          {loading ? (
-            <ActivityIndicator animating={true} color={'grey'} />
-          ) : (
-            <TouchableOpacity onPress={onLikePress}>
-              <View style={IconContainer}>
+
+          <TouchableOpacity onPress={onLikePress} disabled={loading}>
+            <View style={IconContainer}>
+              {loading ? (
+                <ActivityIndicator animating={true} color={'grey'} />
+              ) : (
                 <MaterialIcons
                   name={liked ? 'heart' : 'heart-outline'}
                   size={25}
                   style={liked ? {color: '#e84118'} : null}
                 />
+              )}
 
-                {likeCount == 0 ? null : <Text style={IconText}>{likeCount_text}</Text>}
-              </View>
-            </TouchableOpacity>
-          )}
+              {likeCount == 0 ? null : (
+                <Text style={IconText}>{likeCount_text}</Text>
+              )}
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     );

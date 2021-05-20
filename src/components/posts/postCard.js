@@ -86,7 +86,7 @@ class PostCard extends React.Component {
 
   onPostNotification = async () => {
     const {auth, changePostNotification, userLogout, navigation} = this.props;
-    const {id, notificationId} = this.state;
+    const {id, notification} = this.state;
     const data = {
       token: auth.token,
       postId: id,
@@ -106,11 +106,7 @@ class PostCard extends React.Component {
       }
     }
 
-    if (notificationId == null) {
-      this.setState({notificationId: 1});
-    } else {
-      this.setState({notificationId: null});
-    }
+    this.setState(prevState => { return {notification: !prevState.notification}})
 
     this.onBackDropPress();
   };
@@ -201,7 +197,7 @@ class PostCard extends React.Component {
     const like = await likePost(data);
     this.setState({loading: false});
     if (like.errors) {
-      // alert(like.errors[0].message);
+      console.log(like.errors[0].message);
       alert('Cannot like post at this time, please try again later')
       if (like.errors[0].message == 'Not Authenticated') {
         userLogout();
@@ -283,7 +279,7 @@ class PostCard extends React.Component {
       type,
       priority,
       groupAuth,
-      notificationId,
+      notification,
       is_report_toggled,
       report,
       onReport,
@@ -329,7 +325,7 @@ class PostCard extends React.Component {
             onBackDropPress={this.onBackDropPress}
             type={type}
             priority={priority}
-            notificationId={notificationId}
+            notification={notification}
             onPostReport={this.onPostReport}
             is_report_toggled={is_report_toggled}
             currentUserAuth={group.group.auth}

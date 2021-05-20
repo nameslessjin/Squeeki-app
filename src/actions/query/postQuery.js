@@ -35,7 +35,7 @@ query getGroupPosts($input: GetPostInput!){
             groupId
             likeCount
             liked
-            notificationId
+            notification
             nomination{
                 postNominationId
                 nominationId
@@ -85,7 +85,7 @@ query getFeed($count: Int!){
             groupId
             likeCount
             liked
-            notificationId
+            notification
             nomination{
                 postNominationId
                 nominationId
@@ -136,7 +136,7 @@ query getPost($postId: ID!){
             groupId
             likeCount
             liked
-            notificationId
+            notification
     }
 }
 `;
@@ -241,7 +241,7 @@ query getNominationPost($nominationPostInput: NominationPostInput!){
             groupId
             likeCount
             liked
-            notificationId
+            notification
             nomination{
                 postNominationId
                 nominationId
@@ -295,7 +295,7 @@ query getGroupPostForCheckIn($input: GetPostInput!){
             groupId
             likeCount
             liked
-            notificationId
+            notification
             nomination{
                 postNominationId
                 nominationId
