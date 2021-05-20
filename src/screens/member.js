@@ -21,6 +21,7 @@ import {getGroupMembers} from '../actions/user';
 import {getGroupMembersFunc} from '../functions/user';
 import OptionButtons from '../components/users/members/optionButtons';
 import InputText from '../components/users/members/inputText';
+import { getSingleChat } from '../actions/chat'
 
 class Member extends React.Component {
   state = {
@@ -321,7 +322,30 @@ class Member extends React.Component {
     }
   };
 
-  optionAlert = type => {
+  getSingleChat = async () => {
+    const {getSingleChat, auth, navigation} = this.props;
+    const {id} = this.state
+
+    const request = {
+      token: auth.token,
+      second_userId: id,
+    };
+
+    const req = await getSingleChat(request);
+
+    if (req.errors) {
+      console.log(req.errors[0]);
+      alert('load chat failed at this time, please try again later');
+      return false;
+    }
+
+    if (req) {
+      navigation.navigate('Chat', {second_userId: id});
+    }
+  };
+
+
+  onButtonPress = type => {
     if (type == 'ownership') {
       Alert.alert(
         'Switch Ownership',
@@ -348,6 +372,10 @@ class Member extends React.Component {
           {text: 'Confirm', onPress: this.onDeleteMember, style: "destructive"},
         ],
       );
+    }
+
+    if (type == 'dm'){
+      this.getSingleChat()
     }
   };
 
@@ -423,9 +451,10 @@ class Member extends React.Component {
             <View style={{marginTop: 200}}>
               <OptionButtons
                 // onDeleteMember={this.onDeleteMember}
+                isSelf={isSelf}
                 allowToDeleteMember={allowToDeleteMember}
                 allowToMakeOwner={allowToMakeOwner}
-                optionAlert={this.optionAlert}
+                onButtonPress={this.onButtonPress}
                 // onMakeOwner={this.onMakeOwner}
               />
             </View>
@@ -482,6 +511,7 @@ const mapDispatchToProps = dispatch => {
     makeOwner: data => dispatch(makeOwner(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
     searchUser: data => dispatch(searchUser(data)),
+    getSingleChat: data => dispatch(getSingleChat(data))
   };
 };
 

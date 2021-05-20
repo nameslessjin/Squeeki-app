@@ -7,6 +7,7 @@ query getChatMessage($input: MessageQuery!){
             text
             image
             status
+            system
             createdAt
             user {
                 _id

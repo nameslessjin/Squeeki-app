@@ -3,22 +3,29 @@ import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
 
 export default class OptionButtons extends React.Component {
   render() {
-    const {allowToDeleteMember, allowToMakeOwner, optionAlert} = this.props;
+    const {allowToDeleteMember, allowToMakeOwner, onButtonPress, isSelf} = this.props;
 
     const removeButton = allowToDeleteMember ? (
-      <TouchableOpacity onPress={() => optionAlert('remove')}>
+      <TouchableOpacity onPress={() => onButtonPress('remove')}>
         <Text style={styles.removeButton}>Remove</Text>
       </TouchableOpacity>
     ) : null;
 
     const makeOwnerButton = allowToMakeOwner ? (
-        <TouchableOpacity onPress={() => optionAlert('ownership')}>
-            <Text style={styles.makeOwnerButton}>Make Owner</Text>
-        </TouchableOpacity>
-    ) : null
+      <TouchableOpacity onPress={() => onButtonPress('ownership')}>
+        <Text style={styles.makeOwnerButton}>Make Owner</Text>
+      </TouchableOpacity>
+    ) : null;
+
+    const directMessageButton = !isSelf ? (
+      <TouchableOpacity onPress={() => onButtonPress('dm')} >
+        <Text style={styles.directMessageButton}>Direct Message</Text>
+      </TouchableOpacity>
+    ) : null;
 
     return (
       <View style={styles.container}>
+        {directMessageButton}
         {makeOwnerButton}
         {removeButton}
       </View>
@@ -27,16 +34,20 @@ export default class OptionButtons extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%'
-    },
-    removeButton: {
-        color: 'red'
-    },
-    makeOwnerButton: {
-        color: '#007aff',
-        marginBottom: 10
-    }
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  directMessageButton: {
+    marginBottom: 10,
+    color: '#007aff',
+  },
+  removeButton: {
+    color: 'red',
+  },
+  makeOwnerButton: {
+    color: '#d35400',
+    marginBottom: 10,
+  },
 });

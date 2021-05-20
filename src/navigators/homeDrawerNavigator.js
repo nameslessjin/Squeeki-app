@@ -18,7 +18,7 @@ import {
 import {DrawerActions} from '@react-navigation/native';
 import HeaderLeftButton from '../components/home/headerLeft';
 import Groups from '../screens/groups';
-import Terms from '../screens/terms';
+import UserSettings from '../screens/userSettings';
 import Chats from '../screens/chats';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {connect} from 'react-redux';
@@ -106,13 +106,13 @@ class HomeDrawerNavigator extends React.Component {
           <GroupRightButton onPress={this.onToggleGroupsRightButton} />
         ),
       });
-    } else if (name == 'Chatrooms') {
+    } else if (name == 'Chats') {
       navigation.setOptions({
         headerRight: () => (
           <HeaderRightButton
             onPress={() =>
               navigation.navigate('Home', {
-                screen: 'Chatrooms',
+                screen: 'Chats',
                 params: {modalVisible: true},
               })
             }
@@ -144,8 +144,9 @@ class HomeDrawerNavigator extends React.Component {
         drawerStyle={styles.drawerStyle}>
         <Drawer.Screen name="Home" component={Home} />
         <Drawer.Screen name="Groups" component={Groups} />
-        <Drawer.Screen name="Chatrooms" component={Chats} />
-        <Drawer.Screen name="Terms" component={Terms} />
+        <Drawer.Screen name="Chats" component={Chats} />
+
+        {/* <Drawer.Screen name="Settings" component={UserSettings} /> */}
       </Drawer.Navigator>
     );
   }
@@ -191,9 +192,17 @@ function CustomDrawerContent(props) {
         />
       </View>
       <DrawerItemList {...props} />
+
+      <DrawerItem
+        label="Settings"
+        labelStyle={{color: '#666667'}}
+        onPress={() => {
+          navigation.navigate('UserSettings');
+        }}
+      />
       <DrawerItem
         label="Logout"
-        labelStyle={styles.labelStyle}
+        labelStyle={{color: 'red'}}
         onPress={() => {
           logout();
           navigation.reset({

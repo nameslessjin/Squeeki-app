@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.5,
     shadowRadius: 4,
-    elevation: 15,
+    elevation: 10,
     width: '100%',
     paddingBottom: 50,
   },

@@ -31,7 +31,7 @@ export default class ChatList extends React.Component {
       unread_message_count,
       available,
       is_pinned,
-      notification
+      notification,
     } = item;
 
     const unread_message_count_text = countFormat(unread_message_count);
@@ -48,12 +48,14 @@ export default class ChatList extends React.Component {
     ];
 
     const icon_option = icon_options[random];
-
+    console.log(last_message)
     let message_preview =
       last_message == null
         ? 'Not messages yet.'
         : last_message.content.length == 0
         ? `${last_message.username}: [Photo/Video]`
+        : last_message.system
+        ? last_message.content
         : `${last_message.username}: ${last_message.content}`;
 
     let allow_to_join = true;
@@ -73,66 +75,62 @@ export default class ChatList extends React.Component {
       backgroundColor = 'silver';
     }
 
-
     return (
-        <View
-          style={[styles.chat_container, {backgroundColor: backgroundColor}]}>
-          <TouchableOpacity
-            onPress={() => onChatPress(item)}
-            disabled={!allow_to_join}>
-            <View style={styles.chat_sub_container}>
-              <View
-                style={{
-                  width: '100%',
-                  flexDirection: 'row',
-                }}>
-                <View style={styles.imgHolder}>
-                  {icon != null ? (
-                    <Image source={{uri: icon.uri}} style={styles.imageStyle} />
-                  ) : (
-                    <MaterialIcons name={icon_option} size={width * 0.18} />
-                  )}
-                </View>
+      <View style={[styles.chat_container, {backgroundColor: backgroundColor}]}>
+        <TouchableOpacity
+          onPress={() => onChatPress(item)}
+          disabled={!allow_to_join}>
+          <View style={styles.chat_sub_container}>
+            <View
+              style={{
+                width: '100%',
+                flexDirection: 'row',
+              }}>
+              <View style={styles.imgHolder}>
+                {icon != null ? (
+                  <Image source={{uri: icon.uri}} style={styles.imageStyle} />
+                ) : (
+                  <MaterialIcons name={icon_option} size={width * 0.18} />
+                )}
+              </View>
 
-                <View style={styles.rightStyle}>
-                  <View style={styles.chat_right_up_container}>
-                    <View style={styles.chat_name_container}>
-                      <Text style={styles.chat_name_style} numberOfLines={2}>
-                        {name}
-                      </Text>
-                    </View>
-                    <View style={styles.chat_time_container}>
-                      <Text style={{color: 'grey', fontSize: width * 0.034}}>
-                        {/* 12:58 AM */}
-                        {last_message == null
-                          ? null
-                          : chatTimeFormat(last_message.createdAt)}
-                      </Text>
-                    </View>
+              <View style={styles.rightStyle}>
+                <View style={styles.chat_right_up_container}>
+                  <View style={styles.chat_name_container}>
+                    <Text style={styles.chat_name_style} numberOfLines={2}>
+                      {name}
+                    </Text>
                   </View>
-                  <View style={styles.chat_right_bottom_container}>
-                    <View
-                      style={{height: '100%', width: '85%', paddingLeft: 3}}>
-                      <Text style={{color: 'grey'}} numberOfLines={2}>
-                        {message_preview}
-                      </Text>
-                    </View>
-                    <View style={styles.unread_message_container}>
-                      {unread_message_count == 0 ? null : (
-                        <View style={styles.unread_message}>
-                          <Text
-                            style={{color: 'white', fontSize: width * 0.034}}>
-                            {unread_message_count_text}
-                          </Text>
-                        </View>
-                      )}
-                    </View>
+                  <View style={styles.chat_time_container}>
+                    <Text style={{color: 'grey', fontSize: width * 0.034}}>
+                      {/* 12:58 AM */}
+                      {last_message == null
+                        ? null
+                        : chatTimeFormat(last_message.createdAt)}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.chat_right_bottom_container}>
+                  <View style={{height: '100%', width: '85%', paddingLeft: 3}}>
+                    <Text style={{color: 'grey'}} numberOfLines={2}>
+                      {message_preview}
+                    </Text>
+                  </View>
+                  <View style={styles.unread_message_container}>
+                    {unread_message_count == 0 ? null : (
+                      <View style={styles.unread_message}>
+                        <Text style={{color: 'white', fontSize: width * 0.034}}>
+                          {unread_message_count_text}
+                        </Text>
+                      </View>
+                    )}
                   </View>
                 </View>
               </View>
             </View>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -149,23 +147,17 @@ export default class ChatList extends React.Component {
   };
 
   renderHiddenItem = (data, rowMap) => {
-    const {
-      rank_req,
-      id,
-      available,
-      is_pinned,
-      notification,
-    } = data.item;
+    const {rank_req, id, available, is_pinned, notification} = data.item;
 
-    let allow_to_join = true
+    let allow_to_join = true;
     if (rank_req != null) {
       if (!available) {
         allow_to_join = false;
       }
     }
 
-    const is_pinned_disabled = allow_to_join ? false : !is_pinned
-    const notification_disabled = allow_to_join ? false : !notification
+    const is_pinned_disabled = allow_to_join ? false : !is_pinned;
+    const notification_disabled = allow_to_join ? false : !notification;
 
     return (
       <View style={styles.rowBack}>
@@ -175,16 +167,40 @@ export default class ChatList extends React.Component {
             <Text>Hide</Text>
           </View>
         </TouchableOpacity> */}
-        <TouchableOpacity  disabled={notification_disabled} onPress={() => this.onHiddenItemPress(id, 'mute')}>
-          <View style={[styles.hiddenItem, {backgroundColor: notification ? 'white' : 'red'}]}>
-            <MaterialIcons name={'bell'} size={30} color={notification ? 'red' : 'white'} />
-            <Text style={{marginTop: 2, color: notification ? 'red' : 'white'}}>{notification ? 'on' : 'off'}</Text>
+        <TouchableOpacity
+          disabled={notification_disabled}
+          onPress={() => this.onHiddenItemPress(id, 'mute')}>
+          <View
+            style={[
+              styles.hiddenItem,
+              {backgroundColor: notification ? 'white' : 'red'},
+            ]}>
+            <MaterialIcons
+              name={'bell'}
+              size={30}
+              color={notification ? 'red' : 'white'}
+            />
+            <Text style={{marginTop: 2, color: notification ? 'red' : 'white'}}>
+              {notification ? 'on' : 'off'}
+            </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity disabled={is_pinned_disabled} onPress={() => this.onHiddenItemPress(id, 'pin')}>
-          <View style={[styles.hiddenItem, {backgroundColor: is_pinned ? 'white' : 'purple'}]}>
-            <MaterialIcons name={'pin'} size={30} color={is_pinned ? 'purple' : 'white'} />
-            <Text style={{marginTop: 2, color: is_pinned ? 'purple' : 'white'}}>{is_pinned ? 'on' : 'off'}</Text>
+        <TouchableOpacity
+          disabled={is_pinned_disabled}
+          onPress={() => this.onHiddenItemPress(id, 'pin')}>
+          <View
+            style={[
+              styles.hiddenItem,
+              {backgroundColor: is_pinned ? 'white' : 'purple'},
+            ]}>
+            <MaterialIcons
+              name={'pin'}
+              size={30}
+              color={is_pinned ? 'purple' : 'white'}
+            />
+            <Text style={{marginTop: 2, color: is_pinned ? 'purple' : 'white'}}>
+              {is_pinned ? 'on' : 'off'}
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -254,7 +270,7 @@ const styles = StyleSheet.create({
     width: width - 10 - width * 0.18,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 5,
+    // paddingTop: 5,
   },
   chat_name_style: {
     fontSize: 15,

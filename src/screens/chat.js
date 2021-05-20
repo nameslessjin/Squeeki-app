@@ -210,7 +210,7 @@ class Chat extends React.Component {
 
     setTimeout(() => {
       updateUserMessage(request);
-    }, 500)
+    }, 500);
   };
 
   updateUserMessage = data => {
@@ -250,7 +250,6 @@ class Chat extends React.Component {
       userLogout,
       pointer: init ? null : pointer,
     };
-    console.log(pointer)
     this.setState({isLoadEarlier: true});
     const req = await getChatMessageFunc(data);
     this.setState({isLoadEarlier: false});
@@ -281,9 +280,9 @@ class Chat extends React.Component {
       user_relation,
       name,
     } = this.state;
+    let message_status = 'alive';
 
     this.setState({content: ''});
-    Keyboard.dismiss();
 
     // check out user timeout in group chat
     if (status.timeout) {
@@ -301,6 +300,7 @@ class Chat extends React.Component {
         this.setState(prevState => ({
           messages: [system_message].concat(prevState.messages),
         }));
+
         return;
       }
     }
@@ -309,16 +309,18 @@ class Chat extends React.Component {
     if (user_relation.from) {
       const {is_dm_blocked} = user_relation.from;
       if (is_dm_blocked) {
+        content = `You have been blocked by ${name}`;
+        message_status = 'system';
+
         const system_message = {
           _id: messages.length.toString(),
-          text: `You have been blocked by ${name}`,
+          text: content,
           createdAt: new Date(),
           system: true,
         };
         this.setState(prevState => ({
           messages: [system_message].concat(prevState.messages),
         }));
-        return;
       }
     }
 
@@ -365,6 +367,7 @@ class Chat extends React.Component {
         navigation,
         userLogout,
         media: null,
+        message_status: message_status,
       };
       sendMessageFunc(data);
     }
@@ -614,6 +617,8 @@ class Chat extends React.Component {
     const user = {
       _id: auth.user.id,
     };
+
+    // console.log(messages)
 
     return (
       <View>

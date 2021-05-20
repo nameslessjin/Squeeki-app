@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 0,
     },
-    elevation: 15,
+    elevation: 10,
     shadowOpacity: 0.5,
     shadowRadius: 4,
     width: '100%',
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 15,
+    elevation: 10,
     marginBottom: 100,
   },
 });

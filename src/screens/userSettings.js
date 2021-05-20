@@ -6,32 +6,38 @@ import {
   FlatList,
   StatusBar,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const extractKey = ({id}) => id;
-export default class Terms extends React.Component {
+export default class UserSettings extends React.Component {
   state = {
-    terms: [{id: '1', name: 'Privacy Policy'}, {id: '2', name: 'EULA'}],
+    options: [
+      {id: 'Theme'},
+      {id: 'Visibility'},
+      {id: 'Notifications'},
+      {id: 'Terms'},
+    ],
   };
 
   componentDidMount() {
     const {navigation} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
+      headerTitle: 'Settings'
     });
   }
 
   renderItem = i => {
     const {item} = i;
-    const {id, name} = item;
+    const {id} = item;
 
     return (
-      <TouchableOpacity onPress={() => this.loadTerm(name)}>
+      <TouchableOpacity onPress={() => this.loadTerm(id)}>
         <View style={styles.card}>
-          <Text style={styles.text}>{name}</Text>
-          <MaterialIcons name={'chevron-right'} size={30} />
+          <Text style={styles.text}>{id}</Text>
+          <MaterialIcons name={'chevron-right'} size={30} color={'silver'} />
         </View>
       </TouchableOpacity>
     );
@@ -39,19 +45,25 @@ export default class Terms extends React.Component {
 
   loadTerm = name => {
     const {navigation} = this.props;
-    navigation.navigate('TermDisplay', {
-      name: name,
-    });
+    if (name == 'Terms') {
+      navigation.navigate('Terms');
+    } else if (name == 'Notifications') {
+      navigation.navigate('NotificationSettings');
+    } else if (name == 'Visibility') {
+      navigation.navigate('VisibilitySettings');
+    } else if (name == 'Theme') {
+      navigation.navigate('ThemeSettings');
+    }
   };
 
   render() {
-    const {terms} = this.state;
+    const {options} = this.state;
     return (
       <TouchableWithoutFeedback>
         <View style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
           <FlatList
-            data={terms}
+            data={options}
             alwaysBounceHorizontal={false}
             showsVerticalScrollIndicator={false}
             keyExtractor={extractKey}

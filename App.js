@@ -64,6 +64,11 @@ import RankSetting from './src/screens/rankSetting'
 import Profile from './src/screens/profile'
 import ChatDrawerNavigator from './src/navigators/chatDrawerNavigator'
 import ChatMembers from './src/screens/chatMembers'
+import UserSettings from './src/screens/userSettings'
+import NotificationSettings from './src/screens/notificationSettings'
+import VisibilitySettings from './src/screens/visibilitySettings'
+import ThemeSettings from './src/screens/themeSettings'
+import Activity from './src/screens/activity'
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -205,6 +210,11 @@ export default (App = () => {
               <Stack.Screen name="RankSetting" component={RankSetting} />
               <Stack.Screen name="Profile" component={Profile}/>
               <Stack.Screen name="ChatMembers" component={ChatMembers} />
+              <Stack.Screen name="UserSettings" component={UserSettings} />
+              <Stack.Screen name="NotificationSettings" component={NotificationSettings} />
+              <Stack.Screen name="VisibilitySettings" component={VisibilitySettings} />
+              <Stack.Screen name="ThemeSettings" component={ThemeSettings} />
+              <Stack.Screen name="Activity" component={Activity} />
             </Stack.Navigator>
           </NavigationContainer>
         </PersistGate>

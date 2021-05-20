@@ -1,11 +1,12 @@
 export const sendMessageFunc = async data => {
-  const {token, chatId, content, sendMessage, navigation, userLogout, media} = data;
+  const {token, chatId, content, sendMessage, navigation, userLogout, media, message_status} = data;
 
   const request = {
     token,
     chatId,
     content,
-    media
+    media,
+    status: message_status
   };
 
   const req = await sendMessage(request);
@@ -55,6 +56,6 @@ export const getChatMessageFunc = async data => {
       return false;
     }
   }
-
+  console.log(req)
   return req;
 };

@@ -14,7 +14,7 @@ export default class SettingEdition extends React.Component {
             <MaterialIcons
               name={'chevron-right'}
               size={30}
-              style={{color: disabled ? 'grey' : 'black'}}
+              color={'silver'}
             />
           </View>
         </TouchableOpacity>

@@ -42,7 +42,7 @@ export const getChatMessage = request => {
 // };
 
 export const sendMessage = request => {
-  const {token, content, chatId, media} = request;
+  const {token, content, chatId, media, status} = request;
 
   return async function(dispatch) {
     let media_url = null;
@@ -73,6 +73,7 @@ export const sendMessage = request => {
       content,
       chatId,
       media: media_url,
+      status
     };
 
     const graphql = {

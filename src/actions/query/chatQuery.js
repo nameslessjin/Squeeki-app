@@ -19,6 +19,7 @@ query getChat($input: ChatQuery!){
                 username
                 content
                 createdAt
+                system
             }
         }
         count
