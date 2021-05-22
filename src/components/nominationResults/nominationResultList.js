@@ -58,7 +58,7 @@ export default class NominationResultsList extends React.Component {
 
   renderItemTime = ({item}) => {
     const {time} = item;
-
+    
     const {year, month, date} = getFormalTime(parseInt(time) * 1000000);
 
     const {last_sunday, next_sunday} = getSundays(parseInt(time) * 1000000);
@@ -68,6 +68,7 @@ export default class NominationResultsList extends React.Component {
     const most_recent =
       Math.floor(this_sunday.getTime() / 1000) ==
       Math.floor(next_sunday.getTime() / 1000);
+    
     const timeText = (
       <Text style={{fontStyle: 'italic', fontSize: 15, marginVertical: 5}}>
         {most_recent
@@ -150,6 +151,7 @@ export default class NominationResultsList extends React.Component {
       ? [mostRecentNominationResults].concat(oldResultList || [])
       : oldResultList || [];
 
+    console.log(nominationResultList)
     return (
       <FlatList
         style={styles.container}

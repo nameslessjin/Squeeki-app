@@ -372,11 +372,12 @@ class GroupSetting extends React.Component {
               disabled={false}
             />
 
-            <SettingEdition
+            {/* <SettingEdition
               onPress={this.onNominationCreationPress}
               name={'Edit nominations'}
               disabled={false}
-            />
+            /> */}
+            
             <SettingEdition
               onPress={this.onEditTagPress}
               name={'Edit tags'}

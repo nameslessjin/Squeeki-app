@@ -92,7 +92,7 @@ class GroupDrawerNavigator extends React.Component {
           }}
           
         />
-        <DrawerItem
+        {/* <DrawerItem
           label="Nomination"
           icon={() => (
             <MaterialIcons name="poll-box" color={'grey'} size={25} />
@@ -101,7 +101,7 @@ class GroupDrawerNavigator extends React.Component {
           onPress={() => {
             props.navigation.navigate('NominationResults');
           }}
-        />
+        /> */}
         <DrawerItem
           label="Check In"
           icon={() => (

@@ -18,7 +18,8 @@ export default class NotificationSettings extends React.Component {
           {id: 'Groups'},
           {id: 'My Posts'},
           {id: 'My Comments'},
-          {id: 'Chats'}
+          {id: 'Chats'},
+          {id: 'Invite'}
         ],
       };
 

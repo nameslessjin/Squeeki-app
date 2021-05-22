@@ -52,7 +52,10 @@ class NominationResult extends React.Component {
       userLogout,
     } = this.props;
     const {nominationResults} = this.state;
+
     const {last_sunday, next_sunday} = getSundays();
+    console.log(next_sunday)
+
     let data = {
       groupId: group.group.id,
       token: auth.token,
