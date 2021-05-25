@@ -12,13 +12,26 @@ export default authReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 token: action.auth.token,
-                user: action.auth.user
+                user: {
+                    ...state.user,
+                    ...action.auth.user
+                }
             }
         case 'logout':
             return {
                 user:{},
                 token: ''
             }
+        
+        case 'updateNotifications':
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    notifications: action.i
+                }
+            }
+
         default: return state
     }
 }

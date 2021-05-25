@@ -20,7 +20,7 @@ import TagList from '../tags/tagList';
 import {pointFormat} from '../../utils/point';
 import {getGroupPointLeaderBoard} from '../../actions/point';
 import {loadLeaderBoardFunc} from '../../functions/point';
-import {getSemester, getFormalTime} from '../../utils/time';
+import {getMonth} from '../../utils/time';
 
 const extractKey = ({key}) => key;
 class GroupHeader extends React.Component {
@@ -172,19 +172,15 @@ class GroupHeader extends React.Component {
       rank_setting
     } = this.props.item;
     const {point, onAddPost} = this.props;
-    let {total_point, base_point_semester, leaderboard} = point;
+    let {total_point, base_point_time, leaderboard} = point;
     const {users} = leaderboard;
     const {container, underImageStyle, component} = styles;
     const {notificationToggled} = this.state;
     const date = dateConversion(createdAt);
 
     const total_point_display = pointFormat(total_point);
-    const base_point_semester_display = pointFormat(base_point_semester);
-    const {semester_begin, semester_end} = getSemester();
-    const begin_month = semester_begin.getMonth() + 1;
-    const begin_date = semester_begin.getDate();
-    const end_month = semester_end.getMonth() + 1;
-    const end_date = semester_end.getDate();
+    const base_point_time_display = pointFormat(base_point_time);
+    const {month} = getMonth()
 
     return (
       <TouchableWithoutFeedback>
@@ -234,9 +230,9 @@ class GroupHeader extends React.Component {
                     {total_point_display}
                   </Text>
                   <Text style={{fontSize: 9, color: 'grey'}}>
-                    Semester Base: {base_point_semester_display}
+                    {`${month} base points`}: {base_point_time_display}
                   </Text>
-                  <Text style={{fontSize: 9, color: 'grey'}}>
+                  {/* <Text style={{fontSize: 9, color: 'grey'}}>
                     {begin_month +
                       '/' +
                       begin_date +
@@ -244,7 +240,7 @@ class GroupHeader extends React.Component {
                       end_month +
                       '/' +
                       end_date}
-                  </Text>
+                  </Text> */}
                 </View>
               ) : null}
             </View>

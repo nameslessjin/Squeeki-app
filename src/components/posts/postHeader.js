@@ -67,11 +67,6 @@ export default class PostHeader extends React.Component {
 
     let options = (
       <View style={styles.modalView}>
-        <TouchableOpacity style={styles.option} onPress={onPostNotification}>
-          <Text style={{color: notification ? 'red' : 'grey'}}>
-            {notification ? 'Notification: On' : 'Notification: Off'}
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.option} onPress={onPostReport}>
           <Text>Report</Text>
         </TouchableOpacity>
@@ -90,13 +85,14 @@ export default class PostHeader extends React.Component {
     if (auth || currentUserAuthQualified) {
       options = (
         <View style={styles.modalView}>
+          {auth ?
           <TouchableOpacity style={styles.option} onPress={onPostNotification}>
             <Text style={{color: notification ? 'red' : 'grey'}}>
               {notification
                 ? 'Notification: On'
                 : 'Notification: Off'}
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> : null}
           <TouchableOpacity style={styles.option} onPress={onPostUpdate}>
             <Text>Edit</Text>
           </TouchableOpacity>

@@ -358,14 +358,14 @@ class PostCard extends React.Component {
               loading={loading}
             />
           )}
-          {/* {nomination == null || selectionMode ? null : (
+          {nomination == null || selectionMode ? null : (
             <PostNomination
               nomination={nomination}
               onPress={this.onVotePress}
               voting={voting}
               voted={nomination.voted}
             />
-          )} */}
+          )}
         </View>
       </TouchableWithoutFeedback>
     );

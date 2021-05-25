@@ -10,6 +10,15 @@ query login($email: String, $password: String, $token: String){
             icon{
                 uri
             }
+            notifications{
+                notification_all
+                notification_group
+                notification_post_like
+                notification_post_comment
+                notification_comment_like
+                notification_comment_reply
+                notification_chat
+            }
         }
     }
 }
@@ -27,6 +36,15 @@ mutation signup($userInput: AuthInput!){
             icon{
                 uri
             }
+            notifications{
+                notification_all
+                notification_group
+                notification_post_like
+                notification_post_comment
+                notification_comment_like
+                notification_comment_reply
+                notification_chat
+            }
         }
     }
 }
@@ -43,6 +61,15 @@ mutation updateProfile($userInput: AuthInput!){
             email
             icon{
                 uri
+            }
+            notifications{
+                notification_all
+                notification_group
+                notification_post_like
+                notification_post_comment
+                notification_comment_like
+                notification_comment_reply
+                notification_chat
             }
         } 
     }
@@ -70,5 +97,11 @@ query checkVerificationCode($verificationInput: VerificationInput!){
 export const resetPasswordMutation = `
 mutation resetPassword($newPassword: String!){
     resetPassword(newPassword: $newPassword)
+}
+`
+
+export const updateNotificationsMutation = `
+mutation updateNotifications($input: NotificationsInput!){
+    updateNotifications(input: $input)
 }
 `

@@ -16,7 +16,7 @@ const extractKey = ({id}) => id.toString();
 export default class ChatDMModal extends React.Component {
   onPress = type => {
     const {onPress, onBackdropPress} = this.props;
-    onBackdropPress();
+    // onBackdropPress();
     onPress(type);
   };
 
@@ -34,7 +34,7 @@ export default class ChatDMModal extends React.Component {
               flexDirection: 'row',
             }}>
             <MaterialIcons
-              name={id == 0 ? (on ? icon_2 : icon) : icon}
+              name={icon}
               size={35}
               color={id == 0 ? (on ? 'grey' : 'red') : on ? 'red' : 'grey'}
             />
@@ -94,7 +94,7 @@ export default class ChatDMModal extends React.Component {
       const notification = [
         {
           id: 0,
-          name: 'Notification',
+          name: 'Mute',
           icon: 'bell-off',
           icon_2: 'bell',
           type: 'notification',

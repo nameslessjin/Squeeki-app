@@ -1,6 +1,6 @@
 const INITIAL_STATE = {
   total_point: 0,
-  base_point_semester: 0,
+  base_point_time: 0,
   leaderboard: {
     users: [],
     count: 0,

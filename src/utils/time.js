@@ -247,3 +247,53 @@ export const countDownFormat = time => {
   }
   return timeDisplay;
 };
+
+
+export const getMonth = (time) => {
+  const input = time || Date.now();
+  const today = new Date(input);
+  const year = today.getUTCFullYear();
+  const month = today.getUTCMonth();
+  const date = today.getUTCDate();
+  const hour = today.getUTCHours();
+  const minute = today.getUTCMinutes();
+  const seconds = today.getUTCSeconds();
+
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  const month_days = [31, year % 4 == 0 ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  // the first day of a month at UTC 1 am
+  const offset = 1 * 60 * 60;
+  const diff_to_begin = (((date - 1) * 24 + hour) * 60 + minute) * 60 + seconds
+  let begin = null;
+  let end = null;
+
+  if (diff_to_begin < offset){
+
+    const month_time = ((month - 1) ? 31 : month_days[month - 1]) * 24 * 60 * 60
+
+    begin = new Date((Math.floor(input / 1000) - diff_to_begin - month_time + offset) * 1000)
+    end = new Date( (Math.floor(input / 1000) - diff_to_begin + offset) * 1000 )
+  } else {
+    const month_time = month_days[month] * 24 * 60 * 60
+    begin = new Date( (Math.floor(input / 1000) - diff_to_begin + offset) * 1000 )
+    end = new Date( (Math.floor(input / 1000) - diff_to_begin + month_time + offset) * 1000 )
+  }
+  
+  return {month_begin: begin, month_end: end, month: months[month]}
+
+
+}

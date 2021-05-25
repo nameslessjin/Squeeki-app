@@ -100,19 +100,19 @@ class HomeDrawerNavigator extends React.Component {
       navigation.setOptions({
         headerRight: null,
       });
-    } else if (name == 'Groups') {
+    } else if (name == 'Group') {
       navigation.setOptions({
         headerRight: () => (
           <GroupRightButton onPress={this.onToggleGroupsRightButton} />
         ),
       });
-    } else if (name == 'Chats') {
+    } else if (name == 'Chat') {
       navigation.setOptions({
         headerRight: () => (
           <HeaderRightButton
             onPress={() =>
               navigation.navigate('Home', {
-                screen: 'Chats',
+                screen: 'Chat',
                 params: {modalVisible: true},
               })
             }

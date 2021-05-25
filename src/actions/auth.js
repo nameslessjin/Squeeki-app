@@ -6,6 +6,7 @@ import {
   requireVerificationCodeMutation,
   checkVerificationCodeQuery,
   resetPasswordMutation,
+  updateNotificationsMutation,
 } from '../actions/query/authQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
@@ -130,7 +131,7 @@ export const updateProfile = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -169,7 +170,7 @@ export const changePassword = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -189,7 +190,7 @@ export const requireVerificationCode = data => {
       },
     };
 
-    const result = await httpCall(null, graphql)
+    const result = await httpCall(null, graphql);
 
     if (result.errors) {
       return result;
@@ -209,7 +210,7 @@ export const checkVerificationCode = data => {
       },
     };
 
-    const result = await httpCall(null, graphql)
+    const result = await httpCall(null, graphql);
 
     if (result.errors) {
       return result;
@@ -229,7 +230,7 @@ export const resetPassword = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -238,3 +239,54 @@ export const resetPassword = data => {
     return 0;
   };
 };
+
+export const updateNotifications = data => {
+  const {
+    token,
+    notification_all,
+    notification_group,
+    notification_post_like,
+    notification_post_comment,
+    notification_comment_like,
+    notification_comment_reply,
+    notification_chat,
+  } = data;
+
+  return async function(dispatch) {
+
+    const input = {
+      notification_all,
+      notification_group,
+      notification_post_like,
+      notification_post_comment,
+      notification_comment_like,
+      notification_comment_reply,
+      notification_chat,
+    }
+
+    const graphql = {
+      query: updateNotificationsMutation,
+      variables: {
+        input: input
+      }
+    }
+
+    const result = await httpCall(token, graphql);
+
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(notificationsUpdate(input))
+
+    return 0
+
+  };
+};
+
+const notificationsUpdate = data => {
+  return {
+    type: 'updateNotifications',
+    i: data
+  }
+}

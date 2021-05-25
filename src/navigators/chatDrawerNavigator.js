@@ -140,10 +140,10 @@ class ChatDrawerkNavigator extends React.Component {
         <DrawerItemList {...props} />
 
         <DrawerItem
-          label="Notification"
+          label="Mute"
           icon={() => (
             <MaterialIcons
-              name={notification ? 'bell' : 'bell-off'}
+              name={'bell-off'}
               color={notification ? 'grey' : 'red'}
               size={25}
             />

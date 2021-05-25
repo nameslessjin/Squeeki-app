@@ -27,7 +27,7 @@ export default class Leaderboard extends React.Component {
       <View style={styles.options}>
         <OptionButton option={option} type={'month'} onPress={this.onOptionPress}/>
         <OptionButton option={option} type={'week'} onPress={this.onOptionPress}/>
-        <OptionButton option={option} type={'semester'} onPress={this.onOptionPress}/>
+        {/* <OptionButton option={option} type={'semester'} onPress={this.onOptionPress}/> */}
       </View>
     );
   };

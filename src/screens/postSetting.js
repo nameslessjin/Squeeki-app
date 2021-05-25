@@ -578,7 +578,7 @@ class PostSetting extends React.Component {
             />
           </View>
 
-          {/* {this.props.group.group.id == null ? null : (
+          {this.props.group.group.id == null ? null : (
             <NominationButton
               onPress={this.onNominateePress}
               chosenUser={chosenUser}
@@ -587,7 +587,7 @@ class PostSetting extends React.Component {
               group={this.props.group.group}
               postId={postId}
             />
-          )} */}
+          )}
           <ActivityIndicator animating={loading} color={'grey'}/>
 
           <PostSettingModal

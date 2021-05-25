@@ -42,7 +42,9 @@ class NominationPost extends React.Component {
 
     let {nomineeId, time, nominationId, count} = props;
     const {navigation, group, auth, getNominationPost} = this.props;
-    time = getSundays(time * 1000000);
+
+    // - 1 second.  For example, 5/23/2021 EST 8:59pm
+    time = getSundays(time * 1000000 - 1000);
     const request = {
       token: auth.token,
       groupId: group.group.id,
