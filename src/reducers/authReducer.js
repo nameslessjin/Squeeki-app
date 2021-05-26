@@ -32,6 +32,15 @@ export default authReducer = (state = INITIAL_STATE, action) => {
                 }
             }
 
+        case 'updateVisibilities':
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    visibilities: action.i
+                }
+            }
+
         default: return state
     }
 }

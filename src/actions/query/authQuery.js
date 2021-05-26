@@ -19,6 +19,13 @@ query login($email: String, $password: String, $token: String){
                 notification_comment_reply
                 notification_chat
             }
+            visibilities{
+                visibility_all
+                visibility_chat_search
+                visibility_group_search
+                visibility_post_at
+                visibility_chat_at
+            }
         }
     }
 }
@@ -45,6 +52,13 @@ mutation signup($userInput: AuthInput!){
                 notification_comment_reply
                 notification_chat
             }
+            visibilities{
+                visibility_all
+                visibility_chat_search
+                visibility_group_search
+                visibility_post_at
+                visibility_chat_at
+            }
         }
     }
 }
@@ -70,6 +84,13 @@ mutation updateProfile($userInput: AuthInput!){
                 notification_comment_like
                 notification_comment_reply
                 notification_chat
+            }
+            visibilities{
+                visibility_all
+                visibility_chat_search
+                visibility_group_search
+                visibility_post_at
+                visibility_chat_at
             }
         } 
     }
@@ -103,5 +124,11 @@ mutation resetPassword($newPassword: String!){
 export const updateNotificationsMutation = `
 mutation updateNotifications($input: NotificationsInput!){
     updateNotifications(input: $input)
+}
+`
+
+export const updateVisibilitiesMutation = `
+mutation updateVisibilities($input: VisibilitiesInput!){
+    updateVisibilities(input: $input)
 }
 `

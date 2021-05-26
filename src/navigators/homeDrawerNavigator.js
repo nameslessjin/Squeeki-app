@@ -100,19 +100,19 @@ class HomeDrawerNavigator extends React.Component {
       navigation.setOptions({
         headerRight: null,
       });
-    } else if (name == 'Group') {
+    } else if (name == 'Groups') {
       navigation.setOptions({
         headerRight: () => (
           <GroupRightButton onPress={this.onToggleGroupsRightButton} />
         ),
       });
-    } else if (name == 'Chat') {
+    } else if (name == 'Chats') {
       navigation.setOptions({
         headerRight: () => (
           <HeaderRightButton
             onPress={() =>
               navigation.navigate('Home', {
-                screen: 'Chat',
+                screen: 'Chats',
                 params: {modalVisible: true},
               })
             }
@@ -198,17 +198,6 @@ function CustomDrawerContent(props) {
         labelStyle={{color: '#666667'}}
         onPress={() => {
           navigation.navigate('UserSettings');
-        }}
-      />
-      <DrawerItem
-        label="Logout"
-        labelStyle={{color: 'red'}}
-        onPress={() => {
-          logout();
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'SignIn'}],
-          });
         }}
       />
     </DrawerContentScrollView>

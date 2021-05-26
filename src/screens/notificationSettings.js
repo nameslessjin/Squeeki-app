@@ -12,7 +12,6 @@ import {updateNotifications} from '../actions/auth';
 
 class NotificationSettings extends React.Component {
   state = {
-    ...this.props.auth.user.notifications,
     notification_all: false,
     notification_group: false,
     notification_post_like: false,
@@ -36,7 +35,7 @@ class NotificationSettings extends React.Component {
   componentWillUnmount() {
     // if updates occurs, update on server
     if (this.checkUpdates()) {
-        this.updateNotifications();
+      this.updateNotifications();
     }
   }
 
@@ -93,31 +92,31 @@ class NotificationSettings extends React.Component {
   };
 
   onToggle = type => {
-    if (type == 'all') {
+    if (type == 'notification_all') {
       this.setState(prevState => ({
         notification_all: !prevState.notification_all,
       }));
-    } else if (type == 'groups') {
+    } else if (type == 'notification_group') {
       this.setState(prevState => ({
         notification_group: !prevState.notification_group,
       }));
-    } else if (type == 'post_like') {
+    } else if (type == 'notification_post_like') {
       this.setState(prevState => ({
         notification_post_like: !prevState.notification_post_like,
       }));
-    } else if (type == 'post_comment') {
+    } else if (type == 'notification_post_comment') {
       this.setState(prevState => ({
         notification_post_comment: !prevState.notification_post_comment,
       }));
-    } else if (type == 'comment_like') {
+    } else if (type == 'notification_comment_like') {
       this.setState(prevState => ({
         notification_comment_like: !prevState.notification_comment_like,
       }));
-    } else if (type == 'comment_reply') {
+    } else if (type == 'notification_comment_reply') {
       this.setState(prevState => ({
         notification_comment_reply: !prevState.notification_comment_reply,
       }));
-    } else if (type == 'chats') {
+    } else if (type == 'notification_chat') {
       this.setState(prevState => ({
         notification_chat: !prevState.notification_chat,
       }));
@@ -146,43 +145,43 @@ class NotificationSettings extends React.Component {
             on={notification_all}
             disabled={false}
             onToggle={this.onToggle}
-            type={'all'}
+            type={'notification_all'}
           />
           <ToggleSetting
             on={notification_group}
             disabled={!notification_all}
             onToggle={this.onToggle}
-            type={'groups'}
+            type={'notification_group'}
           />
           <ToggleSetting
             on={notification_post_like}
             disabled={!notification_all}
             onToggle={this.onToggle}
-            type={'post_like'}
+            type={'notification_post_like'}
           />
           <ToggleSetting
             on={notification_post_comment}
             disabled={!notification_all}
             onToggle={this.onToggle}
-            type={'post_comment'}
+            type={'notification_post_comment'}
           />
           <ToggleSetting
             on={notification_comment_like}
             disabled={!notification_all}
             onToggle={this.onToggle}
-            type={'comment_like'}
+            type={'notification_comment_like'}
           />
           <ToggleSetting
             on={notification_comment_reply}
             disabled={!notification_all}
             onToggle={this.onToggle}
-            type={'comment_reply'}
+            type={'notification_comment_reply'}
           />
           <ToggleSetting
             on={notification_chat}
             disabled={!notification_all}
             onToggle={this.onToggle}
-            type={'chats'}
+            type={'notification_chat'}
           />
           <View style={styles.textViewContainer}>
             <Text style={styles.text}>

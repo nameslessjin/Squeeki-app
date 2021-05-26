@@ -9,15 +9,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {connect} from 'react-redux';
+import {userLogout} from '../actions/auth';
 
 const extractKey = ({id}) => id;
-export default class UserSettings extends React.Component {
+class UserSettings extends React.Component {
   state = {
     options: [
-      {id: 'Theme'},
+      // {id: 'Theme'},
       {id: 'Visibility'},
       {id: 'Notifications'},
       {id: 'Terms'},
+      {id: 'Logout'},
     ],
   };
 
@@ -25,7 +28,7 @@ export default class UserSettings extends React.Component {
     const {navigation} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
-      headerTitle: 'Settings'
+      headerTitle: 'Settings',
     });
   }
 
@@ -35,16 +38,21 @@ export default class UserSettings extends React.Component {
 
     return (
       <TouchableOpacity onPress={() => this.loadTerm(id)}>
-        <View style={styles.card}>
-          <Text style={styles.text}>{id}</Text>
-          <MaterialIcons name={'chevron-right'} size={30} color={'silver'} />
+        <View style={[styles.card, {marginTop: id == 'Logout' ? 30 : 0}]}>
+          <Text
+            style={[styles.text, {color: id == 'Logout' ? 'red' : 'black'}]}>
+            {id}
+          </Text>
+          {id == 'Logout' ? null : (
+            <MaterialIcons name={'chevron-right'} size={30} color={'silver'} />
+          )}
         </View>
       </TouchableOpacity>
     );
   };
 
   loadTerm = name => {
-    const {navigation} = this.props;
+    const {navigation, logout} = this.props;
     if (name == 'Terms') {
       navigation.navigate('Terms');
     } else if (name == 'Notifications') {
@@ -53,6 +61,9 @@ export default class UserSettings extends React.Component {
       navigation.navigate('VisibilitySettings');
     } else if (name == 'Theme') {
       navigation.navigate('ThemeSettings');
+    } else if (name == 'Logout') {
+      logout();
+      navigation.reset({index: 0, routes: [{name: 'SignIn'}]});
     }
   };
 
@@ -97,3 +108,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
+
+const mapDispatchToProps = dispatch => {
+  return {
+    logout: () => dispatch(userLogout()),
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(UserSettings);

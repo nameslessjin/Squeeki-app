@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const extractKey = ({id}) => id;
+
 
 export default class Activity extends React.Component {
 

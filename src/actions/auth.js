@@ -7,6 +7,7 @@ import {
   checkVerificationCodeQuery,
   resetPasswordMutation,
   updateNotificationsMutation,
+  updateVisibilitiesMutation
 } from '../actions/query/authQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
@@ -287,6 +288,53 @@ export const updateNotifications = data => {
 const notificationsUpdate = data => {
   return {
     type: 'updateNotifications',
+    i: data
+  }
+}
+
+export const updateVisibilities = data => {
+  const {
+    token,
+    visibility_all,
+    visibility_chat_search,
+    visibility_group_search,
+    visibility_post_at,
+    visibility_chat_at,
+  } = data;
+
+  return async function(dispatch) {
+
+    const input = {
+      visibility_all,
+      visibility_chat_search,
+      visibility_group_search,
+      visibility_post_at,
+      visibility_chat_at,
+    }
+
+    const graphql = {
+      query: updateVisibilitiesMutation,
+      variables: {
+        input: input
+      }
+    }
+
+    const result = await httpCall(token, graphql);
+
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(visibilitiesUpdate(input))
+
+    return 0
+
+  };
+};
+
+const visibilitiesUpdate = data => {
+  return {
+    type: 'updateVisibilities',
     i: data
   }
 }

@@ -8,20 +8,30 @@ export default class ToggleSetting extends React.Component {
 
     let title = 'All Notifications';
 
-    if (type == 'all') {
-      title = 'All Notifications';
-    } else if (type == 'groups') {
-      title = 'Group Activity';
-    } else if (type == 'post_like') {
-      title = 'Like On Your Post';
-    } else if (type == 'post_comment') {
-      title = 'Comment On Your Post';
-    } else if (type == 'comment_like') {
-      title = 'Like On Your Comment';
-    } else if (type == 'comment_reply') {
-      title = 'Reply On Your Comment';
-    } else if (type == 'chats') {
-      title = 'Chat Activity';
+    if (type == 'notification_all') {
+      title = 'All notifications';
+    } else if (type == 'notification_group') {
+      title = 'Group activity';
+    } else if (type == 'notification_post_like') {
+      title = 'Like on your post';
+    } else if (type == 'notification_post_comment') {
+      title = 'Comment on your post';
+    } else if (type == 'notification_comment_like') {
+      title = 'Like on your comment';
+    } else if (type == 'notification_comment_reply') {
+      title = 'Reply on your comment';
+    } else if (type == 'notification_chat') {
+      title = 'Chat activity';
+    } else if (type == 'visibility_all'){
+      title = 'All visibility'
+    } else if (type == 'visibility_chat_search'){
+      title = 'User can be searched for chat invitation'
+    } else if (type == 'visibility_group_search'){
+      title = 'User can be searched for group invitation'
+    } else if (type == 'visibility_post_at'){
+      title = '@ user in post allowed'
+    } else if (type == 'visibility_chat_at'){
+      title = '@ user in chat allowed'
     }
 
     let icon = (
