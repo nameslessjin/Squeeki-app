@@ -25,9 +25,9 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
-    this.setState({loading: true})
+    this.setState({loading: true});
     this.loadFeed(true);
-    this.setState({loading: false})
+    this.setState({loading: false});
     this.getNotificationToken();
   }
 
@@ -92,11 +92,10 @@ class Home extends React.Component {
       getFeed: getFeed,
       navigation: navigation,
       userLogout: userLogout,
-      count: init ? 0 : post.feed.count
+      count: init ? 0 : post.feed.count,
     };
 
     getFeedFunc(data);
-
   };
 
   render() {
@@ -106,20 +105,15 @@ class Home extends React.Component {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
-          {feed.posts.length == 0 ? (
-            <Text style={styles.noPostStyle}>There is not any post yet</Text>
-          ) : (
-            <PostList
-              posts={feed}
-              navigation={this.props.navigation}
-              onEndReached={this.onEndReached}
-              onRefresh={this.onRefresh}
-              refreshing={this.state.refreshing}
-            />
-          )}
-
+          <PostList
+            posts={feed}
+            navigation={this.props.navigation}
+            onEndReached={this.onEndReached}
+            onRefresh={this.onRefresh}
+            refreshing={this.state.refreshing}
+          />
           {this.state.loading ? (
-            <ActivityIndicator animating={true} color={'grey'}/>
+            <ActivityIndicator animating={true} color={'grey'} />
           ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

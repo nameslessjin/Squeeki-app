@@ -1,5 +1,11 @@
 import React from 'react';
-import {FlatList, StyleSheet} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Text,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import GroupHeader from '../group/groupHeader';
 import PostCard from './postCard';
 
@@ -15,6 +21,15 @@ export default class PostList extends React.Component {
           navigation={navigation}
           onAddPost={onAddPost}
         />
+      );
+    }
+    if (item.id == 'null') {
+      return (
+        <TouchableWithoutFeedback>
+          <View style={styles.placeholder}>
+            <Text style={styles.noPostStyle}>There is not any post yet</Text>
+          </View>
+        </TouchableWithoutFeedback>
       );
     }
 
@@ -49,7 +64,10 @@ export default class PostList extends React.Component {
     } else {
       data = posts;
     }
-    const scrollable = count != 0;
+
+    if (posts.length == 0) {
+      data = data.concat({id: 'null'});
+    }
 
     return (
       <FlatList
@@ -58,7 +76,6 @@ export default class PostList extends React.Component {
         renderItem={this.renderItem}
         keyExtractor={extractKey}
         alwaysBounceHorizontal={false}
-        scrollEnabled={scrollable}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps={'handled'}
         onEndReached={() => onEndReached()}
@@ -73,5 +90,16 @@ export default class PostList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+  },
+  noPostStyle: {
+    // marginBottom: 200,
+    color: 'grey',
+    fontStyle: 'italic',
+  },
+  placeholder: {
+    width: '100%',
+    alignItems: 'center',
+    height: 300,
+    paddingTop: 50
   },
 });

@@ -191,9 +191,6 @@ class Group extends React.Component {
               onAddPost={this.onAddPost}
             />
           ) : null}
-          {post.groupPosts.posts.length == 0 && auth != null ? (
-            <Text style={styles.noPostStyle}>There is not any post yet</Text>
-          ) : null}
           {/* {loading ? <ActivityIndicator animating={loading} /> : null} */}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -210,7 +207,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   noPostStyle: {
-    marginBottom: 200,
+    // marginBottom: 200,
     color: 'grey',
     fontStyle: 'italic',
   },
