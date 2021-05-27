@@ -48,7 +48,7 @@ export default class ChatList extends React.Component {
     ];
 
     const icon_option = icon_options[random];
-    console.log(last_message)
+
     let message_preview =
       last_message == null
         ? 'Not messages yet.'

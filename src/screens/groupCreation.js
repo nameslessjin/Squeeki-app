@@ -112,7 +112,6 @@ class GroupCreation extends React.Component {
       icon: icon,
       token: token,
       visibility: visibility,
-      capacity: 200,
       request_to_join,
       tagIds: tags.map(t => t.id),
     };

@@ -37,6 +37,7 @@ import {
 import {timeDifferentInMandS} from '../utils/time';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import ChatDMModal from '../components/chat/chatDMModal';
+import CustomRenderMessageText from '../components/message/CustomRenderMessageText';
 
 const {height} = Dimensions.get('screen');
 
@@ -111,6 +112,8 @@ class Chat extends React.Component {
       const channel = `chat${id}`;
       const io = socket.getIO();
       io.on(channel, data => {
+        console.log(data)
+        console.log('on')
         if (data.action == 'create') {
           this.addSubMessage(data.result);
         } else if (data.action == 'message_status_update') {
@@ -613,12 +616,13 @@ class Chat extends React.Component {
       status,
       name,
       icon,
+      is_dm,
     } = this.state;
     const user = {
       _id: auth.user.id,
     };
 
-    // console.log(messages)
+    
 
     return (
       <View>
@@ -626,9 +630,10 @@ class Chat extends React.Component {
           <StatusBar barStyle={'dark-content'} />
           <GiftedChat
             messages={messages}
-            renderUsernameOnMessage={true}
+            renderUsernameOnMessage={!is_dm}
             text={content}
             user={user}
+            renderMessageText={p => <CustomRenderMessageText {...p} />}
             onInputTextChanged={this.onInputChange}
             onSend={this.onSend}
             primaryStyle={{backgroundColor: 'white'}}

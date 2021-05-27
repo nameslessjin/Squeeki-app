@@ -1,11 +1,18 @@
 import React from 'react';
-import {TouchableOpacity, Keyboard} from 'react-native';
+import {
+  TouchableOpacity,
+  Keyboard,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  Share,
+  StyleSheet,
+} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Clipboard from '@react-native-clipboard/clipboard';
-
+import ParsedText from 'react-native-parsed-text';
 
 export const RenderSend = props => {
-
   const {text, onSend} = props;
   return (
     <TouchableOpacity
@@ -68,3 +75,4 @@ export const OnLongPress = props => {
     );
   }
 };
+

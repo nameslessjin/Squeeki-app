@@ -56,6 +56,6 @@ export const getChatMessageFunc = async data => {
       return false;
     }
   }
-  console.log(req)
+
   return req;
 };
