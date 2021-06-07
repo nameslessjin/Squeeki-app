@@ -5,8 +5,9 @@ import {
   KeyboardAvoidingView,
   StatusBar,
   Keyboard,
-  Dimensions,
+  Linking,
   AppState,
+  Text
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -33,13 +34,16 @@ import {
   RenderSend,
   RenderActions,
   OnLongPress,
+  onUrlPress,
+  onPhonePress,
+  onEmailPress,
+  onLinkPhoneLongPress,
+  RenderTicks,
+  RenderMessageImage
 } from '../components/chat/render';
 import {timeDifferentInMandS} from '../utils/time';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import ChatDMModal from '../components/chat/chatDMModal';
-import CustomRenderMessageText from '../components/message/CustomRenderMessageText';
-
-const {height} = Dimensions.get('screen');
 
 class Chat extends React.Component {
   state = {
@@ -73,6 +77,7 @@ class Chat extends React.Component {
   };
 
   componentDidMount() {
+    this._giftedChatRef = undefined;
     const {navigation, route, group} = this.props;
     const {name, id, icon, is_dm, second_userId} = this.state;
     navigation.setOptions({
@@ -112,8 +117,6 @@ class Chat extends React.Component {
       const channel = `chat${id}`;
       const io = socket.getIO();
       io.on(channel, data => {
-        console.log(data)
-        console.log('on')
         if (data.action == 'create') {
           this.addSubMessage(data.result);
         } else if (data.action == 'message_status_update') {
@@ -510,9 +513,6 @@ class Chat extends React.Component {
     this.setState({modalVisible: true});
   };
 
-  onChangeMedia = value => {
-    this.setState({image: {...value}});
-  };
 
   onBackdropPress = () => {
     this.setState({modalVisible: false, chatDMModalVisible: false});
@@ -603,6 +603,10 @@ class Chat extends React.Component {
     this.getSingleChat(null, _id);
   };
 
+  onPhoneLongPress = () => {};
+
+  onEmailLongPress = () => {};
+
   render() {
     const {auth} = this.props;
     const {
@@ -622,18 +626,40 @@ class Chat extends React.Component {
       _id: auth.user.id,
     };
 
-    
-
     return (
       <View>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
           <GiftedChat
+            ref={component => (this._giftedChatRef = component)}
             messages={messages}
             renderUsernameOnMessage={!is_dm}
             text={content}
             user={user}
-            renderMessageText={p => <CustomRenderMessageText {...p} />}
+            parsePatterns={linkStyle => [
+              {
+                type: 'url',
+                style: linkStyle,
+                onPress: onUrlPress,
+                onLongPress: url =>
+                  onLinkPhoneLongPress({type: 'url', content: url}),
+              },
+              {
+                type: 'phone',
+                style: linkStyle,
+                onPress: phone =>
+                  onPhonePress({phone, ...this._giftedChatRef._actionSheetRef}),
+                onLongPress: phone =>
+                  onLinkPhoneLongPress({type: 'phone', content: phone}),
+              },
+              {
+                type: 'email',
+                style: linkStyle,
+                onPress: onEmailPress,
+                onLongPress: email =>
+                  onLinkPhoneLongPress({type: 'email', content: email}),
+              },
+            ]}
             onInputTextChanged={this.onInputChange}
             onSend={this.onSend}
             primaryStyle={{backgroundColor: 'white'}}
@@ -661,6 +687,8 @@ class Chat extends React.Component {
             }
             scrollToBottom={true}
             onPressAvatar={this.onPressAvatar}
+            renderTicks={message => (<RenderTicks message={message} is_dm={is_dm} />)}
+            renderMessageImage={giftchat => (<RenderMessageImage giftchat={giftchat} actionSheet={this._giftedChatRef._actionSheetRef} />)}
           />
         </KeyboardAvoidingView>
         <ChatMediaModal

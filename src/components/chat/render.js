@@ -1,16 +1,11 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  Keyboard,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-  Share,
-  StyleSheet,
-} from 'react-native';
+import {TouchableOpacity, Linking, Share, Platform, View} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import ParsedText from 'react-native-parsed-text';
+import Communications from 'react-native-communications';
+import ImageModal from 'react-native-image-modal';
+import { handleDownload } from '../../utils/imagePicker'
 
 export const RenderSend = props => {
   const {text, onSend} = props;
@@ -30,6 +25,7 @@ export const RenderSend = props => {
 
 export const RenderActions = props => {
   const {onActionPress, bottomOffset} = props;
+
   return (
     <TouchableOpacity
       style={{
@@ -46,6 +42,7 @@ export const RenderActions = props => {
 
 export const OnLongPress = props => {
   const {updateUserMessage, auth, id, context, message} = props;
+  console.log(props);
   if (message.text.length > 0) {
     const options = ['Copy', 'Delete', 'Cancel'];
     const cancelButtonIndex = options.length - 1;
@@ -76,3 +73,141 @@ export const OnLongPress = props => {
   }
 };
 
+export const onUrlPress = url => {
+  const WWW_URL_PATTERN = /^www\./i;
+  // When someone sends a message that includes a website address beginning with "www." (omitting the scheme),
+  // react-native-parsed-text recognizes it as a valid url, but Linking fails to open due to the missing scheme.
+  if (WWW_URL_PATTERN.test(url)) {
+    onUrlPress(`http://${url}`);
+  } else {
+    Linking.canOpenURL(url).then(supported => {
+      if (!supported) {
+        console.error('No Handler for URL:', url);
+      } else {
+        Linking.openURL(url);
+      }
+    });
+  }
+};
+
+export const onPhonePress = props => {
+  const {phone, getContext} = props;
+
+  const options = ['Call', 'Text', 'Cancel'];
+  const cancelButtonIndex = options.length - 1;
+  getContext().showActionSheetWithOptions(
+    {
+      options,
+      cancelButtonIndex,
+    },
+    buttonIndex => {
+      switch (buttonIndex) {
+        case 0:
+          Communications.phonecall(phone, true);
+          break;
+        case 1:
+          Communications.text(phone);
+          break;
+        default:
+          break;
+      }
+    },
+  );
+};
+
+export const onEmailPress = email =>
+  Communications.email([email], null, null, null, null);
+
+export const onLinkPhoneLongPress = async props => {
+  const {type, content} = props;
+  try {
+    let result = {};
+    if (type == 'url') {
+      result =
+        Platform.OS == 'android'
+          ? await Share.share({
+              message: content,
+            })
+          : await Share.share({
+              url: content,
+            });
+    } else {
+      result = await Share.share({message: content});
+    }
+
+    if (result.action == Share.sharedAction) {
+      if (result.activityType) {
+        // shared with activity type
+      } else {
+        //shared
+      }
+    } else if (result.action === Share.dismissedAction) {
+      // dismissed
+    }
+  } catch {
+    alert(error.message);
+  }
+};
+
+export const RenderMessageImage = props => {
+  console.log(props);
+  const {giftchat, actionSheet} = props;
+  const {currentMessage} = giftchat;
+
+  return (
+    <View style={{borderRadius: 15, paddingBottom: 2}}>
+      <ImageModal
+        resizeMode="cover"
+        style={{
+          width: 200,
+          aspectRatio: 1,
+          padding: 6,
+          borderRadius: 15,
+        }}
+        source={{uri: currentMessage.image}}
+        modalImageResizeMode={'contain'}
+        onLongPressOriginImage={() => onMessageImageLongPress({actionSheet, url: currentMessage.image})}
+      />
+    </View>
+  );
+};
+
+const onMessageImageLongPress = props => {
+
+  const {actionSheet, url} = props
+  const options = ['Copy', 'Download', 'Cancel'];
+  const cancelButtonIndex = options.length - 1;
+  actionSheet.getContext().showActionSheetWithOptions(
+    {
+      options,
+      cancelButtonIndex,
+    },
+    buttonIndex => {
+      switch (buttonIndex) {
+        case 0:
+
+          break;
+        case 1:
+            handleDownload(url)
+          break;
+        default:
+          break;
+      }
+    },
+  );
+
+}
+
+export const RenderTicks = props => {
+  const {message, is_dm} = props;
+
+  return is_dm ? (
+    <View style={{width: 15, aspectRatio: 1, marginRight: 10}}>
+      <MaterialIcons
+        name={'check-circle-outline'}
+        size={15}
+        color={'#ecf0f1'}
+      />
+    </View>
+  ) : null;
+};

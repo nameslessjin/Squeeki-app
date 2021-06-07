@@ -1,6 +1,8 @@
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import PhotoEditor from 'react-native-photo-editor';
 import RNFS from 'react-native-fs';
+import CameraRoll from '@react-native-community/cameraroll'
+import { PermissionsAndroid } from 'react-native'
 
 export const backgroundImagePicker = (setImage, from, cancel) => {
   const options = {
@@ -17,23 +19,15 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const uri = response.uri
+        const resp = response.assets[0]
+        const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
-        let source = {
-          uri: response.uri,
-          width: response.height,
-          height: response.width,
-          type: response.type,
-          filename: name,
-          data: response.base64,
-          mediaType: 'photo',
-        };
 
-        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const path = RNFS.DocumentDirectoryPath + `/${resp.fileName}`;
         const picked = {
           path: path,
-          type: response.type,
+          type: resp.type,
         };
 
         RNFS.exists(path)
@@ -60,23 +54,15 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const uri = response.uri
+        const resp = response.assets[0]
+        const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
-        let source = {
-          uri: response.uri,
-          width: response.height,
-          height: response.width,
-          type: response.type,
-          filename: name,
-          data: response.base64,
-          mediaType: 'photo',
-        };
 
-        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const path = RNFS.DocumentDirectoryPath + `/${resp.fileName}`;
         const picked = {
           path: path,
-          type: response.type,
+          type: resp.type,
         };
 
         RNFS.exists(path)
@@ -114,23 +100,15 @@ export const iconImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const uri = response.uri
+        const resp = response.assets[0]
+        const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
-        let source = {
-          uri: response.uri,
-          width: response.height,
-          height: response.width,
-          type: response.type,
-          filename: name,
-          data: response.base64,
-          mediaType: 'photo',
-        };
 
-        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const path = RNFS.DocumentDirectoryPath + `/${resp.fileName}`;
         const picked = {
           path: path,
-          type: response.type,
+          type: resp.type,
         };
 
         RNFS.exists(path)
@@ -157,23 +135,15 @@ export const iconImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const uri = response.uri
+        const resp = response.assets[0]
+        const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
-        let source = {
-          uri: response.uri,
-          width: response.height,
-          height: response.width,
-          type: response.type,
-          filename: name,
-          data: response.base64,
-          mediaType: 'photo',
-        };
 
-        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const path = RNFS.DocumentDirectoryPath + `/${resp.fileName}`;
         const picked = {
           path: path,
-          type: response.type,
+          type: resp.type,
         };
 
         RNFS.exists(path)
@@ -212,23 +182,15 @@ export const PostImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const uri = response.uri;
+        const resp = response.assets[0]
+        const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
-        let source = {
-          uri: response.uri,
-          width: response.height,
-          height: response.width,
-          type: response.type,
-          filename: name,
-          data: response.base64,
-          mediaType: 'photo',
-        };
 
-        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const path = RNFS.DocumentDirectoryPath + `/${resp.fileName}`;
         const picked = {
           path: path,
-          type: response.type,
+          type: resp.type,
         };
 
         RNFS.exists(path)
@@ -255,23 +217,15 @@ export const PostImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const uri = response.uri;
+        const resp = response.assets[0]
+        const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
-        let source = {
-          uri: response.uri,
-          width: response.height,
-          height: response.width,
-          type: response.type,
-          filename: name,
-          data: response.base64,
-          mediaType: 'photo',
-        };
 
-        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const path = RNFS.DocumentDirectoryPath + `/${resp.fileName}`;
         const picked = {
           path: path,
-          type: response.type,
+          type: resp.type,
         };
 
         RNFS.exists(path)
@@ -366,23 +320,15 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const uri = response.uri;
+        const resp = response.assets[0]
+        const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
-        let source = {
-          uri: response.uri,
-          width: response.height,
-          height: response.width,
-          type: response.type,
-          filename: name,
-          data: response.base64,
-          mediaType: 'photo',
-        };
 
-        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const path = RNFS.DocumentDirectoryPath + `/${resp.fileName}`;
         const picked = {
           path: path,
-          type: response.type,
+          type: resp.type,
         };
 
         RNFS.exists(path)
@@ -409,23 +355,15 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const uri = response.uri;
+        const resp = response.assets[0]
+        const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
-        let source = {
-          uri: response.uri,
-          width: response.height,
-          height: response.width,
-          type: response.type,
-          filename: name,
-          data: response.base64,
-          mediaType: 'photo',
-        };
 
-        const path = RNFS.DocumentDirectoryPath + `/${response.fileName}`;
+        const path = RNFS.DocumentDirectoryPath + `/${resp.fileName}`;
         const picked = {
           path: path,
-          type: response.type,
+          type: resp.type,
         };
 
         RNFS.exists(path)
@@ -468,3 +406,21 @@ const editPhoto = (image, func, input_type) => {
     onCancel: () => {},
   });
 };
+
+export const handleDownload = async (url) => {
+  console.log(url)
+  // RNFetchBlob.config({
+  //   fileCache: true,
+  //   appendExt: 'png'
+  // })
+  // .fetch('GET', url)
+  // .then(res => {
+  //   CameraRoll.saveToCameraRoll(res.data, 'photo')
+  //   .then(res => console.log(res))
+  //   .catch(err => console.log(err))
+  // })
+  // .catch(err => console.log(err))
+
+  
+
+}
