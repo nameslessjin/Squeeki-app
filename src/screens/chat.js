@@ -519,7 +519,6 @@ class Chat extends React.Component {
   };
 
   onMediaUpload = media => {
-    this.setState({modalVisible: false});
 
     const {sendMessage, navigation, userLogout, auth} = this.props;
     const {id} = this.state;

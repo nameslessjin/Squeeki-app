@@ -14,7 +14,7 @@ import {MessageImagePicker} from '../../utils/imagePicker';
 export default class PostSettingModal extends React.Component {
   onPress = type => {
     const {onBackdropPress, onMediaUpload} = this.props;
-    
+    onBackdropPress()
     MessageImagePicker(onMediaUpload, type, onBackdropPress);
   };
 
