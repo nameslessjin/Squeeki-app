@@ -44,6 +44,8 @@ import {
 import {timeDifferentInMandS} from '../utils/time';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import ChatDMModal from '../components/chat/chatDMModal';
+import { detectFile } from '../utils/detect'
+import { editPhoto } from '../utils/imagePicker'
 
 class Chat extends React.Component {
   state = {
@@ -505,6 +507,19 @@ class Chat extends React.Component {
   };
 
   onInputChange = text => {
+    // detect url path
+    const {is_image, imageType} = detectFile(text)
+
+    if (is_image){
+      const image = {
+        path: text,
+        type: imageType
+      }
+      editPhoto(image, this.onMediaUpload)
+      this.setState({content: ''})
+      return
+    }
+    
     this.setState({content: text});
   };
 
@@ -601,10 +616,6 @@ class Chat extends React.Component {
     }
     this.getSingleChat(null, _id);
   };
-
-  onPhoneLongPress = () => {};
-
-  onEmailLongPress = () => {};
 
   render() {
     const {auth} = this.props;

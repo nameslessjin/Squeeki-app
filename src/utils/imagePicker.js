@@ -1,8 +1,10 @@
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import PhotoEditor from 'react-native-photo-editor';
 import RNFS from 'react-native-fs';
-import CameraRoll from '@react-native-community/cameraroll'
-import { PermissionsAndroid } from 'react-native'
+import CameraRoll from '@react-native-community/cameraroll';
+import {PermissionsAndroid} from 'react-native';
+import {FileSystem} from 'react-native-unimodules';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 export const backgroundImagePicker = (setImage, from, cancel) => {
   const options = {
@@ -19,7 +21,7 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const resp = response.assets[0]
+        const resp = response.assets[0];
         const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
@@ -54,7 +56,7 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const resp = response.assets[0]
+        const resp = response.assets[0];
         const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
@@ -100,7 +102,7 @@ export const iconImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const resp = response.assets[0]
+        const resp = response.assets[0];
         const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
@@ -135,7 +137,7 @@ export const iconImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const resp = response.assets[0]
+        const resp = response.assets[0];
         const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
@@ -182,7 +184,7 @@ export const PostImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const resp = response.assets[0]
+        const resp = response.assets[0];
         const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
@@ -217,7 +219,7 @@ export const PostImagePicker = (setImage, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const resp = response.assets[0]
+        const resp = response.assets[0];
         const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
@@ -320,7 +322,7 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const resp = response.assets[0]
+        const resp = response.assets[0];
         const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
@@ -355,7 +357,7 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
       } else if (response.error) {
         console.log('Image Picker Error: ', response.error);
       } else {
-        const resp = response.assets[0]
+        const resp = response.assets[0];
         const uri = resp.uri;
         let name = uri.split('/');
         name = name[name.length - 1];
@@ -386,7 +388,7 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
   }
 };
 
-const editPhoto = (image, func, input_type) => {
+export const editPhoto = (image, func, input_type) => {
   const {path, type} = image;
 
   PhotoEditor.Edit({
@@ -407,8 +409,37 @@ const editPhoto = (image, func, input_type) => {
   });
 };
 
-export const handleDownload = async (url) => {
-  console.log(url)
+export const handleDownload = async props => {
+  const {url, is_download} = props;
+  let name = url.split('/');
+  name = name[name.length - 1] + '.jpg';
+  const dowloadResumable = FileSystem.createDownloadResumable(
+    url,
+    FileSystem.documentDirectory + name,
+    {},
+  );
+  let path = '';
+  try {
+    const {uri} = await dowloadResumable.downloadAsync();
+    path = uri;
+  } catch (e) {
+    console.error(e);
+    return;
+  }
+
+  if (is_download) {
+    CameraRoll.save(path, 'photo')
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  } else {
+    Clipboard.setString(path);
+  }
+
+  // file:///Users/jinsenwu/Library/Developer/CoreSimulator/Devices/
+  // 37CCDE62-1A85-4551-BE36-F8D2F0A19F67/data/Containers/Data/Application/739EC634-D683-4085-8DD8-9272B862D5ED/
+  // Documents/a12265e5-f1f3-485b-869f-5b33b2ddbdab.jpg
+
+  return path;
   // RNFetchBlob.config({
   //   fileCache: true,
   //   appendExt: 'png'
@@ -420,7 +451,4 @@ export const handleDownload = async (url) => {
   //   .catch(err => console.log(err))
   // })
   // .catch(err => console.log(err))
-
-  
-
-}
+};

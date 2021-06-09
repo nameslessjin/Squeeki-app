@@ -7,7 +7,7 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import Lightbox from 'react-native-lightbox';
+import ImageModal from 'react-native-image-modal';
 
 const {width} = Dimensions.get('window');
 
@@ -35,16 +35,15 @@ export default class PostMedia extends React.Component {
         <Text style={styles.textStyle}>{content}</Text>
         {image != null ? (
           <View style={styles.imageView}>
-            {/* <Lightbox > */}
-            <Image
-              source={{uri: image.uri}}
+            <ImageModal
+              resizeMode="cover"
               style={[
                 styles.imageStyle,
                 {aspectRatio: this.state.width / this.state.height},
               ]}
-              resizeMode={'cover'}
+              source={{uri: image.uri}}
+              modalImageResizeMode={'contain'}
             />
-            {/* </Lightbox> */}
           </View>
         ) : null}
       </View>

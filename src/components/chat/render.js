@@ -5,7 +5,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import ParsedText from 'react-native-parsed-text';
 import Communications from 'react-native-communications';
 import ImageModal from 'react-native-image-modal';
-import { handleDownload } from '../../utils/imagePicker'
+import {handleDownload} from '../../utils/imagePicker';
 
 export const RenderSend = props => {
   const {text, onSend} = props;
@@ -42,7 +42,7 @@ export const RenderActions = props => {
 
 export const OnLongPress = props => {
   const {updateUserMessage, auth, id, context, message} = props;
-  console.log(props);
+
   if (message.text.length > 0) {
     const options = ['Copy', 'Delete', 'Cancel'];
     const cancelButtonIndex = options.length - 1;
@@ -63,7 +63,6 @@ export const OnLongPress = props => {
               chatId: id,
               status: 'delete',
             };
-
             updateUserMessage(request);
 
             break;
@@ -150,7 +149,7 @@ export const onLinkPhoneLongPress = async props => {
 };
 
 export const RenderMessageImage = props => {
-  console.log(props);
+
   const {giftchat, actionSheet} = props;
   const {currentMessage} = giftchat;
 
@@ -166,15 +165,16 @@ export const RenderMessageImage = props => {
         }}
         source={{uri: currentMessage.image}}
         modalImageResizeMode={'contain'}
-        onLongPressOriginImage={() => onMessageImageLongPress({actionSheet, url: currentMessage.image})}
+        onLongPressOriginImage={() =>
+          onMessageImageLongPress({actionSheet, url: currentMessage.image})
+        }
       />
     </View>
   );
 };
 
 const onMessageImageLongPress = props => {
-
-  const {actionSheet, url} = props
+  const {actionSheet, url} = props;
   const options = ['Copy', 'Download', 'Cancel'];
   const cancelButtonIndex = options.length - 1;
   actionSheet.getContext().showActionSheetWithOptions(
@@ -185,18 +185,17 @@ const onMessageImageLongPress = props => {
     buttonIndex => {
       switch (buttonIndex) {
         case 0:
-
+          handleDownload({url, is_download: false});
           break;
         case 1:
-            handleDownload(url)
+          handleDownload({url, is_download: true});
           break;
         default:
           break;
       }
     },
   );
-
-}
+};
 
 export const RenderTicks = props => {
   const {message, is_dm} = props;
