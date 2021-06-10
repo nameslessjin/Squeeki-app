@@ -2,7 +2,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import PhotoEditor from 'react-native-photo-editor';
 import RNFS from 'react-native-fs';
 import CameraRoll from '@react-native-community/cameraroll';
-import {PermissionsAndroid} from 'react-native';
+import {PermissionsAndroid, Platform} from 'react-native';
 import {FileSystem} from 'react-native-unimodules';
 import Clipboard from '@react-native-clipboard/clipboard';
 
@@ -389,10 +389,17 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
 };
 
 export const editPhoto = (image, func, input_type) => {
-  const {path, type} = image;
+  let {path, type} = image;
+
+  if (Platform.OS == 'android'){
+    if (path.search('file://') == 0){
+      path = path.split('file://')[1]
+    }
+  }
 
   PhotoEditor.Edit({
     path: path,
+    hiddenControls: ['save', 'share'],
     onDone: imagePath => {
       RNFS.readFile(imagePath, 'base64')
         .then(res => {
@@ -402,6 +409,7 @@ export const editPhoto = (image, func, input_type) => {
             uri: imagePath,
           };
           func(upload, input_type);
+          RNFS.unlink(path)
         })
         .catch(err => console.log(err));
     },
@@ -432,6 +440,7 @@ export const handleDownload = async props => {
       .then(res => console.log(res))
       .catch(err => console.log(err));
   } else {
+
     Clipboard.setString(path);
   }
 

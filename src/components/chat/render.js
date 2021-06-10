@@ -181,7 +181,7 @@ export const RenderMessageImage = props => {
 
 const onMessageImageLongPress = props => {
   const {actionSheet, url, updateUserMessage, messageId, auth, chatId} = props;
-  const options = ['Copy', 'Download', 'Delete', 'Cancel'];
+  const options = ['Copy', 'Save', 'Delete', 'Cancel'];
   const cancelButtonIndex = options.length - 1;
   actionSheet.getContext().showActionSheetWithOptions(
     {
