@@ -7,7 +7,7 @@ import {
   Keyboard,
   Linking,
   AppState,
-  Text
+  Text,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -39,13 +39,13 @@ import {
   onEmailPress,
   onLinkPhoneLongPress,
   RenderTicks,
-  RenderMessageImage
+  RenderMessageImage,
 } from '../components/chat/render';
 import {timeDifferentInMandS} from '../utils/time';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import ChatDMModal from '../components/chat/chatDMModal';
-import { detectFile } from '../utils/detect'
-import { editPhoto } from '../utils/imagePicker'
+import {detectFile} from '../utils/detect';
+import {editPhoto} from '../utils/imagePicker';
 
 class Chat extends React.Component {
   state = {
@@ -55,6 +55,7 @@ class Chat extends React.Component {
     allow_invite: false,
     allow_modify: false,
     available: false,
+    is_dm: false,
     ...this.props.route.params,
     ...this.props.chat.chat,
     messages: [],
@@ -82,6 +83,7 @@ class Chat extends React.Component {
     this._giftedChatRef = undefined;
     const {navigation, route, group} = this.props;
     const {name, id, icon, is_dm, second_userId} = this.state;
+
     navigation.setOptions({
       headerShown: false,
     });
@@ -206,24 +208,27 @@ class Chat extends React.Component {
       };
     });
 
-    // set message to read here
-    const {auth, updateUserMessage} = this.props;
-    const {id} = this.state;
-    const request = {
-      token: auth.token,
-      messageId: message[0]._id,
-      chatId: id,
-      status: 'read',
-    };
+    // if user is not the sender, update the userMessage to read
+    if (this.props.auth.user.id != message[0].user._id) {
+      // set message to read here
+      const {auth, updateUserMessage} = this.props;
+      const {id} = this.state;
+      const request = {
+        token: auth.token,
+        messageId: message[0]._id,
+        chatId: id,
+        status: 'read',
+      };
 
-    setTimeout(() => {
-      updateUserMessage(request);
-    }, 500);
+      setTimeout(() => {
+        updateUserMessage(request);
+      }, 300);
+    }
   };
 
   updateUserMessage = data => {
     const {userId, messageId, status} = data.update;
-
+    const {is_dm} = this.state;
     const {id} = this.props.auth.user;
     this.setState(prevState => {
       let updatedMessages = [...prevState.messages];
@@ -231,13 +236,16 @@ class Chat extends React.Component {
         m => m._id === messageId,
       );
 
+      console.log('times, triggered')
       if (updatedMessageIndex > -1) {
-        if (id == userId) {
-          if (status == 'delete') {
-            updatedMessages = updatedMessages.filter(m => m._id != messageId);
-          } else {
-            updatedMessages[updatedMessageIndex].status = status;
-          }
+        // if the user decide to update message status is the current user
+        if (id == userId && status == 'delete') {
+          updatedMessages = updatedMessages.filter(m => m._id != messageId);
+        }
+
+        // if it is a dm chat and the other user read the message
+        if (status == 'read' && is_dm) {
+          updatedMessages[updatedMessageIndex].status.read_count = 2;
         }
       }
       return {
@@ -248,7 +256,7 @@ class Chat extends React.Component {
 
   loadChatMessage = async init => {
     const {getChatMessage, navigation, userLogout, auth} = this.props;
-    const {pointer, id} = this.state;
+    const {pointer, id, is_dm} = this.state;
 
     const data = {
       token: auth.token,
@@ -257,6 +265,7 @@ class Chat extends React.Component {
       navigation,
       userLogout,
       pointer: init ? null : pointer,
+      is_dm,
     };
     this.setState({isLoadEarlier: true});
     const req = await getChatMessageFunc(data);
@@ -508,18 +517,18 @@ class Chat extends React.Component {
 
   onInputChange = text => {
     // detect url path
-    const {is_image, imageType} = detectFile(text)
+    const {is_image, imageType} = detectFile(text);
 
-    if (is_image){
+    if (is_image) {
       const image = {
         path: text,
-        type: imageType
-      }
-      editPhoto(image, this.onMediaUpload)
-      this.setState({content: ''})
-      return
+        type: imageType,
+      };
+      editPhoto(image, this.onMediaUpload);
+      this.setState({content: ''});
+      return;
     }
-    
+
     this.setState({content: text});
   };
 
@@ -528,13 +537,11 @@ class Chat extends React.Component {
     this.setState({modalVisible: true});
   };
 
-
   onBackdropPress = () => {
     this.setState({modalVisible: false, chatDMModalVisible: false});
   };
 
   onMediaUpload = media => {
-
     const {sendMessage, navigation, userLogout, auth} = this.props;
     const {id} = this.state;
     const data = {
@@ -618,7 +625,7 @@ class Chat extends React.Component {
   };
 
   render() {
-    const {auth} = this.props;
+    const {auth, updateUserMessage} = this.props;
     const {
       content,
       messages,
@@ -631,11 +638,13 @@ class Chat extends React.Component {
       name,
       icon,
       is_dm,
+      id,
     } = this.state;
     const user = {
       _id: auth.user.id,
     };
 
+    // console.log(messages);
     return (
       <View>
         <KeyboardAvoidingView style={styles.container}>
@@ -697,8 +706,18 @@ class Chat extends React.Component {
             }
             scrollToBottom={true}
             onPressAvatar={this.onPressAvatar}
-            renderTicks={message => (<RenderTicks message={message} is_dm={is_dm} />)}
-            renderMessageImage={giftchat => (<RenderMessageImage giftchat={giftchat} actionSheet={this._giftedChatRef._actionSheetRef} />)}
+            renderTicks={message => (
+              <RenderTicks message={message} is_dm={is_dm} />
+            )}
+            renderMessageImage={giftchat => (
+              <RenderMessageImage
+                giftchat={giftchat}
+                actionSheet={this._giftedChatRef._actionSheetRef}
+                chatId={id}
+                auth={auth}
+                updateUserMessage={updateUserMessage}
+              />
+            )}
           />
         </KeyboardAvoidingView>
         <ChatMediaModal

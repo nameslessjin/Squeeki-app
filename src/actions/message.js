@@ -5,16 +5,17 @@ import {
   updateUserMessageMutation,
 } from './query/messageQuery';
 import {http_upload} from '../../server_config';
-import {httpCall} from './utils/httpCall'
+import {httpCall} from './utils/httpCall';
 // import { useSubscription, useQuery } from '@apollo/client'
 
 export const getChatMessage = request => {
-  const {chatId, token, pointer} = request;
+  const {chatId, token, pointer, is_dm} = request;
 
   return async function(dispatch) {
     const input = {
-      chatId: chatId,
-      pointer: pointer,
+      chatId,
+      pointer,
+      is_dm
     };
 
     const graphql = {
@@ -24,7 +25,7 @@ export const getChatMessage = request => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -34,12 +35,6 @@ export const getChatMessage = request => {
   };
 };
 
-// const getChatMessageReducer = data => {
-//   return {
-//     type: 'getChatMessage',
-//     i: data,
-//   };
-// };
 
 export const sendMessage = request => {
   const {token, content, chatId, media, status} = request;
@@ -73,7 +68,7 @@ export const sendMessage = request => {
       content,
       chatId,
       media: media_url,
-      status
+      status,
     };
 
     const graphql = {
@@ -83,7 +78,7 @@ export const sendMessage = request => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -100,7 +95,7 @@ export const updateUserMessage = request => {
     const input = {
       messageId,
       status,
-      chatId
+      chatId,
     };
 
     const graphql = {
@@ -110,10 +105,10 @@ export const updateUserMessage = request => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
-    if (result.errors){
-      return result
+    if (result.errors) {
+      return result;
     }
 
     return 0;

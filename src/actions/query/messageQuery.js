@@ -6,7 +6,11 @@ query getChatMessage($input: MessageQuery!){
             _id
             text
             image
-            status
+            status {
+                currentUserMessageStatus
+                read_count
+                like_count
+            }
             system
             createdAt
             user {

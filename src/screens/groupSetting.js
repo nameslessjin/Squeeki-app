@@ -368,7 +368,7 @@ class GroupSetting extends React.Component {
 
             <SettingEdition
               onPress={this.onEditProfilePress}
-              name={'Edit your profile'}
+              name={'Edit my profile'}
               disabled={false}
             />
 

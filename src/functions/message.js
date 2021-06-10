@@ -34,11 +34,12 @@ export const sendMessageFunc = async data => {
 };
 
 export const getChatMessageFunc = async data => {
-  const {token, chatId, getChatMessage, navigation, userLogout, pointer} = data;
+  const {token, chatId, getChatMessage, navigation, userLogout, pointer, is_dm} = data;
   const request = {
     token,
     chatId,
-    pointer
+    pointer,
+    is_dm
   };
 
   const req = await getChatMessage(request);

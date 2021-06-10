@@ -150,8 +150,8 @@ export const onLinkPhoneLongPress = async props => {
 
 export const RenderMessageImage = props => {
 
-  const {giftchat, actionSheet} = props;
-  const {currentMessage} = giftchat;
+  const {giftchat, actionSheet, chatId, auth, updateUserMessage} = props;
+  const {_id, image} = giftchat.currentMessage
 
   return (
     <View style={{borderRadius: 15, paddingBottom: 2}}>
@@ -163,10 +163,10 @@ export const RenderMessageImage = props => {
           padding: 6,
           borderRadius: 15,
         }}
-        source={{uri: currentMessage.image}}
+        source={{uri: image}}
         modalImageResizeMode={'contain'}
         onLongPressOriginImage={() =>
-          onMessageImageLongPress({actionSheet, url: currentMessage.image})
+          onMessageImageLongPress({actionSheet, url: image, messageId: _id, chatId, auth, updateUserMessage})
         }
       />
     </View>
@@ -174,8 +174,8 @@ export const RenderMessageImage = props => {
 };
 
 const onMessageImageLongPress = props => {
-  const {actionSheet, url} = props;
-  const options = ['Copy', 'Download', 'Cancel'];
+  const {actionSheet, url, updateUserMessage, messageId, auth, chatId} = props;
+  const options = ['Copy', 'Download', 'Delete' ,'Cancel'];
   const cancelButtonIndex = options.length - 1;
   actionSheet.getContext().showActionSheetWithOptions(
     {
@@ -190,6 +190,14 @@ const onMessageImageLongPress = props => {
         case 1:
           handleDownload({url, is_download: true});
           break;
+        case 2:
+          const request = {
+            token: auth.token,
+            messageId,
+            chatId,
+            status: 'delete',
+          };
+          updateUserMessage(request);
         default:
           break;
       }
@@ -199,8 +207,9 @@ const onMessageImageLongPress = props => {
 
 export const RenderTicks = props => {
   const {message, is_dm} = props;
+  const {read_count} = message.status
 
-  return is_dm ? (
+  return is_dm && read_count > 1 ? (
     <View style={{width: 15, aspectRatio: 1, marginRight: 10}}>
       <MaterialIcons
         name={'check-circle-outline'}
