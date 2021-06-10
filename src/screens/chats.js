@@ -52,7 +52,7 @@ class Chats extends React.Component {
           ),
       });
     }
-    this.loadChat(true);
+
     AppState.addEventListener('change', this._handleAppStateChange);
   }
 
@@ -94,6 +94,11 @@ class Chats extends React.Component {
     if (appState.match(/(inactive|background)/) && nextAppState === 'active') {
       // reload chat
       this.loadChat(true);
+    } else if (
+      appState === 'active' &&
+      nextAppState.match(/(inactive|background)/)
+    ) {
+      this.unsubSocket();
     }
     this.setState({appState: nextAppState});
   };
@@ -111,7 +116,7 @@ class Chats extends React.Component {
     unsubSocket(socket_chat_id);
   };
 
-  loadChat = async init => {
+  loadChat = async (init, type) => {
     const {
       group,
       auth,
@@ -143,6 +148,7 @@ class Chats extends React.Component {
     }
     socket_chat_id = socket_chat_id.map(c => c.id);
     subSocket(socket_chat_id, updateChatInfo);
+
     this.setState({loading: false});
   };
 
@@ -152,6 +158,7 @@ class Chats extends React.Component {
 
   onRefresh = () => {
     this.setState({refreshing: true});
+    this.unsubSocket();
     this.loadChat(true);
     this.setState({refreshing: false});
   };

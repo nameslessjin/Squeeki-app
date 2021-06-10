@@ -236,16 +236,28 @@ class Chat extends React.Component {
         m => m._id === messageId,
       );
 
-      console.log('times, triggered')
       if (updatedMessageIndex > -1) {
         // if the user decide to update message status is the current user
         if (id == userId && status == 'delete') {
           updatedMessages = updatedMessages.filter(m => m._id != messageId);
         }
 
-        // if it is a dm chat and the other user read the message
+        // if it is a dm chat and the other user read the message, update all the message to read in the front end
         if (status == 'read' && is_dm) {
-          updatedMessages[updatedMessageIndex].status.read_count = 2;
+          // updatedMessages[updatedMessageIndex].status.read_count = 2;
+          updatedMessages = updatedMessages.map(m => {
+            if (m.status.read_count == 2) {
+              return m;
+            }
+            return {
+              ...m,
+              status: {
+                ...m.status,
+                read_count: 2,
+              },
+            };
+          });
+          console.log(updatedMessages)
         }
       }
       return {

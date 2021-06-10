@@ -28,6 +28,7 @@ import HeaderRightButton from '../components/chat/headerRightButton';
 import {userLogout} from '../actions/auth';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {socket} from '../../server_config';
+import {unsubSocket} from '../functions/chat';
 
 const {height} = Dimensions.get('screen');
 
@@ -82,6 +83,19 @@ class HomeDrawerNavigator extends React.Component {
     return routeName;
   };
 
+  unsubSocket = () => {
+    const {chat, group} = this.props;
+    // if not in group all chats in chat.chats
+    let socket_chat_id = chat.chats;
+
+    // if in group only the one with proper rank or people who added to chat
+    if (group.group.auth) {
+      socket_chat_id = chat.chats.filter(c => c.available);
+    }
+    socket_chat_id = socket_chat_id.map(c => c.id);
+    unsubSocket(socket_chat_id);
+  };
+
   componentDidUpdate(prevProps, prevState) {
     const name = this.getHeaderTitle(this.props.route);
     const {navigation} = this.props;
@@ -96,16 +110,19 @@ class HomeDrawerNavigator extends React.Component {
       navigation.setOptions({
         headerRight: null,
       });
+      this.unsubSocket()
     } else if (name == 'Profile') {
       navigation.setOptions({
         headerRight: null,
       });
+      this.unsubSocket()
     } else if (name == 'Groups') {
       navigation.setOptions({
         headerRight: () => (
           <GroupRightButton onPress={this.onToggleGroupsRightButton} />
         ),
       });
+      this.unsubSocket()
     } else if (name == 'Chats') {
       navigation.setOptions({
         headerRight: () => (
@@ -241,8 +258,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {currentScreen, auth} = state;
-  return {currentScreen, auth};
+  const {currentScreen, auth, chat, group} = state;
+  return {currentScreen, auth, chat, group};
 };
 
 const mapDispatchToProps = dispatch => {

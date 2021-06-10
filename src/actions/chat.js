@@ -347,6 +347,7 @@ export const getAllChatId = request => {
 };
 
 export const updateChatInfo = request => {
+
   return async function(dispatch) {
     dispatch(updateChatInfoReducer(request));
     return 0;
