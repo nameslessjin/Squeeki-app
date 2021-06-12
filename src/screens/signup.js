@@ -77,7 +77,7 @@ class SignUp extends React.Component {
     ) {
       this.setState({
         errorText:
-          'Invalid username.  Username needs to be least 6 characters long and cannot contains forbidden characaters',
+          'Invalid username.  Username needs to be least 6 characters long and contains alphabet, numbers or _',
       });
       return false;
     }

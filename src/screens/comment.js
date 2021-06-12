@@ -344,7 +344,7 @@ class Comment extends React.Component {
                   }
                   placeholderTextColor={'#7f8fa6'}
                   multiline={true}
-                  maxLength={250}
+                  maxLength={255}
                   onContentSizeChange={e =>
                     this.setState({
                       inputHeight: e.nativeEvent.contentSize.height + 15,

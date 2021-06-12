@@ -216,7 +216,7 @@ class GroupCreation extends React.Component {
               type={'request_to_join'}
             />
 
-            <SettingEdition onPress={this.onEditTagPress} name={'Edit tags'} />
+            <SettingEdition onPress={this.onEditTagPress} name={'Edit tags'} disabled={false} />
 
             {loading == true ? (
               <ActivityIndicator

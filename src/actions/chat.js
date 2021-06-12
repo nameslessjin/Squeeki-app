@@ -13,7 +13,8 @@ import {
   timeoutUserMutation,
   changeUserChatNotificationMutation,
   searchUserChatQuery,
-  updatePinChatMutation
+  updatePinChatMutation,
+  searchAtUserChatQuery
 } from './query/chatQuery';
 import {httpCall} from './utils/httpCall'
 import {http_upload} from '../../server_config';
@@ -503,6 +504,33 @@ export const searchUserChat = request => {
 
     return result.data.searchUserChat
 
+  }
+}
+
+export const searchAtUserChat = request => {
+  const {token, chatId, groupId, search_term} = request 
+
+  return async function(dispatch){
+    const input = {
+      chatId,
+      groupId,
+      search_term
+    }
+
+    const graphql = {
+      query: searchAtUserChatQuery,
+      variables: {
+        input
+      }
+    }
+
+    const result = await httpCall(token, graphql)
+
+    if (result.errors){
+      return result
+    }
+
+    return result.data.searchAtUserChat.users
   }
 }
 

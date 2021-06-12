@@ -8,6 +8,8 @@ import {
   Linking,
   AppState,
   Text,
+  Dimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -18,6 +20,7 @@ import {
   createChat,
   changeUserChatNotification,
   getSingleChat,
+  searchAtUserChat,
 } from '../actions/chat';
 import {getChatFunc, subSocket} from '../functions/chat';
 import {GiftedChat} from 'react-native-gifted-chat';
@@ -40,11 +43,12 @@ import {
   onLinkPhoneLongPress,
   RenderTicks,
   RenderMessageImage,
+  renderComposer,
 } from '../components/chat/render';
 import {timeDifferentInMandS} from '../utils/time';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import ChatDMModal from '../components/chat/chatDMModal';
-import {detectFile} from '../utils/detect';
+import {detectFile, detectAtPeopleNGroup} from '../utils/detect';
 import {editPhoto} from '../utils/imagePicker';
 
 class Chat extends React.Component {
@@ -77,6 +81,9 @@ class Chat extends React.Component {
       },
     },
     appState: AppState.currentState,
+    searchTerm: '',
+    searchIndex: -1,
+    atUserSearchResult: [],
   };
 
   componentDidMount() {
@@ -257,7 +264,7 @@ class Chat extends React.Component {
               },
             };
           });
-          console.log(updatedMessages)
+          console.log(updatedMessages);
         }
       }
       return {
@@ -456,6 +463,13 @@ class Chat extends React.Component {
         allow_modify,
       });
     }
+
+    if (
+      prevState.searchTerm != this.state.searchTerm &&
+      this.state.searchTerm.length != 0
+    ) {
+      this.onAtUserChatSearch();
+    }
   }
 
   componentWillUnmount() {
@@ -539,6 +553,17 @@ class Chat extends React.Component {
       editPhoto(image, this.onMediaUpload);
       this.setState({content: ''});
       return;
+    }
+
+    const {searchTerm, searchIndex} = detectAtPeopleNGroup({
+      prevText: this.state.content,
+      currentText: text,
+    });
+
+    if (!this.state.is_dm && searchTerm[0] == '@') {
+      this.setState({searchTerm, searchIndex});
+    } else {
+      this.setState({searchTerm: '', searchIndex: -1, atUserSearchResult: []});
     }
 
     this.setState({content: text});
@@ -636,6 +661,27 @@ class Chat extends React.Component {
     this.getSingleChat(null, _id);
   };
 
+  onAtUserChatSearch = async () => {
+    const {searchTerm, id} = this.state;
+    const {group, auth, navigation, searchAtUserChat} = this.props;
+
+    const request = {
+      groupId: group.group.id,
+      search_term: searchTerm.substr(1, searchTerm.length - 1),
+      chatId: id,
+      token: auth.token,
+    };
+
+    const result = await searchAtUserChat(request);
+
+    if (result.errors) {
+      console.log(result.errors);
+      return;
+    }
+
+    this.setState({atUserSearchResult: result});
+  };
+
   render() {
     const {auth, updateUserMessage} = this.props;
     const {
@@ -651,6 +697,7 @@ class Chat extends React.Component {
       icon,
       is_dm,
       id,
+      atUserSearchResult,
     } = this.state;
     const user = {
       _id: auth.user.id,
@@ -679,7 +726,10 @@ class Chat extends React.Component {
                 type: 'phone',
                 style: linkStyle,
                 onPress: phone =>
-                  onPhonePress({phone, ...this._giftedChatRef._actionSheetRef}),
+                  onPhonePress({
+                    phone,
+                    ...this._giftedChatRef._actionSheetRef,
+                  }),
                 onLongPress: phone =>
                   onLinkPhoneLongPress({type: 'phone', content: phone}),
               },
@@ -730,8 +780,11 @@ class Chat extends React.Component {
                 updateUserMessage={updateUserMessage}
               />
             )}
+            renderComposer={renderComposer}
+            extraData={{atUserSearchResult}}
           />
         </KeyboardAvoidingView>
+
         <ChatMediaModal
           modalVisible={modalVisible}
           onBackdropPress={this.onBackdropPress}
@@ -780,6 +833,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(changeUserChatNotification(data)),
     updateUserRelation: data => dispatch(updateUserRelation(data)),
     getSingleChat: data => dispatch(getSingleChat(data)),
+    searchAtUserChat: data => dispatch(searchAtUserChat(data)),
   };
 };
 

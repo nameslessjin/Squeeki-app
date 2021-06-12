@@ -1,11 +1,26 @@
 import React from 'react';
-import {TouchableOpacity, Linking, Share, Platform, View} from 'react-native';
+import {
+  TouchableOpacity,
+  Linking,
+  Share,
+  Platform,
+  View,
+  Dimensions,
+  Text,
+  FlatList,
+  Image,
+} from 'react-native';
+import {Composer} from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import ParsedText from 'react-native-parsed-text';
 import Communications from 'react-native-communications';
 import ImageModal from 'react-native-image-modal';
 import {handleDownload} from '../../utils/imagePicker';
+
+const {width} = Dimensions.get('screen');
+
+const extractKey = ({userId}) => userId;
 
 export const RenderSend = props => {
   const {text, onSend} = props;
@@ -231,4 +246,81 @@ export const RenderTicks = props => {
       />
     </View>
   ) : null;
+};
+
+const renderAtUserItem = ({item}) => {
+  const {userId, displayName, username, icon} = item;
+
+  const icon_options = [
+    'emoticon-cool-outline',
+    'emoticon-poop',
+    'emoticon-kiss-outline',
+    'emoticon-wink-outline',
+    'emoticon-tongue-outline',
+  ];
+
+  const random = Math.floor(Math.random() * 5);
+
+  return (
+    <View
+      style={{
+        height: 50,
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+      }}>
+      <View
+        style={{
+          height: '100%',
+          aspectRatio: 1,
+          justifyContent: 'center',
+          lignItems: 'flex-start',
+        }}>
+        {icon ? (
+          <Image
+            source={{uri: icon}}
+            style={{height: 40, aspectRatio: 1, borderRadius: 20}}
+          />
+        ) : (
+          <MaterialIcons name={icon_options[random]} size={40} />
+        )}
+      </View>
+      <View
+        style={{
+          height: 50,
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+          width: width - 75
+        }}>
+        <Text style={{color: 'black', fontSize: 15}}>{displayName}</Text>
+        <Text style={{color: 'grey', fontSize: 13}}>{username}</Text>
+      </View>
+    </View>
+  );
+};
+
+export const renderComposer = props => {
+  const {atUserSearchResult} = props.extraData;
+
+  return (
+    <View>
+      {atUserSearchResult.length > 0 ? (
+        <View style={{marginLeft: 10, maxHeight: 150}}>
+          <FlatList
+            style={{maxHeight: 150, width: width - 75}}
+            data={atUserSearchResult}
+            renderItem={renderAtUserItem}
+            keyExtractor={extractKey}
+            alwaysBounceHorizontal={false}
+            // alwaysBounceVertical={false}
+            keyboardShouldPersistTaps={'handled'}
+          />
+        </View>
+      ) : null}
+      <View style={{width: width - 75}}>
+        <Composer {...props} />
+      </View>
+    </View>
+  );
 };

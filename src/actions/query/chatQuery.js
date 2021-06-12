@@ -176,3 +176,16 @@ mutation updatePinChat($input: UserChatMutation!){
     updatePinChat(input: $input)
 }
 `
+
+export const searchAtUserChatQuery = `
+query searchAtUserChat($input: UserChatQuery!){
+    searchAtUserChat(input: $input){
+        users{
+            userId
+            displayName
+            username
+            icon
+        }
+    }
+}
+`

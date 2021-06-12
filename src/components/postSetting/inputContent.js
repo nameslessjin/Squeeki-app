@@ -17,7 +17,7 @@ export default class InputContent extends React.Component {
             content.length == 0 ? {marginTop: 15} : null,
           ]}
           multiline={true}
-          maxLength={250}
+          maxLength={255}
           placeholder={"What's in your mind..."}
           placeholderTextColor={'#7f8fa6'}
           value={content}

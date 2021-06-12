@@ -13,8 +13,8 @@ export default class SettingEdition extends React.Component {
             <Text style={{color: disabled ? 'grey' : 'black'}}>{name}</Text>
             <MaterialIcons
               name={'chevron-right'}
-              size={30}
-              color={'silver'}
+              size={25}
+              color={disabled ? 'silver' : 'black'}
             />
           </View>
         </TouchableOpacity>
