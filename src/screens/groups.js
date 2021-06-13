@@ -43,9 +43,15 @@ class Groups extends React.Component {
   };
 
   loadGroups = async init => {
-    const {findUserGroupsByUserId, navigation, userLogout, group, auth} = this.props;
+    const {
+      findUserGroupsByUserId,
+      navigation,
+      userLogout,
+      group,
+      auth,
+    } = this.props;
 
-    this.setState({loading: true})
+    this.setState({loading: true});
     const groupsData = await findUserGroupsByUserId({
       token: auth.token,
       count: init ? 0 : group.groups.count,
@@ -53,7 +59,7 @@ class Groups extends React.Component {
 
     if (groupsData.errors) {
       // alert(groupsData.errors[0].message);
-      alert('Cannot load groups at this time, please try again later')
+      alert('Cannot load groups at this time, please try again later');
       if (groupsData.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -63,7 +69,7 @@ class Groups extends React.Component {
       }
       return;
     }
-    this.setState({loading: false})
+    this.setState({loading: false});
   };
 
   render() {
@@ -71,16 +77,15 @@ class Groups extends React.Component {
     const {navigation} = this.props;
     const {loading} = this.state;
 
-
     return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
-          <StatusBar barStyle={'dark-content'} />
-          {groups.length == 0 ? (
-            <Text style={styles.noGroupStyle}>
-              You haven't joined a group yet
-            </Text>
-          ) : (
+      <KeyboardAvoidingView style={styles.container}>
+        <StatusBar barStyle={'dark-content'} />
+        {groups.length == 0 ? (
+          <Text style={styles.noGroupStyle}>
+            You haven't joined a group yet
+          </Text>
+        ) : (
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <GroupList
               groupsData={groups || []}
               navigation={navigation}
@@ -89,10 +94,10 @@ class Groups extends React.Component {
               refreshing={this.state.refreshing}
               route={'groups'}
             />
-          )}
-          {/* {loading ? <ActivityIndicator animating={loading} /> : null} */}
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        )}
+        {/* {loading ? <ActivityIndicator animating={loading} /> : null} */}
+      </KeyboardAvoidingView>
     );
   }
 }

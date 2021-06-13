@@ -197,6 +197,8 @@ class Chats extends React.Component {
           return;
         }
       }
+
+      this.onBackdropPress()
       this.unsubSocket();
       // remove listeners to all chatrooms here
       const {is_dm} = req;
@@ -245,9 +247,9 @@ class Chats extends React.Component {
     const modalVisible = route.params ? route.params.modalVisible : false;
 
     return (
-      <TouchableWithoutFeedback onPress={this.onBackdropPress}>
-        <View>
-          <StatusBar barStyle={'dark-content'} />
+      <View>
+        <StatusBar barStyle={'dark-content'} />
+        <TouchableWithoutFeedback onPress={this.onBackdropPress}>
           <List
             chat={chat.chats}
             onRefresh={this.onRefresh}
@@ -258,13 +260,13 @@ class Chats extends React.Component {
             changeUserChatNotification={this.changeUserChatNotification}
             updatePinChat={this.updatePinChat}
           />
-          <NewChatModal
-            onBackdropPress={this.onBackdropPress}
-            modalVisible={modalVisible}
-            navigateToOptions={this.navigateToOptions}
-          />
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+        <NewChatModal
+          onBackdropPress={this.onBackdropPress}
+          modalVisible={modalVisible}
+          navigateToOptions={this.navigateToOptions}
+        />
+      </View>
     );
   }
 }

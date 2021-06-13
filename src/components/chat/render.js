@@ -9,6 +9,8 @@ import {
   Text,
   FlatList,
   Image,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {Composer} from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -248,7 +250,7 @@ export const RenderTicks = props => {
   ) : null;
 };
 
-const renderAtUserItem = ({item}) => {
+const renderAtUserItem = ({item, onAtUserPress}) => {
   const {userId, displayName, username, icon} = item;
 
   const icon_options = [
@@ -260,67 +262,90 @@ const renderAtUserItem = ({item}) => {
   ];
 
   const random = Math.floor(Math.random() * 5);
-
+  const user = {
+    userId,
+    username,
+  };
   return (
-    <View
-      style={{
-        height: 50,
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-      }}>
-      <View
-        style={{
-          height: '100%',
-          aspectRatio: 1,
-          justifyContent: 'center',
-          lignItems: 'flex-start',
-        }}>
-        {icon ? (
-          <Image
-            source={{uri: icon}}
-            style={{height: 40, aspectRatio: 1, borderRadius: 20}}
-          />
-        ) : (
-          <MaterialIcons name={icon_options[random]} size={40} />
-        )}
-      </View>
+    <TouchableWithoutFeedback onPress={() => onAtUserPress(user)}>
       <View
         style={{
           height: 50,
-          alignItems: 'flex-start',
-          justifyContent: 'center',
-          width: width - 75
+          width: '100%',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          padding: 5,
         }}>
-        <Text style={{color: 'black', fontSize: 15}}>{displayName}</Text>
-        <Text style={{color: 'grey', fontSize: 13}}>{username}</Text>
+        <View
+          style={{
+            height: '100%',
+            aspectRatio: 1,
+            justifyContent: 'center',
+            lignItems: 'flex-start',
+          }}>
+          {icon ? (
+            <Image
+              source={{uri: icon}}
+              style={{height: 40, aspectRatio: 1, borderRadius: 20}}
+            />
+          ) : (
+            <MaterialIcons name={icon_options[random]} size={40} />
+          )}
+        </View>
+        <View
+          style={{
+            height: 50,
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            width: '100%',
+            marginLeft: 5,
+          }}>
+          <Text style={{color: 'black', fontSize: 15}}>{displayName}</Text>
+          <Text style={{color: 'grey', fontSize: 13}}>@{username}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 export const renderComposer = props => {
-  const {atUserSearchResult} = props.extraData;
+  const {atUserSearchResult, composerHeight, onAtUserPress} = props;
 
   return (
-    <View>
+    <React.Fragment>
       {atUserSearchResult.length > 0 ? (
-        <View style={{marginLeft: 10, maxHeight: 150}}>
+        <View
+          style={{
+            maxHeight: 150,
+            backgroundColor: 'white',
+            position: 'absolute',
+            bottom: composerHeight + 7,
+            width: width - 85,
+            borderWidth: 0.5,
+            left: 42.5,
+            borderColor: 'silver',
+          }}>
           <FlatList
-            style={{maxHeight: 150, width: width - 75}}
+            style={{maxHeight: 150, width: width - 85}}
             data={atUserSearchResult}
-            renderItem={renderAtUserItem}
+            renderItem={props => renderAtUserItem({...props, onAtUserPress})}
             keyExtractor={extractKey}
             alwaysBounceHorizontal={false}
-            // alwaysBounceVertical={false}
+            alwaysBounceVertical={false}
             keyboardShouldPersistTaps={'handled'}
           />
         </View>
       ) : null}
-      <View style={{width: width - 75}}>
-        <Composer {...props} />
-      </View>
-    </View>
+      <Composer
+        {...props}
+        textInputStyle={{
+          width: width - 85,
+          // backgroundColor: 'green',
+        }}
+      />
+    </React.Fragment>
   );
 };
+
+const renderTextInput 

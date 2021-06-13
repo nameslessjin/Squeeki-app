@@ -25,11 +25,9 @@ export default class PostList extends React.Component {
     }
     if (item.id == 'null') {
       return (
-        <TouchableWithoutFeedback>
-          <View style={styles.placeholder}>
-            <Text style={styles.noPostStyle}>There is not any post yet</Text>
-          </View>
-        </TouchableWithoutFeedback>
+        <View style={styles.placeholder}>
+          <Text style={styles.noPostStyle}>There is not any post yet</Text>
+        </View>
       );
     }
 
@@ -99,7 +97,6 @@ const styles = StyleSheet.create({
   placeholder: {
     width: '100%',
     alignItems: 'center',
-    height: 300,
-    paddingTop: 50
+    marginTop: 50
   },
 });

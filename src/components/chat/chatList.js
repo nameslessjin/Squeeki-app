@@ -18,9 +18,29 @@ import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view';
 
 const {width, height} = Dimensions.get('screen');
 
-const extractKey = ({id}) => id;
-
 export default class ChatList extends React.Component {
+  componentDidMount() {
+    this._ref = undefined;
+  }
+
+  onChatPress = item => {
+    const {onChatPress} = this.props;
+
+    this.onCloseAllRows();
+
+    onChatPress(item);
+  };
+
+  onCloseAllRows = () => {
+    const {chat} = this.props;
+
+    if (this._ref) {
+      chat.forEach(c => {
+        this._ref._rows[c.id].closeRow();
+      });
+    }
+  };
+
   renderItem = ({item}) => {
     const {
       name,
@@ -34,9 +54,23 @@ export default class ChatList extends React.Component {
       notification,
     } = item;
 
-    const unread_message_count_text = countFormat(unread_message_count);
+    if (id == 'empty') {
+      if (this._ref) {
+        return (
+          <TouchableWithoutFeedback onPress={this.onCloseAllRows}>
+            <View
+              style={{
+                width: '100%',
+                height: this._ref.props.extraData.heightDifference,
+              }}
+            />
+          </TouchableWithoutFeedback>
+        );
+      }
+      return <View />;
+    }
 
-    const {onChatPress, userGroupAuthRank} = this.props;
+    const unread_message_count_text = countFormat(unread_message_count);
 
     const random = Math.floor(Math.random() * 5);
     const icon_options = [
@@ -78,7 +112,7 @@ export default class ChatList extends React.Component {
     return (
       <View style={[styles.chat_container, {backgroundColor: backgroundColor}]}>
         <TouchableOpacity
-          onPress={() => onChatPress(item)}
+          onPress={() => this.onChatPress(item)}
           disabled={!allow_to_join}>
           <View style={styles.chat_sub_container}>
             <View
@@ -149,6 +183,10 @@ export default class ChatList extends React.Component {
   renderHiddenItem = (data, rowMap) => {
     const {rank_req, id, available, is_pinned, notification} = data.item;
 
+    if (id == 'empty') {
+      return null;
+    }
+
     let allow_to_join = true;
     if (rank_req != null) {
       if (!available) {
@@ -207,14 +245,23 @@ export default class ChatList extends React.Component {
     );
   };
 
+  extractKey = ({id}) => id;
+
   render() {
     const {onRefresh, refreshing, onEndReached, chat} = this.props;
+    const occupiedHeight = 85 * chat.length;
+    const heightDifference = height - occupiedHeight;
+    let chatData = chat;
+    if (heightDifference > 0) {
+      chatData = chatData.concat({id: 'empty'});
+    }
 
     return (
       <SwipeListView
+        ref={ref => (this._ref = ref)}
         style={styles.container}
-        data={chat}
-        keyExtractor={extractKey}
+        data={chatData}
+        keyExtractor={this.extractKey}
         alwaysBounceHorizontal={false}
         renderItem={this.renderItem}
         onRefresh={onRefresh}
@@ -226,10 +273,9 @@ export default class ChatList extends React.Component {
         disableRightSwipe={true}
         rightOpenValue={-160}
         renderHiddenItem={this.renderHiddenItem}
-        closeOnRowPress={true}
-        closeOnRowOpen={true}
         closeOnRowBeginSwipe={true}
         closeOnScroll={true}
+        extraData={{heightDifference}}
       />
     );
   }

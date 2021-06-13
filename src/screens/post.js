@@ -100,8 +100,7 @@ class Post extends React.Component {
       count: count,
     }
     return (
-      <TouchableWithoutFeedback>
-        <KeyboardAvoidingView>
+        <KeyboardAvoidingView style={{height: '100%', width: '100%'}}>
           <StatusBar barStyle={'dark-content'} />
           <PostList
             posts={posts}
@@ -113,7 +112,6 @@ class Post extends React.Component {
             onPostSelect={this.onPostSelect}
           />
         </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
     );
   }
 }

@@ -19,8 +19,8 @@ import {createUserChat} from '../actions/chat';
 import {searchUserFunc, getGroupMembersFunc} from '../functions/user';
 import UserList from '../components/users/userList';
 import DisplayNameList from '../components/users/userSearch/displayNameList';
-import { StackActions } from '@react-navigation/native';
-import { unsubSocket } from '../functions/chat'
+import {StackActions} from '@react-navigation/native';
+import {unsubSocket} from '../functions/chat';
 
 class UserSearch extends React.Component {
   state = {
@@ -359,11 +359,10 @@ class UserSearch extends React.Component {
       // Try to get existing Single Chat
       // if single chat exist load everything like it is a single chat but for DM
       // if single chat does not exist, get one without chatId, create an official one when send message
-      const second_userId = newChosenUser[0].id
-      this.getSingleChat(second_userId)
+      const second_userId = newChosenUser[0].id;
+      this.getSingleChat(second_userId);
     }
   };
-
 
   getSingleChat = async second_userId => {
     const {getSingleChat, auth, navigation} = this.props;
@@ -381,12 +380,14 @@ class UserSearch extends React.Component {
       return false;
     }
 
-    if (req){
+    if (req) {
       // unsub socket
-      const {chat} = this.props
+      const {chat} = this.props;
       const socket_chat_id = chat.chats;
-      unsubSocket(socket_chat_id)
-      navigation.dispatch(StackActions.replace('Chat', {second_userId: second_userId}))
+      unsubSocket(socket_chat_id);
+      navigation.dispatch(
+        StackActions.replace('Chat', {second_userId: second_userId}),
+      );
     }
   };
 
@@ -394,22 +395,27 @@ class UserSearch extends React.Component {
     const {searchTerm, usersData, chosenUser, prev_route, group} = this.state;
     const {navigation, user, auth} = this.props;
 
-    let search_view = (
+    return (
       <KeyboardAvoidingView style={styles.container}>
         <StatusBar barStyle={'dark-content'} />
-        <View style={styles.optionArea}>
-          <UserSearchBar onChange={this.onSearchChange} value={searchTerm} />
-        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.optionArea}>
+            <UserSearchBar onChange={this.onSearchChange} value={searchTerm} />
+          </View>
+        </TouchableWithoutFeedback>
         {chosenUser.length == 0 ||
         prev_route == 'PostSetting' ||
         prev_route == 'DM' ? null : (
-          <View style={styles.chosenList}>
-            <DisplayNameList
-              chosenUser={chosenUser}
-              onChooseUser={this.onChooseUser}
-            />
-          </View>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.chosenList}>
+              <DisplayNameList
+                chosenUser={chosenUser}
+                onChooseUser={this.onChooseUser}
+              />
+            </View>
+          </TouchableWithoutFeedback>
         )}
+
         <UserList
           usersData={usersData}
           onEndReached={this.onEndReached}
@@ -419,13 +425,8 @@ class UserSearch extends React.Component {
           chosenUser={chosenUser}
           currentUserId={auth.user.id}
         />
-      </KeyboardAvoidingView>
-    );
 
-    return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        {search_view}
-      </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -436,7 +437,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     height: '100%',
     width: '100%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   optionArea: {
     width: '90%',

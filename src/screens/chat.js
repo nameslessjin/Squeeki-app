@@ -51,6 +51,8 @@ import ChatDMModal from '../components/chat/chatDMModal';
 import {detectFile, detectAtPeopleNGroup} from '../utils/detect';
 import {editPhoto} from '../utils/imagePicker';
 
+const {width} = Dimensions.get('screen');
+
 class Chat extends React.Component {
   state = {
     name: '',
@@ -142,6 +144,8 @@ class Chat extends React.Component {
 
     //AppState.  When change from inactive to active.  Load new messages
     AppState.addEventListener('change', this._handleAppStateChange);
+
+    Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
   }
 
   updateUserRelation = data => {
@@ -479,6 +483,8 @@ class Chat extends React.Component {
     // AppState listener
     AppState.removeEventListener('change', this._handleAppStateChange);
 
+    Keyboard.removeAllListeners('focus');
+
     // if user is directed from another chat.  Go back and load the previous chat
     const {prev_chatId} = this.state;
 
@@ -524,6 +530,11 @@ class Chat extends React.Component {
       }
     }
     this.setState({appState: nextAppState});
+  };
+
+  _keyboardDidHide = () => {
+    console.log('keyboard hide');
+    this.setState({atUserSearchResult: []});
   };
 
   subSocket = req => {
@@ -682,6 +693,17 @@ class Chat extends React.Component {
     this.setState({atUserSearchResult: result});
   };
 
+  onAtUserPress = user => {
+    const {username, userId} = user;
+    const {searchTerm, searchIndex, content} = this.state;
+
+    let updatedContent = content.split(' ');
+    updatedContent[searchIndex] = `@${username}`;
+    updatedContent = updatedContent.join(' ') + ' ';
+
+    this.setState({content: updatedContent, atUserSearchResult: []});
+  };
+
   render() {
     const {auth, updateUserMessage} = this.props;
     const {
@@ -703,7 +725,6 @@ class Chat extends React.Component {
       _id: auth.user.id,
     };
 
-    // console.log(messages);
     return (
       <View>
         <KeyboardAvoidingView style={styles.container}>
@@ -746,7 +767,7 @@ class Chat extends React.Component {
             primaryStyle={{backgroundColor: 'white'}}
             keyboardShouldPersistTaps={'never'}
             alwaysShowSend={true}
-            bottomOffset={35}
+            bottomOffset={33}
             renderSend={p => (
               <RenderSend text={this.state.content.trim()} onSend={p.onSend} />
             )}
@@ -761,8 +782,8 @@ class Chat extends React.Component {
                 onActionPress={this.onActionPress}
               />
             )}
-            maxInputLength={5000}
-            maxComposerHeight={200}
+            maxComposerHeight={80}
+            maxInputLength={500}
             onLongPress={(context, message) =>
               this.onLongPress(context, message)
             }
@@ -780,8 +801,14 @@ class Chat extends React.Component {
                 updateUserMessage={updateUserMessage}
               />
             )}
-            renderComposer={renderComposer}
-            extraData={{atUserSearchResult}}
+            renderComposer={props =>
+              renderComposer({
+                ...props,
+                atUserSearchResult,
+                onAtUserPress: this.onAtUserPress
+              })
+            }
+            
           />
         </KeyboardAvoidingView>
 

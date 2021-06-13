@@ -209,31 +209,27 @@ class CheckIn extends React.Component {
     const {checkin, modalVisible, refresh, checkin_id} = this.state;
     const {auth, group} = this.props;
     return (
-      <TouchableWithoutFeedback>
-        <View>
-          <StatusBar barStyle={'dark-content'} />
-          <CheckinList
-            checkin={checkin}
-            onCheckInPress={this.onCheckInPress}
-            currentUserId={auth.user.id}
-            auth={group.group.auth}
-            rank_required={
-              group.group.rank_setting.manage_check_in_rank_required
-            }
-            onEndReached={this.onEndReached}
-            onRefresh={this.onRefresh}
-            refresh={refresh}
-            onDeleteCheckIn={this.onDeleteCheckIn}
-            onResultPress={this.onResultPress}
-          />
-          <CheckinModal
-            modalVisible={modalVisible}
-            onBackdropPress={this.onBackdropPress}
-            onSubmit={this.onCheckIn}
-            checkin_id={checkin_id}
-          />
-        </View>
-      </TouchableWithoutFeedback>
+      <View>
+        <StatusBar barStyle={'dark-content'} />
+        <CheckinList
+          checkin={checkin}
+          onCheckInPress={this.onCheckInPress}
+          currentUserId={auth.user.id}
+          auth={group.group.auth}
+          rank_required={group.group.rank_setting.manage_check_in_rank_required}
+          onEndReached={this.onEndReached}
+          onRefresh={this.onRefresh}
+          refresh={refresh}
+          onDeleteCheckIn={this.onDeleteCheckIn}
+          onResultPress={this.onResultPress}
+        />
+        <CheckinModal
+          modalVisible={modalVisible}
+          onBackdropPress={this.onBackdropPress}
+          onSubmit={this.onCheckIn}
+          checkin_id={checkin_id}
+        />
+      </View>
     );
   }
 }

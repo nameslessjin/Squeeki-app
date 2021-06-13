@@ -176,10 +176,10 @@ class Group extends React.Component {
     const {loading, refreshing} = this.state;
 
     return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
-          <StatusBar barStyle={'dark-content'} />
-          {group.group.id ? (
+      <KeyboardAvoidingView style={styles.container}>
+        <StatusBar barStyle={'dark-content'} />
+        {group.group.id ? (
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <PostList
               posts={post.groupPosts}
               group={group.group}
@@ -190,10 +190,10 @@ class Group extends React.Component {
               refreshing={refreshing}
               onAddPost={this.onAddPost}
             />
-          ) : null}
-          {/* {loading ? <ActivityIndicator animating={loading} /> : null} */}
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        ) : null}
+        {/* {loading ? <ActivityIndicator animating={loading} /> : null} */}
+      </KeyboardAvoidingView>
     );
   }
 }
