@@ -69,15 +69,21 @@ class SignUp extends React.Component {
       return false;
     }
 
-    const regexp = /^[a-zA-Z0-9_]+$/;
+    // username must only include characters besides a-z, A-Z, 0-9 and _
+    // username must include at least one character
+    // username must not include keyboard admin and squeeki
+    // username length must be at least 4 and no greater than 30
     if (
-      username.search(regexp) === -1 ||
-      username.substring(username.length - 1) == '_' ||
-      !validator.isLength(username.trim(), {min: 6, max: 30})
+      username.search(/^[a-zA-Z0-9_]+$/) === -1 ||
+      username.search(/[a-zA-Z]+/) === -1 ||
+      username.toLowerCase().search('admin') != -1 ||
+      username.toLowerCase().search('squeeki') != -1 ||
+      username.length < 4 ||
+      username.length > 30
     ) {
       this.setState({
         errorText:
-          'Invalid username.  Username needs to be least 6 characters long and contains alphabet, numbers or _',
+          'Username must only contain alphabet, numbers and underscore.  It must be at least 4 characters long and up tp 30 characters.',
       });
       return false;
     }

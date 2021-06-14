@@ -9,10 +9,12 @@ import {
   Platform,
   TextInput,
   KeyboardAvoidingView,
+  Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
 
+const {width} = Dimensions.get('screen');
 
 export default class PostHeader extends React.Component {
   state = {
@@ -75,9 +77,12 @@ export default class PostHeader extends React.Component {
 
     let currentUserAuthQualified = false;
 
-      // groupAuth: post owner, currentUserAuth: current user
+    // groupAuth: post owner, currentUserAuth: current user
     if (currentUserAuth && groupAuth) {
-      if ((groupAuth.rank > 1 && currentUserAuth.rank <= rank_required) || currentUserAuth.rank == 0) {
+      if (
+        (groupAuth.rank > 1 && currentUserAuth.rank <= rank_required) ||
+        currentUserAuth.rank == 0
+      ) {
         currentUserAuthQualified = true;
       }
     }
@@ -85,14 +90,15 @@ export default class PostHeader extends React.Component {
     if (auth || currentUserAuthQualified) {
       options = (
         <View style={styles.modalView}>
-          {auth ?
-          <TouchableOpacity style={styles.option} onPress={onPostNotification}>
-            <Text style={{color: notification ? 'red' : 'grey'}}>
-              {notification
-                ? 'Notification: On'
-                : 'Notification: Off'}
-            </Text>
-          </TouchableOpacity> : null}
+          {auth ? (
+            <TouchableOpacity
+              style={styles.option}
+              onPress={onPostNotification}>
+              <Text style={{color: notification ? 'red' : 'grey'}}>
+                {notification ? 'Notification: On' : 'Notification: Off'}
+              </Text>
+            </TouchableOpacity>
+          ) : null}
           <TouchableOpacity style={styles.option} onPress={onPostUpdate}>
             <Text>Edit</Text>
           </TouchableOpacity>
@@ -167,27 +173,27 @@ export default class PostHeader extends React.Component {
 
     // sizing displayNmae
     let displayNameSize = 14;
-    if (displayName.length > 20) {
+    if (displayName.length > 30) {
       displayNameSize = 13;
     }
-    if (displayName.length > 25) {
-      displayNameSize = 10;
+    if (displayName.length > 40){
+      displayNameSize = 12
     }
 
     let group_username_size = 14;
     if (group_username) {
-      if (group_username.length > 20) {
+      if (group_username.length > 30) {
         group_username_size = 13;
       }
-      if (group_username.length > 25) {
-        group_username_size = 10;
+      if (group_username.length > 40){
+        group_username_size = 12
       }
     }
 
     // sizing username
-    let userNameSize = 11;
+    let userNameSize = 13;
     if (username.length > 25) {
-      userNameSize = 10;
+      userNameSize = 12;
     }
 
     // sizing title in group
@@ -219,12 +225,17 @@ export default class PostHeader extends React.Component {
                       ? group_username_size
                       : displayNameSize,
                 },
-              ]}>
+              ]}
+              numberOfLines={2}
+              multiline={true}>
               {group_username != null ? group_username : displayName}
             </Text>
             {groupAuth != null ? null : (
-              <Text style={[styles.usernameStyle, {fontSize: userNameSize}]}>
-                {username}
+              <Text
+                style={[styles.usernameStyle, {fontSize: userNameSize}]}
+                multiline={true}
+                numberOfLines={2}>
+                @{username}
               </Text>
             )}
             {groupAuth == null ? null : (
@@ -233,7 +244,7 @@ export default class PostHeader extends React.Component {
               </Text>
             )}
           </View>
-          <View
+          {/* <View
             style={[
               styles.typeContainer,
               {backgroundColor: typeBackgroundColor},
@@ -241,10 +252,15 @@ export default class PostHeader extends React.Component {
             {type == 'post' ? null : (
               <Text style={styles.typeStyle}>{type}</Text>
             )}
-          </View>
+          </View> */}
         </View>
 
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: 80,
+          }}>
           {priority !== 0 ? (
             <View style={{flexDirection: 'row', marginRight: 5}}>
               <MaterialIcons name={'feather'} size={20} color={priorityColor} />
@@ -289,6 +305,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     backgroundColor: 'white',
     borderRadius: 5,
+    width: 40,
   },
   typeStyle: {
     color: 'white',
@@ -296,6 +313,7 @@ const styles = StyleSheet.create({
   },
   nameStyle: {
     marginLeft: 5,
+    width: width - 150,
   },
   displayNameStyle: {
     fontWeight: 'bold',
@@ -315,7 +333,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingLeft: 7,
   },
   container: {
     width: '100%',
@@ -323,6 +340,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 7,
   },
   modal: {
     flex: 1,

@@ -54,13 +54,25 @@ class GroupSetting extends React.Component {
 
   validation = () => {
     const {display_name, shortDescription} = this.state;
-    if (!validator.isLength(display_name.trim(), {min: 6})) {
+
+    // group display name must not contain admin and squeeki
+    // group display name must have length greater than 1 and no greather than 50
+    if (
+      display_name.toLowerCase().search('admin') != -1 ||
+      display_name.toLowerCase().search('squeeki') != -1 ||
+      display_name.trim().length < 1 ||
+      display_name.trim().length > 50
+    ) {
       return false;
     }
 
-    if (!validator.isLength(shortDescription.trim(), {min: 20})) {
+    // short description must have length greater than 20
+    if (
+      shortDescription.length < 20
+    ) {
       return false;
     }
+
     return true;
   };
 

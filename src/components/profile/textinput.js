@@ -39,11 +39,6 @@ export default class SignUpTextInput extends React.Component {
       this.text = 'Display name';
     }
 
-    let maxLength = 50
-    if (type == 'Username' ||  type == 'DisplayName'){
-      maxLength = 30
-    }
-
     return (
       <View style={styles.container}>
         <Text style={styles.text}>{this.text}</Text>
@@ -54,7 +49,7 @@ export default class SignUpTextInput extends React.Component {
           onChangeText={this.onChangeText}
           secureTextEntry={secureTextEntry}
           placeholderTextColor={'#7f8fa6'}
-          maxLength={maxLength}
+          maxLength={50}
         />
       </View>
     );

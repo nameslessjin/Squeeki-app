@@ -112,6 +112,7 @@ export const unsubSocket = (socket_chat_id) => {
 
 export const subSocket = (socket_chat_id, callback) => {
   const io = socket.getIO();
+
   socket_chat_id.forEach(id => {
     const channel = `chats${id}`;
     io.on(channel, data => {

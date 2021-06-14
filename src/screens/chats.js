@@ -53,6 +53,11 @@ class Chats extends React.Component {
       });
     }
 
+    // for chat in a group, load chat
+    if (group.group.id) {
+      this.loadChat(true);
+    }
+
     AppState.addEventListener('change', this._handleAppStateChange);
   }
 
@@ -198,7 +203,7 @@ class Chats extends React.Component {
         }
       }
 
-      this.onBackdropPress()
+      this.onBackdropPress();
       this.unsubSocket();
       // remove listeners to all chatrooms here
       const {is_dm} = req;

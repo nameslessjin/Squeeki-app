@@ -160,18 +160,25 @@ class Profile extends React.Component {
       // this.setState({errorText: 'Invalid email address'});
       return false;
     }
-    const trimmed_username = username.trim();
-    const check_username = trimmed_username.replace(/_/g, '');
+    // const trimmed_username = username.trim();
+    // const check_username = trimmed_username.replace(/_/g, '');
 
+    // if (
+    //   !validator.isLength(username.trim(), {min: 6, max: 30}) ||
+    //   !validator.isAlphanumeric(check_username.trim())
+    // ) {
+    //   // this.setState({errorText: 'Invalid username'})
+    //   return false;
+    // }
+
+    // display name must not contain admin and squeeki
+    // display name must have length greater than 1 and no greather than 50
     if (
-      !validator.isLength(username.trim(), {min: 6, max: 30}) ||
-      !validator.isAlphanumeric(check_username.trim())
+      displayName.toLowerCase().search('admin') != -1 ||
+      displayName.toLowerCase().search('squeeki') != -1 ||
+      displayName.trim().length < 1 ||
+      displayName.trim().length > 50
     ) {
-      // this.setState({errorText: 'Invalid username'})
-      return false;
-    }
-
-    if (!validator.isLength(displayName.trim(), {min: 6, max: 30})) {
       return false;
     }
 

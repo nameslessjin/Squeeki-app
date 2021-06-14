@@ -87,3 +87,15 @@ export const detectAtPeopleNGroup = prop => {
     searchIndex,
   };
 };
+
+export const detectAtUserNGroupInCurrentText = (text) => {
+    const textArray = text.split(" ");
+    const atUser = textArray
+      .filter((item) => item[0] == "@" && item.length >= 5)
+      .map((u) => u.substr(1, u.length - 1));
+    const atGroup = textArray.filter(
+      (item) => item[0] == "g" && item[1] == "@" && item.length >= 6
+    ).map((g) => g.substr(2, g.length - 1));;
+
+    return { atUser, atGroup };
+}

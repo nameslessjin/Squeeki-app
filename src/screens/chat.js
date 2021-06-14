@@ -44,11 +44,16 @@ import {
   RenderTicks,
   RenderMessageImage,
   renderComposer,
+  renderBubble
 } from '../components/chat/render';
 import {timeDifferentInMandS} from '../utils/time';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import ChatDMModal from '../components/chat/chatDMModal';
-import {detectFile, detectAtPeopleNGroup} from '../utils/detect';
+import {
+  detectFile,
+  detectAtPeopleNGroup,
+  detectAtUserNGroupInCurrentText,
+} from '../utils/detect';
 import {editPhoto} from '../utils/imagePicker';
 
 const {width} = Dimensions.get('screen');
@@ -533,7 +538,6 @@ class Chat extends React.Component {
   };
 
   _keyboardDidHide = () => {
-    console.log('keyboard hide');
     this.setState({atUserSearchResult: []});
   };
 
@@ -704,7 +708,9 @@ class Chat extends React.Component {
     this.setState({content: updatedContent, atUserSearchResult: []});
   };
 
+
   render() {
+
     const {auth, updateUserMessage} = this.props;
     const {
       content,
@@ -805,10 +811,10 @@ class Chat extends React.Component {
               renderComposer({
                 ...props,
                 atUserSearchResult,
-                onAtUserPress: this.onAtUserPress
+                onAtUserPress: this.onAtUserPress,
               })
             }
-            
+            renderBubble={props => renderBubble({...props,})}
           />
         </KeyboardAvoidingView>
 

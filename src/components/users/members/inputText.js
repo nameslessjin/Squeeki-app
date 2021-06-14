@@ -14,7 +14,7 @@ export default class InputText extends React.Component {
           value={value}
           onChangeText={v => modifyInput('group_username', v)}
           multiline = {true}
-          maxLength={30}
+          maxLength={50}
           editable={editable}
         />
       </View>

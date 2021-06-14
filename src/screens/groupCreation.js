@@ -166,16 +166,38 @@ class GroupCreation extends React.Component {
   validate = () => {
     const {groupname, shortDescription, display_name} = this.state;
 
-    const regexp = /^[a-zA-Z0-9_]+$/;
-    if (groupname.search(regexp) === -1) {
+
+    // groupname must only include characters besides a-z, A-Z, 0-9 and _
+    // groupname must include at least one character
+    // groupname must not include keyboard admin and squeeki
+    // groupname length must be at least 4 and no greater than 30
+    if (
+      groupname.search(/^[a-zA-Z0-9_]+$/) === -1 ||
+      groupname.search(/[a-zA-Z]+/) === -1 ||
+      groupname.toLowerCase().search('admin') != -1 ||
+      groupname.toLowerCase().search('squeeki') != -1 ||
+      groupname.length < 4 ||
+      groupname.length > 30
+    ) {
+      return false
+    }
+
+
+    // group display name must not contain admin and squeeki
+    // group display name must have length greater than 1 and no greather than 50
+    if (
+      display_name.toLowerCase().search('admin') != -1 ||
+      display_name.toLowerCase().search('squeeki') != -1 ||
+      display_name.trim().length < 1 ||
+      display_name.trim().length > 50
+    ) {
       return false;
     }
 
-    if (groupname.substring(groupname.length - 1) == '_') {
-      return false;
-    }
-
-    if (groupname.length < 5 || shortDescription.length < 20 || display_name.trim().length < 6) {
+    // short description must have length greater than 20
+    if (
+      shortDescription.length < 20
+    ) {
       return false;
     }
 
@@ -216,7 +238,11 @@ class GroupCreation extends React.Component {
               type={'request_to_join'}
             />
 
-            <SettingEdition onPress={this.onEditTagPress} name={'Edit tags'} disabled={false} />
+            <SettingEdition
+              onPress={this.onEditTagPress}
+              name={'Edit tags'}
+              disabled={false}
+            />
 
             {loading == true ? (
               <ActivityIndicator

@@ -32,7 +32,7 @@ export default class PostMedia extends React.Component {
     return (
       // <TouchableWithoutFeedback>
       <View style={styles.contentStyle}>
-        <Text style={styles.textStyle}>{content}</Text>
+        <Text style={styles.textStyle}><View style={{justifyContent: 'center', backgroundColor: 'green'}}><Text>Good</Text></View>{content}</Text>
         {image != null ? (
           <View style={styles.imageView}>
             <ImageModal
@@ -69,6 +69,8 @@ const styles = StyleSheet.create({
     padding: 7,
     marginBottom: 10,
     maxHeight: 150,
+    backgroundColor: 'yellow',
+    lineHeight: 15
   },
   imageStyle: {
     width: '100%',

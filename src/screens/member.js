@@ -231,13 +231,17 @@ class Member extends React.Component {
       return false;
     }
 
-    if (group_username.trim().length == 0) {
+
+    // group_username must not contain admin and squeeki
+    // group_username must have length greater than 1 and no greather than 50
+    if (
+      group_username.toLowerCase().search('admin') != -1 ||
+      group_username.toLowerCase().search('squeeki') != -1 ||
+      group_username.trim().length < 1 ||
+      group_username.trim().length > 50
+    ) {
       return false;
     }
-
-    // if (!validator.isAlphanumeric(title.trim())) {
-    //   return false;
-    // }
 
     if (rank < 0 || rank > 7) {
       return false;
@@ -440,6 +444,7 @@ class Member extends React.Component {
             modifyInput={this.modifyInput}
             value={group_username}
             editable={allowToChangeGroupUsername}
+            
           />
           {loading ? (
             <ActivityIndicator

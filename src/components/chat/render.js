@@ -12,7 +12,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {Composer} from 'react-native-gifted-chat';
+import {Composer, Bubble, MessageText} from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import ParsedText from 'react-native-parsed-text';
@@ -348,4 +348,14 @@ export const renderComposer = props => {
   );
 };
 
-const renderTextInput 
+export const renderBubble = props => {
+
+  return (
+    <Bubble {...props} wrapperStyle={{right: {backgroundColor: '#5AA1E7'}}} />
+  )
+}
+
+export const renderText = (matchingString, matches) => {
+  const pattern = /\[():():()\]/
+
+}

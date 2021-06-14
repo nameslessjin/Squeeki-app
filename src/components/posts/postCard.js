@@ -337,7 +337,7 @@ class PostCard extends React.Component {
             rank_required={group.group.rank_setting ? group.group.rank_setting.manage_post_rank_required : null}
           />
 
-          <PostMedia image={image} content={content} navigation={navigation}/>
+          <PostMedia image={image} content={content} navigation={navigation} type={type}/>
 
           {selectionMode ? (
             checked ? (

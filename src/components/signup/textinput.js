@@ -13,31 +13,32 @@ export default class SignUnTextInput extends React.Component {
   render() {
     const {type, value} = this.props;
 
-    this.text = 'Email'
+
+    let text = 'Email'
     let secureTextEntry = false
     if (type == 'Password'){
-        this.text = 'Password'
+        text = 'Password'
         secureTextEntry = true
     } else if (type == 'Email'){
-        this.text = 'Emaill address'
+        text = 'Emaill address'
     } else if (type == 'RePassword'){
-        this.text = 'Re-enter password'
+        text = 'Re-enter password'
         secureTextEntry = true
     } else if (type == 'Username'){
-        this.text = 'Username'
+        text = 'Username'
     } else {
-        this.text = 'Enter referal code'
+        text = 'Enter referal code'
     }
 
     return (
         <TextInput 
             style={styles.container} 
             value={value} 
-            placeholder={this.text} 
+            placeholder={text} 
             onChangeText={this.onChangeText}
             secureTextEntry={secureTextEntry}
             placeholderTextColor={'#7f8fa6'}
-            maxLength={(this.text == 'Username') ? 30 : 100 }
+            maxLength={(text == 'Username') ? 30 : 100 }
         />
     )
   }
