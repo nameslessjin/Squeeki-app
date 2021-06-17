@@ -143,7 +143,6 @@ const styles = StyleSheet.create({
   backgroundImageStyle: {
     width: '100%',
     height: Platform.OS == 'android' ? 230 : 200,
-    // backgroundColor: 'grey',
   },
   backgroundImageContainerStyle: {
     height: 170,
@@ -152,7 +151,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'grey',
-    // backgroundColor: 'green',
   },
   profileImgStyle: {
     width: '100%',
@@ -162,7 +160,6 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     flexDirection: 'row',
     paddingBottom: 50,
-    // backgroundColor: 'yellow',
   },
   imageStyle: {
     height: 100,

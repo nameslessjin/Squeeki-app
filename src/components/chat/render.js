@@ -341,7 +341,6 @@ export const renderComposer = props => {
         {...props}
         textInputStyle={{
           width: width - 85,
-          // backgroundColor: 'green',
         }}
       />
     </React.Fragment>

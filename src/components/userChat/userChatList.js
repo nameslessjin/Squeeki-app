@@ -48,52 +48,69 @@ export default class UserChatList extends React.Component {
       displayNameSize = 15;
     }
     if (displayName.length > 25) {
-      displayNameSize = 13;
+      displayNameSize = 14;
+    }
+
+    if (displayName.length > 35) {
+      displayNameSize = 13
+    }
+
+    if (displayName.length > 45) {
+      displayNameSize = 12
     }
 
     let userNameSize = 13;
-    if (username.length > 25) {
+    if (username.length > 20) {
       userNameSize = 12;
     }
-    const time = dateConversion(lastActiveAt);
 
     return (
       <TouchableOpacity
         onPress={() => onMemberCardPress(userId)}
         disabled={user_id == userId}>
         <View style={styles.user_container}>
-          {icon != null ? (
-            <Image source={{uri: icon}} style={styles.image} />
-          ) : (
-            <MaterialIcons
-              name={icon_options}
-              size={120}
-              style={{height: 115}}
-            />
-          )}
-          <Text style={{fontSize: displayNameSize, marginTop: 10}}>
-            {is_owner ? <View style={{width: 15, height: 15}} /> : null}
-            {different > 0 ? <View style={{width: 15, height: 15}} /> : null}
-            {displayName}
-            {is_owner ? (
+          <View style={styles.imageContainer}>
+            {icon != null ? (
+              <Image source={{uri: icon}} style={styles.image} />
+            ) : (
               <MaterialIcons
-                name={'medal'}
-                size={displayNameSize}
-                color={'gold'}
+                name={icon_options}
+                size={120}
+                style={{height: 115}}
               />
-            ) : null}
-            {different > 0 ? (
-              <MaterialIcons
-                color={'red'}
-                name={'timer-sand-full'}
-                size={displayNameSize}
-              />
-            ) : null}
-          </Text>
-          {/* <Text style={{}}>{username}</Text> */}
-          <Text style={{color: 'grey', fontSize: 11, marginTop: 3}}>
-            Last seen: {time}
-          </Text>
+            )}
+          </View>
+          <View style={styles.name}>
+            <Text style={{fontSize: displayNameSize, textAlign: 'center'}}>
+              {displayName}
+              {is_owner ? (
+                <MaterialIcons
+                  name={'medal'}
+                  size={displayNameSize}
+                  color={'gold'}
+                />
+              ) : null}
+              {different > 0 ? (
+                <MaterialIcons
+                  color={'red'}
+                  name={'timer-sand-full'}
+                  size={displayNameSize}
+                />
+              ) : null}
+            </Text>
+            <Text
+              style={{
+                fontSize: userNameSize,
+                color: 'grey',
+                marginTop: 3,
+                textAlign: 'center',
+              }}>
+              @{username}
+            </Text>
+          </View>
+          <View style={styles.time}>
+            <Text style={{color: 'grey', fontSize: 11}}>Last seen: {dateConversion(lastActiveAt)}</Text>
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -125,14 +142,12 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    // backgroundColor: 'green'
-    marginTop: 5
+    marginTop: 5,
   },
   user_container: {
     width: 170,
-    height: 200,
+    height: 225,
     backgroundColor: 'white',
-    justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 5,
     marginHorizontal: (width - 177 * 2) / 4,
@@ -144,7 +159,12 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     shadowColor: 'grey',
     shadowOpacity: 0.5,
-
+  },
+  imageContainer: {
+    width: '100%',
+    alignItems: 'center',
+    height: 110,
+    justifyContent: 'flex-end',
   },
   image: {
     height: 100,
@@ -156,5 +176,21 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  name: {
+    width: '100%',
+    minHeight: 65,
+    maxHeight: 90,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 7,
+    paddingHorizontal: 10,
+  },
+  time: {
+    width: '100%',
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 5,
+  },
 });

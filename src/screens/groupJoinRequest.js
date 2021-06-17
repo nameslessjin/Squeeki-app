@@ -211,11 +211,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'white',
   },
-  list: {
-    width: '100%',
-    height: '100%',
-    padding: 10,
-  },
   text: {
     marginBottom: 300,
     color: 'grey',

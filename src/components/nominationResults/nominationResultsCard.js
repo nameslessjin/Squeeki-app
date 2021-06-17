@@ -20,15 +20,29 @@ export default class NominationResultsCard extends React.Component {
       onPress,
       nomineeId,
       time,
-      nominationId
+      nominationId,
     } = this.props;
     const percentage = vote / total_vote_count;
+
+    const name = '0123456789 123456789 123456789 123456789 123456789';
+    // change vote for large number
     return (
-      <TouchableOpacity onPress={() => onPress({nomineeId:nomineeId, time: time, nominationId: nominationId})}>
+      <TouchableOpacity
+        onPress={() =>
+          onPress({
+            nomineeId: nomineeId,
+            time: time,
+            nominationId: nominationId,
+          })
+        }>
         <View style={styles.container}>
           <View style={styles.name_vote}>
-            <Text>{nominee_name}</Text>
-            <Text>Vote: {vote}</Text>
+            <View style={{maxWidth: width - 140}}>
+              <Text>{nominee_name}</Text>
+            </View>
+            <View style={{maxWidth: 90}}>
+              <Text>Vote: {vote}</Text>
+            </View>
           </View>
           <View
             style={[
@@ -58,12 +72,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
-    height: 40,
+    minHeight: 40,
     zIndex: 1,
   },
   bar: {
     zIndex: 0,
-    height: 40,
+    minHeight: 40,
     position: 'absolute',
   },
 });

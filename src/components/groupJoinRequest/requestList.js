@@ -8,8 +8,11 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const {width} = Dimensions.get('screen');
 
 const extractKey = ({id}) => id;
 
@@ -35,10 +38,30 @@ export default class RequestList extends React.Component {
     const {username, displayName, id, icon, loading} = item;
     const {icon_option} = this.state;
     const {onRespond} = this.props;
+
+    let displayNameSize = 16;
+
+    if (displayName.length > 20){
+      displayNameSize = 15
+    }
+
+    if (displayName.length > 30){
+      displayNameSize = 14
+    }
+
+    if (displayName.length > 40){
+      displayNameSize = 13
+    }
+
+
     return (
       <TouchableWithoutFeedback>
         <View style={styles.user}>
-          <View style={[styles.user, {paddingVertical: 0, width: '65%'}]}>
+          <View
+            style={[
+              styles.user,
+              {paddingVertical: 0, width: '65%'},
+            ]}>
             <View style={styles.imgHolder}>
               {icon != null ? (
                 <Image source={{uri: icon.uri}} style={styles.icon} />
@@ -47,12 +70,12 @@ export default class RequestList extends React.Component {
               )}
             </View>
             <View style={styles.nameStyle}>
-              <Text style={{marginLeft: 4}}>{displayName}</Text>
+              <Text style={{fontSize: displayNameSize}}>{displayName}</Text>
             </View>
           </View>
           <View style={styles.buttonsContainer}>
             {loading == 'deny' ? (
-              <ActivityIndicator animating={true} color={'grey'}/>
+              <ActivityIndicator animating={true} color={'grey'} />
             ) : (
               <TouchableOpacity onPress={() => onRespond(id, 'deny')}>
                 <View
@@ -68,7 +91,7 @@ export default class RequestList extends React.Component {
               </TouchableOpacity>
             )}
             {loading == 'confirm' ? (
-              <ActivityIndicator animating={true} color={'grey'}/>
+              <ActivityIndicator animating={true} color={'grey'} />
             ) : (
               <TouchableOpacity onPress={() => onRespond(id, 'confirm')}>
                 <View
@@ -119,6 +142,7 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 5,
   },
   icon: {
     height: 40,
@@ -127,6 +151,7 @@ const styles = StyleSheet.create({
   },
   nameStyle: {
     justifyContent: 'center',
+    width: width * 0.65 - 60,
   },
   buttonsContainer: {
     width: '35%',

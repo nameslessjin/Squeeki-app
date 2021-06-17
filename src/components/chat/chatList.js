@@ -133,6 +133,7 @@ export default class ChatList extends React.Component {
                   <View style={styles.chat_name_container}>
                     <Text style={styles.chat_name_style} numberOfLines={2}>
                       {name}
+                      {/* ince iwahdoai since nobody will have like it anyway */}
                     </Text>
                   </View>
                   <View style={styles.chat_time_container}>
@@ -316,19 +317,17 @@ const styles = StyleSheet.create({
     width: width - 10 - width * 0.18,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    // paddingTop: 5,
   },
   chat_name_style: {
     fontSize: 15,
     fontWeight: '500',
   },
   chat_name_container: {
-    height: 35,
+    height: 40,
     width: '75%',
     justifyContent: 'center',
     alignItems: 'flex-start',
     paddingLeft: 3,
-    // backgroundColor: 'green'
   },
   chat_right_up_container: {
     flexDirection: 'row',
@@ -338,12 +337,11 @@ const styles = StyleSheet.create({
     maxHeight: 35,
   },
   chat_right_bottom_container: {
-    height: 35,
+    height: 40,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    // paddingTop: 5,
   },
   chat_time_container: {
     width: '25%',

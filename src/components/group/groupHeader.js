@@ -230,7 +230,7 @@ class GroupHeader extends React.Component {
                     {total_point_display}
                   </Text>
                   <Text style={{fontSize: 9, color: 'grey'}}>
-                    {`${month} base points`}: {base_point_time_display}
+                    {`Monthly base points`}: {base_point_time_display}
                   </Text>
                   {/* <Text style={{fontSize: 9, color: 'grey'}}>
                     {begin_month +
@@ -328,7 +328,7 @@ class GroupHeader extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    maxHeight: 600,
+    maxHeight: 650,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     borderBottomWidth: 0.5,
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   leaderboard: {
     padding: 7,
     width: '100%',
-    maxHeight: 120,
+    maxHeight: 140,
     backgroundColor: '#ecf0f1',
   },
 });

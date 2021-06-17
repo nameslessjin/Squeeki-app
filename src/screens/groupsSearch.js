@@ -143,7 +143,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: 'yellow'
   },
   addButton: {
     backgroundColor: 'orange',

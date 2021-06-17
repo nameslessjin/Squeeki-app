@@ -1,6 +1,8 @@
 import React from 'react';
-import {FlatList, View, Text, StyleSheet, Image} from 'react-native';
+import {FlatList, View, Text, StyleSheet, Image, Dimensions} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const { width } = Dimensions.get('screen')
 
 const extractKey = ({user}) => user.id;
 export default class Leaderboard extends React.Component {
@@ -26,15 +28,19 @@ export default class Leaderboard extends React.Component {
     const {username, id, displayName, icon, group_username} = user;
     const {icon_option} = this.state;
 
-    const trophyColors = ['#f1bc12', '#bdc3c7', '#cd6133']
+    const trophyColors = ['#f1bc12', '#bdc3c7', '#cd6133'];
+
 
     return index <= 2 ? (
-        
       <View style={styles.user}>
-        <View style={[styles.user, {paddingVertical: 0, width: '80%'}]}>
-            <View style={{width: 25, height: 25, marginRight: 5}}>
-                <MaterialIcons name={index == 0 ? 'trophy' : 'trophy-variant'} color={trophyColors[index]} size={25} />
-            </View>
+        <View style={[styles.user, {paddingVertical: 0, width: '90%'}]}>
+          <View style={{width: 25, height: 25, marginRight: 5}}>
+            <MaterialIcons
+              name={index == 0 ? 'trophy' : 'trophy-variant'}
+              color={trophyColors[index]}
+              size={25}
+            />
+          </View>
           <View style={styles.imgHolder}>
             {icon != null ? (
               <Image source={{uri: icon.uri}} style={styles.icon} />
@@ -43,14 +49,19 @@ export default class Leaderboard extends React.Component {
             )}
           </View>
           <View style={styles.nameStyle}>
-            <Text style={{marginLeft: 4}}>{group_username}</Text>
+            <Text>{group_username}</Text>
           </View>
         </View>
-        <View style={{width: '20%', justifyContent: 'center', alignItems: 'center'}}>
+        <View
+          style={{
+            width: '10%',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+          }}>
           <Text>{base_point}</Text>
         </View>
       </View>
-    ) : null
+    ) : null;
   };
 
   render() {
@@ -80,6 +91,7 @@ const styles = StyleSheet.create({
     height: 25,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 5
   },
   icon: {
     height: 25,
@@ -88,5 +100,6 @@ const styles = StyleSheet.create({
   },
   nameStyle: {
     justifyContent: 'center',
+    width: width * 0.9 - 80,
   },
 });

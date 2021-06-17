@@ -97,6 +97,30 @@ class Chat extends React.Component {
     this._giftedChatRef = undefined;
     const {navigation, route, group} = this.props;
     const {name, id, icon, is_dm, second_userId} = this.state;
+    let headerTitleSize = 18
+    if (name.trim().length >= 15){
+      headerTitleSize = 16
+    }
+
+    if (name.trim().length >= 20){
+      headerTitleSize = 15
+    }
+
+    if (name.trim().length >= 30){
+      headerTitleSize = 13
+    }
+
+    if (name.trim().length >= 35){
+      headerTitleSize = 11
+    }
+
+    if (name.trim().length >= 40){
+      headerTitleSize = 10
+    }
+
+    if (name.trim().length >= 45){
+      headerTitleSize = 8
+    }
 
     navigation.setOptions({
       headerShown: false,
@@ -105,7 +129,10 @@ class Chat extends React.Component {
       navigation.setOptions({
         headerShown: true,
         headerBackTitleVisible: false,
-        headerTitle: name,
+        headerTitle: name.trim(),
+        headerTitleStyle: {
+          fontSize: headerTitleSize
+        },
         headerRight: () => (
           <HeaderRightButton
             type={'icon'}

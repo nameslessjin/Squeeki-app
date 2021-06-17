@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   },
   IconContainer: {
     width: 70,
-    // backgroundColor: 'yellow',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',

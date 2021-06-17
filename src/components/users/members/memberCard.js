@@ -5,30 +5,29 @@ import {
   Image,
   Text,
   TouchableWithoutFeedback,
-  Dimensions
+  Dimensions,
 } from 'react-native';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { dateConversion } from '../../../utils/time'
+import {dateConversion} from '../../../utils/time';
 
 const {width} = Dimensions.get('screen');
 
 class MemberCard extends React.Component {
-
   state = {
-    icon_option: 'emoticon-cool-outline'
-  }
+    icon_option: 'emoticon-cool-outline',
+  };
 
   onPress = () => {
-      const {navigation, item} = this.props
-      const {id, username, displayName, auth, icon} = item;
-      navigation.navigate("Member", {
-          ...item,
-          prev_route: 'Members',
-      })
-  }
+    const {navigation, item} = this.props;
+    const {id, username, displayName, auth, icon} = item;
+    navigation.navigate('Member', {
+      ...item,
+      prev_route: 'Members',
+    });
+  };
 
-  componentDidMount(){
+  componentDidMount() {
     const random = Math.floor(Math.random() * 5);
     const icon_options = [
       'emoticon-cool-outline',
@@ -37,44 +36,76 @@ class MemberCard extends React.Component {
       'emoticon-wink-outline',
       'emoticon-tongue-outline',
     ];
-    this.setState({icon_option: icon_options[random]})
+    this.setState({icon_option: icon_options[random]});
   }
 
   render() {
     const {item, navigation} = this.props;
-    const {id, username, displayName, auth, icon, lastActiveAt, group_username} = item;
-    const time = dateConversion(lastActiveAt)
-    const { icon_option} = this.state
+    const {
+      id,
+      username,
+      displayName,
+      auth,
+      icon,
+      lastActiveAt,
+      group_username,
+    } = item;
+    const time = dateConversion(lastActiveAt);
+    const {icon_option} = this.state;
 
-    let group_username_size = 14;
-    
+    let group_username_size = 16;
+
     if (group_username.length > 20) {
-      group_username_size = 13;
+      group_username_size = 15;
     }
     if (group_username.length > 25) {
-      group_username_size = 10;
+      group_username_size = 14;
+    }
+
+    if (group_username.length > 35){
+      group_username_size = 13
+    }
+
+    if (group_username.length > 45){
+      group_username_size = 12
+    }
+
+    let titleSize = 13;
+    if (auth.title.length > 20) {
+      titleSize = 12;
     }
 
     return (
       <TouchableWithoutFeedback onPress={this.onPress}>
         <View style={styles.container}>
-          {icon != null ? (
-            <Image
-              source={{uri: icon.uri}}
-              style={styles.image}
-            />
-          ) : (
-            <MaterialIcons
-              name={icon_option}
-              size={120}
-              style={{height: 115}}
-            />
-          )}
-          <Text style={[styles.displayName, {fontSize: group_username_size}]}>
-            {group_username}
-          </Text>
-          <Text numberOfLines={2} style={styles.title}>{"<" + auth.title.charAt(0).toUpperCase() + auth.title.slice(1) + '>'}</Text>
-          <Text style={{color: 'grey', fontSize: 11, marginTop: 3}} >Last seen: {time}</Text>
+          <View style={styles.imageContainer}>
+            {icon != null ? (
+              <Image source={{uri: icon.uri}} style={styles.image} />
+            ) : (
+              <MaterialIcons
+                name={icon_option}
+                size={120}
+                style={{height: 115}}
+              />
+            )}
+          </View>
+          <View style={styles.name}>
+            <Text style={{fontSize: group_username_size, textAlign: 'center'}}>
+              {group_username}
+            </Text>
+            <Text
+              style={{
+                fontSize: titleSize,
+                color: 'grey',
+                marginTop: 3,
+                textAlign: 'center',
+              }}>
+              {'<' + auth.title + '>'}
+            </Text>
+          </View>
+          <View style={styles.time}>
+            <Text style={{color: 'grey', fontSize: 11}}>Last seen: {time}</Text>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     );
@@ -84,11 +115,11 @@ class MemberCard extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: 170,
-    height: 200,
+    height: 225,
     backgroundColor: 'white',
-    justifyContent: 'center',
     alignItems: 'center',
-    margin: 5,
+    marginVertical: 5,
+    marginHorizontal: (width - 177 * 2) / 4,
     shadowOffset: {
       width: 0,
       height: 0,
@@ -97,19 +128,37 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     shadowColor: 'grey',
     shadowOpacity: 0.5,
-    marginHorizontal: (width - 177 * 2) / 4,
   },
   image: {
     height: 100,
     aspectRatio: 1,
     borderRadius: 50,
   },
-  displayName: {
-    marginTop: 10,
+  imageContainer: {
+    width: '100%',
+    alignItems: 'center',
+    height: 110,
+    justifyContent: 'flex-end',
   },
-  title: {
+  name: {
+    width: '100%',
+    minHeight: 65,
+    maxHeight: 90,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 7,
+    paddingHorizontal: 10,
+  },
+  time: {
+    width: '100%',
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 5,
   },
 });
 
-export default connect(null, null)(MemberCard)
+export default connect(
+  null,
+  null,
+)(MemberCard);

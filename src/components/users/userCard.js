@@ -69,28 +69,28 @@ export default class UserCard extends React.Component {
       in_group_message = 'In Chat'
     }
 
+
     let displayNameSize = 16;
-    if (displayName.length > 20) {
+    if (displayName.length > 25) {
       displayNameSize = 15;
     }
-    if (displayName.length > 25) {
-      displayNameSize = 13;
+    if (displayName.length > 35) {
+      displayNameSize = 14;
     }
 
     let group_username_size = 16;
     if (group_username) {
-      if (group_username.length > 20) {
+      if (group_username.length > 25) {
         group_username_size = 15;
       }
-      if (group_username.length > 25) {
-        group_username_size = 13;
+      if (group_username.length > 35) {
+        group_username_size = 14;
       }
     }
 
     let userNameSize = 13;
-    if (username.length > 25) {
-      userNameSize = 12;
-    }
+
+
 
     return (
       <TouchableWithoutFeedback
@@ -120,7 +120,7 @@ export default class UserCard extends React.Component {
                 {group_username != null ? group_username : displayName}
               </Text>
               <Text style={[styles.usernameStyle, {fontSize: userNameSize}]}>
-                {username}
+                @{username}
               </Text>
             </View>
           </View>
@@ -136,7 +136,8 @@ export default class UserCard extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 75,
+    minHeight: 75,
+    maxHeight: 85,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',

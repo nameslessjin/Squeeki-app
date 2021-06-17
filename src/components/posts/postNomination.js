@@ -34,7 +34,7 @@ export default class PostNomination extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    maxHeight: 70,
+    maxHeight: 100,
     alignItems: 'center',
     justifyContent: 'center',
   },

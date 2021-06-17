@@ -5,8 +5,11 @@ import {
   View,
   Text,
   Image,
+  Dimensions
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const {width} = Dimensions.get('screen')
 
 export default class LeaderboardCard extends React.Component {
   state = {
@@ -35,7 +38,7 @@ export default class LeaderboardCard extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <View style={styles.user}>
-          <View style={[styles.user, {paddingVertical: 0, width: '80%'}]}>
+          <View style={[styles.user, {paddingVertical: 0, width: '90%'}]}>
             {index <= 3 ? (
               <View style={styles.trophy}>
                 <MaterialIcons
@@ -57,8 +60,9 @@ export default class LeaderboardCard extends React.Component {
               )}
             </View>
             <View style={styles.nameStyle}>
-              <Text style={{marginLeft: 4}}>{group_username}</Text>
+              <Text>{group_username}</Text>
             </View>
+            
           </View>
           <View style={styles.pointContainer}>
             <Text>{base_point}</Text>
@@ -81,6 +85,7 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 5
   },
   icon: {
     height: 40,
@@ -89,6 +94,7 @@ const styles = StyleSheet.create({
   },
   nameStyle: {
     justifyContent: 'center',
+    width: width * 0.9 - 115,
   },
   trophy: {
     width: 40,
@@ -98,8 +104,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pointContainer: {
-    width: '20%',
+    width: '10%',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
 });

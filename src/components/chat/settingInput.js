@@ -79,7 +79,7 @@ export default class RewardSettingInput extends React.Component {
             value={value ? value : ''}
             onChangeText={v => onInputChange(type, v)}
             keyboardType={type == 'rank' ? 'number-pad' : 'default'}
-            maxlength={type == 'rank' ? 1 : 30}
+            maxlength={type == 'rank' ? 1 : 50}
             placeholder={type == 'name' ? 'Chat Name' : ''}
             placeholderTextColor={'#bdc3c7'}
             editable={!disabled}
