@@ -12,7 +12,13 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {Composer, Bubble, MessageText} from 'react-native-gifted-chat';
+import {
+  Composer,
+  Bubble,
+  MessageContainer,
+  MessageText,
+  Time,
+} from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import ParsedText from 'react-native-parsed-text';
@@ -229,10 +235,9 @@ const onMessageImageLongPress = props => {
 };
 
 export const RenderTicks = props => {
-  const {message, is_dm} = props;
+  const {message, is_dm, isSelf} = props;
   const {read_count} = message.status;
-
-  return is_dm && read_count > 1 ? (
+  return isSelf && is_dm && read_count > 1 ? (
     <View
       style={{
         width: 15,
@@ -244,7 +249,7 @@ export const RenderTicks = props => {
       <MaterialIcons
         name={'check-circle-outline'}
         size={15}
-        color={'#ecf0f1'}
+        color={'#747d8c'}
       />
     </View>
   ) : null;
@@ -348,13 +353,39 @@ export const renderComposer = props => {
 };
 
 export const renderBubble = props => {
-
   return (
-    <Bubble {...props} wrapperStyle={{right: {backgroundColor: '#5AA1E7'}}} />
-  )
-}
+    <Bubble
+      {...props}
+      wrapperStyle={{right: {backgroundColor: '#ced6e0'}}}
+    />
+  );
+};
 
 export const renderText = (matchingString, matches) => {
-  const pattern = /\[():():()\]/
+  if (matches[1].substr(1, matches[1].length - 1) == matches[2]) {
+    return matches[1];
+  }
 
-}
+  return `${matches[1]}(${matches[2]})`;
+};
+
+export const renderMessageContainer = props => {
+  return <MessageContainer {...props} />;
+};
+
+export const renderMessageText = props => {
+  return (
+    <MessageText
+      {...props}
+      textStyle={{right: {color: 'black'}}}
+      linkStyle={{
+        left: {color: '#1e90ff', textDecorationLine: 'none'},
+        right: {color: '#1e90ff', textDecorationLine: 'none'},
+      }}
+    />
+  );
+};
+
+export const renderTime = props => {
+  return <Time {...props} timeTextStyle={{right: {color: '#747d8c'}}} />;
+};

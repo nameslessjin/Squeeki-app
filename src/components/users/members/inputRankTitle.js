@@ -34,7 +34,6 @@ export default class InputRankTitle extends React.Component {
             value={title}
             onChangeText={v => modifyInput('title', v)}
             onFocus={onTitleInputFocus}
-            multiline={true}
             maxLength={30}
             editable={allowToModifyMember}
           />

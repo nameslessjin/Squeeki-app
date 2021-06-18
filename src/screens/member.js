@@ -227,7 +227,7 @@ class Member extends React.Component {
   validation = () => {
     const {rank, title} = this.state.auth;
     const {group_username} = this.state;
-    if (title.trim().length == 0) {
+    if (title.trim().length < 1 || title.trim().length > 30) {
       return false;
     }
 

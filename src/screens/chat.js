@@ -44,7 +44,11 @@ import {
   RenderTicks,
   RenderMessageImage,
   renderComposer,
-  renderBubble
+  renderBubble,
+  renderText,
+  renderMessageContainer,
+  renderMessageText,
+  renderTime
 } from '../components/chat/render';
 import {timeDifferentInMandS} from '../utils/time';
 import HeaderRightButton from '../components/chat/headerRightButton';
@@ -97,29 +101,29 @@ class Chat extends React.Component {
     this._giftedChatRef = undefined;
     const {navigation, route, group} = this.props;
     const {name, id, icon, is_dm, second_userId} = this.state;
-    let headerTitleSize = 18
-    if (name.trim().length >= 15){
-      headerTitleSize = 16
+    let headerTitleSize = 18;
+    if (name.trim().length >= 15) {
+      headerTitleSize = 16;
     }
 
-    if (name.trim().length >= 20){
-      headerTitleSize = 15
+    if (name.trim().length >= 20) {
+      headerTitleSize = 15;
     }
 
-    if (name.trim().length >= 30){
-      headerTitleSize = 13
+    if (name.trim().length >= 30) {
+      headerTitleSize = 13;
     }
 
-    if (name.trim().length >= 35){
-      headerTitleSize = 11
+    if (name.trim().length >= 35) {
+      headerTitleSize = 11;
     }
 
-    if (name.trim().length >= 40){
-      headerTitleSize = 10
+    if (name.trim().length >= 40) {
+      headerTitleSize = 10;
     }
 
-    if (name.trim().length >= 45){
-      headerTitleSize = 8
+    if (name.trim().length >= 45) {
+      headerTitleSize = 8;
     }
 
     navigation.setOptions({
@@ -131,7 +135,7 @@ class Chat extends React.Component {
         headerBackTitleVisible: false,
         headerTitle: name.trim(),
         headerTitleStyle: {
-          fontSize: headerTitleSize
+          fontSize: headerTitleSize,
         },
         headerRight: () => (
           <HeaderRightButton
@@ -735,9 +739,7 @@ class Chat extends React.Component {
     this.setState({content: updatedContent, atUserSearchResult: []});
   };
 
-
   render() {
-
     const {auth, updateUserMessage} = this.props;
     const {
       content,
@@ -768,33 +770,40 @@ class Chat extends React.Component {
             renderUsernameOnMessage={!is_dm}
             text={content}
             user={user}
-            parsePatterns={linkStyle => [
-              {
-                type: 'url',
-                style: linkStyle,
-                onPress: onUrlPress,
-                onLongPress: url =>
-                  onLinkPhoneLongPress({type: 'url', content: url}),
-              },
-              {
-                type: 'phone',
-                style: linkStyle,
-                onPress: phone =>
-                  onPhonePress({
-                    phone,
-                    ...this._giftedChatRef._actionSheetRef,
-                  }),
-                onLongPress: phone =>
-                  onLinkPhoneLongPress({type: 'phone', content: phone}),
-              },
-              {
-                type: 'email',
-                style: linkStyle,
-                onPress: onEmailPress,
-                onLongPress: email =>
-                  onLinkPhoneLongPress({type: 'email', content: email}),
-              },
-            ]}
+            parsePatterns={linkStyle => {
+              return [
+                {
+                  type: 'url',
+                  style: linkStyle,
+                  onPress: onUrlPress,
+                  onLongPress: url =>
+                    onLinkPhoneLongPress({type: 'url', content: url}),
+                },
+                {
+                  type: 'phone',
+                  style: linkStyle,
+                  onPress: phone =>
+                    onPhonePress({
+                      phone,
+                      ...this._giftedChatRef._actionSheetRef,
+                    }),
+                  onLongPress: phone =>
+                    onLinkPhoneLongPress({type: 'phone', content: phone}),
+                },
+                {
+                  type: 'email',
+                  style: linkStyle,
+                  onPress: onEmailPress,
+                  onLongPress: email =>
+                    onLinkPhoneLongPress({type: 'email', content: email}),
+                },
+                {
+                  pattern: /\[(@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
+                  style: styles.atUser,
+                  renderText: renderText,
+                },
+              ];
+            }}
             onInputTextChanged={this.onInputChange}
             onSend={this.onSend}
             primaryStyle={{backgroundColor: 'white'}}
@@ -823,7 +832,7 @@ class Chat extends React.Component {
             scrollToBottom={true}
             onPressAvatar={this.onPressAvatar}
             renderTicks={message => (
-              <RenderTicks message={message} is_dm={is_dm} />
+              <RenderTicks message={message} is_dm={is_dm} isSelf={this.props.auth.user.id == message.user._id} />
             )}
             renderMessageImage={giftchat => (
               <RenderMessageImage
@@ -841,7 +850,10 @@ class Chat extends React.Component {
                 onAtUserPress: this.onAtUserPress,
               })
             }
-            renderBubble={props => renderBubble({...props,})}
+            renderBubble={props => renderBubble({...props})}
+            renderMessageContainer={props => renderMessageContainer({...props})}
+            renderMessageText={props => renderMessageText({...props})}
+            renderTime={props => renderTime({...props})}
           />
         </KeyboardAvoidingView>
 
@@ -871,6 +883,13 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'white',
   },
+  url: {
+
+  },
+  atUser: {
+    color: '#1e90ff',
+    // fontWeight: 'bold',
+  }
 });
 
 const mapStateToProps = state => {
