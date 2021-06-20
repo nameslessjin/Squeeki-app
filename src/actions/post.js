@@ -287,7 +287,7 @@ export const updatePost = data => {
     if (result.errors) {
       return result;
     }
-    dispatch(updatePostReducer(result.data.updatePost));
+    // dispatch(updatePostReducer(result.data.updatePost));
     return 0;
   };
 };

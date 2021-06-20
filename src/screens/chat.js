@@ -94,7 +94,7 @@ class Chat extends React.Component {
     appState: AppState.currentState,
     searchTerm: '',
     searchIndex: -1,
-    atUserSearchResult: [],
+    atSearchResult: [],
   };
 
   componentDidMount() {
@@ -508,7 +508,7 @@ class Chat extends React.Component {
       prevState.searchTerm != this.state.searchTerm &&
       this.state.searchTerm.length != 0
     ) {
-      this.onAtUserChatSearch();
+      this.onAtSearch();
     }
   }
 
@@ -569,7 +569,7 @@ class Chat extends React.Component {
   };
 
   _keyboardDidHide = () => {
-    this.setState({atUserSearchResult: []});
+    this.setState({atSearchResult: []});
   };
 
   subSocket = req => {
@@ -606,10 +606,11 @@ class Chat extends React.Component {
       currentText: text,
     });
 
+    // @user
     if (!this.state.is_dm && searchTerm[0] == '@') {
       this.setState({searchTerm, searchIndex});
     } else {
-      this.setState({searchTerm: '', searchIndex: -1, atUserSearchResult: []});
+      this.setState({searchTerm: '', searchIndex: -1, atSearchResult: []});
     }
 
     this.setState({content: text});
@@ -707,13 +708,13 @@ class Chat extends React.Component {
     this.getSingleChat(null, _id);
   };
 
-  onAtUserChatSearch = async () => {
+  onAtSearch = async () => {
     const {searchTerm, id} = this.state;
     const {group, auth, navigation, searchAtUserChat} = this.props;
 
     const request = {
       groupId: group.group.id,
-      search_term: searchTerm.substr(1, searchTerm.length - 1),
+      search_term: searchTerm.substr(1, searchTerm.length),
       chatId: id,
       token: auth.token,
     };
@@ -725,7 +726,7 @@ class Chat extends React.Component {
       return;
     }
 
-    this.setState({atUserSearchResult: result});
+    this.setState({atSearchResult: result});
   };
 
   onAtUserPress = user => {
@@ -736,7 +737,7 @@ class Chat extends React.Component {
     updatedContent[searchIndex] = `@${username}`;
     updatedContent = updatedContent.join(' ') + ' ';
 
-    this.setState({content: updatedContent, atUserSearchResult: []});
+    this.setState({content: updatedContent, atSearchResult: []});
   };
 
   render() {
@@ -754,7 +755,7 @@ class Chat extends React.Component {
       icon,
       is_dm,
       id,
-      atUserSearchResult,
+      atSearchResult,
     } = this.state;
     const user = {
       _id: auth.user.id,
@@ -846,7 +847,7 @@ class Chat extends React.Component {
             renderComposer={props =>
               renderComposer({
                 ...props,
-                atUserSearchResult,
+                atSearchResult,
                 onAtUserPress: this.onAtUserPress,
               })
             }

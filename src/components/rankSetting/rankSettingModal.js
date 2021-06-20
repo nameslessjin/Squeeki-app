@@ -42,7 +42,7 @@ export default class RankSettingModal extends React.Component {
   renderItem = i => {
     const {index, item} =i
     const {name} = item;
-    console.log(index == this.ranks.length - 1)
+
     return (
       <View>
         <TouchableOpacity onPress={() => this.onRankChange(name)}>

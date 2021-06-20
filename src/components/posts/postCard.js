@@ -22,6 +22,7 @@ import {voteNominee} from '../../actions/nomination';
 import {userLogout} from '../../actions/auth';
 import PostMedia from './postMedia';
 import PostNomination from './postNomination';
+import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 
 class PostCard extends React.Component {
   state = {
@@ -72,7 +73,7 @@ class PostCard extends React.Component {
     this.setState({onReport: false});
     if (reportResult.errors) {
       // alert(reportResult.errors[0].message);
-      alert('Cannot report post at this time, please try again later')
+      alert('Cannot report post at this time, please try again later');
       if (reportResult.errors[0].message == 'Not Authenticated') {
         userLogout;
         navigation.reset({
@@ -96,7 +97,7 @@ class PostCard extends React.Component {
 
     if (notificationResult.errors) {
       // alert(notificationResult.errors[0].message);
-      alert('Cannot change notification at this time, please try again later')
+      alert('Cannot change notification at this time, please try again later');
       if (notificationResult.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -106,10 +107,16 @@ class PostCard extends React.Component {
       }
     }
 
-    this.setState(prevState => { return {notification: !prevState.notification}})
+    this.setState(prevState => {
+      return {notification: !prevState.notification};
+    });
 
     // this.onBackDropPress();
   };
+
+  componentDidMount() {
+    this._actionSheetRef = undefined;
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.item != this.props.item) {
@@ -143,7 +150,7 @@ class PostCard extends React.Component {
       const post = await this.props.deletePost(data);
       if (post.errors) {
         // alert(post.errors[0].message);
-        alert('Cannot delete post at this time, please try again later')
+        alert('Cannot delete post at this time, please try again later');
         if (post.errors[0].message == 'Not Authenticated') {
           userLogout();
           navigation.reset({
@@ -177,7 +184,7 @@ class PostCard extends React.Component {
       navigation.navigate('PostSetting', {
         postData: postData,
         create: false,
-        prev_route: prev_route
+        prev_route: prev_route,
       });
       this.onBackDropPress();
     } else {
@@ -198,7 +205,7 @@ class PostCard extends React.Component {
     this.setState({loading: false});
     if (like.errors) {
       console.log(like.errors[0].message);
-      alert('Cannot like post at this time, please try again later')
+      alert('Cannot like post at this time, please try again later');
       if (like.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -212,10 +219,11 @@ class PostCard extends React.Component {
       return {
         ...prevState,
         liked: !prevState.liked,
-        likeCount: prevState.liked ? prevState.likeCount - 1 : prevState.likeCount + 1
-      }
-    })
-
+        likeCount: prevState.liked
+          ? prevState.likeCount - 1
+          : prevState.likeCount + 1,
+      };
+    });
   };
 
   toggleModal = () => {
@@ -241,7 +249,7 @@ class PostCard extends React.Component {
 
     if (vote.errors) {
       // alert(vote.errors[0].message);
-      alert('Cannot vote nominee at this time, please try again later')
+      alert('Cannot vote nominee at this time, please try again later');
       if (vote.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -289,7 +297,14 @@ class PostCard extends React.Component {
       selected,
       checked,
     } = this.state;
-    const {option, commentTouchable, selectionMode, onPostSelect, group, navigation} = this.props;
+    const {
+      option,
+      commentTouchable,
+      selectionMode,
+      onPostSelect,
+      group,
+      navigation,
+    } = this.props;
     const {username, icon, displayName, group_username} = user;
     const date = dateConversion(createdAt);
 
@@ -303,71 +318,86 @@ class PostCard extends React.Component {
     }
 
     return (
-      <TouchableWithoutFeedback
-        onPress={() =>
-          selectionMode && !checked ? onPostSelect({...this.props.item}) : null
-        }>
-        <View style={[styles.container, {backgroundColor: backgroundColor}]}>
-          <PostHeader
-            icon={icon}
-            username={username}
-            displayName={displayName}
-            group_username={group_username}
-            date={date}
-            auth={auth}
-            groupAuth={groupAuth}
-            postId={id}
-            onPostUpdate={this.onPostUpdate}
-            onPostDelete={this.onPostDelete}
-            onPostNotification={this.onPostNotification}
-            modalToggled={modalToggled}
-            toggleModal={this.toggleModal}
-            onBackDropPress={this.onBackDropPress}
-            type={type}
-            priority={priority}
-            notification={notification}
-            onPostReport={this.onPostReport}
-            is_report_toggled={is_report_toggled}
-            currentUserAuth={group.group.auth}
-            report={report}
-            onReportInput={this.onReportInput}
-            onSubmitReport={this.onSubmitReport}
-            onReport={onReport}
-            selectionMode={selectionMode}
-            rank_required={group.group.rank_setting ? group.group.rank_setting.manage_post_rank_required : null}
-          />
-
-          <PostMedia image={image} content={content} navigation={navigation} type={type}/>
-
-          {selectionMode ? (
-            checked ? (
-              <View style={styles.footer}>
-                <Text style={{color: 'red', marginVertical: 5}}>Checked</Text>
-              </View>
-            ) : null
-          ) : (
-            <PostFooter
-              commentCount={commentCount}
-              likeCount={0}
-              navigation={this.props.navigation}
+      <ActionSheetProvider
+        ref={component => (this._actionSheetRef = component)}>
+        <TouchableWithoutFeedback
+          onPress={() =>
+            selectionMode && !checked
+              ? onPostSelect({...this.props.item})
+              : null
+          }>
+          <View style={[styles.container, {backgroundColor: backgroundColor}]}>
+            <PostHeader
+              icon={icon}
+              username={username}
+              displayName={displayName}
+              group_username={group_username}
+              date={date}
+              auth={auth}
+              groupAuth={groupAuth}
               postId={id}
-              commentTouchable={commentTouchable}
-              onLikePress={this.onLikePress}
-              likeCount={likeCount}
-              liked={liked}
-              loading={loading}
+              onPostUpdate={this.onPostUpdate}
+              onPostDelete={this.onPostDelete}
+              onPostNotification={this.onPostNotification}
+              modalToggled={modalToggled}
+              toggleModal={this.toggleModal}
+              onBackDropPress={this.onBackDropPress}
+              type={type}
+              priority={priority}
+              notification={notification}
+              onPostReport={this.onPostReport}
+              is_report_toggled={is_report_toggled}
+              currentUserAuth={group.group.auth}
+              report={report}
+              onReportInput={this.onReportInput}
+              onSubmitReport={this.onSubmitReport}
+              onReport={onReport}
+              selectionMode={selectionMode}
+              rank_required={
+                group.group.rank_setting
+                  ? group.group.rank_setting.manage_post_rank_required
+                  : null
+              }
             />
-          )}
-          {nomination == null || selectionMode ? null : (
-            <PostNomination
-              nomination={nomination}
-              onPress={this.onVotePress}
-              voting={voting}
-              voted={nomination.voted}
+
+            <PostMedia
+              image={image}
+              content={content}
+              navigation={navigation}
+              type={type}
+              _actionSheetRef={this._actionSheetRef}
             />
-          )}
-        </View>
-      </TouchableWithoutFeedback>
+
+            {selectionMode ? (
+              checked ? (
+                <View style={styles.footer}>
+                  <Text style={{color: 'red', marginVertical: 5}}>Checked</Text>
+                </View>
+              ) : null
+            ) : (
+              <PostFooter
+                commentCount={commentCount}
+                likeCount={0}
+                navigation={this.props.navigation}
+                postId={id}
+                commentTouchable={commentTouchable}
+                onLikePress={this.onLikePress}
+                likeCount={likeCount}
+                liked={liked}
+                loading={loading}
+              />
+            )}
+            {nomination == null || selectionMode ? null : (
+              <PostNomination
+                nomination={nomination}
+                onPress={this.onVotePress}
+                voting={voting}
+                voted={nomination.voted}
+              />
+            )}
+          </View>
+        </TouchableWithoutFeedback>
+      </ActionSheetProvider>
     );
   }
 }
@@ -385,8 +415,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     width: '100%',
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });
 
 const mapStateToProps = state => {
@@ -401,7 +431,7 @@ const mapDispatchToProps = dispatch => {
     likePost: data => dispatch(likePost(data)),
     changePostNotification: data => dispatch(changePostNotification(data)),
     reportPost: data => dispatch(reportPost(data)),
-    voteNominee: data => dispatch(voteNominee(data))
+    voteNominee: data => dispatch(voteNominee(data)),
   };
 };
 

@@ -10,11 +10,12 @@ import {
   getStatusInGroupQuery,
   searchGroupMembersQuery,
   getUserRelationQuery,
-  updateUserRelationMutation
+  updateUserRelationMutation,
+  searchAtUserQuery,
 } from './query/userQuery';
 import {getGroup} from './group';
 import {http} from '../../server_config';
-import {httpCall} from './utils/httpCall'
+import {httpCall} from './utils/httpCall';
 
 export const getGroupMembers = data => {
   const {groupId, token, count, userIdList} = data;
@@ -33,7 +34,7 @@ export const getGroupMembers = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -78,13 +79,12 @@ export const searchGroupMembers = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
-    if (result.errors){
-      return result
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
     }
 
-    return result.data.searchGroupMembers
-
+    return result.data.searchGroupMembers;
   };
 };
 
@@ -118,7 +118,7 @@ export const updateMember = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -142,7 +142,7 @@ export const changeGroupNotification = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -170,7 +170,7 @@ export const registerDeviceForNotification = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -189,7 +189,7 @@ export const searchUser = data => {
     userIdList,
     inGroup,
     checkin_id,
-    chatId
+    chatId,
   } = data;
 
   return async function(dispatch) {
@@ -200,7 +200,7 @@ export const searchUser = data => {
       userIdList: userIdList,
       inGroup: inGroup,
       checkin_id: checkin_id,
-      chatId
+      chatId,
     };
 
     const graphql = {
@@ -210,12 +210,11 @@ export const searchUser = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
     }
-
 
     return result.data.searchUser;
   };
@@ -237,7 +236,7 @@ export const addMembers = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -256,7 +255,7 @@ export const deleteMember = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -276,7 +275,7 @@ export const makeOwner = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -295,7 +294,7 @@ export const getStatusInGroup = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -306,57 +305,79 @@ export const getStatusInGroup = data => {
 };
 
 export const getUserRelation = data => {
-  const {token, second_userId, chatId } = data
+  const {token, second_userId, chatId} = data;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const input = {
       second_userId,
-      chatId
-    }
+      chatId,
+    };
 
     const graphql = {
       query: getUserRelationQuery,
       variables: {
-        input: input
-      }
+        input: input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+
+    if (result.errors) {
+      return result;
     }
 
-    const result = await httpCall(token, graphql)
-
-    if (result.errors){
-      return result
-    }
-
-    return result.data.getUserRelation
-
-  }
-
-}
+    return result.data.getUserRelation;
+  };
+};
 
 export const updateUserRelation = data => {
-  const {token, second_userId, is_dm_blocked, chatId} = data
+  const {token, second_userId, is_dm_blocked, chatId} = data;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const input = {
       second_userId,
       is_dm_blocked,
-      chatId
-    }
+      chatId,
+    };
 
     const graphql = {
       query: updateUserRelationMutation,
       variables: {
-        input: input
-      }
+        input: input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+
+    if (result.errors) {
+      return result;
     }
 
-    const result = await httpCall(token, graphql)
+    return result.data.updateUserRelation;
+  };
+};
 
-    if (result.errors){
-      return result
+export const searchAtUser = data => {
+  const {searchTerm, groupId} = data;
+
+  return async function(dispatch) {
+    const input = {
+      searchTerm,
+      groupId,
+    };
+
+    const graphql = {
+      query: searchAtUserQuery,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(null, graphql);
+    if (result.errors) {
+      return result;
     }
 
-    return result.data.updateUserRelation
-
-  }
-}
+    return result.data.searchAtUser;
+  };
+};

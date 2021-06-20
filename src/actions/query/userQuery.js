@@ -159,3 +159,14 @@ mutation updateUserRelation($input: UserRelationInput!){
     }
 }
 `
+
+export const searchAtUserQuery = `
+query searchAtUser($input: SearchUserInput!){
+    searchAtUser(input: $input){
+        id
+        username
+        displayName
+        iconUrl
+    }
+}
+`

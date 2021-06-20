@@ -46,7 +46,7 @@ export const detectAtPeopleNGroup = prop => {
         const prevChar = prevTextArray[currentModifyingTermIndex];
         if (
           prevChar[0] == '@' &&
-          prevChar.substr(1, prevChar.length - 1) ==
+          prevChar.substr(1, prevChar.length) ==
             currentTextArray[currentModifyingTermIndex + 1]
         ) {
           isNewEmptySpaceAfterExistingTag = true;
@@ -69,7 +69,7 @@ export const detectAtPeopleNGroup = prop => {
         if (
           prevChar[0] == 'g' &&
           prevChar[1] == '@' &&
-          prevChar.substr(2, prevChar.length - 1) ==
+          prevChar.substr(2, prevChar.length) ==
             currentTextArray[currentModifyingTermIndex + 1]
         ) {
           isNewEmptySpaceAfterExistingTag = true;
@@ -92,10 +92,10 @@ export const detectAtUserNGroupInCurrentText = text => {
   const textArray = text.split(' ');
   const atUser = textArray
     .filter(item => item[0] == '@' && item.length >= 5)
-    .map(u => u.substr(1, u.length - 1));
+    .map(u => u.substr(1, u.length));
   const atGroup = textArray
     .filter(item => item[0] == 'g' && item[1] == '@' && item.length >= 6)
-    .map(g => g.substr(2, g.length - 1));
+    .map(g => g.substr(2, g.length));
 
   return {atUser, atGroup};
 };

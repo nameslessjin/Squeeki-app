@@ -271,11 +271,12 @@ const renderAtUserItem = ({item, onAtUserPress}) => {
     userId,
     username,
   };
+
   return (
     <TouchableWithoutFeedback onPress={() => onAtUserPress(user)}>
       <View
         style={{
-          height: 50,
+          minHeight: 50,
           width: '100%',
           flexDirection: 'row',
           alignItems: 'center',
@@ -284,10 +285,10 @@ const renderAtUserItem = ({item, onAtUserPress}) => {
         }}>
         <View
           style={{
-            height: '100%',
+            height: 50,
             aspectRatio: 1,
             justifyContent: 'center',
-            lignItems: 'flex-start',
+            alignItems: 'center',
           }}>
           {icon ? (
             <Image
@@ -300,11 +301,10 @@ const renderAtUserItem = ({item, onAtUserPress}) => {
         </View>
         <View
           style={{
-            height: 50,
+            minHeight: 50,
             alignItems: 'flex-start',
             justifyContent: 'center',
-            width: '100%',
-            marginLeft: 5,
+            width: width - 150,
           }}>
           <Text style={{color: 'black', fontSize: 15}}>{displayName}</Text>
           <Text style={{color: 'grey', fontSize: 13}}>@{username}</Text>
@@ -315,11 +315,11 @@ const renderAtUserItem = ({item, onAtUserPress}) => {
 };
 
 export const renderComposer = props => {
-  const {atUserSearchResult, composerHeight, onAtUserPress} = props;
+  const {atSearchResult, composerHeight, onAtUserPress} = props;
 
   return (
     <React.Fragment>
-      {atUserSearchResult.length > 0 ? (
+      {atSearchResult.length > 0 ? (
         <View
           style={{
             maxHeight: 150,
@@ -333,7 +333,7 @@ export const renderComposer = props => {
           }}>
           <FlatList
             style={{maxHeight: 150, width: width - 85}}
-            data={atUserSearchResult}
+            data={atSearchResult}
             renderItem={props => renderAtUserItem({...props, onAtUserPress})}
             keyExtractor={extractKey}
             alwaysBounceHorizontal={false}
@@ -362,7 +362,8 @@ export const renderBubble = props => {
 };
 
 export const renderText = (matchingString, matches) => {
-  if (matches[1].substr(1, matches[1].length - 1) == matches[2]) {
+
+  if (matches[1].substr(1, matches[1].length) == matches[2]) {
     return matches[1];
   }
 

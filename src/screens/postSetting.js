@@ -7,6 +7,7 @@ import {
   View,
   ActivityIndicator,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
 import InputContent from '../components/postSetting/inputContent';
@@ -17,11 +18,14 @@ import AddOrModifyPost from '../components/postSetting/addOrModifyPost';
 import {createPost, getFeed, getGroupPosts, updatePost} from '../actions/post';
 import {getFeedFunc, getGroupPostsFunc} from '../functions/post';
 import {userLogout} from '../actions/auth';
+import {searchAtUser} from '../actions/user';
 import NominationButton from '../components/postSetting/nominationButton';
 import {getSundays} from '../utils/time';
 import PostSettingModal from '../components/postSetting/postSettingModal';
 import {getUserGroupPoint} from '../actions/point';
 import {getSingleGroupById} from '../actions/group';
+import {detectAtPeopleNGroup} from '../utils/detect';
+import AtUserList from '../components/postSetting/atUserList';
 
 class PostSetting extends React.Component {
   state = {
@@ -35,6 +39,7 @@ class PostSetting extends React.Component {
       type: 'post',
       groupId: null,
       visibility: 'public',
+      originContent: ''
     },
     onToggle: false,
     toggleTyple: 'priority',
@@ -45,6 +50,9 @@ class PostSetting extends React.Component {
     chosenUser: {},
     nomination: {},
     modalVisible: false,
+    searchTerm: '',
+    searchIndex: -1,
+    atSearchResult: [],
   };
 
   componentDidMount() {
@@ -63,12 +71,13 @@ class PostSetting extends React.Component {
         groupId,
         nomination,
         visibility,
+        originContent
       } = this.props.route.params.postData;
       this.setState({
         postData: {
           postId: id,
           image: image,
-          content: content,
+          content: originContent,
           priority: priority,
           priorityDuration: priorityDuration,
           allowComment: allowComment,
@@ -76,6 +85,7 @@ class PostSetting extends React.Component {
           groupId: groupId,
           nomination: nomination,
           visibility: visibility,
+          originContent
         },
       });
 
@@ -126,6 +136,8 @@ class PostSetting extends React.Component {
       const {chosenUser, nomination} = this.props.route.params;
       this.setState({chosenUser: chosenUser, nomination: nomination});
     }
+
+    // general checking
     if (prevState != this.state) {
       let update = false;
       update = this.extractData().update;
@@ -139,6 +151,14 @@ class PostSetting extends React.Component {
           />
         ),
       });
+    }
+
+    // check for search term
+    if (
+      prevState.searchTerm != this.state.searchTerm &&
+      this.state.searchTerm.length >= 2
+    ) {
+      this.onAtSearch();
     }
   }
 
@@ -220,6 +240,10 @@ class PostSetting extends React.Component {
       visibility,
     } = postData;
     content = content.trim();
+
+    if (content.length > 255) {
+      return {update: false};
+    }
 
     if (!create) {
       origin = {
@@ -313,7 +337,7 @@ class PostSetting extends React.Component {
       getGroupPosts,
       navigation,
       userLogout,
-      group
+      group,
     } = this.props;
     const {token} = this.props.auth;
 
@@ -354,7 +378,7 @@ class PostSetting extends React.Component {
     }
     this.setState({loading: false});
 
-    if (group.group.id){
+    if (group.group.id) {
       const data = {
         token: token,
         groupId: group.group.id,
@@ -376,25 +400,46 @@ class PostSetting extends React.Component {
       getFeedFunc(data);
     }
 
-    if (this.props.route.params.prev_route == 'comment'){
-      navigation.navigate(group.group.id ? 'GroupNavigator' : 'Home')
-      return 
+    if (this.props.route.params.prev_route == 'comment') {
+      navigation.navigate(group.group.id ? 'GroupNavigator' : 'Home');
+      return;
     }
 
     navigation.goBack();
   };
 
-  atUser = value => {
-    let str = value;
-    let lastChar = str.charAt(str.length - 1);
+  onAtSearch = async () => {
+    const {searchTerm} = this.state;
+    const {group, searchAtUser} = this.props;
 
-    if (lastChar == '@') {
+    const request = {
+      groupId: group.group.id,
+      searchTerm: searchTerm.trim().substr(1, searchTerm.length),
+    };
+
+    const result = await searchAtUser(request);
+    if (result.errors) {
+      console.log(result.errors);
+      return;
     }
+
+    this.setState({atSearchResult: result});
   };
 
   modifyInput = (value, type) => {
     if (type == 'content') {
-      this.atUser(value);
+      const {searchTerm, searchIndex} = detectAtPeopleNGroup({
+        prevText: this.state.postData.content,
+        currentText: value,
+      });
+
+      // @user
+      if (searchTerm[0] == '@') {
+        this.setState({searchTerm, searchIndex});
+      } else {
+        this.setState({searchTerm: '', searchIndex: -1, atSearchResult: []});
+      }
+
       this.setState({
         contentKeyboard: true,
         postData: {
@@ -477,6 +522,19 @@ class PostSetting extends React.Component {
     Keyboard.dismiss();
   };
 
+  onAtPress = user => {
+    const {username, id} = user;
+    const {searchIndex, postData} = this.state;
+
+    let updatedContent = postData.content.split(' ');
+    updatedContent[searchIndex] = `@${username}`;
+    updatedContent = updatedContent.join(' ') + ' ';
+    this.setState({
+      atSearchResult: [],
+      postData: {...postData, content: updatedContent.substr(0, 255)},
+    });
+  };
+
   onNominateePress = () => {
     const {navigation, group} = this.props;
     navigation.navigate('SearchUser', {
@@ -499,7 +557,7 @@ class PostSetting extends React.Component {
       image,
       groupId,
       visibility,
-      postId
+      postId,
     } = this.state.postData;
     const {
       onToggle,
@@ -510,92 +568,108 @@ class PostSetting extends React.Component {
       nomination,
       create,
       modalVisible,
+      atSearchResult,
     } = this.state;
 
-  
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
-        <KeyboardAvoidingView style={styles.container}>
-          <StatusBar barStyle={'dark-content'} />
-          <InputImage
-            modifyInput={this.modifyInput}
-            image={image}
-            contentKeyboard={contentKeyboard}
-            onPress={this.onAddMeidaPress}
-            create={create}
-          />
-          <InputContent
-            content={content}
-            modifyInput={this.modifyInput}
-            onKeyboardInputFocus={this.onKeyboardInputFocus}
-          />
-
-          {this.props.group.group.id == null ? null : (
-            <InputPriority
-              priority={priority}
-              onInputFocus={this.onInputFocus}
-              priorityDuration={priorityDuration}
+        <ScrollView style={styles.scroll} bounces={false}>
+          <KeyboardAvoidingView style={styles.container}>
+            <StatusBar barStyle={'dark-content'} />
+            <InputImage
               modifyInput={this.modifyInput}
-              onBackdropPress={this.onBackdropPress}
-              onToggle={onToggle}
-              toggleTyple={toggleTyple}
+              image={image}
+              contentKeyboard={contentKeyboard}
+              onPress={this.onAddMeidaPress}
+              create={create}
+            />
+            <InputContent
+              content={content}
+              modifyInput={this.modifyInput}
               onKeyboardInputFocus={this.onKeyboardInputFocus}
-              currentUserAuth={this.props.group.group.auth}
-              rank_setting={this.props.group.group.rank_setting}
             />
-          )}
 
-          <View style={styles.lineContainer}>
-            <InputPicker
-              value={type}
-              onInputFocus={this.onInputFocus}
-              modifyInput={this.modifyInput}
+            {atSearchResult.length == 0 ? null : (
+              <AtUserList
+                atSearchResult={atSearchResult}
+                isPicSet={image != null}
+                onAtPress={this.onAtPress}
+              />
+            )}
+
+            {atSearchResult.length != 0 ||
+            this.props.group.group.id == null ? null : (
+              <InputPriority
+                priority={priority}
+                onInputFocus={this.onInputFocus}
+                priorityDuration={priorityDuration}
+                modifyInput={this.modifyInput}
+                onBackdropPress={this.onBackdropPress}
+                onToggle={onToggle}
+                toggleTyple={toggleTyple}
+                onKeyboardInputFocus={this.onKeyboardInputFocus}
+                currentUserAuth={this.props.group.group.auth}
+                rank_setting={this.props.group.group.rank_setting}
+              />
+            )}
+
+            {atSearchResult.length != 0 ? null : (
+              <View style={styles.lineContainer}>
+                <InputPicker
+                  value={type}
+                  onInputFocus={this.onInputFocus}
+                  modifyInput={this.modifyInput}
+                  onBackdropPress={this.onBackdropPress}
+                  onToggle={onToggle}
+                  type={'type'}
+                  toggleTyple={toggleTyple}
+                />
+                <InputPicker
+                  value={allowComment}
+                  onInputFocus={this.onInputFocus}
+                  modifyInput={this.modifyInput}
+                  onBackdropPress={this.onBackdropPress}
+                  onToggle={onToggle}
+                  type={'comment'}
+                  toggleTyple={toggleTyple}
+                />
+              </View>
+            )}
+
+            {atSearchResult.length != 0 ? null : (
+              <View style={styles.lineContainer}>
+                <InputPicker
+                  value={visibility}
+                  onInputFocus={this.onInputFocus}
+                  modifyInput={this.modifyInput}
+                  onBackdropPress={this.onBackdropPress}
+                  onToggle={onToggle}
+                  type={'visibility'}
+                  toggleTyple={toggleTyple}
+                />
+              </View>
+            )}
+
+            {atSearchResult.length != 0 ||
+            this.props.group.group.id == null ? null : (
+              <NominationButton
+                onPress={this.onNominateePress}
+                chosenUser={chosenUser}
+                nomination={nomination}
+                disabled={!create}
+                group={this.props.group.group}
+                postId={postId}
+              />
+            )}
+            <ActivityIndicator animating={loading} color={'grey'} />
+
+            <PostSettingModal
+              modalVisible={modalVisible}
               onBackdropPress={this.onBackdropPress}
-              onToggle={onToggle}
-              type={'type'}
-              toggleTyple={toggleTyple}
+              onChangeMedia={this.modifyInput}
             />
-            <InputPicker
-              value={allowComment}
-              onInputFocus={this.onInputFocus}
-              modifyInput={this.modifyInput}
-              onBackdropPress={this.onBackdropPress}
-              onToggle={onToggle}
-              type={'comment'}
-              toggleTyple={toggleTyple}
-            />
-          </View>
-
-          <View style={styles.lineContainer}>
-            <InputPicker
-              value={visibility}
-              onInputFocus={this.onInputFocus}
-              modifyInput={this.modifyInput}
-              onBackdropPress={this.onBackdropPress}
-              onToggle={onToggle}
-              type={'visibility'}
-              toggleTyple={toggleTyple}
-            />
-          </View>
-
-          {this.props.group.group.id == null ? null : (
-            <NominationButton
-              onPress={this.onNominateePress}
-              chosenUser={chosenUser}
-              nomination={nomination}
-              disabled={!create}
-              group={this.props.group.group}
-              postId={postId}
-            />
-          )}
-          <ActivityIndicator animating={loading} color={'grey'}/>
-
-          <PostSettingModal
-            modalVisible={modalVisible}
-            onBackdropPress={this.onBackdropPress}
-            onChangeMedia={this.modifyInput}
-          />
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </ScrollView>
       </TouchableWithoutFeedback>
     );
   }
@@ -607,6 +681,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     flex: 1,
+  },
+  scroll: {
+    backgroundColor: 'white',
+    height: '100%',
+    width: '100%',
   },
   lineContainer: {
     width: '90%',
@@ -631,6 +710,7 @@ const mapDispatchToProps = dispatch => {
     userLogout: () => dispatch(userLogout()),
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
+    searchAtUser: data => dispatch(searchAtUser(data)),
   };
 };
 

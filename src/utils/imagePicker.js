@@ -391,9 +391,9 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
 export const editPhoto = (image, func, input_type) => {
   let {path, type} = image;
 
-  if (Platform.OS == 'android'){
-    if (path.search('file://') == 0){
-      path = path.split('file://')[1]
+  if (Platform.OS == 'android') {
+    if (path.search('file://') == 0) {
+      path = path.split('file://')[1];
     }
   }
 
@@ -409,7 +409,9 @@ export const editPhoto = (image, func, input_type) => {
             uri: imagePath,
           };
           func(upload, input_type);
-          RNFS.unlink(path)
+          if (input_type == null) {
+            RNFS.unlink(path);
+          }
         })
         .catch(err => console.log(err));
     },
@@ -440,7 +442,6 @@ export const handleDownload = async props => {
       .then(res => console.log(res))
       .catch(err => console.log(err));
   } else {
-
     Clipboard.setString(path);
   }
 

@@ -9,6 +9,7 @@ query getGroupPosts($input: GetPostInput!){
                 uri
             }
             content
+            originContent
             createdAt
             updatedAt
             user {
@@ -63,6 +64,7 @@ query getFeed($count: Int!){
                 uri
             }
             content
+            originContent
             createdAt
             updatedAt
             user {
@@ -149,38 +151,7 @@ mutation createPost($postInput: PostInput!){
 
 export const updatePostMutation = `
 mutation updatePost($postInput: PostInput!){
-    updatePost(input: $postInput){
-        id
-        image{
-            uri
-        }
-        content
-        createdAt
-        updatedAt
-        user {
-            id
-            username
-            displayName
-            group_username
-            icon {
-                uri
-            }
-        }
-        groupAuth {
-            rank
-            title
-        }
-        priority
-        visibility
-        priority_expiration_date
-        allowComment
-        type
-        commentCount
-        auth
-        groupId
-        likeCount
-        liked
-    }
+    updatePost(input: $postInput)
 }
 `;
 

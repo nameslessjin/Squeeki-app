@@ -29,8 +29,10 @@ import {getCommentsFunc} from '../functions/comment';
 import CommentList from '../components/comment/commentList';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommentModal from '../components/comment/commentModal';
-import {getSundays} from '../utils/time';
+import {detectAtPeopleNGroup} from '../utils/detect';
 import {getUserGroupPoint} from '../actions/point';
+import ReplyIndicator from '../components/comment/replyIndicator';
+import SendButton from '../components/comment/sendButton';
 
 const {height, width} = Dimensions.get('screen');
 
@@ -67,6 +69,9 @@ class Comment extends React.Component {
     comment_uid: '',
     commentId: '',
     replyId: null,
+    searchTerm: '',
+    searchIndex: -1,
+    atSearchResult: [],
   };
 
   getUserGroupPoint = async () => {
@@ -274,6 +279,22 @@ class Comment extends React.Component {
     this.setState({newComment: '', replyId: null});
   };
 
+  onChangeText = value => {
+    const {searchTerm, searchIndex} = detectAtPeopleNGroup({
+      prevText: this.state.newComment,
+      currentText: value,
+    });
+
+    // @user
+    if (searchTerm[0] == '@') {
+      this.setState({searchTerm, searchIndex});
+    } else {
+      this.setState({searchTerm: '', searchIndex: -1, atSearchResult: []});
+    }
+
+    this.setState({newComment: value});
+  };
+
   render() {
     const {container} = styles;
     const {
@@ -288,7 +309,6 @@ class Comment extends React.Component {
     const disabled = newComment.trim().length == 0;
     const {navigation, group, comment} = this.props;
     const isReply = replyId ? true : false;
-    getSundays();
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -312,21 +332,11 @@ class Comment extends React.Component {
 
           {post.allowComment && !modalVisible ? (
             <View style={styles.inputBarContainer}>
-              {isReply ? (
-                <View
-                  style={[
-                    styles.replyIndicatorContainer,
-                    {
-                      height: Math.max(40, inputHeight),
-                    },
-                  ]}>
-                  <TouchableOpacity onPress={this.onCancelReply}>
-                    <View style={styles.replyButton}>
-                      <Text style={styles.replyText}>REPLY:</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              ) : null}
+              <ReplyIndicator
+                isReply={isReply}
+                inputHeight={inputHeight}
+                onCancelReply={this.onCancelReply}
+              />
 
               <View
                 style={[
@@ -350,40 +360,16 @@ class Comment extends React.Component {
                       inputHeight: e.nativeEvent.contentSize.height + 15,
                     })
                   }
-                  onChangeText={text => this.setState({newComment: text})}
+                  onChangeText={this.onChangeText}
                   value={newComment}
                 />
               </View>
-              <View
-                style={[
-                  styles.sendButtonContainer,
-                  {
-                    height: Math.max(40, inputHeight),
-                  },
-                ]}>
-                {sent ? (
-                  <ActivityIndicator
-                    animating={true}
-                    style={{marginBottom: 5}}
-                    color={'grey'}
-                  />
-                ) : (
-                  <TouchableOpacity
-                    disabled={disabled}
-                    onPress={this.onSend}
-                    style={{marginBottom: 5}}>
-                    <MaterialIcons
-                      name={
-                        disabled
-                          ? 'arrow-up-drop-circle-outline'
-                          : 'arrow-up-drop-circle'
-                      }
-                      size={30}
-                      color={disabled ? '#718093' : '#273c75'}
-                    />
-                  </TouchableOpacity>
-                )}
-              </View>
+              <SendButton
+                sent={sent}
+                disabled={disabled}
+                onSend={this.onSend}
+                inputHeight={inputHeight}
+              />
             </View>
           ) : null}
           {modalVisible ? (
@@ -435,30 +421,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
     paddingLeft: 8,
-  },
-  sendButtonContainer: {
-    width: 35,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  replyIndicatorContainer: {
-    justifyContent: 'center',
-    width: 50,
-    alignItems: 'center',
-    marginRight: 3,
-  },
-  replyText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: 'white',
-  },
-  replyButton: {
-    backgroundColor: '#e84118',
-    width: 50,
-    height: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
   },
 });
 
