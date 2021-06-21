@@ -113,6 +113,7 @@ export const onUrlPress = url => {
 };
 
 export const onPhonePress = props => {
+  console.log(props)
   const {phone, getContext} = props;
 
   const options = ['Call', 'Text', 'Cancel'];

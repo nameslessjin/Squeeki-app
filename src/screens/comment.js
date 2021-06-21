@@ -27,12 +27,14 @@ import {
 import {userLogout} from '../actions/auth';
 import {getCommentsFunc} from '../functions/comment';
 import CommentList from '../components/comment/commentList';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommentModal from '../components/comment/commentModal';
 import {detectAtPeopleNGroup} from '../utils/detect';
 import {getUserGroupPoint} from '../actions/point';
 import ReplyIndicator from '../components/comment/replyIndicator';
 import SendButton from '../components/comment/sendButton';
+import {searchAtUser} from '../actions/user';
+import AtList from '../components/comment/AtList';
+import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 
 const {height, width} = Dimensions.get('screen');
 
@@ -45,6 +47,7 @@ class Comment extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
     });
+    this._actionSheetRef = undefined;
   }
 
   componentWillUnmount() {
@@ -72,7 +75,19 @@ class Comment extends React.Component {
     searchTerm: '',
     searchIndex: -1,
     atSearchResult: [],
+    replyType: 'comment',
+    replyTo: '',
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    // check for search term
+    if (
+      prevState.searchTerm != this.state.searchTerm &&
+      this.state.searchTerm.length >= 2
+    ) {
+      this.onAtSearch();
+    }
+  }
 
   getUserGroupPoint = async () => {
     const {group, auth, getUserGroupPoint, navigation, userLogout} = this.props;
@@ -171,9 +186,16 @@ class Comment extends React.Component {
   };
 
   // action on reply button on the left side of input bar pressed
-  onCommentReplyPress = replyId => {
+  onCommentReplyPress = (replyId, type, replyTo) => {
     this.inputRef.focus();
-    this.setState({replyId: replyId});
+    console.log(replyId);
+    console.log(type);
+    console.log(replyTo);
+    this.setState({replyId, replyType: type, replyTo});
+
+    if (type == 'reply' && this.props.auth.user.username != replyTo) {
+      this.setState({newComment: `@${replyTo} `});
+    }
   };
 
   onCommentReport = async content => {
@@ -295,6 +317,38 @@ class Comment extends React.Component {
     this.setState({newComment: value});
   };
 
+  onAtSearch = async () => {
+    const {searchTerm} = this.state;
+    const {group, searchAtUser, auth} = this.props;
+
+    const request = {
+      groupId: group.group.id,
+      searchTerm: searchTerm.trim().substr(1, searchTerm.length),
+      token: auth.token,
+    };
+
+    const result = await searchAtUser(request);
+    if (result.errors) {
+      console.log(result.errors);
+      return;
+    }
+
+    this.setState({atSearchResult: result});
+  };
+
+  onAtPress = user => {
+    const {username, id} = user;
+    const {searchIndex, newComment} = this.state;
+
+    let updatedComment = newComment.split(' ');
+    updatedComment[searchIndex] = `@${username}`;
+    updatedComment = updatedComment.join(' ') + ' ';
+    this.setState({
+      atSearchResult: [],
+      newComment: updatedComment.substr(0, 255),
+    });
+  };
+
   render() {
     const {container} = styles;
     const {
@@ -305,92 +359,104 @@ class Comment extends React.Component {
       modalVisible,
       comment_uid,
       replyId,
+      atSearchResult,
+      replyType,
+      replyTo,
     } = this.state;
-    const disabled = newComment.trim().length == 0;
+    const disabled = newComment.trim().length == 0 || newComment.length > 255;
     const {navigation, group, comment} = this.props;
     const isReply = replyId ? true : false;
-
     return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView
-          style={container}
-          behavior={Platform.OS == 'ios' ? 'padding' : 'overflow'}
-          keyboardVerticalOffset={35}>
-          <StatusBar barStyle={'dark-content'} />
+      <ActionSheetProvider
+        ref={component => (this._actionSheetRef = component)}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <KeyboardAvoidingView
+            style={container}
+            behavior={Platform.OS == 'ios' ? 'padding' : 'overflow'}
+            keyboardVerticalOffset={35}>
+            <StatusBar barStyle={'dark-content'} />
 
-          <CommentList
-            post={post}
-            comments={comment.comments.comments}
-            onEndReached={this.onEndReached}
-            sent={sent}
-            onCommentLike={this.onCommentLike}
-            onOptionToggle={this.onOptionToggle}
-            navigation={navigation}
-            onCommentReplyPress={this.onCommentReplyPress}
-            replyId={replyId}
-          />
+            <CommentList
+              post={post}
+              comments={comment.comments.comments}
+              onEndReached={this.onEndReached}
+              sent={sent}
+              onCommentLike={this.onCommentLike}
+              onOptionToggle={this.onOptionToggle}
+              navigation={navigation}
+              onCommentReplyPress={this.onCommentReplyPress}
+              replyId={replyId}
+              _actionSheetRef={this._actionSheetRef}
+            />
 
-          {post.allowComment && !modalVisible ? (
-            <View style={styles.inputBarContainer}>
-              <ReplyIndicator
-                isReply={isReply}
-                inputHeight={inputHeight}
-                onCancelReply={this.onCancelReply}
-              />
+            {post.allowComment && !modalVisible ? (
+              <View style={styles.inputBarContainer}>
+                <ReplyIndicator
+                  isReply={isReply}
+                  inputHeight={inputHeight}
+                  onCancelReply={this.onCancelReply}
+                  replyType={replyType}
+                  replyTo={replyTo}
+                />
 
-              <View
-                style={[
-                  styles.textInputContainer,
-                  {
-                    width: isReply ? width - 100 : width - 50,
-                    height: Math.max(40, inputHeight),
-                  },
-                ]}>
-                <TextInput
-                  style={[styles.textInput]}
-                  ref={r => (this.inputRef = r)}
-                  placeholder={
-                    isReply ? 'Reply a comment ...' : 'Add a comment ...'
-                  }
-                  placeholderTextColor={'#7f8fa6'}
-                  multiline={true}
-                  maxLength={255}
-                  onContentSizeChange={e =>
-                    this.setState({
-                      inputHeight: e.nativeEvent.contentSize.height + 15,
-                    })
-                  }
-                  onChangeText={this.onChangeText}
-                  value={newComment}
+                <View
+                  style={[
+                    styles.textInputContainer,
+                    {
+                      width: isReply ? width - 100 : width - 50,
+                      height: Math.max(40, inputHeight),
+                    },
+                  ]}>
+                  <AtList
+                    atSearchResult={atSearchResult}
+                    onAtPress={this.onAtPress}
+                  />
+                  <TextInput
+                    style={[styles.textInput]}
+                    ref={r => (this.inputRef = r)}
+                    placeholder={
+                      isReply ? 'Reply a comment ...' : 'Add a comment ...'
+                    }
+                    placeholderTextColor={'#7f8fa6'}
+                    multiline={true}
+                    maxLength={255}
+                    onContentSizeChange={e =>
+                      this.setState({
+                        inputHeight: e.nativeEvent.contentSize.height + 15,
+                      })
+                    }
+                    onChangeText={this.onChangeText}
+                    value={newComment}
+                  />
+                </View>
+                <SendButton
+                  sent={sent}
+                  disabled={disabled}
+                  onSend={this.onSend}
+                  inputHeight={inputHeight}
                 />
               </View>
-              <SendButton
-                sent={sent}
-                disabled={disabled}
-                onSend={this.onSend}
-                inputHeight={inputHeight}
+            ) : null}
+            {modalVisible ? (
+              <CommentModal
+                modalVisible={modalVisible}
+                onBackdropPress={this.onBackdropPress}
+                comment_uid={comment_uid}
+                postOwner={post.user}
+                userId={this.props.auth.user.id}
+                onCommentDelete={this.onCommentDelete}
+                onCommentReport={this.onCommentReport}
+                rank_in_group={group.group.auth ? group.group.auth.rank : null}
+                rank_required={
+                  group.group.rank_setting
+                    ? group.group.rank_setting.manage_comment_rank_required
+                    : null
+                }
               />
-            </View>
-          ) : null}
-          {modalVisible ? (
-            <CommentModal
-              modalVisible={modalVisible}
-              onBackdropPress={this.onBackdropPress}
-              comment_uid={comment_uid}
-              postOwner={post.user}
-              userId={this.props.auth.user.id}
-              onCommentDelete={this.onCommentDelete}
-              onCommentReport={this.onCommentReport}
-              rank_in_group={group.group.auth ? group.group.auth.rank : null}
-              rank_required={
-                group.group.rank_setting
-                  ? group.group.rank_setting.manage_comment_rank_required
-                  : null
-              }
-            />
-          ) : null}
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+            ) : null}
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </ActionSheetProvider>
     );
   }
 }
@@ -440,6 +506,7 @@ const mapDispatchToProps = dispatch => {
     reportComment: data => dispatch(reportComment(data)),
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
     replyComment: data => dispatch(replyComment(data)),
+    searchAtUser: data => dispatch(searchAtUser(data)),
   };
 };
 

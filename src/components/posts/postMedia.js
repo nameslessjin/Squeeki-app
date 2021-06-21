@@ -15,6 +15,7 @@ import {
   onPhonePress,
   onEmailPress,
 } from '../chat/render';
+import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 
 const {width} = Dimensions.get('window');
 

@@ -3,6 +3,14 @@ import {View, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native';
 import ReplyProfile from './ReplyProfile';
 import ReplyUsername from './ReplyUsername';
 import ReplyFooter from './ReplyFooter';
+import ParsedText from 'react-native-parsed-text';
+import {
+  onUrlPress,
+  onLinkPhoneLongPress,
+  renderText,
+  onPhonePress,
+  onEmailPress,
+} from '../chat/render';
 
 export default class ReplyCard extends React.Component {
   state = {
@@ -44,7 +52,7 @@ export default class ReplyCard extends React.Component {
       createdAt,
       user,
     } = this.state;
-    const {onReplyPress, commentId} = this.props;
+    const {onReplyPress, commentId, _actionSheetRef} = this.props;
     const {icon} = user;
 
     return (
@@ -56,7 +64,39 @@ export default class ReplyCard extends React.Component {
             <ReplyUsername createdAt={createdAt} user={user} />
 
             <View style={styles.replyContainer}>
-              <Text style={styles.replyStyle}>{content}</Text>
+              <ParsedText
+                style={styles.replyStyle}
+                parse={[
+                  {
+                    type: 'url',
+                    style: {color: '#1e90ff'},
+                    onPress: onUrlPress,
+                    onLongPress: url =>
+                      onLinkPhoneLongPress({type: 'url', content: url}),
+                  },
+                  {
+                    type: 'phone',
+                    style: {color: '#1e90ff'},
+                    onPress: phone => onPhonePress({phone, ..._actionSheetRef}),
+                    onLongPress: phone =>
+                      onLinkPhoneLongPress({type: 'phone', content: phone}),
+                  },
+                  {
+                    type: 'email',
+                    style: {color: '#1e90ff'},
+                    onPress: onEmailPress,
+                    onLongPress: email =>
+                      onLinkPhoneLongPress({type: 'email', content: email}),
+                  },
+                  {
+                    pattern: /\[(@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
+                    style: {color: '#1e90ff'},
+                    renderText: renderText,
+                  },
+                ]}
+                childrenProps={{allowFontScaling: false}}>
+                {content}
+              </ParsedText>
             </View>
 
             <ReplyFooter
@@ -67,6 +107,7 @@ export default class ReplyCard extends React.Component {
               onOptionToggle={this.onOptionToggle}
               onReplyPress={onReplyPress}
               commentId={commentId}
+              user={user}
             />
           </View>
         </View>

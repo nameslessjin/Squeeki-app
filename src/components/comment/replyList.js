@@ -6,7 +6,14 @@ const extractKey = ({id}) => id;
 
 export default class ReplyList extends React.Component {
   renderItem = ({item}) => {
-    const {onReplyLike, onOptionToggle, navigation, onReplyPress, commentId} = this.props;
+    const {
+      onReplyLike,
+      onOptionToggle,
+      navigation,
+      onReplyPress,
+      commentId,
+      _actionSheetRef,
+    } = this.props;
 
     // return with item
     return (
@@ -17,6 +24,7 @@ export default class ReplyList extends React.Component {
         navigation={navigation}
         onReplyPress={onReplyPress}
         commentId={commentId}
+        _actionSheetRef={_actionSheetRef}
       />
     );
   };

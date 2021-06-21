@@ -20,8 +20,10 @@ export default class CommentFooter extends React.Component {
       onOptionToggle,
       onCommentReplyPress,
       commentId,
+      user
     } = this.props;
 
+    const {username} = user
     const likeCount_text = countFormat(likeCount)  
 
     return (
@@ -47,7 +49,7 @@ export default class CommentFooter extends React.Component {
         )}
         <TouchableOpacity
           style={styles.replyButton}
-          onPress={() => onCommentReplyPress(commentId)}>
+          onPress={() => onCommentReplyPress(commentId, 'comment', username)}>
           <Text style={styles.replyButtonText}>REPLY</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={onOptionToggle}>

@@ -365,7 +365,11 @@ class PostCard extends React.Component {
               content={content}
               navigation={navigation}
               type={type}
-              _actionSheetRef={this._actionSheetRef}
+              _actionSheetRef={
+                this.props._actionSheetRef
+                  ? this.props._actionSheetRef
+                  : this._actionSheetRef
+              }
             />
 
             {selectionMode ? (

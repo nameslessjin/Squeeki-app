@@ -13,12 +13,18 @@ export default class CommentList extends React.Component {
       navigation,
       onCommentReplyPress,
       replyId,
+      _actionSheetRef,
     } = this.props;
 
     if (item.id) {
       if (item.type) {
         return (
-          <CommentPost post={item} option={false} navigation={navigation} />
+          <CommentPost
+            post={item}
+            option={false}
+            navigation={navigation}
+            _actionSheetRef={_actionSheetRef}
+          />
         );
       }
 
@@ -29,6 +35,7 @@ export default class CommentList extends React.Component {
           onOptionToggle={onOptionToggle}
           onCommentReplyPress={onCommentReplyPress}
           replyId={replyId}
+          _actionSheetRef={_actionSheetRef}
         />
       );
     }
@@ -43,7 +50,14 @@ export default class CommentList extends React.Component {
   };
 
   render() {
-    const {post, comments, onEndReached, sent, navigation, replyId} = this.props;
+    const {
+      post,
+      comments,
+      onEndReached,
+      sent,
+      navigation,
+      replyId,
+    } = this.props;
     let data = [];
     if (post.id) {
       if (post.allowComment) {

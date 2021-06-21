@@ -31,7 +31,7 @@ export default class SendButton extends React.Component {
                   : 'arrow-up-drop-circle'
               }
               size={30}
-              color={disabled ? '#718093' : '#273c75'}
+              color={disabled ? '#718093' : '#EA2027'}
             />
           </TouchableOpacity>
         )}

@@ -410,11 +410,12 @@ class PostSetting extends React.Component {
 
   onAtSearch = async () => {
     const {searchTerm} = this.state;
-    const {group, searchAtUser} = this.props;
+    const {group, searchAtUser, auth} = this.props;
 
     const request = {
       groupId: group.group.id,
       searchTerm: searchTerm.trim().substr(1, searchTerm.length),
+      token: auth.token
     };
 
     const result = await searchAtUser(request);

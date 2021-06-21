@@ -13,6 +13,14 @@ import CommentFooter from './commentFooter';
 import ReplyList from './replyList';
 import {connect} from 'react-redux';
 import {getReplies} from '../../actions/comment';
+import ParsedText from 'react-native-parsed-text';
+import {
+  onUrlPress,
+  onLinkPhoneLongPress,
+  renderText,
+  onPhonePress,
+  onEmailPress,
+} from '../chat/render';
 
 class CommentCard extends React.Component {
   state = {
@@ -21,6 +29,10 @@ class CommentCard extends React.Component {
     ...this.props.comment,
     reply_loading: false,
   };
+
+  componentDidMount() {
+    this._actionSheetRef = undefined;
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.comment != this.props.comment) {
@@ -95,7 +107,12 @@ class CommentCard extends React.Component {
     } = this.state;
 
     const {container, commentContainer, rightContainer, commentStyle} = styles;
-    const {onCommentReplyPress, onCommentLike, onOptionToggle} = this.props;
+    const {
+      onCommentReplyPress,
+      onCommentLike,
+      onOptionToggle,
+      _actionSheetRef,
+    } = this.props;
     let replies = [];
     if (num_of_replies > 0 && reply) {
       replies = reply.replies;
@@ -111,7 +128,39 @@ class CommentCard extends React.Component {
             <CommentUsername createdAt={createdAt} user={user} />
 
             <View style={commentContainer}>
-              <Text style={commentStyle}>{content}</Text>
+              <ParsedText
+                style={commentStyle}
+                parse={[
+                  {
+                    type: 'url',
+                    style: {color: '#1e90ff'},
+                    onPress: onUrlPress,
+                    onLongPress: url =>
+                      onLinkPhoneLongPress({type: 'url', content: url}),
+                  },
+                  {
+                    type: 'phone',
+                    style: {color: '#1e90ff'},
+                    onPress: phone => onPhonePress({phone, ..._actionSheetRef}),
+                    onLongPress: phone =>
+                      onLinkPhoneLongPress({type: 'phone', content: phone}),
+                  },
+                  {
+                    type: 'email',
+                    style: {color: '#1e90ff'},
+                    onPress: onEmailPress,
+                    onLongPress: email =>
+                      onLinkPhoneLongPress({type: 'email', content: email}),
+                  },
+                  {
+                    pattern: /\[(@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
+                    style: {color: '#1e90ff'},
+                    renderText: renderText,
+                  },
+                ]}
+                childrenProps={{allowFontScaling: false}}>
+                {content}
+              </ParsedText>
             </View>
 
             <CommentFooter
@@ -122,6 +171,7 @@ class CommentCard extends React.Component {
               onOptionToggle={this.onOptionToggle}
               onCommentReplyPress={onCommentReplyPress}
               commentId={id}
+              user={user}
             />
 
             <ReplyList
@@ -130,6 +180,7 @@ class CommentCard extends React.Component {
               onOptionToggle={onOptionToggle}
               onReplyPress={onCommentReplyPress}
               commentId={id}
+              _actionSheetRef={_actionSheetRef}
             />
 
             {/* //reply list */}

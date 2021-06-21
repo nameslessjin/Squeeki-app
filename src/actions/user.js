@@ -358,7 +358,7 @@ export const updateUserRelation = data => {
 };
 
 export const searchAtUser = data => {
-  const {searchTerm, groupId} = data;
+  const {searchTerm, groupId, token} = data;
 
   return async function(dispatch) {
     const input = {
@@ -373,7 +373,7 @@ export const searchAtUser = data => {
       },
     };
 
-    const result = await httpCall(null, graphql);
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }

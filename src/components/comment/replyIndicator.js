@@ -3,7 +3,15 @@ import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 
 export default class ReplyIndicator extends React.Component {
   render() {
-    const {isReply, inputHeight, onCancelReply} = this.props;
+    const {
+      isReply,
+      inputHeight,
+      onCancelReply,
+      replyType,
+      replyTo,
+    } = this.props;
+
+    const username = replyTo.length <= 10 ? replyTo : `${replyTo.substr(0,7)}...`
 
     return isReply ? (
       <View
@@ -13,7 +21,9 @@ export default class ReplyIndicator extends React.Component {
         ]}>
         <TouchableOpacity onPress={onCancelReply}>
           <View style={styles.replyButton}>
-            <Text style={styles.replyText}>REPLY:</Text>
+            <Text style={styles.replyText}>
+              {replyType == 'reply' ? 'REPLY:' : username}
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -31,6 +41,7 @@ const styles = StyleSheet.create({
   replyButton: {
     backgroundColor: '#e84118',
     width: 50,
+    padding: 3,
     height: 35,
     justifyContent: 'center',
     alignItems: 'center',
