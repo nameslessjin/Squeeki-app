@@ -16,9 +16,13 @@ class NotificationSettings extends React.Component {
     notification_group: false,
     notification_post_like: false,
     notification_post_comment: false,
+    notification_post_mention: false,
     notification_comment_like: false,
     notification_comment_reply: false,
+    notification_comment_mention: false,
     notification_chat: false,
+    notification_chat_message: false,
+    notification_chat_mention: false,
   };
 
   componentDidMount() {
@@ -45,9 +49,13 @@ class NotificationSettings extends React.Component {
       notification_group,
       notification_post_like,
       notification_post_comment,
+      notification_post_mention,
       notification_comment_like,
       notification_comment_reply,
+      notification_comment_mention,
       notification_chat,
+      notification_chat_message,
+      notification_chat_mention,
     } = this.props.auth.user.notifications;
 
     // check if notification settings updated
@@ -63,10 +71,18 @@ class NotificationSettings extends React.Component {
     if (notification_post_comment != this.state.notification_post_comment) {
       return true;
     }
+    if (notification_post_mention != this.state.notification_post_mention) {
+      return true;
+    }
     if (notification_comment_like != this.state.notification_comment_like) {
       return true;
     }
     if (notification_comment_reply != this.state.notification_comment_reply) {
+      return true;
+    }
+    if (
+      notification_comment_mention != this.state.notification_comment_mention
+    ) {
       return true;
     }
     if (notification_chat != this.state.notification_chat) {
@@ -108,6 +124,10 @@ class NotificationSettings extends React.Component {
       this.setState(prevState => ({
         notification_post_comment: !prevState.notification_post_comment,
       }));
+    } else if (type == 'notification_post_mention') {
+      this.setState(prevState => ({
+        notification_post_mention: !prevState.notification_post_mention,
+      }));
     } else if (type == 'notification_comment_like') {
       this.setState(prevState => ({
         notification_comment_like: !prevState.notification_comment_like,
@@ -115,6 +135,10 @@ class NotificationSettings extends React.Component {
     } else if (type == 'notification_comment_reply') {
       this.setState(prevState => ({
         notification_comment_reply: !prevState.notification_comment_reply,
+      }));
+    } else if (type == 'notification_comment_mention') {
+      this.setState(prevState => ({
+        notification_comment_mention: !prevState.notification_comment_mention,
       }));
     } else if (type == 'notification_chat') {
       this.setState(prevState => ({
@@ -129,9 +153,13 @@ class NotificationSettings extends React.Component {
       notification_group,
       notification_post_like,
       notification_post_comment,
+      notification_post_mention,
       notification_comment_like,
       notification_comment_reply,
+      notification_comment_mention,
       notification_chat,
+      notification_chat_message,
+      notification_chat_mention,
     } = this.state;
 
     return (
@@ -166,6 +194,12 @@ class NotificationSettings extends React.Component {
             type={'notification_post_comment'}
           />
           <ToggleSetting
+            on={notification_post_mention}
+            disabled={!notification_all}
+            onToggle={this.onToggle}
+            type={'notification_post_mention'}
+          />
+          <ToggleSetting
             on={notification_comment_like}
             disabled={!notification_all}
             onToggle={this.onToggle}
@@ -177,6 +211,12 @@ class NotificationSettings extends React.Component {
             onToggle={this.onToggle}
             type={'notification_comment_reply'}
           />
+          {/* <ToggleSetting
+            on={notification_comment_mention}
+            disabled={!notification_all}
+            onToggle={this.onToggle}
+            type={'notification_comment_mention'}
+          /> */}
           <ToggleSetting
             on={notification_chat}
             disabled={!notification_all}

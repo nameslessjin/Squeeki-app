@@ -248,8 +248,10 @@ export const updateNotifications = data => {
     notification_group,
     notification_post_like,
     notification_post_comment,
+    notification_post_mention,
     notification_comment_like,
     notification_comment_reply,
+    notification_comment_mention,
     notification_chat,
   } = data;
 
@@ -260,8 +262,10 @@ export const updateNotifications = data => {
       notification_group,
       notification_post_like,
       notification_post_comment,
+      notification_post_mention,
       notification_comment_like,
       notification_comment_reply,
+      notification_comment_mention,
       notification_chat,
     }
 

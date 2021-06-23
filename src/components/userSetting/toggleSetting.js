@@ -13,13 +13,17 @@ export default class ToggleSetting extends React.Component {
     } else if (type == 'notification_group') {
       title = 'Group activity';
     } else if (type == 'notification_post_like') {
-      title = 'Like on your post';
+      title = 'When like your post';
     } else if (type == 'notification_post_comment') {
-      title = 'Comment on your post';
+      title = 'When comment on your post';
+    } else if (type == 'notification_post_mention') {
+      title = 'When mentioned on a post';
     } else if (type == 'notification_comment_like') {
-      title = 'Like on your comment';
+      title = 'When like your comment';
     } else if (type == 'notification_comment_reply') {
-      title = 'Reply on your comment';
+      title = 'When reply to your comment';
+    } else if (type == 'notification_comment_mention') {
+      title = 'When mentioned on a comment';
     } else if (type == 'notification_chat') {
       title = 'Chat activity';
     } else if (type == 'visibility_all'){
