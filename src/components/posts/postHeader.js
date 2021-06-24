@@ -259,7 +259,8 @@ export default class PostHeader extends React.Component {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            width: 80,
+            width: 85,
+            justifyContent: 'space-between',
           }}>
           {priority !== 0 ? (
             <View style={{flexDirection: 'row', marginRight: 5}}>

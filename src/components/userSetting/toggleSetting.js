@@ -26,6 +26,10 @@ export default class ToggleSetting extends React.Component {
       title = 'When mentioned on a comment';
     } else if (type == 'notification_chat') {
       title = 'Chat activity';
+    } else if (type == 'notification_chat_message') {
+      title = 'When there is a new message in a chat';
+    } else if (type == 'notification_chat_mention') {
+      title = 'When mentioned on a chat';
     } else if (type == 'visibility_all'){
       title = 'All visibility'
     } else if (type == 'visibility_chat_search'){

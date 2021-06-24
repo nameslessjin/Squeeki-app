@@ -7,7 +7,7 @@ import {
   checkVerificationCodeQuery,
   resetPasswordMutation,
   updateNotificationsMutation,
-  updateVisibilitiesMutation
+  updateVisibilitiesMutation,
 } from '../actions/query/authQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
@@ -253,10 +253,11 @@ export const updateNotifications = data => {
     notification_comment_reply,
     notification_comment_mention,
     notification_chat,
+    notification_chat_message,
+    notification_chat_mention,
   } = data;
 
   return async function(dispatch) {
-
     const input = {
       notification_all,
       notification_group,
@@ -267,14 +268,16 @@ export const updateNotifications = data => {
       notification_comment_reply,
       notification_comment_mention,
       notification_chat,
-    }
+      notification_chat_message,
+      notification_chat_mention,
+    };
 
     const graphql = {
       query: updateNotificationsMutation,
       variables: {
-        input: input
-      }
-    }
+        input: input,
+      },
+    };
 
     const result = await httpCall(token, graphql);
 
@@ -282,19 +285,18 @@ export const updateNotifications = data => {
       return result;
     }
 
-    dispatch(notificationsUpdate(input))
+    dispatch(notificationsUpdate(input));
 
-    return 0
-
+    return 0;
   };
 };
 
 const notificationsUpdate = data => {
   return {
     type: 'updateNotifications',
-    i: data
-  }
-}
+    i: data,
+  };
+};
 
 export const updateVisibilities = data => {
   const {
@@ -307,21 +309,20 @@ export const updateVisibilities = data => {
   } = data;
 
   return async function(dispatch) {
-
     const input = {
       visibility_all,
       visibility_chat_search,
       visibility_group_search,
       visibility_post_at,
       visibility_chat_at,
-    }
+    };
 
     const graphql = {
       query: updateVisibilitiesMutation,
       variables: {
-        input: input
-      }
-    }
+        input: input,
+      },
+    };
 
     const result = await httpCall(token, graphql);
 
@@ -329,16 +330,15 @@ export const updateVisibilities = data => {
       return result;
     }
 
-    dispatch(visibilitiesUpdate(input))
+    dispatch(visibilitiesUpdate(input));
 
-    return 0
-
+    return 0;
   };
 };
 
 const visibilitiesUpdate = data => {
   return {
     type: 'updateVisibilities',
-    i: data
-  }
-}
+    i: data,
+  };
+};

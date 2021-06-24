@@ -12,17 +12,17 @@ import {updateNotifications} from '../actions/auth';
 
 class NotificationSettings extends React.Component {
   state = {
-    notification_all: false,
-    notification_group: false,
-    notification_post_like: false,
-    notification_post_comment: false,
-    notification_post_mention: false,
-    notification_comment_like: false,
-    notification_comment_reply: false,
-    notification_comment_mention: false,
-    notification_chat: false,
-    notification_chat_message: false,
-    notification_chat_mention: false,
+    notification_all: true,
+    notification_group: true,
+    notification_post_like: true,
+    notification_post_comment: true,
+    notification_post_mention: true,
+    notification_comment_like: true,
+    notification_comment_reply: true,
+    notification_comment_mention: true,
+    notification_chat: true,
+    notification_chat_message: true,
+    notification_chat_mention: true,
   };
 
   componentDidMount() {
@@ -88,6 +88,12 @@ class NotificationSettings extends React.Component {
     if (notification_chat != this.state.notification_chat) {
       return true;
     }
+    if (notification_chat_message != this.state.notification_chat_message) {
+      return true;
+    }
+    if (notification_chat_mention != this.state.notification_chat_mention) {
+      return true;
+    }
 
     return false;
   };
@@ -143,6 +149,14 @@ class NotificationSettings extends React.Component {
     } else if (type == 'notification_chat') {
       this.setState(prevState => ({
         notification_chat: !prevState.notification_chat,
+      }));
+    } else if (type == 'notification_chat_message') {
+      this.setState(prevState => ({
+        notification_chat_message: !prevState.notification_chat_message,
+      }));
+    } else if (type == 'notification_chat_mention') {
+      this.setState(prevState => ({
+        notification_chat_mention: !prevState.notification_chat_mention,
       }));
     }
   };
@@ -222,6 +236,18 @@ class NotificationSettings extends React.Component {
             disabled={!notification_all}
             onToggle={this.onToggle}
             type={'notification_chat'}
+          />
+          <ToggleSetting
+            on={notification_chat_message}
+            disabled={!notification_all}
+            onToggle={this.onToggle}
+            type={'notification_chat_message'}
+          />
+          <ToggleSetting
+            on={notification_chat_mention}
+            disabled={!notification_all}
+            onToggle={this.onToggle}
+            type={'notification_chat_mention'}
           />
           <View style={styles.textViewContainer}>
             <Text style={styles.text}>

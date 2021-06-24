@@ -20,6 +20,8 @@ query login($email: String, $password: String, $token: String){
                 notification_comment_reply
                 notification_comment_mention
                 notification_chat
+                notification_chat_message
+                notification_chat_mention
             }
             visibilities{
                 visibility_all
@@ -55,6 +57,8 @@ mutation signup($userInput: AuthInput!){
                 notification_comment_reply
                 notification_comment_mention
                 notification_chat
+                notification_chat_message
+                notification_chat_mention
             }
             visibilities{
                 visibility_all
@@ -90,6 +94,8 @@ mutation updateProfile($userInput: AuthInput!){
                 notification_comment_reply
                 notification_comment_mention
                 notification_chat
+                notification_chat_message
+                notification_chat_mention
             }
             visibilities{
                 visibility_all
