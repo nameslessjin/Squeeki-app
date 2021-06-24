@@ -1,6 +1,5 @@
 import React from 'react';
 import {TouchableOpacity, Text, StyleSheet, Alert} from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class LeaveButton extends React.Component {
   onPress = () => {

@@ -26,16 +26,13 @@ import {changeScreen} from '../actions/screen';
 import GroupRightButton from '../components/groups/headerRight';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import {userLogout} from '../actions/auth';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {socket} from '../../server_config';
 import {unsubSocket} from '../functions/chat';
+import {singleDefaultIcon} from '../utils/defaultIcon';
 
 const {height} = Dimensions.get('screen');
 
 class HomeDrawerNavigator extends React.Component {
-  state = {
-    icon_option: 'emoticon-cool-outline',
-  };
 
   onToggleHeaderLeftButton = () => {
     const {navigation} = this.props;
@@ -64,16 +61,6 @@ class HomeDrawerNavigator extends React.Component {
       // headerRight: () => <HomeHeaderRightButton onPress={this.onToggleHomeRightButton} />,
       headerBackTitleVisible: false,
     });
-
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]});
 
     socket.init();
   }
@@ -150,7 +137,6 @@ class HomeDrawerNavigator extends React.Component {
 
   render() {
     const {logout, auth} = this.props;
-    const {icon_option} = this.state;
     return (
       <Drawer.Navigator
         initialRouteName="Home"
@@ -159,7 +145,6 @@ class HomeDrawerNavigator extends React.Component {
             {...props}
             logout={logout}
             auth={auth}
-            icon_option={icon_option}
           />
         )}
         drawerStyle={styles.drawerStyle}>
@@ -174,7 +159,7 @@ class HomeDrawerNavigator extends React.Component {
 }
 
 function CustomDrawerContent(props) {
-  const {logout, navigation, auth, icon_option} = props;
+  const {logout, navigation, auth} = props;
   const {displayName, icon} = auth.user;
   return (
     <DrawerContentScrollView
@@ -186,11 +171,10 @@ function CustomDrawerContent(props) {
           labelStyle={{color: 'black'}}
           icon={() => (
             <View style={styles.profile}>
-              {icon != null ? (
-                <Image source={{uri: icon.uri}} style={styles.imageStyle} />
-              ) : (
-                <MaterialIcons name={icon_option} size={75} />
-              )}
+              <Image
+                source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+                style={styles.imageStyle}
+              />
               <Text style={styles.displayName}>{displayName}</Text>
             </View>
           )}

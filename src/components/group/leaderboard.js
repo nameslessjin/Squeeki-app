@@ -1,35 +1,25 @@
 import React from 'react';
-import {FlatList, View, Text, StyleSheet, Image, Dimensions} from 'react-native';
+import {
+  FlatList,
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
-const { width } = Dimensions.get('screen')
+const {width} = Dimensions.get('screen');
 
 const extractKey = ({user}) => user.id;
 export default class Leaderboard extends React.Component {
-  state = {
-    icon_option: 'emoticon-cool-outline',
-  };
-
-  componentDidMount() {
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]});
-  }
-
   renderItem = i => {
     const {index, item} = i;
     const {base_point, user} = i.item;
     const {username, id, displayName, icon, group_username} = user;
-    const {icon_option} = this.state;
 
     const trophyColors = ['#f1bc12', '#bdc3c7', '#cd6133'];
-
 
     return index <= 2 ? (
       <View style={styles.user}>
@@ -42,11 +32,10 @@ export default class Leaderboard extends React.Component {
             />
           </View>
           <View style={styles.imgHolder}>
-            {icon != null ? (
-              <Image source={{uri: icon.uri}} style={styles.icon} />
-            ) : (
-              <MaterialIcons name={icon_option} size={25} />
-            )}
+            <Image
+              source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+              style={styles.icon}
+            />
           </View>
           <View style={styles.nameStyle}>
             <Text>{group_username}</Text>
@@ -91,7 +80,7 @@ const styles = StyleSheet.create({
     height: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 5
+    marginRight: 5,
   },
   icon: {
     height: 25,

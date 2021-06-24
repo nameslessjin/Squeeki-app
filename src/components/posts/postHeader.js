@@ -13,27 +13,14 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 const {width} = Dimensions.get('screen');
 
 export default class PostHeader extends React.Component {
   state = {
     modalToggled: false,
-    icon_option: 'emoticon-cool-outline',
   };
-
-  componentDidMount() {
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-
-    this.setState({icon_option: icon_options[random]});
-  }
 
   render() {
     const {
@@ -64,8 +51,6 @@ export default class PostHeader extends React.Component {
       selectionMode,
       rank_required,
     } = this.props;
-
-    const {icon_option} = this.state;
 
     let options = (
       <View style={styles.modalView}>
@@ -176,8 +161,8 @@ export default class PostHeader extends React.Component {
     if (displayName.length > 30) {
       displayNameSize = 13;
     }
-    if (displayName.length > 40){
-      displayNameSize = 12
+    if (displayName.length > 40) {
+      displayNameSize = 12;
     }
 
     let group_username_size = 14;
@@ -185,8 +170,8 @@ export default class PostHeader extends React.Component {
       if (group_username.length > 30) {
         group_username_size = 13;
       }
-      if (group_username.length > 40){
-        group_username_size = 12
+      if (group_username.length > 40) {
+        group_username_size = 12;
       }
     }
 
@@ -210,11 +195,10 @@ export default class PostHeader extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.userHolder}>
-          {icon != null ? (
-            <Image source={{uri: icon.uri}} style={styles.userIconStyle} />
-          ) : (
-            <MaterialIcons name={icon_option} size={50} />
-          )}
+          <Image
+            source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+            style={styles.userIconStyle}
+          />
           <View style={styles.nameStyle}>
             <Text
               style={[

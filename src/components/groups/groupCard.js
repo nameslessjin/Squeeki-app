@@ -11,23 +11,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {connect} from 'react-redux';
 import {getSingleGroupById} from '../../actions/group';
 import {userLogout} from '../../actions/auth';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 class GroupCard extends React.Component {
-  state = {
-    icon_option: 'emoticon-cool-outline',
-  };
-
-  componentDidMount() {
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]});
-  }
 
   onPress = async () => {
     const {id} = this.props.item;
@@ -72,21 +58,14 @@ class GroupCard extends React.Component {
       peopleIconStyle,
       imageStyle,
     } = styles;
-    const {icon_option} = this.state;
 
     return (
       <TouchableOpacity style={groupContainer} onPress={this.onPress}>
         <View style={imgHolder}>
-          {icon != null ? (
-            <Image
-              source={{
-                uri: icon.uri,
-              }}
-              style={[imageStyle]}
-            />
-          ) : (
-            <MaterialIcons name={icon_option} size={100} />
-          )}
+          <Image
+            source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+            style={imageStyle}
+          />
         </View>
         <View style={informationContainer}>
           <View style={nameMemberCountContainer}>
@@ -101,7 +80,6 @@ class GroupCard extends React.Component {
                   @{groupname}
                 </Text>
               ) : null}
-
             </View>
             <View style={memberCountStyle}>
               <MaterialIcons

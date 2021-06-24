@@ -15,30 +15,19 @@ import {
 import {updateProfile, userLogout} from '../actions/auth';
 import {connect} from 'react-redux';
 import UserTextInput from '../components/profile/textinput';
-import ProfileUpdateButton from '../components/profile/profileButton';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import validator from 'validator';
 import ProfileModal from '../components/profile/profileModal';
+import {singleDefaultIcon} from '../utils/defaultIcon';
 
 class Profile extends React.Component {
   state = {
     ...this.props.auth.user,
     loading: false,
-    icon_option: 'emoticon-cool-outline',
     modalVisible: false,
   };
 
   componentDidMount() {
     const {navigation} = this.props;
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]});
     navigation.setOptions({
       headerBackTitleVisible: false,
     });
@@ -203,7 +192,6 @@ class Profile extends React.Component {
       icon,
       loading,
       displayName,
-      icon_option,
       modalVisible,
     } = this.state;
 
@@ -214,11 +202,10 @@ class Profile extends React.Component {
           <TouchableOpacity
             style={styles.imageStyle}
             onPress={() => this.setState({modalVisible: true})}>
-            {icon != null ? (
-              <Image source={{uri: icon.uri}} style={styles.imageStyle} />
-            ) : (
-              <MaterialIcons name={icon_option} size={100} />
-            )}
+            <Image
+              source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+              style={styles.imageStyle}
+            />
           </TouchableOpacity>
           <View style={{marginTop: 10}}>
             <Text style={{color: 'grey'}}>@{username}</Text>
@@ -249,7 +236,7 @@ class Profile extends React.Component {
           </TouchableOpacity>
 
           <Text style={{color: 'red'}}>{errorText}</Text>
-          <ActivityIndicator animating={loading} color={'grey'}/>
+          <ActivityIndicator animating={loading} color={'grey'} />
           <ProfileModal
             modalVisible={modalVisible}
             onBackdropPress={this.onBackdropPress}

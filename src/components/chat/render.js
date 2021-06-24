@@ -25,6 +25,7 @@ import ParsedText from 'react-native-parsed-text';
 import Communications from 'react-native-communications';
 import ImageModal from 'react-native-image-modal';
 import {handleDownload} from '../../utils/imagePicker';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 const {width} = Dimensions.get('screen');
 
@@ -113,7 +114,7 @@ export const onUrlPress = url => {
 };
 
 export const onPhonePress = props => {
-  console.log(props)
+  console.log(props);
   const {phone, getContext} = props;
 
   const options = ['Call', 'Text', 'Cancel'];
@@ -258,16 +259,7 @@ export const RenderTicks = props => {
 
 const renderAtUserItem = ({item, onAtUserPress}) => {
   const {userId, displayName, username, icon} = item;
-
-  const icon_options = [
-    'emoticon-cool-outline',
-    'emoticon-poop',
-    'emoticon-kiss-outline',
-    'emoticon-wink-outline',
-    'emoticon-tongue-outline',
-  ];
-
-  const random = Math.floor(Math.random() * 5);
+  
   const user = {
     userId,
     username,
@@ -291,14 +283,10 @@ const renderAtUserItem = ({item, onAtUserPress}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          {icon ? (
-            <Image
-              source={{uri: icon}}
-              style={{height: 40, aspectRatio: 1, borderRadius: 20}}
-            />
-          ) : (
-            <MaterialIcons name={icon_options[random]} size={40} />
-          )}
+          <Image
+            source={icon ? {uri: icon} : singleDefaultIcon()}
+            style={{height: 40, aspectRatio: 1, borderRadius: 20}}
+          />
         </View>
         <View
           style={{
@@ -355,15 +343,11 @@ export const renderComposer = props => {
 
 export const renderBubble = props => {
   return (
-    <Bubble
-      {...props}
-      wrapperStyle={{right: {backgroundColor: '#ced6e0'}}}
-    />
+    <Bubble {...props} wrapperStyle={{right: {backgroundColor: '#ced6e0'}}} />
   );
 };
 
 export const renderText = (matchingString, matches) => {
-
   if (matches[1].substr(1, matches[1].length) == matches[2]) {
     return matches[1];
   }

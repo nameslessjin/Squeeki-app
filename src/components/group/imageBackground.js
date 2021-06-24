@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import GroupButton from './groupButton';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 export default class HeaderImageBackground extends React.Component {
   state = {
@@ -17,17 +18,6 @@ export default class HeaderImageBackground extends React.Component {
       'Group owners are really lazy. So there is no background. Press here to set background',
     background_text_sequence: 0,
   };
-
-  componentDidMount() {
-    const random = Math.floor(Math.random() * 4);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({material_icon: icon_options[random]});
-  }
 
   onTextBackgroundPress = () => {
     const {background_text_sequence} = this.state;
@@ -54,7 +44,7 @@ export default class HeaderImageBackground extends React.Component {
       });
     } else if (background_text_sequence == 4) {
       this.setState({
-        setBackgroundImgText: 'Eats sh*t!',
+        setBackgroundImgText: 'Eat this!',
         background_text_sequence: 5,
       });
     }
@@ -71,32 +61,27 @@ export default class HeaderImageBackground extends React.Component {
       onAddPost,
       visibility,
       join_requested,
-      rank_setting
+      rank_setting,
     } = this.props;
 
-    const {background_text_sequence, material_icon} = this.state;
+    const {background_text_sequence} = this.state;
 
-    let iconImage = (
-      <TouchableWithoutFeedback onPress={this.onTextBackgroundPress}>
-        <MaterialIcons
-          style={{backgroundColor: 'white'}}
-          name={background_text_sequence == 5 ? 'emoticon-poop' : material_icon}
-          size={100}
-        />
-      </TouchableWithoutFeedback>
-    );
-
-    if (icon != null) {
-      if (background_text_sequence != 5) {
-        iconImage = (
-          <Image
-            source={{uri: icon.uri}}
-            style={styles.imageStyle}
-            resizeMode={'cover'}
+    const iconImage =
+      background_text_sequence == 5 ? (
+        <TouchableWithoutFeedback onPress={this.onTextBackgroundPress}>
+          <MaterialIcons
+            style={{backgroundColor: 'white'}}
+            name={'emoticon-poop'}
+            size={100}
           />
-        );
-      }
-    }
+        </TouchableWithoutFeedback>
+      ) : (
+        <Image
+          source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+          style={styles.imageStyle}
+          resizeMode={'cover'}
+        />
+      );
 
     let {setBackgroundImgText} = this.state;
 
@@ -121,7 +106,7 @@ export default class HeaderImageBackground extends React.Component {
         <View style={[styles.profileImgStyle]}>
           <View style={styles.imageStyle}>{iconImage}</View>
           {loading ? (
-            <ActivityIndicator animating={loading} color={'grey'}/>
+            <ActivityIndicator animating={loading} color={'grey'} />
           ) : (
             <GroupButton
               auth={auth}

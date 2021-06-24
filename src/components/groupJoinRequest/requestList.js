@@ -10,64 +10,41 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 const {width} = Dimensions.get('screen');
 
 const extractKey = ({id}) => id;
 
 export default class RequestList extends React.Component {
-  state = {
-    icon_option: 'emoticon-cool-outline',
-  };
-
-  componentDidMount() {
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]});
-  }
-
   renderItem = i => {
     const {item} = i;
     const {username, displayName, id, icon, loading} = item;
-    const {icon_option} = this.state;
     const {onRespond} = this.props;
 
     let displayNameSize = 16;
 
-    if (displayName.length > 20){
-      displayNameSize = 15
+    if (displayName.length > 20) {
+      displayNameSize = 15;
     }
 
-    if (displayName.length > 30){
-      displayNameSize = 14
+    if (displayName.length > 30) {
+      displayNameSize = 14;
     }
 
-    if (displayName.length > 40){
-      displayNameSize = 13
+    if (displayName.length > 40) {
+      displayNameSize = 13;
     }
-
 
     return (
       <TouchableWithoutFeedback>
         <View style={styles.user}>
-          <View
-            style={[
-              styles.user,
-              {paddingVertical: 0, width: '65%'},
-            ]}>
+          <View style={[styles.user, {paddingVertical: 0, width: '65%'}]}>
             <View style={styles.imgHolder}>
-              {icon != null ? (
-                <Image source={{uri: icon.uri}} style={styles.icon} />
-              ) : (
-                <MaterialIcons name={icon_option} size={40} />
-              )}
+              <Image
+                source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+                style={styles.icon}
+              />
             </View>
             <View style={styles.nameStyle}>
               <Text style={{fontSize: displayNameSize}}>{displayName}</Text>

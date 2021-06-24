@@ -1,6 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 export default class HeaderRightButton extends React.Component {
   render() {
@@ -12,22 +13,13 @@ export default class HeaderRightButton extends React.Component {
     } else if (type == 'setting') {
       icon = <MaterialIcons name={'cog'} size={30} color={'#EA2027'} />;
     } else if (type == 'icon') {
-      const random = Math.floor(Math.random() * 5);
-      const icon_options = [
-        'emoticon-cool-outline',
-        'emoticon-poop',
-        'emoticon-kiss-outline',
-        'emoticon-wink-outline',
-        'emoticon-tongue-outline',
-      ];
 
-      const icon_option = icon_options[random];
-      icon =
-        icon_url == null ? (
-          <MaterialIcons name={icon_option} size={30} />
-        ) : (
-          <Image source={{uri: icon_url}} style={styles.imageStyle} />
-        );
+      icon = (
+        <Image
+          source={icon_url ? {uri: icon_url} : singleDefaultIcon()}
+          style={styles.imageStyle}
+        />
+      );
     }
 
     return (

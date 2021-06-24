@@ -8,15 +8,12 @@ import {
   Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {dateConversion} from '../../../utils/time';
+import {singleDefaultIcon} from '../../../utils/defaultIcon';
 
 const {width} = Dimensions.get('screen');
 
 class MemberCard extends React.Component {
-  state = {
-    icon_option: 'emoticon-cool-outline',
-  };
 
   onPress = () => {
     const {navigation, item} = this.props;
@@ -27,17 +24,6 @@ class MemberCard extends React.Component {
     });
   };
 
-  componentDidMount() {
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]});
-  }
 
   render() {
     const {item, navigation} = this.props;
@@ -51,7 +37,6 @@ class MemberCard extends React.Component {
       group_username,
     } = item;
     const time = dateConversion(lastActiveAt);
-    const {icon_option} = this.state;
 
     let group_username_size = 16;
 
@@ -62,12 +47,12 @@ class MemberCard extends React.Component {
       group_username_size = 14;
     }
 
-    if (group_username.length > 35){
-      group_username_size = 13
+    if (group_username.length > 35) {
+      group_username_size = 13;
     }
 
-    if (group_username.length > 45){
-      group_username_size = 12
+    if (group_username.length > 45) {
+      group_username_size = 12;
     }
 
     let titleSize = 13;
@@ -79,15 +64,10 @@ class MemberCard extends React.Component {
       <TouchableWithoutFeedback onPress={this.onPress}>
         <View style={styles.container}>
           <View style={styles.imageContainer}>
-            {icon != null ? (
-              <Image source={{uri: icon.uri}} style={styles.image} />
-            ) : (
-              <MaterialIcons
-                name={icon_option}
-                size={120}
-                style={{height: 115}}
-              />
-            )}
+            <Image
+              source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+              style={styles.image}
+            />
           </View>
           <View style={styles.name}>
             <Text style={{fontSize: group_username_size, textAlign: 'center'}}>

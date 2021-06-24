@@ -8,25 +8,9 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 export default class UserCard extends React.Component {
-  state = {
-    icon_option: 'emoticon-cool-outline',
-  };
-
-  componentDidMount() {
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]});
-  }
-
   OnUserPress = () => {
     const {id, displayName, onPress, group_username} = this.props;
     const user = {
@@ -47,9 +31,8 @@ export default class UserCard extends React.Component {
       onPress,
       checked,
       group_username,
-      in_chat
+      in_chat,
     } = this.props;
-    const {icon_option} = this.state;
 
     let disable = false;
 
@@ -64,11 +47,10 @@ export default class UserCard extends React.Component {
     } else if (checked && prev_route == 'CheckInResult') {
       in_group_message = 'Checked';
       disable = true;
-    } else if (in_chat){
+    } else if (in_chat) {
       disable = true;
-      in_group_message = 'In Chat'
+      in_group_message = 'In Chat';
     }
-
 
     let displayNameSize = 16;
     if (displayName.length > 25) {
@@ -90,8 +72,6 @@ export default class UserCard extends React.Component {
 
     let userNameSize = 13;
 
-
-
     return (
       <TouchableWithoutFeedback
         disabled={disable}
@@ -103,11 +83,10 @@ export default class UserCard extends React.Component {
           ]}>
           <View style={{width: '80%', flexDirection: 'row'}}>
             <View style={styles.imgHolder}>
-              {icon != null ? (
-                <Image source={{uri: icon.uri}} style={styles.imageStyle} />
-              ) : (
-                <MaterialIcons name={icon_option} size={70} />
-              )}
+              <Image
+                source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+                style={styles.imageStyle}
+              />
             </View>
             <View style={styles.nameStyle}>
               <Text
@@ -142,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     borderBottomWidth: 0.5,
-    borderBottomColor: 'silver'
+    borderBottomColor: 'silver',
   },
   imageStyle: {
     height: 70,

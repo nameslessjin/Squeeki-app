@@ -15,6 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {chatTimeFormat} from '../../utils/time';
 import {countFormat} from '../../utils/format';
 import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view';
+import { singleDefaultIcon } from '../../utils/defaultIcon'
 
 const {width, height} = Dimensions.get('screen');
 
@@ -72,17 +73,6 @@ export default class ChatList extends React.Component {
 
     const unread_message_count_text = countFormat(unread_message_count);
 
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-
-    const icon_option = icon_options[random];
-
     let message_preview =
       last_message == null
         ? 'Not messages yet.'
@@ -121,11 +111,7 @@ export default class ChatList extends React.Component {
                 flexDirection: 'row',
               }}>
               <View style={styles.imgHolder}>
-                {icon != null ? (
-                  <Image source={{uri: icon.uri}} style={styles.imageStyle} />
-                ) : (
-                  <MaterialIcons name={icon_option} size={width * 0.18} />
-                )}
+                <Image source={icon ? {uri: icon.uri} : singleDefaultIcon()} style={styles.imageStyle} />
               </View>
 
               <View style={styles.rightStyle}>

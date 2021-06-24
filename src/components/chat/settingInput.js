@@ -8,28 +8,13 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 export default class RewardSettingInput extends React.Component {
-  state = {
-    icon_option: 'emoticon-cool-outline',
-  };
-
-  componentDidMount() {
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]});
-  }
 
   render() {
     const {type, value, onInputChange, disabled} = this.props;
-    const {icon_option} = this.state;
+
     let title = 'Name';
     if (type == 'type') {
       title = 'Type';
@@ -46,16 +31,19 @@ export default class RewardSettingInput extends React.Component {
         style={styles.imageStyle}
         disabled={disabled}
         onPress={() => onInputChange('icon')}>
-        {value && (type == 'icon') != null ? (
-          <Image source={{uri: value.uri}} style={styles.imageStyle} />
-        ) : (
-          <MaterialIcons name={icon_option} size={100} />
-        )}
+        <Image
+          source={
+            value && type == 'icon' ? {uri: value.uri} : singleDefaultIcon()
+          }
+          style={styles.imageStyle}
+        />
       </TouchableOpacity>
     );
 
     const button = (
-      <TouchableOpacity onPress={() => onInputChange(type)} style={styles.button}>
+      <TouchableOpacity
+        onPress={() => onInputChange(type)}
+        style={styles.button}>
         <Text style={styles.leaveChatText}> {title} </Text>
       </TouchableOpacity>
     );
@@ -68,7 +56,9 @@ export default class RewardSettingInput extends React.Component {
       <View style={styles.container}>
         <Text style={{color: 'grey'}}>{title}</Text>
         {type == 'type' ? (
-          <TouchableOpacity onPress={() => onInputChange(type)} disabled={disabled}>
+          <TouchableOpacity
+            onPress={() => onInputChange(type)}
+            disabled={disabled}>
             <View style={{marginLeft: 20}}>
               <Text style={{color: 'grey'}}>{value}</Text>
             </View>
@@ -121,9 +111,9 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   leaveChatText: {
-    color: 'red'
+    color: 'red',
   },
-  button:{
-    marginTop: 20
-  }
+  button: {
+    marginTop: 20,
+  },
 });

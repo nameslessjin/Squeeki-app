@@ -24,7 +24,6 @@ export default class NominationResultsCard extends React.Component {
     } = this.props;
     const percentage = vote / total_vote_count;
 
-    const name = '0123456789 123456789 123456789 123456789 123456789';
     // change vote for large number
     return (
       <TouchableOpacity

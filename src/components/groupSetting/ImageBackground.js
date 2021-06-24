@@ -8,28 +8,10 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LeaveButton from './leaveButton';
-
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 export default class HeaderImageBackground extends React.Component {
-
-  state = {
-    icon_option: 'emoticon-cool-outline'
-  }
-
-  componentDidMount(){
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]})
-  }
-
   render() {
     const {
       initialize,
@@ -39,27 +21,16 @@ export default class HeaderImageBackground extends React.Component {
       onLeave,
       auth_rank,
       onMediaPress,
-      required_rank
+      required_rank,
     } = this.props;
 
-    const { icon_option } = this.state
-    let iconImage = (
-      <MaterialIcons
-        style={{backgroundColor: 'white'}}
-        name={icon_option}
-        size={100}
+    const iconImage = (
+      <Image
+        source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+        style={styles.imageStyle}
+        resizeMode={'cover'}
       />
     );
-
-    if (icon != null) {
-      iconImage = (
-        <Image
-          source={{uri: icon.uri}}
-          style={styles.imageStyle}
-          resizeMode={'cover'}
-        />
-      );
-    }
 
     let SetBackgroundImgText =
       'Group owners are really lazy. So there is no background. Press here to set background';
@@ -75,8 +46,7 @@ export default class HeaderImageBackground extends React.Component {
           disabled={auth_rank > required_rank}
           onPress={() => onMediaPress('background')}
           // onPress={() => backgroundImagePicker(setImage)}
-          
-          >
+        >
           {backgroundImg != null ? (
             <Image
               source={{uri: backgroundImg.uri}}
@@ -95,8 +65,7 @@ export default class HeaderImageBackground extends React.Component {
             disabled={auth_rank > required_rank}
             onPress={() => onMediaPress('profileImg')}
             // onPress={() => iconImagePicker(setImage)}
-            
-            >
+          >
             {iconImage}
           </TouchableOpacity>
           {!initialize ? <LeaveButton auth={auth} onPress={onLeave} /> : null}

@@ -8,14 +8,10 @@ import {
   Alert,
   Image,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getFormalTime} from '../../utils/time';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 export default class RewardCard extends React.Component {
-  state = {
-    icon_option: 'emoticon-cool-outline',
-  };
-
   reward_rate = [
     {name: 'Diamond', rate: 1, color: '#b9f2ff'},
     {name: 'Sapphire', rate: 4, color: '#0f52ba'},
@@ -24,18 +20,6 @@ export default class RewardCard extends React.Component {
     {name: 'Silver', rate: 30, color: '#C0C0C0'},
     {name: 'Bronze', rate: 40, color: '#cd7f32'},
   ];
-
-  componentDidMount() {
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]});
-  }
 
   onDelete = () => {
     const {onDeleteReward, item} = this.props;
@@ -57,10 +41,9 @@ export default class RewardCard extends React.Component {
   render() {
     const {item, auth, route} = this.props;
     const {from, type, content, name, hide, createdAt, user, chance} = item;
-    const {icon_option} = this.state;
     let id = null;
     let displayName = null;
-    let group_username = null
+    let group_username = null;
     let username = null;
     let icon = null;
     if (user != null) {
@@ -68,7 +51,7 @@ export default class RewardCard extends React.Component {
       displayName = user.displayName;
       username = user.username;
       icon = user.icon;
-      group_username = user.group_username
+      group_username = user.group_username;
     }
 
     const reward_rank = this.reward_rate.find(r => r.rate == chance);
@@ -83,7 +66,7 @@ export default class RewardCard extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <View style={styles.card}>
-          {(user != null || route == 'history' || route == 'reward') ? (
+          {user != null || route == 'history' || route == 'reward' ? (
             <Text style={{fontWeight: 'bold', color: reward_rank.color}}>
               {reward_rank.name}
             </Text>
@@ -116,7 +99,11 @@ export default class RewardCard extends React.Component {
               style={{
                 marginVertical: 3,
                 backgroundColor:
-                  (route == 'history' || route == 'reward') ? null : (hide ? 'black' : null),
+                  route == 'history' || route == 'reward'
+                    ? null
+                    : hide
+                    ? 'black'
+                    : null,
               }}>
               {content}
             </Text>
@@ -129,11 +116,10 @@ export default class RewardCard extends React.Component {
               <View style={[styles.user, {paddingVertical: 0, width: '80%'}]}>
                 <Text>By: </Text>
                 <View style={styles.imgHolder}>
-                  {icon != null ? (
-                    <Image source={{uri: icon.uri}} style={styles.icon} />
-                  ) : (
-                    <MaterialIcons name={icon_option} size={40} />
-                  )}
+                  <Image
+                    source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+                    style={styles.icon}
+                  />
                 </View>
                 <View style={styles.usernameStyle}>
                   <Text style={{marginLeft: 4, marginVertical: 3}}>

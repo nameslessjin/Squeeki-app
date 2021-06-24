@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {dateConversion} from '../../utils/time';
+import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 const {width} = Dimensions.get('screen');
 
@@ -30,18 +31,8 @@ export default class UserChatList extends React.Component {
     } = item;
 
     const {onMemberCardPress, user_id} = this.props;
-    const random = Math.floor(Math.random() * 5);
     const time_out = new Date(parseInt(timeout));
     const different = time_out - Date.now();
-
-    let icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    icon_options = icon_options[random];
 
     let displayNameSize = 16;
     if (displayName.length > 20) {
@@ -52,11 +43,11 @@ export default class UserChatList extends React.Component {
     }
 
     if (displayName.length > 35) {
-      displayNameSize = 13
+      displayNameSize = 13;
     }
 
     if (displayName.length > 45) {
-      displayNameSize = 12
+      displayNameSize = 12;
     }
 
     let userNameSize = 13;
@@ -70,15 +61,10 @@ export default class UserChatList extends React.Component {
         disabled={user_id == userId}>
         <View style={styles.user_container}>
           <View style={styles.imageContainer}>
-            {icon != null ? (
-              <Image source={{uri: icon}} style={styles.image} />
-            ) : (
-              <MaterialIcons
-                name={icon_options}
-                size={120}
-                style={{height: 115}}
-              />
-            )}
+            <Image
+              source={icon ? {uri: icon} : singleDefaultIcon()}
+              style={styles.image}
+            />
           </View>
           <View style={styles.name}>
             <Text style={{fontSize: displayNameSize, textAlign: 'center'}}>
@@ -109,7 +95,9 @@ export default class UserChatList extends React.Component {
             </Text>
           </View>
           <View style={styles.time}>
-            <Text style={{color: 'grey', fontSize: 11}}>Last seen: {dateConversion(lastActiveAt)}</Text>
+            <Text style={{color: 'grey', fontSize: 11}}>
+              Last seen: {dateConversion(lastActiveAt)}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>

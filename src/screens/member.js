@@ -11,7 +11,6 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {connect} from 'react-redux';
 import InputRankTitle from '../components/users/members/inputRankTitle';
 import {updateMember, deleteMember, makeOwner} from '../actions/user';
@@ -21,7 +20,8 @@ import {getGroupMembers} from '../actions/user';
 import {getGroupMembersFunc} from '../functions/user';
 import OptionButtons from '../components/users/members/optionButtons';
 import InputText from '../components/users/members/inputText';
-import { getSingleChat } from '../actions/chat'
+import {getSingleChat} from '../actions/chat';
+import {singleDefaultIcon} from '../utils/defaultIcon';
 
 class Member extends React.Component {
   state = {
@@ -29,19 +29,9 @@ class Member extends React.Component {
     keyboard: false,
     loading: false,
     ...this.props.route.params,
-    icon_option: 'emoticon-cool-outline',
   };
 
   componentDidMount() {
-    const random = Math.floor(Math.random() * 5);
-    const icon_options = [
-      'emoticon-cool-outline',
-      'emoticon-poop',
-      'emoticon-kiss-outline',
-      'emoticon-wink-outline',
-      'emoticon-tongue-outline',
-    ];
-    this.setState({icon_option: icon_options[random]});
     this.props.navigation.setOptions({
       // headerRight: () => (
       //   <ModifyButton
@@ -231,7 +221,6 @@ class Member extends React.Component {
       return false;
     }
 
-
     // group_username must not contain admin and squeeki
     // group_username must have length greater than 1 and no greather than 50
     if (
@@ -328,7 +317,7 @@ class Member extends React.Component {
 
   getSingleChat = async () => {
     const {getSingleChat, auth, navigation} = this.props;
-    const {id} = this.state
+    const {id} = this.state;
 
     const request = {
       token: auth.token,
@@ -347,7 +336,6 @@ class Member extends React.Component {
       navigation.navigate('Chat', {second_userId: id});
     }
   };
-
 
   onButtonPress = type => {
     if (type == 'ownership') {
@@ -373,13 +361,13 @@ class Member extends React.Component {
             text: 'Cancel',
             style: 'cancel',
           },
-          {text: 'Confirm', onPress: this.onDeleteMember, style: "destructive"},
+          {text: 'Confirm', onPress: this.onDeleteMember, style: 'destructive'},
         ],
       );
     }
 
-    if (type == 'dm'){
-      this.getSingleChat()
+    if (type == 'dm') {
+      this.getSingleChat();
     }
   };
 
@@ -393,7 +381,6 @@ class Member extends React.Component {
       auth,
       toggled,
       loading,
-      icon_option,
       group_username,
     } = this.state;
 
@@ -417,15 +404,10 @@ class Member extends React.Component {
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
-          {icon != null ? (
-            <Image source={{uri: icon.uri}} style={styles.imageStyle} />
-          ) : (
-            <MaterialIcons
-              name={icon_option}
-              size={100}
-              style={{marginTop: 15, height: 100}}
-            />
-          )}
+          <Image
+            source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+            style={styles.imageStyle}
+          />
 
           <Text style={styles.displayName}>{displayName}</Text>
           <Text style={styles.username}>@{username}</Text>
@@ -444,7 +426,6 @@ class Member extends React.Component {
             modifyInput={this.modifyInput}
             value={group_username}
             editable={allowToChangeGroupUsername}
-            
           />
           {loading ? (
             <ActivityIndicator
@@ -516,7 +497,7 @@ const mapDispatchToProps = dispatch => {
     makeOwner: data => dispatch(makeOwner(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
     searchUser: data => dispatch(searchUser(data)),
-    getSingleChat: data => dispatch(getSingleChat(data))
+    getSingleChat: data => dispatch(getSingleChat(data)),
   };
 };
 
