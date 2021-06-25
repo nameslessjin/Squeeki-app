@@ -12,7 +12,7 @@ import {
   StatusBar,
   View,
 } from 'react-native';
-import {updateProfile, userLogout} from '../actions/auth';
+import {updateProfile, userLogout, getDefaultIcon} from '../actions/auth';
 import {connect} from 'react-redux';
 import UserTextInput from '../components/profile/textinput';
 import validator from 'validator';
@@ -24,6 +24,7 @@ class Profile extends React.Component {
     ...this.props.auth.user,
     loading: false,
     modalVisible: false,
+    defaultIcons: [],
   };
 
   componentDidMount() {
@@ -31,6 +32,7 @@ class Profile extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
     });
+    this.getDefaultIcon();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -50,6 +52,15 @@ class Profile extends React.Component {
       this.updateProfile();
     }
   }
+
+  getDefaultIcon = () => {
+    this.props
+      .getDefaultIcon()
+      .then(defaultIcons => {
+        this.setState({defaultIcons});
+      })
+      .catch(err => console.log(err));
+  };
 
   setIcon = (data, type) => {
     this.setState({icon: data, modalVisible: false});
@@ -184,6 +195,11 @@ class Profile extends React.Component {
     this.setState({modalVisible: false});
   };
 
+  onDefaultIconPress = url => {
+    this.setState({icon: {uri: url}});
+    this.onBackdropPress();
+  };
+
   render() {
     const {
       email,
@@ -193,6 +209,7 @@ class Profile extends React.Component {
       loading,
       displayName,
       modalVisible,
+      defaultIcons,
     } = this.state;
 
     return (
@@ -241,6 +258,8 @@ class Profile extends React.Component {
             modalVisible={modalVisible}
             onBackdropPress={this.onBackdropPress}
             onChangeMedia={this.setIcon}
+            defaultIcons={defaultIcons}
+            onDefaultIconPress={this.onDefaultIconPress}
           />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -285,6 +304,7 @@ const mapDispatchToProps = dispatch => {
   return {
     updateProfile: data => dispatch(updateProfile(data)),
     userLogout: () => dispatch(userLogout()),
+    getDefaultIcon: () => dispatch(getDefaultIcon()),
   };
 };
 

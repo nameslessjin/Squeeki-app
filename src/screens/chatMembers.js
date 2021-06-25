@@ -28,7 +28,6 @@ class ChatMembers extends React.Component {
     count: 0,
     ...this.props.route.params,
     refreshing: false,
-    refresh: false,
     modalVisible: false,
     userId: null,
     search_term: '',
@@ -42,7 +41,7 @@ class ChatMembers extends React.Component {
       headerTitle: 'Members',
     });
     // this.loadUserChat(true);
-    this.onSearchChange('');
+    this.onSearchChange('', true);
     this.getUserChat();
   }
 
@@ -51,7 +50,7 @@ class ChatMembers extends React.Component {
     if (route.params.refresh) {
       navigation.setParams({refresh: false});
       // this.loadUserChat(true);
-      this.onSearchChange('');
+      this.onSearchChange('', true);
     }
     if (prevState.status != this.state.status && this.state.status) {
       const {status, allow_invite} = this.state;
@@ -201,7 +200,7 @@ class ChatMembers extends React.Component {
 
   onEndReached = () => {
     const {search_term} = this.state;
-    this.onSearchChange(search_term);
+    this.onSearchChange(search_term, false);
     // this.loadUserChat(false);
   };
 
@@ -260,7 +259,7 @@ class ChatMembers extends React.Component {
 
   getSingleChat = async second_userId => {
     const {getSingleChat, auth, navigation} = this.props;
-    const {chatId} = this.state
+    const {chatId} = this.state;
 
     const request = {
       token: auth.token,
@@ -322,13 +321,14 @@ class ChatMembers extends React.Component {
     this.onBackdropPress();
   };
 
-  onSearchChange = async text => {
+  onSearchChange = async (text, init) => {
     const {search_term, chatId} = this.state;
 
     const term = text.trim();
     this.setState({search_term: text});
 
-    const count = search_term != text ? 0 : this.state.count;
+    const count =
+      search_term != text ? 0 : init || init == null ? 0 : this.state.count;
     const {searchUserChat, auth, group} = this.props;
     console.log(group);
     const groupId = group.group ? group.group.id : null;
@@ -352,7 +352,7 @@ class ChatMembers extends React.Component {
     this.setState(prevState => {
       return {
         users:
-          search_term == text ? prevState.users.concat(req.users) : req.users,
+          init || init == null ? req.users : prevState.users.concat(req.users),
         count: req.count,
       };
     });

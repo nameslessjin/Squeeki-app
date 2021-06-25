@@ -11,12 +11,15 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Image,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {signup, signin} from '../actions/auth';
+import {signup, signin, getDefaultIcon} from '../actions/auth';
 import validator from 'validator';
 import SignUpTextInput from '../components/signup/textinput';
 import SignUpButton from '../components/signup/button';
+import {singleDefaultIcon} from '../utils/defaultIcon';
+import SignUpModal from '../components/signup/signupModal'
 
 const {height} = Dimensions.get('screen');
 
@@ -28,8 +31,12 @@ class SignUp extends React.Component {
     referCode: '',
     username: '',
     errorText: '',
-    icon: null,
+    icon: {
+      uri: 'https://storage.googleapis.com/squeeki-imgs/defaultIcons/p1.png',
+    },
     loading: false,
+    modalVisible: false,
+    defaultIcons: [],
   };
 
   componentDidMount() {
@@ -38,7 +45,17 @@ class SignUp extends React.Component {
       headerBackTitleVisible: false,
       headerTitle: 'Sign Up',
     });
+    this.getDefaultIcon();
   }
+
+  getDefaultIcon = () => {
+    this.props
+      .getDefaultIcon()
+      .then(defaultIcons => {
+        this.setState({defaultIcons});
+      })
+      .catch(err => console.log(err));
+  };
 
   onChangeText = (type, text) => {
     if (type == 'Password') {
@@ -96,7 +113,7 @@ class SignUp extends React.Component {
   };
 
   setIcon = (data, type) => {
-    this.setState({icon: data});
+    this.setState({icon: data, modalVisible: false});
   };
 
   onPress = async () => {
@@ -105,7 +122,6 @@ class SignUp extends React.Component {
     if (!this.validation()) {
       return;
     }
-    console.log('Here');
 
     const data = {
       email: email,
@@ -136,6 +152,15 @@ class SignUp extends React.Component {
     navigation.navigate('Terms');
   };
 
+  onBackdropPress = () => {
+    this.setState({modalVisible: false});
+  };
+
+  onDefaultIconPress = url => {
+    this.setState({icon: {uri: url}});
+    this.onBackdropPress();
+  };
+
   render() {
     const {
       email,
@@ -146,6 +171,8 @@ class SignUp extends React.Component {
       username,
       icon,
       loading,
+      modalVisible,
+      defaultIcons
     } = this.state;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -156,7 +183,15 @@ class SignUp extends React.Component {
           showsVerticalScrollIndicator={false}>
           <KeyboardAvoidingView style={styles.container}>
             <StatusBar barStyle={'dark-content'} />
-            <Text style={{color: 'red'}}>{errorText}</Text>
+            <Text style={{color: 'red', marginVertical: 5}}>{errorText}</Text>
+            <TouchableOpacity
+              style={styles.imageStyle}
+              onPress={() => this.setState({modalVisible: true})}>
+              <Image
+                source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+                style={styles.imageStyle}
+              />
+            </TouchableOpacity>
             <SignUpTextInput
               type={'Email'}
               onChangeText={this.onChangeText}
@@ -195,6 +230,13 @@ class SignUp extends React.Component {
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
+          <SignUpModal
+            modalVisible={modalVisible}
+            onBackdropPress={this.onBackdropPress}
+            onChangeMedia={this.setIcon}
+            defaultIcons={defaultIcons}
+            onDefaultIconPress={this.onDefaultIconPress}
+          />
         </ScrollView>
       </TouchableWithoutFeedback>
     );
@@ -239,6 +281,7 @@ const mapDispatchToProps = dispatch => {
   return {
     signUp: data => dispatch(signup(data)),
     signin: data => dispatch(signin(data)),
+    getDefaultIcon: () => dispatch(getDefaultIcon()),
   };
 };
 

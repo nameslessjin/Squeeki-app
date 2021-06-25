@@ -144,3 +144,11 @@ mutation updateVisibilities($input: VisibilitiesInput!){
     updateVisibilities(input: $input)
 }
 `
+export const getDefaultIconQuery = `
+query getDefaultIcon {
+    getDefaultIcon {
+        id
+        url
+    }
+}
+`

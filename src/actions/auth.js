@@ -8,6 +8,7 @@ import {
   resetPasswordMutation,
   updateNotificationsMutation,
   updateVisibilitiesMutation,
+  getDefaultIconQuery,
 } from '../actions/query/authQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
@@ -16,12 +17,12 @@ import {httpCall} from './utils/httpCall';
 export const signup = data => {
   const {email, password, username, icon, refer_code} = data;
   return async function(dispatch) {
-    let uploadIcon = null;
+
     const userInput = {
       email: email,
       password: password,
       username: username,
-      icon: uploadIcon,
+      icon: icon,
       refer_code: refer_code,
     };
 
@@ -75,34 +76,42 @@ export const updateProfile = data => {
     let newUsername = username;
     let newIcon = icon;
     let newDisplayName = displayName;
-
+    let newIconName = null;
+    let newIconUri = null;
     if (icon != null) {
-      const iconData = new FormData();
-      iconData.append('filename', icon.filename);
-      iconData.append('fileType', icon.type);
-      iconData.append('fileData', icon.data);
-      iconData.append('fileCategory', 'userIcons');
+      if (icon.data) {
+        const iconData = new FormData();
+        iconData.append('filename', icon.filename);
+        iconData.append('fileType', icon.type);
+        iconData.append('fileData', icon.data);
+        iconData.append('fileCategory', 'userIcons');
 
-      const iconPost = await fetch(http_upload, {
-        method: 'POST',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'multipart/form-data',
-        },
-        body: iconData,
-      });
-      if (iconPost.status == 500) {
-        alert('uploading icon failed');
-        return 1;
-      }
-      const iconUri = await iconPost.json();
-      if (iconUri.error) {
-        return iconUri;
+        const iconPost = await fetch(http_upload, {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'multipart/form-data',
+          },
+          body: iconData,
+        });
+        if (iconPost.status == 500) {
+          alert('uploading icon failed');
+          return 1;
+        }
+        const iconUri = await iconPost.json();
+        if (iconUri.error) {
+          return iconUri;
+        }
+
+        newIconName = iconUri.name;
+        newIconUri = iconUri.url;
+      } else {
+        newIconUri = icon.uri;
       }
 
       newIcon = {
-        uri: iconUri.url,
-        name: iconUri.name,
+        uri: newIconUri,
+        name: newIconName,
       };
     }
 
@@ -340,5 +349,21 @@ const visibilitiesUpdate = data => {
   return {
     type: 'updateVisibilities',
     i: data,
+  };
+};
+
+export const getDefaultIcon = data => {
+  return async function(dispatch) {
+    const graphql = {
+      query: getDefaultIconQuery,
+    };
+
+    const result = await httpCall(null, graphql);
+
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.getDefaultIcon;
   };
 };

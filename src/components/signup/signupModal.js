@@ -6,37 +6,63 @@ import {
   TouchableWithoutFeedback,
   Text,
   Modal,
+  Image,
+  FlatList,
 } from 'react-native';
 import {iconImagePicker} from '../../utils/imagePicker';
 
-export default class SignUpModal extends React.Component {
+const extractKey = ({id}) => id;
+
+export default class ProfileModal extends React.Component {
   onPress = type => {
     const {onBackdropPress, onChangeMedia} = this.props;
     iconImagePicker(onChangeMedia, type, onBackdropPress);
   };
 
+  iconCard = ({item}) => {
+    const {onDefaultIconPress} = this.props;
+    return (
+      <TouchableOpacity onPress={() => onDefaultIconPress(item.url)}>
+        <Image source={{uri: item.url}} style={styles.icon} />
+      </TouchableOpacity>
+    );
+  };
 
+  defaultIconsList = () => {
+    return (
+      <FlatList
+        data={this.props.defaultIcons}
+        numColumns={5}
+        keyExtractor={extractKey}
+        scrollEnabled={false}
+        bounces={false}
+        style={styles.iconContainerStructure}
+        renderItem={this.iconCard}
+      />
+    );
+  };
 
   render() {
-    const {modalVisible, onBackdropPress} = this.props;
+    const {modalVisible, onBackdropPress, defaultIcons} = this.props;
+
     return (
       <View style={[styles.centeredView]}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <TouchableWithoutFeedback onPress={() => onBackdropPress()}>
             <View style={[styles.centeredView]}>
               <View style={[styles.modalView]}>
-                <TouchableOpacity onPress={() => this.onPress('camera')}>
-                  <View style={styles.button}>
-                    <Text>Take Photo</Text>
+                {defaultIcons.length == 0 ? null : (
+                  <View
+                    style={[
+                      styles.iconContainerStructure,
+                      styles.iconContainerDetail,
+                    ]}>
+                    {this.defaultIconsList()}
                   </View>
-                </TouchableOpacity>
-                <View style={styles.underline} />
-                <TouchableOpacity onPress={() => this.onPress('library')}>
-                  <View style={styles.button}>
-                    <Text>Select From Image Library</Text>
-                  </View>
-                </TouchableOpacity>
-                <View style={styles.underline} />
+                )}
+                {defaultIcons.length == 0 ? null : (
+                  <View style={styles.underline} />
+                )}
                 <TouchableOpacity onPress={() => onBackdropPress()}>
                   <View style={styles.button}>
                     <Text style={{color: 'red'}}>Cancel</Text>
@@ -72,7 +98,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    height: 150,
+    minHeight: 150,
     width: 300,
   },
   modalText: {
@@ -88,5 +114,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 50,
+  },
+  icon: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    margin: 5,
+  },
+  iconContainerStructure: {
+    minHeight: 70,
+    width: 300,
+  },
+  iconContainerDetail: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+    borderRadius: 20,
   },
 });
