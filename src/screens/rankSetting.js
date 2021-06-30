@@ -51,6 +51,7 @@ class RankSetting extends React.Component {
       manage_comment_rank_required,
       manage_check_in_rank_required,
       manage_chat_rank_required,
+      manage_task_rank_required
     } = this.state;
     const request = {
       token: auth.token,
@@ -68,6 +69,7 @@ class RankSetting extends React.Component {
         manage_comment_rank_required,
         manage_check_in_rank_required,
         manage_chat_rank_required,
+        manage_task_rank_required
       },
     };
     const req = await updateRankFeatures(request);
@@ -87,6 +89,7 @@ class RankSetting extends React.Component {
       manage_comment_rank_required,
       manage_check_in_rank_required,
       manage_chat_rank_required,
+      manage_task_rank_required
     } = this.state;
     const {rank_setting} = this.props.group.group;
 
@@ -104,7 +107,8 @@ class RankSetting extends React.Component {
         manage_comment_rank_required &&
       rank_setting.manage_check_in_rank_required ==
         manage_check_in_rank_required &&
-      rank_setting.manage_chat_rank_required == manage_chat_rank_required
+      rank_setting.manage_chat_rank_required == manage_chat_rank_required &&
+      rank_setting.manage_task_rank_required == manage_task_rank_required
     ) {
       return false;
     }
@@ -150,6 +154,8 @@ class RankSetting extends React.Component {
       this.setState({manage_check_in_rank_required: value});
     } else if (type == 'manage_chat') {
       this.setState({manage_chat_rank_required: value});
+    } else if (type == 'manage_task'){
+      this.setState({manage_task_rank_required: value})
     }
   };
 
@@ -167,6 +173,7 @@ class RankSetting extends React.Component {
       manage_comment_rank_required,
       manage_check_in_rank_required,
       manage_chat_rank_required,
+      manage_task_rank_required,
       modalVisible,
       type,
     } = this.state;
@@ -208,6 +215,16 @@ class RankSetting extends React.Component {
             onPress={this.onPress}
           />
           <RankFunction
+            type={'manage_check_in'}
+            value={manage_check_in_rank_required}
+            onPress={this.onPress}
+          />
+          <RankFunction
+            type={'manage_task'}
+            value={manage_task_rank_required}
+            onPress={this.onPress}
+          />
+          <RankFunction
             type={'manage_comment'}
             value={manage_comment_rank_required}
             onPress={this.onPress}
@@ -215,11 +232,6 @@ class RankSetting extends React.Component {
           <RankFunction
             type={'manage_chat'}
             value={manage_chat_rank_required}
-            onPress={this.onPress}
-          />
-          <RankFunction
-            type={'manage_check_in'}
-            value={manage_check_in_rank_required}
             onPress={this.onPress}
           />
           <RankFunction

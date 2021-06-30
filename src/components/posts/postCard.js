@@ -14,10 +14,11 @@ import PostHeader from './postHeader';
 import {connect} from 'react-redux';
 import {
   deletePost,
-  likePost,
+  respondPost,
   changePostNotification,
   reportPost,
 } from '../../actions/post';
+import {getSingleGroupById} from '../../actions/group';
 import {voteNominee} from '../../actions/nomination';
 import {userLogout} from '../../actions/auth';
 import PostMedia from './postMedia';
@@ -26,7 +27,8 @@ import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 
 class PostCard extends React.Component {
   state = {
-    ...this.props.item,
+    liked: false,
+    taskResponse: null,
     modalToggled: false,
     loading: false,
     is_report_toggled: false,
@@ -34,6 +36,8 @@ class PostCard extends React.Component {
     onReport: false,
     voting: false,
     selected: false,
+    pressedButton: 'like',
+    ...this.props.item,
   };
 
   onPostDelete = () => {
@@ -50,6 +54,30 @@ class PostCard extends React.Component {
         style: 'destructive',
       },
     ]);
+  };
+
+  onTaskManagementPress = () => {
+    this.props.navigation.navigate('TaskManagement', {
+      postId: this.state.id,
+    });
+    this.onBackDropPress();
+  };
+
+  onViewButtonPress = async () => {
+    console.log('here')
+    const {item, getSingleGroupById, auth, navigation} = this.props;
+    const request = {
+      id: item.groupId,
+      token: auth.token,
+    };
+
+    const req = await getSingleGroupById(request);
+    if (req.errors) {
+      alert('Cannot load group at this time, please try again later');
+      return;
+    }
+
+    navigation.navigate('GroupNavigator');
   };
 
   onPostReport = () => {
@@ -192,20 +220,25 @@ class PostCard extends React.Component {
     }
   };
 
-  onLikePress = async () => {
-    const {auth, likePost, navigation} = this.props;
+  onRespondPost = async type => {
+    if (type == 'extra') {
+      return;
+    }
+
+    const {auth, respondPost, navigation} = this.props;
     const {id} = this.state;
     const data = {
       postId: id,
       token: auth.token,
+      type,
     };
 
-    this.setState({loading: true});
-    const like = await likePost(data);
+    this.setState({loading: true, pressedButton: type});
+    const req = await respondPost(data);
     this.setState({loading: false});
-    if (like.errors) {
-      console.log(like.errors[0].message);
-      alert('Cannot like post at this time, please try again later');
+    if (req.errors) {
+      console.log(req.errors[0].message);
+      alert('Cannot respond to this post at this time, please try again later');
       if (like.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -218,10 +251,14 @@ class PostCard extends React.Component {
     this.setState(prevState => {
       return {
         ...prevState,
-        liked: !prevState.liked,
-        likeCount: prevState.liked
-          ? prevState.likeCount - 1
-          : prevState.likeCount + 1,
+        liked: type == 'like' ? !prevState.liked : prevState.liked,
+        likeCount:
+          type == 'like'
+            ? prevState.liked
+              ? prevState.likeCount - 1
+              : prevState.likeCount + 1
+            : prevState.likeCount,
+        taskResponse: type != 'like' ? type : prevState.taskResponse,
       };
     });
   };
@@ -273,39 +310,14 @@ class PostCard extends React.Component {
   };
 
   render() {
+    const {id, createdAt, user, priority, nomination, checked} = this.state;
     const {
-      id,
-      image,
-      content,
-      createdAt,
-      user,
-      commentCount,
-      auth,
-      likeCount,
-      liked,
-      modalToggled,
-      type,
-      priority,
-      groupAuth,
-      notification,
-      is_report_toggled,
-      report,
-      onReport,
-      loading,
-      nomination,
-      voting,
-      selected,
-      checked,
-    } = this.state;
-    const {
-      option,
       commentTouchable,
       selectionMode,
       onPostSelect,
       group,
       navigation,
     } = this.props;
-    const {username, icon, displayName, group_username} = user;
     const date = dateConversion(createdAt);
 
     let backgroundColor = 'white';
@@ -328,43 +340,36 @@ class PostCard extends React.Component {
           }>
           <View style={[styles.container, {backgroundColor: backgroundColor}]}>
             <PostHeader
-              icon={icon}
-              username={username}
-              displayName={displayName}
-              group_username={group_username}
+              {...user}
+              {...this.state}
               date={date}
-              auth={auth}
-              groupAuth={groupAuth}
               postId={id}
+              onTaskManagementPress={this.onTaskManagementPress}
               onPostUpdate={this.onPostUpdate}
               onPostDelete={this.onPostDelete}
               onPostNotification={this.onPostNotification}
-              modalToggled={modalToggled}
               toggleModal={this.toggleModal}
               onBackDropPress={this.onBackDropPress}
-              type={type}
-              priority={priority}
-              notification={notification}
               onPostReport={this.onPostReport}
-              is_report_toggled={is_report_toggled}
               currentUserAuth={group.group.auth}
-              report={report}
               onReportInput={this.onReportInput}
               onSubmitReport={this.onSubmitReport}
-              onReport={onReport}
               selectionMode={selectionMode}
-              rank_required={
+              rank_required_manage={
                 group.group.rank_setting
                   ? group.group.rank_setting.manage_post_rank_required
+                  : null
+              }
+              rank_required_task={
+                group.group.rank_setting
+                  ? group.group.rank_setting.manage_task_rank_required
                   : null
               }
             />
 
             <PostMedia
-              image={image}
-              content={content}
+              {...this.state}
               navigation={navigation}
-              type={type}
               _actionSheetRef={
                 this.props._actionSheetRef
                   ? this.props._actionSheetRef
@@ -380,24 +385,17 @@ class PostCard extends React.Component {
               ) : null
             ) : (
               <PostFooter
-                commentCount={commentCount}
-                likeCount={0}
                 navigation={this.props.navigation}
+                currentUserAuth={group.group.auth}
                 postId={id}
                 commentTouchable={commentTouchable}
-                onLikePress={this.onLikePress}
-                likeCount={likeCount}
-                liked={liked}
-                loading={loading}
+                onRespondPost={this.onRespondPost}
+                onViewButtonPress={this.onViewButtonPress}
+                {...this.state}
               />
             )}
             {nomination == null || selectionMode ? null : (
-              <PostNomination
-                nomination={nomination}
-                onPress={this.onVotePress}
-                voting={voting}
-                voted={nomination.voted}
-              />
+              <PostNomination {...this.state} onPress={this.onVotePress} />
             )}
           </View>
         </TouchableWithoutFeedback>
@@ -432,10 +430,11 @@ const mapDispatchToProps = dispatch => {
   return {
     deletePost: data => dispatch(deletePost(data)),
     userLogout: () => dispatch(userLogout()),
-    likePost: data => dispatch(likePost(data)),
+    respondPost: data => dispatch(respondPost(data)),
     changePostNotification: data => dispatch(changePostNotification(data)),
     reportPost: data => dispatch(reportPost(data)),
     voteNominee: data => dispatch(voteNominee(data)),
+    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
   };
 };
 

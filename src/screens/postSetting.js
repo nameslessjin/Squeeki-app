@@ -11,8 +11,6 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import InputContent from '../components/postSetting/inputContent';
-import InputPriority from '../components/postSetting/inputPriority';
-import InputPicker from '../components/postSetting/inputPicker';
 import InputImage from '../components/postSetting/inputImage';
 import AddOrModifyPost from '../components/postSetting/addOrModifyPost';
 import {createPost, getFeed, getGroupPosts, updatePost} from '../actions/post';
@@ -26,6 +24,7 @@ import {getUserGroupPoint} from '../actions/point';
 import {getSingleGroupById} from '../actions/group';
 import {detectAtPeopleNGroup} from '../utils/detect';
 import AtUserList from '../components/postSetting/atUserList';
+import InputOption from '../components/postSetting/inputOption';
 
 class PostSetting extends React.Component {
   state = {
@@ -36,10 +35,12 @@ class PostSetting extends React.Component {
       priority: 0,
       priorityDuration: 0,
       allowComment: 1,
-      type: 'post',
+      type: 'general',
       groupId: null,
       visibility: 'public',
-      originContent: ''
+      originContent: '',
+      confirmButton: 'Yes',
+      denyButton: 'No',
     },
     onToggle: false,
     toggleTyple: 'priority',
@@ -71,7 +72,9 @@ class PostSetting extends React.Component {
         groupId,
         nomination,
         visibility,
-        originContent
+        originContent,
+        confirmButton,
+        denyButton,
       } = this.props.route.params.postData;
       this.setState({
         postData: {
@@ -85,7 +88,9 @@ class PostSetting extends React.Component {
           groupId: groupId,
           nomination: nomination,
           visibility: visibility,
-          originContent
+          originContent,
+          confirmButton,
+          denyButton,
         },
       });
 
@@ -238,6 +243,8 @@ class PostSetting extends React.Component {
       type,
       groupId,
       visibility,
+      confirmButton,
+      denyButton,
     } = postData;
     content = content.trim();
 
@@ -270,6 +277,12 @@ class PostSetting extends React.Component {
       if (visibility == origin.visibility) {
         visibility = null;
       }
+      if (confirmButton == origin.confirmButton) {
+        confirmButton = null;
+      }
+      if (denyButton == origin.denyButton) {
+        denyButton = null;
+      }
     }
 
     if (
@@ -279,7 +292,9 @@ class PostSetting extends React.Component {
       priorityDuration != null ||
       allowComment != null ||
       type != null ||
-      visibility != null
+      visibility != null ||
+      confirmButton != null ||
+      denyButton != null
     ) {
       const updateData = {
         id: create ? null : postId,
@@ -291,6 +306,8 @@ class PostSetting extends React.Component {
         allowComment: allowComment,
         type: type,
         visibility: visibility,
+        confirmButton: confirmButton,
+        denyButton: denyButton,
         token: token,
         nomination: {
           nominationId: nomination.id || null,
@@ -310,7 +327,13 @@ class PostSetting extends React.Component {
   };
 
   validation = () => {
-    const {content, priority, priorityDuration} = this.state.postData;
+    const {
+      content,
+      priority,
+      priorityDuration,
+      confirmButton,
+      denyButton,
+    } = this.state.postData;
     if (content.trim().length == 0) {
       return false;
     }
@@ -323,6 +346,14 @@ class PostSetting extends React.Component {
     }
 
     if (priority > 0 && priorityDuration == 0) {
+      return false;
+    }
+
+    if (confirmButton.length > 10) {
+      return false;
+    }
+
+    if (denyButton.length > 10) {
       return false;
     }
 
@@ -415,7 +446,7 @@ class PostSetting extends React.Component {
     const request = {
       groupId: group.group.id,
       searchTerm: searchTerm.trim().substr(1, searchTerm.length),
-      token: auth.token
+      token: auth.token,
     };
 
     const result = await searchAtUser(request);
@@ -455,7 +486,7 @@ class PostSetting extends React.Component {
           priority: value,
         },
       });
-    } else if (type == 'priorityDuration') {
+    } else if (type == 'priorityDay') {
       this.setState({
         postData: {
           ...this.state.postData,
@@ -494,6 +525,20 @@ class PostSetting extends React.Component {
           visibility: value,
         },
       });
+    } else if (type == 'confirm') {
+      this.setState({
+        postData: {
+          ...this.state.postData,
+          confirmButton: value.substr(0, 10),
+        },
+      });
+    } else if (type == 'deny') {
+      this.setState({
+        postData: {
+          ...this.state.postData,
+          denyButton: value.substr(0, 10),
+        },
+      });
     }
   };
 
@@ -504,6 +549,7 @@ class PostSetting extends React.Component {
 
   onKeyboardInputFocus = () => {
     this.setState({contentKeyboard: true});
+    console.log('focused');
   };
 
   onBackdropPress = () => {
@@ -559,6 +605,8 @@ class PostSetting extends React.Component {
       groupId,
       visibility,
       postId,
+      confirmButton,
+      denyButton,
     } = this.state.postData;
     const {
       onToggle,
@@ -600,38 +648,59 @@ class PostSetting extends React.Component {
 
             {atSearchResult.length != 0 ||
             this.props.group.group.id == null ? null : (
-              <InputPriority
-                priority={priority}
-                onInputFocus={this.onInputFocus}
-                priorityDuration={priorityDuration}
-                modifyInput={this.modifyInput}
-                onBackdropPress={this.onBackdropPress}
-                onToggle={onToggle}
-                toggleTyple={toggleTyple}
-                onKeyboardInputFocus={this.onKeyboardInputFocus}
-                currentUserAuth={this.props.group.group.auth}
-                rank_setting={this.props.group.group.rank_setting}
-              />
+              <View style={styles.lineContainer}>
+                <InputOption
+                  value={priority}
+                  onInputFocus={this.onInputFocus}
+                  modifyInput={this.modifyInput}
+                  onBackdropPress={this.onBackdropPress}
+                  onToggle={onToggle}
+                  type={'priority'}
+                  disabled={false}
+                  toggleTyple={toggleTyple}
+                  currentUserAuth={this.props.group.group.auth}
+                  rank_setting={this.props.group.group.rank_setting}
+                />
+
+                <InputOption
+                  type={'priorityDay'}
+                  value={priorityDuration.toString()}
+                  modifyInput={this.modifyInput}
+                  onBackdropPress={this.onBackdropPress}
+                  onToggle={onToggle}
+                  toggleTyple={toggleTyple}
+                  currentUserAuth={this.props.group.group.auth}
+                  rank_setting={this.props.group.group.rank_setting}
+                  onFocus={this.onKeyboardInputFocus}
+                  priority={priority}
+                />
+              </View>
             )}
 
             {atSearchResult.length != 0 ? null : (
               <View style={styles.lineContainer}>
-                <InputPicker
+                <InputOption
                   value={type}
                   onInputFocus={this.onInputFocus}
                   modifyInput={this.modifyInput}
                   onBackdropPress={this.onBackdropPress}
                   onToggle={onToggle}
                   type={'type'}
+                  currentUserAuth={this.props.group.group.auth}
+                  rank_setting={this.props.group.group.rank_setting}
+                  disabled={!create}
                   toggleTyple={toggleTyple}
                 />
-                <InputPicker
+                <InputOption
                   value={allowComment}
                   onInputFocus={this.onInputFocus}
                   modifyInput={this.modifyInput}
                   onBackdropPress={this.onBackdropPress}
                   onToggle={onToggle}
                   type={'comment'}
+                  currentUserAuth={this.props.group.group.auth}
+                  rank_setting={this.props.group.group.rank_setting}
+                  disabled={false}
                   toggleTyple={toggleTyple}
                 />
               </View>
@@ -639,19 +708,23 @@ class PostSetting extends React.Component {
 
             {atSearchResult.length != 0 ? null : (
               <View style={styles.lineContainer}>
-                <InputPicker
+                <InputOption
                   value={visibility}
                   onInputFocus={this.onInputFocus}
                   modifyInput={this.modifyInput}
                   onBackdropPress={this.onBackdropPress}
                   onToggle={onToggle}
                   type={'visibility'}
+                  currentUserAuth={this.props.group.group.auth}
+                  rank_setting={this.props.group.group.rank_setting}
+                  disabled={false}
                   toggleTyple={toggleTyple}
                 />
               </View>
             )}
 
-            {atSearchResult.length != 0 ||
+            {type != 'general' ||
+            atSearchResult.length != 0 ||
             this.props.group.group.id == null ? null : (
               <NominationButton
                 onPress={this.onNominateePress}
@@ -662,7 +735,39 @@ class PostSetting extends React.Component {
                 postId={postId}
               />
             )}
+
+            {type == 'task' ? (
+              <View style={styles.lineContainer}>
+                <InputOption
+                  value={confirmButton}
+                  modifyInput={this.modifyInput}
+                  onBackdropPress={this.onBackdropPress}
+                  onToggle={onToggle}
+                  type={'confirm'}
+                  disabled={false}
+                  toggleTyple={toggleTyple}
+                  currentUserAuth={this.props.group.group.auth}
+                  rank_setting={this.props.group.group.rank_setting}
+                  onFocus={this.onKeyboardInputFocus}
+                />
+                <InputOption
+                  value={denyButton}
+                  modifyInput={this.modifyInput}
+                  onBackdropPress={this.onBackdropPress}
+                  onToggle={onToggle}
+                  type={'deny'}
+                  disabled={false}
+                  toggleTyple={toggleTyple}
+                  currentUserAuth={this.props.group.group.auth}
+                  rank_setting={this.props.group.group.rank_setting}
+                  onFocus={this.onKeyboardInputFocus}
+                />
+              </View>
+            ) : null}
+
             <ActivityIndicator animating={loading} color={'grey'} />
+
+            <View style={styles.emptySpace} />
 
             <PostSettingModal
               modalVisible={modalVisible}
@@ -694,6 +799,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  emptySpace: {
+    width: '100%',
+    height: 350,
   },
 });
 

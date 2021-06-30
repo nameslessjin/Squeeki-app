@@ -5,14 +5,15 @@ import {
   createPostMutation,
   updatePostMutation,
   deletePostMutation,
-  likePostMutation,
+  respondPostMutation,
   changePostNotificationMutation,
   reportPostMutation,
   getNominationPostQuery,
   getGroupPostForCheckInQuery,
+  getPostTaskResponseQuery
 } from './query/postQuery';
 import {http_upload} from '../../server_config';
-import {httpCall} from './utils/httpCall'
+import {httpCall} from './utils/httpCall';
 
 export const getGroupPosts = data => {
   const {groupId, token, count} = data;
@@ -29,7 +30,7 @@ export const getGroupPosts = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -58,7 +59,7 @@ export const getFeed = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -86,7 +87,7 @@ export const getPost = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -115,6 +116,8 @@ export const createPost = data => {
     token,
     nomination,
     visibility,
+    confirmButton,
+    denyButton,
   } = data;
 
   return async function(dispatch) {
@@ -164,6 +167,8 @@ export const createPost = data => {
       visibility: visibility,
       nomination: nomination,
       priority_expiration_date: priority_expiration_date,
+      confirmButton: confirmButton,
+      denyButton: denyButton,
     };
 
     const graphql = {
@@ -173,7 +178,7 @@ export const createPost = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -195,6 +200,8 @@ export const updatePost = data => {
     allowComment,
     type,
     visibility,
+    confirmButton,
+    denyButton,
   } = updateData;
 
   return async function(dispatch) {
@@ -205,6 +212,8 @@ export const updatePost = data => {
     let newAllowComment = allowComment;
     let newType = type;
     let newVisibility = visibility;
+    let newConfirmButton = confirmButton;
+    let newDenyButton = denyButton;
 
     if (image != null) {
       const imageData = new FormData();
@@ -260,6 +269,14 @@ export const updatePost = data => {
       newVisibility = origin.visibility;
     }
 
+    if (confirmButton == null) {
+      newConfirmButton = origin.confirmButton;
+    }
+
+    if (denyButton == null) {
+      newDenyButton = origin.denyButton;
+    }
+
     const priority_expiration_date = new Date(
       Date.now() + newPriorityDuration * 24 * 60 * 60 * 1000,
     );
@@ -273,6 +290,8 @@ export const updatePost = data => {
       allowComment: newAllowComment,
       type: newType,
       visibility: newVisibility,
+      denyButton: newDenyButton,
+      confirmButton: newConfirmButton,
       priority_expiration_date: priority_expiration_date,
     };
 
@@ -283,19 +302,12 @@ export const updatePost = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
-    // dispatch(updatePostReducer(result.data.updatePost));
-    return 0;
-  };
-};
 
-const updatePostReducer = data => {
-  return {
-    type: 'updatePost',
-    post: data,
+    return 0;
   };
 };
 
@@ -310,7 +322,7 @@ export const deletePost = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -329,18 +341,22 @@ const DeletePost = data => {
   };
 };
 
-export const likePost = data => {
-  const {postId, token} = data;
+export const respondPost = data => {
+  const {postId, token, type} = data;
 
   return async function(dispatch) {
+    const input = {
+      postId,
+      type,
+    };
     const graphql = {
-      query: likePostMutation,
+      query: respondPostMutation,
       variables: {
-        postId: postId,
+        input,
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -361,7 +377,7 @@ export const changePostNotification = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -386,7 +402,7 @@ export const reportPost = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -414,7 +430,7 @@ export const getNominationPost = request => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -438,7 +454,7 @@ export const getGroupPostForCheckIn = request => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -446,3 +462,28 @@ export const getGroupPostForCheckIn = request => {
     return result.data.getGroupPostForCheckIn;
   };
 };
+
+export const getPostTaskResponse = request => {
+  const {token, postId, count} = request
+
+  return async function(dispatch){
+    const input = {
+      postId,
+      count
+    }
+
+    const graphql = {
+      query: getPostTaskResponseQuery,
+      variables: {
+        input
+      }
+    }
+
+    const result = await httpCall(token, graphql)
+    if (result.errors){
+      return result
+    }
+    return result.data.getPostTaskResponse
+
+  }
+}

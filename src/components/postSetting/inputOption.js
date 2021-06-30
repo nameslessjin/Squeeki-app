@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import InputPickerModal from './inputPickerModal';
 
-export default class InputPicker extends React.Component {
+export default class InputOption extends React.Component {
   priorityOptions = [
     {id: '0', label: '0', value: 0},
     {id: '1', label: '1', value: 1},
@@ -46,20 +46,26 @@ export default class InputPicker extends React.Component {
       toggleTyple,
       currentUserAuth,
       rank_setting,
+      disabled,
+      onFocus,
+      priority,
     } = this.props;
 
     let options = [];
     let header = '';
-
+    let isTouchable = false;
     let textInputValue = value;
 
     // configure based on type
     if (type == 'priority') {
       header = 'Priority Level';
+      isTouchable = true;
     } else if (type == 'type') {
       header = 'Post Type';
+      isTouchable = true;
     } else if (type == 'comment') {
       header = 'Allow Comment';
+      isTouchable = true;
       if (value == 1) {
         textInputValue = 'true';
       } else {
@@ -67,6 +73,13 @@ export default class InputPicker extends React.Component {
       }
     } else if (type == 'visibility') {
       header = 'Visibility';
+      isTouchable = true;
+    } else if (type == 'priorityDay') {
+      header = 'Priority Days';
+    } else if (type == 'confirm') {
+      header = 'Confirm Button';
+    } else if (type == 'deny') {
+      header = 'Deny Button';
     }
 
     // the current toggled type.  This is used to correctly show the selections
@@ -100,7 +113,19 @@ export default class InputPicker extends React.Component {
         });
       }
     } else if (toggleTyple == 'type') {
-      options = this.typeOptions;
+      if (currentUserAuth) {
+        options = this.typeOptions.filter(option => {
+          const {manage_task_rank_required} = rank_setting;
+          if (option.value == 'task') {
+            if (currentUserAuth.rank <= manage_task_rank_required) {
+              return true;
+            }
+            return false;
+          }
+
+          return true;
+        });
+      }
     } else if (toggleTyple == 'comment') {
       options = this.commentOptions;
     } else if (toggleTyple == 'visibility') {
@@ -121,12 +146,31 @@ export default class InputPicker extends React.Component {
 
     return (
       <View style={styles.inputContainer}>
-        <Text style={styles.header}>{header}</Text>
-        <TouchableWithoutFeedback onPress={() => onInputFocus(type)}>
-          <View style={styles.textInputContainer}>
-            <Text>{display_text}</Text>
-          </View>
-        </TouchableWithoutFeedback>
+        <Text style={[styles.header, {color: disabled ? 'grey' : '#273c75'}]}>
+          {header}
+        </Text>
+
+        {isTouchable ? (
+          <TouchableWithoutFeedback
+            onPress={() => onInputFocus(type)}
+            disabled={disabled}>
+            <View style={styles.textInputContainer}>
+              <Text style={{color: disabled ? 'grey' : 'black'}}>
+                {display_text}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
+        ) : (
+          <TextInput
+            keyboardType={type == 'priorityDay' ? 'numeric' : 'default'}
+            style={styles.textInputContainer}
+            value={textInputValue.toString()}
+            onChangeText={v => modifyInput(v, type)}
+            onFocus={onFocus}
+            maxLength={type == 'priorityDay' ? 4 : 10}
+            editable={type == 'priorityDay' ? priority != 0 : true}
+          />
+        )}
         <InputPickerModal
           modalVisible={toggled}
           onBackdropPress={onBackdropPress}
@@ -153,7 +197,7 @@ const styles = StyleSheet.create({
   },
   textInputContainer: {
     width: '100%',
-    height: 25,
+    height: 30,
     backgroundColor: 'white',
     padding: 5,
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -169,5 +213,14 @@ const styles = StyleSheet.create({
     width: 1000,
     height: 250,
     backgroundColor: 'white',
+  },
+  textInputContainer: {
+    width: '100%',
+    height: 30,
+    backgroundColor: 'white',
+    padding: 5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: 'black',
+    color: 'black',
   },
 });

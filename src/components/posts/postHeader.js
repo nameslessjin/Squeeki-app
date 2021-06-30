@@ -49,54 +49,69 @@ export default class PostHeader extends React.Component {
       onSubmitReport,
       onReport,
       selectionMode,
-      rank_required,
+      rank_required_manage,
+      rank_required_task,
+      onTaskManagementPress
     } = this.props;
 
+    let currentUserAuthPostManagementQualified = false;
+    let currentUserAuthTaskManagementQualified = false;
+
+    // groupAuth: post owner auth in group, currentUserAuth: current user in group
+    // check if user is qualified to manage post in a group
+    if (currentUserAuth && groupAuth) {
+      // if post owner is not group owner and if current user rank meets requirement or the current user is
+      // global moderator
+      if (
+        (groupAuth.rank > 1 && currentUserAuth.rank <= rank_required_manage) ||
+        currentUserAuth.rank == 0
+      ) {
+        currentUserAuthPostManagementQualified = true;
+      }
+    }
+
+    // check if user is qualified to manage task in a group
+    if (currentUserAuth) {
+      if (currentUserAuth.rank <= rank_required_task) {
+        currentUserAuthTaskManagementQualified = true;
+      }
+    }
+
+    // post options based on user's authority
     let options = (
       <View style={styles.modalView}>
+        {auth ? (
+          <TouchableOpacity style={styles.option} onPress={onPostNotification}>
+            <Text style={{color: notification ? 'red' : 'grey'}}>
+              {notification ? 'Notification: On' : 'Notification: Off'}
+            </Text>
+          </TouchableOpacity>
+        ) : null}
+        {auth || currentUserAuthTaskManagementQualified ? (
+          <TouchableOpacity
+            style={styles.option}
+            onPress={onTaskManagementPress}>
+            <Text>Task Management</Text>
+          </TouchableOpacity>
+        ) : null}
+        {auth || currentUserAuthPostManagementQualified ? (
+          <View style={{width: '100%'}}>
+            <TouchableOpacity style={styles.option} onPress={onPostUpdate}>
+              <Text>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.option} onPress={onPostDelete}>
+              <Text>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+
         <TouchableOpacity style={styles.option} onPress={onPostReport}>
           <Text>Report</Text>
         </TouchableOpacity>
       </View>
     );
 
-    let currentUserAuthQualified = false;
-
-    // groupAuth: post owner, currentUserAuth: current user
-    if (currentUserAuth && groupAuth) {
-      if (
-        (groupAuth.rank > 1 && currentUserAuth.rank <= rank_required) ||
-        currentUserAuth.rank == 0
-      ) {
-        currentUserAuthQualified = true;
-      }
-    }
-
-    if (auth || currentUserAuthQualified) {
-      options = (
-        <View style={styles.modalView}>
-          {auth ? (
-            <TouchableOpacity
-              style={styles.option}
-              onPress={onPostNotification}>
-              <Text style={{color: notification ? 'red' : 'grey'}}>
-                {notification ? 'Notification: On' : 'Notification: Off'}
-              </Text>
-            </TouchableOpacity>
-          ) : null}
-          <TouchableOpacity style={styles.option} onPress={onPostUpdate}>
-            <Text>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.option} onPress={onPostDelete}>
-            <Text style={{color: 'red'}}>Delete</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.option} onPress={onPostReport}>
-            <Text>Report</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
-
+    // this is for report input
     if (is_report_toggled) {
       options = (
         <KeyboardAvoidingView style={styles.reportView}>
@@ -228,15 +243,6 @@ export default class PostHeader extends React.Component {
               </Text>
             )}
           </View>
-          {/* <View
-            style={[
-              styles.typeContainer,
-              {backgroundColor: typeBackgroundColor},
-            ]}>
-            {type == 'post' ? null : (
-              <Text style={styles.typeStyle}>{type}</Text>
-            )}
-          </View> */}
         </View>
 
         <View
@@ -335,7 +341,7 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: 'white',
     width: '100%',
-    maxHeight: 200,
+    maxHeight: 250,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'flex-start',

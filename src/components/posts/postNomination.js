@@ -3,9 +3,9 @@ import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react
 
 export default class PostNomination extends React.Component {
   render() {
-    const {nomination, onPress, voting, voted} = this.props;
+    const {nomination, onPress, voting} = this.props;
     const now = Date.now();
-    const voteButton = voted ? (
+    const voteButton = nomination.voted ? (
       <View style={{marginVertical: 5}}>
         <Text style={{color: 'grey'}}>Voted</Text>
       </View>

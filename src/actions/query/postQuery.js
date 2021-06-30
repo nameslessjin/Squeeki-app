@@ -1,5 +1,3 @@
-import {gql} from '@apollo/client'
-
 export const getGroupPostsQuery = `
 query getGroupPosts($input: GetPostInput!){
     getGroupPosts(input: $input){
@@ -10,6 +8,7 @@ query getGroupPosts($input: GetPostInput!){
             }
             content
             originContent
+            taskResponse
             createdAt
             updatedAt
             user {
@@ -31,6 +30,8 @@ query getGroupPosts($input: GetPostInput!){
             priority_expiration_date
             allowComment
             type
+            confirmButton
+            denyButton
             commentCount
             auth
             groupId
@@ -65,6 +66,7 @@ query getFeed($count: Int!){
             }
             content
             originContent
+            taskResponse
             createdAt
             updatedAt
             user {
@@ -81,6 +83,8 @@ query getFeed($count: Int!){
             checked
             priority_expiration_date
             allowComment
+            confirmButton
+            denyButton
             type
             commentCount
             auth
@@ -114,6 +118,7 @@ query getPost($postId: ID!){
             }
             content
             createdAt
+            taskResponse
             updatedAt
             user {
                 id
@@ -130,6 +135,8 @@ query getPost($postId: ID!){
             }
             priority
             visibility
+            confirmButton
+            denyButton
             priority_expiration_date
             allowComment
             type
@@ -160,9 +167,9 @@ mutation deletePost($postId: ID!){
     deletePost(postId: $postId)
 }
 `;
-export const likePostMutation = `
-mutation likePost($postId: ID!){
-    likePost(postId: $postId)
+export const respondPostMutation = `
+mutation respondPost($input: RespondPostInput!){
+    respondPost(input: $input)
 }
 `;
 
@@ -278,6 +285,22 @@ query getGroupPostForCheckIn($input: GetPostInput!){
                 points
                 voted
             }
+        }
+        count
+    }
+}
+`;
+
+export const getPostTaskResponseQuery = `
+query getPostTaskResponse($input: RespondPostInput!){
+    getPostTaskResponse(input: $input){
+        response{
+            userId
+            postId
+            taskResponse
+            displayName
+            iconUrl
+            taskReplyId
         }
         count
     }

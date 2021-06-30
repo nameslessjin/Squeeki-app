@@ -60,15 +60,16 @@ import GroupRules from './src/screens/groupRules';
 import Chats from './src/screens/chats';
 import ChatSetting from './src/screens/chatSetting';
 import Chat from './src/screens/chat';
-import RankSetting from './src/screens/rankSetting'
-import Profile from './src/screens/profile'
-import ChatDrawerNavigator from './src/navigators/chatDrawerNavigator'
-import ChatMembers from './src/screens/chatMembers'
-import UserSettings from './src/screens/userSettings'
-import NotificationSettings from './src/screens/notificationSettings'
-import VisibilitySettings from './src/screens/visibilitySettings'
-import ThemeSettings from './src/screens/themeSettings'
-import Activity from './src/screens/activity'
+import RankSetting from './src/screens/rankSetting';
+import Profile from './src/screens/profile';
+import ChatDrawerNavigator from './src/navigators/chatDrawerNavigator';
+import ChatMembers from './src/screens/chatMembers';
+import UserSettings from './src/screens/userSettings';
+import NotificationSettings from './src/screens/notificationSettings';
+import VisibilitySettings from './src/screens/visibilitySettings';
+import ThemeSettings from './src/screens/themeSettings';
+import Activity from './src/screens/activity';
+import TaskManagement from './src/screens/taskManagement';
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -121,9 +122,7 @@ function getHeaderTitle(route) {
   return routeName;
 }
 
-
 export default (App = () => {
-
   // const [token, setToken] = useState('')
 
   // AsyncStorage.getItem('token').then(r => {
@@ -144,81 +143,89 @@ export default (App = () => {
   }, []);
 
   return (
-
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <NavigationContainer>
-            <Stack.Navigator>
-              <Stack.Screen
-                name="SignIn"
-                component={SignIn}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen name="SignUp" component={SignUp} />
-              <Stack.Screen
-                name="Home"
-                component={HomeDrawerNavigator}
-                options={({route}) => ({headerTitle: getHeaderTitle(route)})}
-              />
-              <Stack.Screen name="Search" component={GroupsSearch} />
-              <Stack.Screen name="GroupCreation" component={GroupCreation} />
-              <Stack.Screen
-                name="GroupNavigator"
-                component={GroupDrawerNavigator}
-              />
-              <Stack.Screen name="Comment" component={Comment} />
-              <Stack.Screen name="PostSetting" component={PostSetting} />
-              <Stack.Screen name="GroupSetting" component={GroupSetting} />
-              <Stack.Screen name="ChangePassword" component={ChangePassword} />
-              <Stack.Screen name="Members" component={Members} />
-              <Stack.Screen name="Member" component={Member} />
-              <Stack.Screen name="SearchUser" component={UserSearch} />
-              <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
-              <Stack.Screen name="Nomination" component={Nomination} />
-              <Stack.Screen
-                name="NominationSetting"
-                component={NominationSetting}
-              />
-              <Stack.Screen
-                name="NominationResults"
-                component={NominationResult}
-              />
-              <Stack.Screen name="Tags" component={Tag} />
-              <Stack.Screen name="NominationPost" component={NominationPost} />
-              <Stack.Screen name="CheckIn" component={CheckIn} />
-              <Stack.Screen name="CheckInSetting" component={CheckInSetting} />
-              <Stack.Screen name="Post" component={Post} />
-              <Stack.Screen name="CheckInResult" component={CheckInResult} />
-              <Stack.Screen name="Leaderboard" component={Leaderboard} />
-              <Stack.Screen
-                name="RewardNavigator"
-                component={RewardTabNavigator}
-              />
-              <Stack.Screen name="RewardSetting" component={RewardSetting} />
-              <Stack.Screen name="RewardHistory" component={RewardHistory} />
-              <Stack.Screen
-                name="GroupJoinRequest"
-                component={GroupJoinRequest}
-              />
-              <Stack.Screen name="Terms" component={Terms} />
-              <Stack.Screen name="TermDisplay" component={TermDisplay} />
-              <Stack.Screen name="GroupRules" component={GroupRules} />
-              <Stack.Screen name="ChatDrawerNavigator" component={ChatDrawerNavigator} />
-              <Stack.Screen name='Chats' component={Chats}  />
-              <Stack.Screen name='Chat' component={Chat}/>
-              <Stack.Screen name="ChatSetting" component={ChatSetting}/>
-              <Stack.Screen name="RankSetting" component={RankSetting} />
-              <Stack.Screen name="Profile" component={Profile}/>
-              <Stack.Screen name="ChatMembers" component={ChatMembers} />
-              <Stack.Screen name="UserSettings" component={UserSettings} />
-              <Stack.Screen name="NotificationSettings" component={NotificationSettings} />
-              <Stack.Screen name="VisibilitySettings" component={VisibilitySettings} />
-              <Stack.Screen name="ThemeSettings" component={ThemeSettings} />
-              <Stack.Screen name="Activity" component={Activity} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </PersistGate>
-      </Provider>
-
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="SignIn"
+              component={SignIn}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen
+              name="Home"
+              component={HomeDrawerNavigator}
+              options={({route}) => ({headerTitle: getHeaderTitle(route)})}
+            />
+            <Stack.Screen name="Search" component={GroupsSearch} />
+            <Stack.Screen name="GroupCreation" component={GroupCreation} />
+            <Stack.Screen
+              name="GroupNavigator"
+              component={GroupDrawerNavigator}
+            />
+            <Stack.Screen name="Comment" component={Comment} />
+            <Stack.Screen name="PostSetting" component={PostSetting} />
+            <Stack.Screen name="GroupSetting" component={GroupSetting} />
+            <Stack.Screen name="ChangePassword" component={ChangePassword} />
+            <Stack.Screen name="Members" component={Members} />
+            <Stack.Screen name="Member" component={Member} />
+            <Stack.Screen name="SearchUser" component={UserSearch} />
+            <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+            <Stack.Screen name="Nomination" component={Nomination} />
+            <Stack.Screen
+              name="NominationSetting"
+              component={NominationSetting}
+            />
+            <Stack.Screen
+              name="NominationResults"
+              component={NominationResult}
+            />
+            <Stack.Screen name="Tags" component={Tag} />
+            <Stack.Screen name="NominationPost" component={NominationPost} />
+            <Stack.Screen name="CheckIn" component={CheckIn} />
+            <Stack.Screen name="CheckInSetting" component={CheckInSetting} />
+            <Stack.Screen name="Post" component={Post} />
+            <Stack.Screen name="CheckInResult" component={CheckInResult} />
+            <Stack.Screen name="Leaderboard" component={Leaderboard} />
+            <Stack.Screen
+              name="RewardNavigator"
+              component={RewardTabNavigator}
+            />
+            <Stack.Screen name="RewardSetting" component={RewardSetting} />
+            <Stack.Screen name="RewardHistory" component={RewardHistory} />
+            <Stack.Screen
+              name="GroupJoinRequest"
+              component={GroupJoinRequest}
+            />
+            <Stack.Screen name="Terms" component={Terms} />
+            <Stack.Screen name="TermDisplay" component={TermDisplay} />
+            <Stack.Screen name="GroupRules" component={GroupRules} />
+            <Stack.Screen
+              name="ChatDrawerNavigator"
+              component={ChatDrawerNavigator}
+            />
+            <Stack.Screen name="Chats" component={Chats} />
+            <Stack.Screen name="Chat" component={Chat} />
+            <Stack.Screen name="ChatSetting" component={ChatSetting} />
+            <Stack.Screen name="RankSetting" component={RankSetting} />
+            <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="ChatMembers" component={ChatMembers} />
+            <Stack.Screen name="UserSettings" component={UserSettings} />
+            <Stack.Screen
+              name="NotificationSettings"
+              component={NotificationSettings}
+            />
+            <Stack.Screen
+              name="VisibilitySettings"
+              component={VisibilitySettings}
+            />
+            <Stack.Screen name="ThemeSettings" component={ThemeSettings} />
+            <Stack.Screen name="Activity" component={Activity} />
+            <Stack.Screen name="TaskManagement" component={TaskManagement} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
 });
