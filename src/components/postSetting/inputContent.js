@@ -3,12 +3,14 @@ import {View, Text, TextInput, StyleSheet} from 'react-native';
 
 export default class InputContent extends React.Component {
   render() {
-    const {content, modifyInput, onKeyboardInputFocus} = this.props;
+    const {content, modifyInput, onKeyboardInputFocus, type} = this.props;
     return (
       <View style={styles.container}>
         {content.length == 0 ? null : (
           <Text style={styles.contentPlaceHolderStyle}>
-            What's in your mind...
+            {type == 'post'
+              ? "What's in your mind..."
+              : 'Show that you completed the task...'}
           </Text>
         )}
         <TextInput
@@ -18,7 +20,11 @@ export default class InputContent extends React.Component {
           ]}
           multiline={true}
           maxLength={255}
-          placeholder={"What's in your mind..."}
+          placeholder={
+            type == 'post'
+              ? "What's in your mind..."
+              : 'Show that you completed the task...'
+          }
           placeholderTextColor={'#7f8fa6'}
           value={content}
           onChangeText={v => modifyInput(v, 'content')}
@@ -33,7 +39,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     alignItems: 'center',
-    maxHeight: 180
+    maxHeight: 180,
   },
   contentPlaceHolderStyle: {
     width: '90%',

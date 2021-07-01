@@ -96,7 +96,7 @@ export default class PostFooter extends React.Component {
               style={[styles.rowContainer, {justifyContent: 'space-evenly', height: 40}]}>
               {taskResponse == 'confirm' ? (
                 <TouchableOpacity
-                  onPress={() => onRespondPost('extra')}
+                  onPress={() => onRespondPost('verify')}
                   disabled={currentUserAuth == null}>
                   <View
                     style={[

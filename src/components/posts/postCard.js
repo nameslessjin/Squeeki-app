@@ -221,9 +221,6 @@ class PostCard extends React.Component {
   };
 
   onRespondPost = async type => {
-    if (type == 'extra') {
-      return;
-    }
 
     const {auth, respondPost, navigation} = this.props;
     const {id} = this.state;
@@ -232,6 +229,14 @@ class PostCard extends React.Component {
       token: auth.token,
       type,
     };
+
+    if (type == 'verify') {
+      // search database for existing ones
+      navigation.navigate("TaskVerify", {
+        postId: id
+      })
+      return;
+    }
 
     this.setState({loading: true, pressedButton: type});
     const req = await respondPost(data);

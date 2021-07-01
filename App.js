@@ -70,6 +70,7 @@ import VisibilitySettings from './src/screens/visibilitySettings';
 import ThemeSettings from './src/screens/themeSettings';
 import Activity from './src/screens/activity';
 import TaskManagement from './src/screens/taskManagement';
+import TaskVerify from './src/screens/taskVerify'
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -223,6 +224,7 @@ export default (App = () => {
             <Stack.Screen name="ThemeSettings" component={ThemeSettings} />
             <Stack.Screen name="Activity" component={Activity} />
             <Stack.Screen name="TaskManagement" component={TaskManagement} />
+            <Stack.Screen name="TaskVerify" component={TaskVerify} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

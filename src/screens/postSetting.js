@@ -549,7 +549,6 @@ class PostSetting extends React.Component {
 
   onKeyboardInputFocus = () => {
     this.setState({contentKeyboard: true});
-    console.log('focused');
   };
 
   onBackdropPress = () => {
@@ -626,7 +625,6 @@ class PostSetting extends React.Component {
           <KeyboardAvoidingView style={styles.container}>
             <StatusBar barStyle={'dark-content'} />
             <InputImage
-              modifyInput={this.modifyInput}
               image={image}
               contentKeyboard={contentKeyboard}
               onPress={this.onAddMeidaPress}
@@ -636,6 +634,7 @@ class PostSetting extends React.Component {
               content={content}
               modifyInput={this.modifyInput}
               onKeyboardInputFocus={this.onKeyboardInputFocus}
+              type={'post'}
             />
 
             {atSearchResult.length == 0 ? null : (
