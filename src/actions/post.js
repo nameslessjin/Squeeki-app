@@ -10,10 +10,12 @@ import {
   reportPostMutation,
   getNominationPostQuery,
   getGroupPostForCheckInQuery,
-  getPostTaskResponseQuery
+  getPostTaskResponseQuery,
+  createUpdateTaskVerifyMutation,
+  getUserTaskVerificationQuery,
 } from './query/postQuery';
 import {http_upload} from '../../server_config';
-import {httpCall} from './utils/httpCall';
+import {httpCall, httpUpload} from './utils/httpCall';
 
 export const getGroupPosts = data => {
   const {groupId, token, count} = data;
@@ -464,26 +466,81 @@ export const getGroupPostForCheckIn = request => {
 };
 
 export const getPostTaskResponse = request => {
-  const {token, postId, count} = request
+  const {token, postId, count} = request;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const input = {
       postId,
-      count
-    }
+      count,
+    };
 
     const graphql = {
       query: getPostTaskResponseQuery,
       variables: {
-        input
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+    return result.data.getPostTaskResponse;
+  };
+};
+
+export const createUpdateTaskVerify = request => {
+  const {token, postId, content, image} = request;
+
+  return async function(dispatch) {
+    let imageData = null;
+    if (image != null) {
+      if (image.data) {
+        imageData = await httpUpload(token, image, 'taskVerification');
+        if (imageData.errors) {
+          alert('Upload failed, please try again later');
+          return;
+        }
       }
     }
 
-    const result = await httpCall(token, graphql)
-    if (result.errors){
-      return result
-    }
-    return result.data.getPostTaskResponse
+    const input = {
+      postId,
+      content: content.trim(),
+      image: imageData,
+    };
 
-  }
-}
+    const graphql = {
+      query: createUpdateTaskVerifyMutation,
+      variables: {input},
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+    return 0;
+  };
+};
+
+export const getUserTaskVerification = request => {
+  const {token, postId, respondentId} = request;
+
+  return async function(dispatch) {
+    const input = {
+      postId,
+      respondentId,
+    };
+
+    const graphql = {
+      query: getUserTaskVerificationQuery,
+      variables: {input},
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+    return result.data.getUserTaskVerification;
+  };
+};

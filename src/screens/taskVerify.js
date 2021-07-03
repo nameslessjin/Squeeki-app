@@ -12,6 +12,7 @@ import InputContent from '../components/postSetting/inputContent';
 import InputImage from '../components/postSetting/inputImage';
 import ImageModal from '../components/postSetting/postSettingModal';
 import AddOrModify from '../components/postSetting/addOrModifyPost';
+import {createUpdateTaskVerify} from '../actions/post';
 
 class TaskVerify extends React.Component {
   state = {
@@ -61,16 +62,33 @@ class TaskVerify extends React.Component {
       return false;
     }
 
-    if (content != prevState.content || image != prevState) {
+    if (content != prevState.content || image != prevState.image) {
       return true;
     }
   };
 
-  createOrUpdate = async() => {
-    const {auth, navigation} = this.props
-    const {content, image, postId} = this.state
-    
+  createOrUpdate = async () => {
+    const {auth, navigation, createUpdateTaskVerify} = this.props;
+    const {content, image, postId} = this.state;
 
+    const request = {
+      token: auth.token,
+      content,
+      postId,
+      image
+    }
+
+    this.setState({loading: true})
+    console.log(request)
+    const req = await createUpdateTaskVerify(request)
+    if (req.errors){
+      console.log(req.errors)
+      alert('Cannot upload verification at this time, please try again later')
+      this.setState({loading: false})
+      return
+    }
+
+    navigation.goBack()
   };
 
   onAddMediaPress = () => {
@@ -103,7 +121,7 @@ class TaskVerify extends React.Component {
 
   render() {
     const {image, contentKeyboard, content, create, modalVisible} = this.state;
-    console.log(this.state.postId);
+
     return (
       <TouchableWithoutFeedback onPress={this.onBackdropPress}>
         <ScrollView style={styles.scroll} bounces={false}>
@@ -159,7 +177,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    createUpdateTaskVerify: data => dispatch(createUpdateTaskVerify(data)),
+  };
 };
 
 export default connect(

@@ -17,6 +17,7 @@ import {
   respondPost,
   changePostNotification,
   reportPost,
+  getUserTaskVerification
 } from '../../actions/post';
 import {getSingleGroupById} from '../../actions/group';
 import {voteNominee} from '../../actions/nomination';
@@ -64,7 +65,6 @@ class PostCard extends React.Component {
   };
 
   onViewButtonPress = async () => {
-    console.log('here')
     const {item, getSingleGroupById, auth, navigation} = this.props;
     const request = {
       id: item.groupId,
@@ -222,7 +222,7 @@ class PostCard extends React.Component {
 
   onRespondPost = async type => {
 
-    const {auth, respondPost, navigation} = this.props;
+    const {auth, respondPost, navigation, getUserTaskVerification} = this.props;
     const {id} = this.state;
     const data = {
       postId: id,
@@ -232,8 +232,17 @@ class PostCard extends React.Component {
 
     if (type == 'verify') {
       // search database for existing ones
+      const request = {token: auth.token, postId: id}
+      const req = await getUserTaskVerification(request)
+      if (req.errors){
+        console.log(req.errors)
+        alert('Cannot fetch verification at this time, please try again later')
+        return
+      }
+
       navigation.navigate("TaskVerify", {
-        postId: id
+        postId: id,
+        ...req
       })
       return;
     }
@@ -440,6 +449,7 @@ const mapDispatchToProps = dispatch => {
     reportPost: data => dispatch(reportPost(data)),
     voteNominee: data => dispatch(voteNominee(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
+    getUserTaskVerification: data => dispatch(getUserTaskVerification(data))
   };
 };
 

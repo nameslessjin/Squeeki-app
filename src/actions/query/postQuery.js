@@ -306,3 +306,20 @@ query getPostTaskResponse($input: RespondPostInput!){
     }
 }
 `;
+
+export const createUpdateTaskVerifyMutation = `
+mutation createUpdateTaskVerify($input: RespondPostInput!){
+    createUpdateTaskVerify(input: $input)
+}
+`
+
+export const getUserTaskVerificationQuery = `
+query getUserTaskVerification($input: RespondPostInput!){
+    getUserTaskVerification(input: $input){
+        content
+        image {
+            uri
+        }
+    }
+}
+`
