@@ -21,6 +21,7 @@ export default class ResponseCard extends React.Component {
       displayName,
       iconUrl,
       taskReplyId,
+      onPress,
     } = this.props;
 
     return (
@@ -32,7 +33,9 @@ export default class ResponseCard extends React.Component {
                 styles.statusDot,
                 {
                   backgroundColor:
-                    taskResponse == 'confirm' || taskResponse == 'verified'
+                    taskResponse == 'confirm'
+                      ? '#f39c12'
+                      : taskResponse == 'verified'
                       ? '#2ed573'
                       : '#EA2027',
                 },
@@ -50,12 +53,14 @@ export default class ResponseCard extends React.Component {
           </View>
           <View style={styles.buttonContainer}>
             {taskReplyId ? (
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onPress(userId, 'getVerification')}>
                 <View
                   style={[
                     styles.button,
                     {
                       marginRight: 5,
+                      backgroundColor: '#f39c12',
                     },
                   ]}>
                   <Text style={{color: 'white'}}>Proof</Text>
@@ -63,13 +68,14 @@ export default class ResponseCard extends React.Component {
               </TouchableOpacity>
             ) : null}
             {taskResponse == 'verified' || taskResponse == 'confirm' ? (
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onPress(userId, 'verifyTaskCompletion')}
+                disabled={taskResponse == 'verified'}>
                 <View
                   style={[
                     styles.button,
                     {
-                      backgroundColor:
-                        taskResponse == 'verified' ? 'grey' : '#2ed573',
+                      backgroundColor: taskResponse == 'verified' ? '#2ed573' : '#1e90ff',
                     },
                   ]}>
                   <Text style={{color: 'white'}}>

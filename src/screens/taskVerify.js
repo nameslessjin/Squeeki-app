@@ -75,20 +75,19 @@ class TaskVerify extends React.Component {
       token: auth.token,
       content,
       postId,
-      image
+      image,
+    };
+
+    this.setState({loading: true});
+    const req = await createUpdateTaskVerify(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot upload verification at this time, please try again later');
+      this.setState({loading: false});
+      return;
     }
 
-    this.setState({loading: true})
-    console.log(request)
-    const req = await createUpdateTaskVerify(request)
-    if (req.errors){
-      console.log(req.errors)
-      alert('Cannot upload verification at this time, please try again later')
-      this.setState({loading: false})
-      return
-    }
-
-    navigation.goBack()
+    navigation.goBack();
   };
 
   onAddMediaPress = () => {
@@ -120,8 +119,18 @@ class TaskVerify extends React.Component {
   };
 
   render() {
-    const {image, contentKeyboard, content, create, modalVisible} = this.state;
+    const {
+      image,
+      contentKeyboard,
+      content,
+      modalVisible,
+      respondentId,
+      taskResponse
+    } = this.state;
+    const isSelf = respondentId == this.props.auth.user.id;
+    const disabled = taskResponse == 'verified' || !isSelf
 
+    console.log(disabled)
     return (
       <TouchableWithoutFeedback onPress={this.onBackdropPress}>
         <ScrollView style={styles.scroll} bounces={false}>
@@ -130,13 +139,14 @@ class TaskVerify extends React.Component {
               image={image}
               contentKeyboard={contentKeyboard}
               onPress={this.onAddMediaPress}
-              create={create}
+              disabled={disabled}
             />
             <InputContent
               content={content}
               modifyInput={this.modifyInput}
               onKeyboardInputFocus={this.onKeyboardInputFocus}
               type={'verify'}
+              disabled={disabled}
             />
 
             <View style={styles.emptySpace} />

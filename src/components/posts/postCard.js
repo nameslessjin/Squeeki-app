@@ -223,7 +223,7 @@ class PostCard extends React.Component {
   onRespondPost = async type => {
 
     const {auth, respondPost, navigation, getUserTaskVerification} = this.props;
-    const {id} = this.state;
+    const {id, taskResponse} = this.state;
     const data = {
       postId: id,
       token: auth.token,
@@ -242,7 +242,9 @@ class PostCard extends React.Component {
 
       navigation.navigate("TaskVerify", {
         postId: id,
-        ...req
+        ...req,
+        respondentId: auth.user.id,
+        taskResponse
       })
       return;
     }

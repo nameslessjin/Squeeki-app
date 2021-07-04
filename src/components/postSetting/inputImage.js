@@ -36,7 +36,7 @@ export default class InputImage extends React.Component {
   }
 
   render() {
-    const {image, contentKeyboard, onPress, create} = this.props;
+    const {image, contentKeyboard, onPress, disabled} = this.props;
     const imageSelected = image != null;
 
     return (
@@ -46,7 +46,7 @@ export default class InputImage extends React.Component {
           imageSelected ? {backgroundColor: 'white'} : {height: 100},
           imageSelected && contentKeyboard ? {maxHeight: 250} : null,
         ]}
-        disabled={!create}
+        disabled={disabled}
         onPress={() => onPress()}>
         {!imageSelected ? null : (
           <Image
@@ -59,7 +59,7 @@ export default class InputImage extends React.Component {
           />
         )}
         {!imageSelected ? (
-          <Text style={{color: 'white'}}>{create ? 'Add Image' : 'No Image'}</Text>
+          <Text style={{color: 'white'}}>{!disabled ? 'Add Image' : 'No Image'}</Text>
         ) : null}
       </TouchableOpacity>
     );

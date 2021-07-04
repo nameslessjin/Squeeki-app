@@ -628,13 +628,14 @@ class PostSetting extends React.Component {
               image={image}
               contentKeyboard={contentKeyboard}
               onPress={this.onAddMeidaPress}
-              create={create}
+              disabled={!create}
             />
             <InputContent
               content={content}
               modifyInput={this.modifyInput}
               onKeyboardInputFocus={this.onKeyboardInputFocus}
               type={'post'}
+              disabled={false}
             />
 
             {atSearchResult.length == 0 ? null : (

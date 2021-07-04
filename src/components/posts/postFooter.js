@@ -35,7 +35,7 @@ export default class PostFooter extends React.Component {
       pressedButton,
       taskResponse,
       currentUserAuth,
-      onViewButtonPress
+      onViewButtonPress,
     } = this.props;
 
     const likeCount_text = countFormat(likeCount);
@@ -91,9 +91,24 @@ export default class PostFooter extends React.Component {
                 </View>
               </TouchableOpacity>
             </View>
+          ) : taskResponse == 'verified' ? (
+            <View
+              style={[
+                styles.rowContainer,
+                {backgroundColor: 'grey', height: 40},
+              ]}>
+              <TouchableOpacity disabled={true}>
+                <View style={styles.viewButton}>
+                  <Text style={styles.textStyle}>Verified</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           ) : (
             <View
-              style={[styles.rowContainer, {justifyContent: 'space-evenly', height: 40}]}>
+              style={[
+                styles.rowContainer,
+                {justifyContent: 'space-evenly', height: 40},
+              ]}>
               {taskResponse == 'confirm' ? (
                 <TouchableOpacity
                   onPress={() => onRespondPost('verify')}
@@ -103,7 +118,7 @@ export default class PostFooter extends React.Component {
                       styles.textContainer,
                       {
                         backgroundColor:
-                          currentUserAuth == null ? 'grey' : '#2ed573',
+                          currentUserAuth == null ? 'grey' : '#f39c12',
                       },
                     ]}>
                     <Text style={styles.textStyle}>Verify</Text>

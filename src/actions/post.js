@@ -13,6 +13,7 @@ import {
   getPostTaskResponseQuery,
   createUpdateTaskVerifyMutation,
   getUserTaskVerificationQuery,
+  verifyUserTaskCompletionMutation
 } from './query/postQuery';
 import {http_upload} from '../../server_config';
 import {httpCall, httpUpload} from './utils/httpCall';
@@ -544,3 +545,25 @@ export const getUserTaskVerification = request => {
     return result.data.getUserTaskVerification;
   };
 };
+
+export const verifyUserTaskCompletion = request => {
+  const {token, respondentId, postId} = request
+
+  return async function(dispatch){
+    const input = {
+      respondentId, postId
+    }
+
+    const graphql = {
+      query: verifyUserTaskCompletionMutation,
+      variables: {input}
+    }
+
+    const result = await httpCall(token, graphql)
+    if (result.errors){
+      return result
+    }
+    return 0
+
+  }
+}

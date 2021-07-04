@@ -6,7 +6,8 @@ const extractKey = ({userId}) => userId;
 
 export default class TaskResponseList extends React.Component {
   renderItem = ({item}) => {
-    return <Card {...item} />;
+    const {onPress} = this.props
+    return <Card {...item} onPress={onPress} />;
   };
 
   render() {

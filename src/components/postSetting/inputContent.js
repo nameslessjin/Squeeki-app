@@ -3,7 +3,7 @@ import {View, Text, TextInput, StyleSheet} from 'react-native';
 
 export default class InputContent extends React.Component {
   render() {
-    const {content, modifyInput, onKeyboardInputFocus, type} = this.props;
+    const {content, modifyInput, onKeyboardInputFocus, type, disabled} = this.props;
     return (
       <View style={styles.container}>
         {content.length == 0 ? null : (
@@ -29,6 +29,7 @@ export default class InputContent extends React.Component {
           value={content}
           onChangeText={v => modifyInput(v, 'content')}
           onFocus={onKeyboardInputFocus}
+          editable={!disabled}
         />
       </View>
     );

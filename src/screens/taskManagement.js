@@ -6,7 +6,11 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {getPostTaskResponse} from '../actions/post';
+import {
+  getPostTaskResponse,
+  getUserTaskVerification,
+  verifyUserTaskCompletion,
+} from '../actions/post';
 import TaskResponseList from '../components/taskManagement/taskResponseList';
 
 class TaskManagement extends React.Component {
@@ -22,10 +26,61 @@ class TaskManagement extends React.Component {
     const {navigation} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
-      headerTitle: 'Task Management'
+      headerTitle: 'Task Management',
     });
-    this.loadParticipants(true)
+    this.loadParticipants(true);
   }
+
+  onPress = async (respondentId, type) => {
+    const {postId, taskResponse} = this.state;
+    const {
+      getUserTaskVerification,
+      auth,
+      navigation,
+      verifyUserTaskCompletion,
+    } = this.props;
+
+    const request = {
+      postId,
+      token: auth.token,
+      respondentId,
+    };
+
+    if (type == 'getVerification') {
+      const req = await getUserTaskVerification(request);
+      if (req.errors) {
+        console.log(req.errors);
+        alert('Get verification error');
+        return;
+      }
+
+      console.log(taskResponse.filter(u => u.userId == respondentId))
+
+      navigation.navigate('TaskVerify', {
+        postId,
+        ...req,
+        respondentId: respondentId,
+        taskResponse: taskResponse.filter(u => u.userId == respondentId)[0].taskResponse,
+      });
+    } else if (type == 'verifyTaskCompletion') {
+      const req = await verifyUserTaskCompletion(request);
+      if (req.errors) {
+        console.log(req.errors);
+        alert('Verify error');
+        return;
+      }
+
+      // update task response on user
+      this.setState({
+        taskResponse: taskResponse.map(t => {
+          if (t.userId == respondentId) {
+            return {...t, taskResponse: 'verified'};
+          }
+          return t;
+        }),
+      });
+    }
+  };
 
   loadParticipants = async init => {
     const {auth, getPostTaskResponse} = this.props;
@@ -56,15 +111,16 @@ class TaskManagement extends React.Component {
 
   onEndReached = () => {
     this.setState({loading: true});
-
+    this.loadParticipants(false);
     this.setState({loading: false});
   };
 
   render() {
     const {taskResponse} = this.state;
+
     return (
       <KeyboardAvoidingView style={styles.container}>
-        <TaskResponseList taskResponse={taskResponse} />
+        <TaskResponseList taskResponse={taskResponse} onPress={this.onPress} />
       </KeyboardAvoidingView>
     );
   }
@@ -77,7 +133,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     padding: 10,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
 });
 
@@ -89,6 +145,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getPostTaskResponse: data => dispatch(getPostTaskResponse(data)),
+    getUserTaskVerification: data => dispatch(getUserTaskVerification(data)),
+    verifyUserTaskCompletion: data => dispatch(verifyUserTaskCompletion(data)),
   };
 };
 

@@ -323,3 +323,9 @@ query getUserTaskVerification($input: RespondPostInput!){
     }
 }
 `
+
+export const verifyUserTaskCompletionMutation = `
+mutation verifyUserTaskCompletion($input: RespondPostInput!){
+    verifyUserTaskCompletion(input: $input)
+}
+`
