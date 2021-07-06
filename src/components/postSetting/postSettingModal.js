@@ -94,40 +94,59 @@ export default class PostSettingModal extends React.Component {
         </View>
       );
     } else {
-      if (process == 1) {
+      if (type == 'priorityExpiration' && priority == 0) {
         timeModal = (
-          <DateTimePicker
-            mode={'date'}
-            value={
-              type == 'priorityExpiration'
-                ? new Date(parseInt(priorityExpiration))
-                : new Date(parseInt(taskExpiration))
-            }
-            minimumDate={new Date()}
-            display={'default'}
-            onChange={(event, date) => this.setTimeOnAndroid(date, 'date')}
-          />
+          <View style={[styles.centeredView]}>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}>
+              <TouchableWithoutFeedback onPress={() => onBackdropPress()}>
+                <View style={[styles.centeredView]}>
+                  <View style={[styles.modalView, {width: 210, height: 100}]}>
+                    <Text>Please select a priority first</Text>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </Modal>
+          </View>
         );
-      } else if (process == 2) {
-        timeModal = (
-          <DateTimePicker
-            mode={'time'}
-            value={
-              type == 'priorityExpiration'
-                ? new Date(parseInt(priorityExpiration))
-                : new Date(parseInt(taskExpiration))
-            }
-            minimumDate={new Date()}
-            display={'default'}
-            onChange={(event, date) => this.setTimeOnAndroid(date, 'time')}
-          />
-        );
-      }
-      if (process == 3) {
-        modifyInput(this.state.time, type);
-        this.setState({time: new Date()})
-        onBackdropPress();
-        return null;
+      } else {
+        if (process == 1) {
+          timeModal = (
+            <DateTimePicker
+              mode={'date'}
+              value={
+                type == 'priorityExpiration'
+                  ? new Date(parseInt(priorityExpiration))
+                  : new Date(parseInt(taskExpiration))
+              }
+              minimumDate={new Date()}
+              display={'default'}
+              onChange={(event, date) => this.setTimeOnAndroid(date, 'date')}
+            />
+          );
+        } else if (process == 2) {
+          timeModal = (
+            <DateTimePicker
+              mode={'time'}
+              value={
+                type == 'priorityExpiration'
+                  ? new Date(parseInt(priorityExpiration))
+                  : new Date(parseInt(taskExpiration))
+              }
+              minimumDate={new Date()}
+              display={'default'}
+              onChange={(event, date) => this.setTimeOnAndroid(date, 'time')}
+            />
+          );
+        }
+        if (process == 3) {
+          modifyInput(this.state.time, type);
+          this.setState({time: new Date()});
+          onBackdropPress();
+          return null;
+        }
       }
     }
 

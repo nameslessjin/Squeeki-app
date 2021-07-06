@@ -8,9 +8,6 @@ import {
   ActivityIndicator,
   StatusBar,
   ScrollView,
-  TouchableOpacity,
-  Text,
-  Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
 import InputContent from '../components/postSetting/inputContent';
