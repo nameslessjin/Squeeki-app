@@ -1,5 +1,3 @@
-import {reconstructPostsInReducer} from './utils/extractor';
-
 const INITIAL_STATE = {
   groupPosts: {
     posts: [],
@@ -14,11 +12,8 @@ const INITIAL_STATE = {
 export default (postReducer = (state = INITIAL_STATE, action) => {
   let feed = state.feed;
   let groupPosts = state.groupPosts;
-  let reconstructed_posts = [];
   switch (action.type) {
     case 'getGroupPosts':
-      reconstructed_posts = reconstructPostsInReducer(action.data.posts);
-
       return {
         ...state,
         groupPosts: {
@@ -28,13 +23,13 @@ export default (postReducer = (state = INITIAL_STATE, action) => {
             action.data.count == state.groupPosts.count
               ? state.groupPosts.posts
               : action.data.count == 10
-              ? reconstructed_posts
-              : groupPosts.posts.concat(reconstructed_posts),
+              ? action.data.posts
+              : groupPosts.posts.concat(action.data.posts),
         },
       };
 
     case 'getFeed':
-      reconstructed_posts = reconstructPostsInReducer(action.data.posts);
+
       return {
         ...state,
         feed: {
@@ -43,22 +38,22 @@ export default (postReducer = (state = INITIAL_STATE, action) => {
             action.data.count > 10 && action.data.count == state.feed.count
               ? state.feed.posts
               : action.data.count == 10
-              ? reconstructed_posts
-              : feed.posts.concat(reconstructed_posts),
+              ? action.data.posts
+              : feed.posts.concat(action.data.posts),
         },
       };
 
     case 'updatePost':
       feedPost = feed.posts.map(post => {
         if (post.id == action.post.id) {
-          return reconstructPostsInReducer([action.post])[0];
+          return action.post;
         }
         return post;
       });
 
       groupPostsPost = groupPosts.posts.map(post => {
         if (post.id == action.post.id) {
-          return reconstructPostsInReducer([action.post])[0];
+          return action.post;
         }
         return post;
       });

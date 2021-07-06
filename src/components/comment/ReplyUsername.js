@@ -8,7 +8,7 @@ export default class ReplyUsername extends React.Component {
   render() {
     const {user, createdAt} = this.props;
     const {group_username, displayName, username} = user;
-    const date = dateConversion(createdAt);
+    const date = dateConversion(createdAt, 'comment');
 
     // sizing displayNmae
     let displayNameSize = 13;

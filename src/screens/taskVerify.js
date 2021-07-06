@@ -130,7 +130,6 @@ class TaskVerify extends React.Component {
     const isSelf = respondentId == this.props.auth.user.id;
     const disabled = taskResponse == 'verified' || !isSelf
 
-    console.log(disabled)
     return (
       <TouchableWithoutFeedback onPress={this.onBackdropPress}>
         <ScrollView style={styles.scroll} bounces={false}>
@@ -155,6 +154,7 @@ class TaskVerify extends React.Component {
               modalVisible={modalVisible}
               onBackdropPress={this.onBackdropPress}
               onChangeMedia={this.modifyInput}
+              type={'image'}
             />
           </KeyboardAvoidingView>
         </ScrollView>

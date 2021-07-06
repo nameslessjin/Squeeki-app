@@ -54,13 +54,12 @@ class TaskManagement extends React.Component {
         return;
       }
 
-      console.log(taskResponse.filter(u => u.userId == respondentId))
-
       navigation.navigate('TaskVerify', {
         postId,
         ...req,
         respondentId: respondentId,
-        taskResponse: taskResponse.filter(u => u.userId == respondentId)[0].taskResponse,
+        taskResponse: taskResponse.filter(u => u.userId == respondentId)[0]
+          .taskResponse,
       });
     } else if (type == 'verifyTaskCompletion') {
       const req = await verifyUserTaskCompletion(request);
@@ -99,14 +98,16 @@ class TaskManagement extends React.Component {
       return;
     }
 
-    this.setState(prevState => {
-      return {
-        taskResponse: init
-          ? req.response
-          : prevState.taskResponse.concat(req.taskResponse),
-        count: req.count,
-      };
-    });
+    if (req.response.length != 0) {
+      this.setState(prevState => {
+        return {
+          taskResponse: init
+            ? req.response
+            : prevState.taskResponse.concat(req.taskResponse),
+          count: req.count,
+        };
+      });
+    }
   };
 
   onEndReached = () => {
@@ -120,7 +121,11 @@ class TaskManagement extends React.Component {
 
     return (
       <KeyboardAvoidingView style={styles.container}>
-        <TaskResponseList taskResponse={taskResponse} onPress={this.onPress} />
+        <TaskResponseList
+          taskResponse={taskResponse}
+          onPress={this.onPress}
+          onEndReached={this.onEndReached}
+        />
       </KeyboardAvoidingView>
     );
   }

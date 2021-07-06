@@ -9,7 +9,8 @@ import {
   Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {countFormat} from '../../utils/format';
+import {countFormat} from '../../utils/format'
+import {dateConversion} from '../../utils/time';
 
 const {width} = Dimensions.get('screen');
 
@@ -36,10 +37,12 @@ export default class PostFooter extends React.Component {
       taskResponse,
       currentUserAuth,
       onViewButtonPress,
+      taskExpiration,
     } = this.props;
 
     const likeCount_text = countFormat(likeCount);
     const commentCount_text = countFormat(commentCount);
+
 
     return (
       <View style={styles.footerContainer}>
@@ -79,7 +82,18 @@ export default class PostFooter extends React.Component {
           </View>
         </View>
         {type == 'task' ? (
-          currentUserAuth == null ? (
+          parseInt(taskExpiration) <= Date.now() &&
+          taskResponse != 'verified' ? (
+            <View
+              style={[
+                styles.rowContainer,
+                {backgroundColor: 'grey', height: 40},
+              ]}>
+              <View style={styles.viewButton}>
+                <Text style={styles.textStyle}>Expired</Text>
+              </View>
+            </View>
+          ) : currentUserAuth == null ? (
             <View
               style={[
                 styles.rowContainer,
@@ -95,79 +109,84 @@ export default class PostFooter extends React.Component {
             <View
               style={[
                 styles.rowContainer,
-                {backgroundColor: 'grey', height: 40},
+                {backgroundColor: '#f9ca24', height: 40},
               ]}>
               <TouchableOpacity disabled={true}>
                 <View style={styles.viewButton}>
-                  <Text style={styles.textStyle}>Verified</Text>
+                  <Text style={styles.textStyle}>Completed</Text>
                 </View>
               </TouchableOpacity>
             </View>
           ) : (
-            <View
-              style={[
-                styles.rowContainer,
-                {justifyContent: 'space-evenly', height: 40},
-              ]}>
-              {taskResponse == 'confirm' ? (
+            <View style={{width: '100%'}}>
+              <View
+                style={[
+                  styles.rowContainer,
+                  {justifyContent: 'space-evenly', height: 40},
+                ]}>
+                {taskResponse == 'confirm' ? (
+                  <TouchableOpacity
+                    onPress={() => onRespondPost('verify')}
+                    disabled={currentUserAuth == null}>
+                    <View
+                      style={[
+                        styles.textContainer,
+                        {
+                          backgroundColor:
+                            currentUserAuth == null ? 'grey' : '#f39c12',
+                        },
+                      ]}>
+                      <Text style={styles.textStyle}>Verify</Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    disabled={
+                      taskResponse == 'confirm' || currentUserAuth == null
+                    }
+                    onPress={() => onRespondPost('confirm')}>
+                    <View
+                      style={[
+                        styles.textContainer,
+                        {
+                          backgroundColor:
+                            taskResponse == 'confirm' || currentUserAuth == null
+                              ? 'grey'
+                              : '#1e90ff',
+                        },
+                      ]}>
+                      {loading && pressedButton == 'confirm' ? (
+                        <ActivityIndicator animating={true} color={'white'} />
+                      ) : (
+                        <Text style={styles.textStyle}>{confirmButton}</Text>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity
-                  onPress={() => onRespondPost('verify')}
-                  disabled={currentUserAuth == null}>
+                  disabled={taskResponse == 'deny' || currentUserAuth == null}
+                  onPress={() => onRespondPost('deny')}>
                   <View
                     style={[
                       styles.textContainer,
                       {
                         backgroundColor:
-                          currentUserAuth == null ? 'grey' : '#f39c12',
-                      },
-                    ]}>
-                    <Text style={styles.textStyle}>Verify</Text>
-                  </View>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  disabled={
-                    taskResponse == 'confirm' || currentUserAuth == null
-                  }
-                  onPress={() => onRespondPost('confirm')}>
-                  <View
-                    style={[
-                      styles.textContainer,
-                      {
-                        backgroundColor:
-                          taskResponse == 'confirm' || currentUserAuth == null
+                          taskResponse == 'deny' || currentUserAuth == null
                             ? 'grey'
-                            : '#1e90ff',
+                            : '#EA2027',
                       },
                     ]}>
-                    {loading && pressedButton == 'confirm' ? (
+                    {loading && pressedButton == 'deny' ? (
                       <ActivityIndicator animating={true} color={'white'} />
                     ) : (
-                      <Text style={styles.textStyle}>{confirmButton}</Text>
+                      <Text style={styles.textStyle}>{denyButton}</Text>
                     )}
                   </View>
                 </TouchableOpacity>
-              )}
-              <TouchableOpacity
-                disabled={taskResponse == 'deny' || currentUserAuth == null}
-                onPress={() => onRespondPost('deny')}>
-                <View
-                  style={[
-                    styles.textContainer,
-                    {
-                      backgroundColor:
-                        taskResponse == 'deny' || currentUserAuth == null
-                          ? 'grey'
-                          : '#EA2027',
-                    },
-                  ]}>
-                  {loading && pressedButton == 'deny' ? (
-                    <ActivityIndicator animating={true} color={'white'} />
-                  ) : (
-                    <Text style={styles.textStyle}>{denyButton}</Text>
-                  )}
-                </View>
-              </TouchableOpacity>
+              </View>
+              <View style={[styles.rowContainer, {height: 25,width: '100%'}]}>
+                <Text>{`End at ${dateConversion(taskExpiration, 'task')}`}</Text>
+              </View>
             </View>
           )
         ) : null}

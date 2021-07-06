@@ -13,7 +13,7 @@ export default class addOrModifyPost extends React.Component {
         onPress={onPress}
         disabled={disabled}
         >
-        <Text style={[styles.button, disabled ? {color: '#95a5a6'} : null ]}>Done</Text>
+        <Text style={[styles.button, disabled ? {color: '#95a5a6'} : 'black' ]}>Done</Text>
         {/* <MaterialIcons name="plus" size={30} /> */}
       </TouchableOpacity>
     );

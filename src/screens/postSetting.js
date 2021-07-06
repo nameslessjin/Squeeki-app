@@ -8,6 +8,9 @@ import {
   ActivityIndicator,
   StatusBar,
   ScrollView,
+  TouchableOpacity,
+  Text,
+  Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
 import InputContent from '../components/postSetting/inputContent';
@@ -33,7 +36,7 @@ class PostSetting extends React.Component {
       image: null,
       content: '',
       priority: 0,
-      priorityDuration: 0,
+      priorityExpiration: Date.now(),
       allowComment: 1,
       type: 'general',
       groupId: null,
@@ -41,6 +44,7 @@ class PostSetting extends React.Component {
       originContent: '',
       confirmButton: 'Yes',
       denyButton: 'No',
+      taskExpiration: Date.now(),
     },
     onToggle: false,
     toggleTyple: 'priority',
@@ -54,6 +58,8 @@ class PostSetting extends React.Component {
     searchTerm: '',
     searchIndex: -1,
     atSearchResult: [],
+    modalType: 'image',
+    initTime: Date.now(),
   };
 
   componentDidMount() {
@@ -66,7 +72,7 @@ class PostSetting extends React.Component {
         content,
         createdAt,
         priority,
-        priorityDuration,
+        priorityExpiration,
         allowComment,
         type,
         groupId,
@@ -75,22 +81,24 @@ class PostSetting extends React.Component {
         originContent,
         confirmButton,
         denyButton,
+        taskExpiration,
       } = this.props.route.params.postData;
       this.setState({
         postData: {
           postId: id,
-          image: image,
+          image,
           content: originContent,
-          priority: priority,
-          priorityDuration: priorityDuration,
-          allowComment: allowComment,
-          type: type,
-          groupId: groupId,
-          nomination: nomination,
-          visibility: visibility,
+          priority,
+          priorityExpiration,
+          allowComment,
+          type,
+          groupId,
+          nomination,
+          visibility,
           originContent,
           confirmButton,
           denyButton,
+          taskExpiration,
         },
       });
 
@@ -238,13 +246,14 @@ class PostSetting extends React.Component {
       image,
       content,
       priority,
-      priorityDuration,
+      priorityExpiration,
       allowComment,
       type,
       groupId,
       visibility,
       confirmButton,
       denyButton,
+      taskExpiration,
     } = postData;
     content = content.trim();
 
@@ -265,8 +274,8 @@ class PostSetting extends React.Component {
       if (priority == origin.priority) {
         priority = null;
       }
-      if (priorityDuration == origin.priorityDuration) {
-        priorityDuration = null;
+      if (priorityExpiration == origin.priorityExpiration) {
+        priorityExpiration = null;
       }
       if (allowComment == origin.allowComment) {
         allowComment = null;
@@ -283,31 +292,36 @@ class PostSetting extends React.Component {
       if (denyButton == origin.denyButton) {
         denyButton = null;
       }
+      if (taskExpiration == origin.taskExpiration) {
+        taskExpiration = null;
+      }
     }
 
     if (
       image != null ||
       content != null ||
       priority != null ||
-      priorityDuration != null ||
+      priorityExpiration != null ||
       allowComment != null ||
       type != null ||
       visibility != null ||
       confirmButton != null ||
-      denyButton != null
+      denyButton != null ||
+      taskExpiration != null
     ) {
       const updateData = {
         id: create ? null : postId,
-        groupId: groupId,
-        image: image,
-        content: content,
-        priority: priority,
-        priorityDuration: priorityDuration,
-        allowComment: allowComment,
-        type: type,
-        visibility: visibility,
-        confirmButton: confirmButton,
-        denyButton: denyButton,
+        groupId,
+        image,
+        content,
+        priority,
+        priorityExpiration,
+        allowComment,
+        type,
+        visibility,
+        confirmButton,
+        denyButton,
+        taskExpiration,
         token: token,
         nomination: {
           nominationId: nomination.id || null,
@@ -330,22 +344,20 @@ class PostSetting extends React.Component {
     const {
       content,
       priority,
-      priorityDuration,
+      priorityExpiration,
       confirmButton,
       denyButton,
+      initTime,
     } = this.state.postData;
     if (content.trim().length == 0) {
       return false;
     }
-    if (priorityDuration > 9999) {
+
+    if (priority > 0 && priorityExpiration <= Date.now()) {
       return false;
     }
 
-    if (priority == 0 && !priorityDuration == 0) {
-      return false;
-    }
-
-    if (priority > 0 && priorityDuration == 0) {
+    if (priority == 0 && priorityExpiration > initTime) {
       return false;
     }
 
@@ -484,13 +496,15 @@ class PostSetting extends React.Component {
         postData: {
           ...this.state.postData,
           priority: value,
+          priorityExpiration:
+            value == 0 ? Date.now() : this.state.postData.priorityExpiration,
         },
       });
-    } else if (type == 'priorityDay') {
+    } else if (type == 'priorityExpiration') {
       this.setState({
         postData: {
           ...this.state.postData,
-          priorityDuration: parseInt(value, 10) || 0,
+          priorityExpiration: value.getTime(),
         },
       });
     } else if (type == 'type') {
@@ -498,6 +512,7 @@ class PostSetting extends React.Component {
         postData: {
           ...this.state.postData,
           type: value,
+          taskExpiration: Date.now(),
         },
       });
     } else if (type == 'comment') {
@@ -537,6 +552,13 @@ class PostSetting extends React.Component {
         postData: {
           ...this.state.postData,
           denyButton: value.substr(0, 10),
+        },
+      });
+    } else if (type == 'taskExpiration') {
+      this.setState({
+        postData: {
+          ...this.state.postData,
+          taskExpiration: value.getTime(),
         },
       });
     }
@@ -589,15 +611,15 @@ class PostSetting extends React.Component {
     });
   };
 
-  onAddMeidaPress = () => {
-    this.setState({modalVisible: true});
+  onModalTrigger = type => {
+    this.setState({modalVisible: true, modalType: type});
   };
 
   render() {
     const {
       priority,
       content,
-      priorityDuration,
+      priorityExpiration,
       type,
       allowComment,
       image,
@@ -606,6 +628,7 @@ class PostSetting extends React.Component {
       postId,
       confirmButton,
       denyButton,
+      taskExpiration,
     } = this.state.postData;
     const {
       onToggle,
@@ -617,6 +640,7 @@ class PostSetting extends React.Component {
       create,
       modalVisible,
       atSearchResult,
+      modalType,
     } = this.state;
 
     return (
@@ -627,7 +651,7 @@ class PostSetting extends React.Component {
             <InputImage
               image={image}
               contentKeyboard={contentKeyboard}
-              onPress={this.onAddMeidaPress}
+              onPress={() => this.onModalTrigger('image')}
               disabled={!create}
             />
             <InputContent
@@ -663,15 +687,15 @@ class PostSetting extends React.Component {
                 />
 
                 <InputOption
-                  type={'priorityDay'}
-                  value={priorityDuration.toString()}
+                  type={'priorityExpiration'}
+                  value={priorityExpiration}
                   modifyInput={this.modifyInput}
                   onBackdropPress={this.onBackdropPress}
                   onToggle={onToggle}
                   toggleTyple={toggleTyple}
                   currentUserAuth={this.props.group.group.auth}
                   rank_setting={this.props.group.group.rank_setting}
-                  onFocus={this.onKeyboardInputFocus}
+                  onInputFocus={() => this.onModalTrigger('priorityExpiration')}
                   priority={priority}
                 />
               </View>
@@ -765,15 +789,39 @@ class PostSetting extends React.Component {
               </View>
             ) : null}
 
+            {type == 'task' ? (
+              <View style={styles.lineContainer}>
+                <InputOption
+                  value={taskExpiration}
+                  modifyInput={this.modifyInput}
+                  onBackdropPress={this.onBackdropPress}
+                  onToggle={onToggle}
+                  type={'taskExpiration'}
+                  disabled={false}
+                  toggleTyple={toggleTyple}
+                  currentUserAuth={this.props.group.group.auth}
+                  rank_setting={this.props.group.group.rank_setting}
+                  onInputFocus={() => this.onModalTrigger('taskExpiration')}
+                />
+              </View>
+            ) : null}
+
             <ActivityIndicator animating={loading} color={'grey'} />
 
             <View style={styles.emptySpace} />
 
-            <PostSettingModal
-              modalVisible={modalVisible}
-              onBackdropPress={this.onBackdropPress}
-              onChangeMedia={this.modifyInput}
-            />
+            {modalVisible ? (
+              <PostSettingModal
+                modalVisible={modalVisible}
+                onBackdropPress={this.onBackdropPress}
+                onChangeMedia={this.modifyInput}
+                type={modalType}
+                priority={priority}
+                priorityExpiration={priorityExpiration}
+                modifyInput={this.modifyInput}
+                taskExpiration={taskExpiration}
+              />
+            ) : null}
           </KeyboardAvoidingView>
         </ScrollView>
       </TouchableWithoutFeedback>

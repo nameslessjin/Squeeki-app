@@ -1,6 +1,4 @@
 import React from 'react';
-import Modal from 'react-native-modal';
-import {Picker} from '@react-native-community/picker';
 import {
   StyleSheet,
   TextInput,
@@ -10,6 +8,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import InputPickerModal from './inputPickerModal';
+import {dateConversion} from '../../utils/time';
 
 export default class InputOption extends React.Component {
   priorityOptions = [
@@ -74,12 +73,16 @@ export default class InputOption extends React.Component {
     } else if (type == 'visibility') {
       header = 'Visibility';
       isTouchable = true;
-    } else if (type == 'priorityDay') {
-      header = 'Priority Days';
+    } else if (type == 'priorityExpiration') {
+      header = 'Priority Expiration';
+      isTouchable = true;
     } else if (type == 'confirm') {
       header = 'Confirm Button';
     } else if (type == 'deny') {
       header = 'Deny Button';
+    } else if (type == 'taskExpiration'){
+      header = 'Task Expiration'
+      isTouchable = true
     }
 
     // the current toggled type.  This is used to correctly show the selections
@@ -140,6 +143,10 @@ export default class InputOption extends React.Component {
       } else {
         display_text = 'No';
       }
+    } else if (type == 'priorityExpiration'){
+      display_text = dateConversion(textInputValue, 'priority')
+    } else if (type == 'taskExpiration'){
+      display_text = dateConversion(textInputValue, 'task')
     }
 
     const toggled = onToggle && toggleTyple == type;
@@ -162,13 +169,12 @@ export default class InputOption extends React.Component {
           </TouchableWithoutFeedback>
         ) : (
           <TextInput
-            keyboardType={type == 'priorityDay' ? 'numeric' : 'default'}
+            keyboardType={'default'}
             style={styles.textInputContainer}
             value={textInputValue.toString()}
             onChangeText={v => modifyInput(v, type)}
             onFocus={onFocus}
-            maxLength={type == 'priorityDay' ? 4 : 10}
-            editable={type == 'priorityDay' ? priority != 0 : true}
+            maxLength={10}
           />
         )}
         <InputPickerModal
@@ -208,11 +214,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-  },
-  Picker: {
-    width: 1000,
-    height: 250,
-    backgroundColor: 'white',
   },
   textInputContainer: {
     width: '100%',

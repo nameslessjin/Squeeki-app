@@ -1,5 +1,9 @@
-export const dateConversion = time => {
-  const date = new Date(parseInt(time));
+export const dateConversion = (time, type) => {
+  let date = new Date();
+  if (time) {
+    date = new Date(parseInt(time));
+  }
+
   const year = date.getFullYear();
   const day = date.getDate();
   const month = date.getMonth();
@@ -22,34 +26,50 @@ export const dateConversion = time => {
   let outputTime = '';
 
   const today = new Date();
-  const currentSecond = Math.floor(today.getTime() / 1000);
 
-  const timeDifference = currentSecond - postSecond;
+  if (
+    type == 'post' ||
+    type == 'member' ||
+    type == 'comment' ||
+    type == 'chat' ||
+    type == 'group'
+  ) {
+    const currentSecond = Math.floor(today.getTime() / 1000);
 
-  if (0 <= timeDifference && timeDifference < 60) {
-    outputTime = timeDifference.toString() + ' s ago';
+    const timeDifference = currentSecond - postSecond;
+
+    if (0 <= timeDifference && timeDifference < 60) {
+      outputTime = timeDifference.toString() + ' s ago';
+    }
+
+    if (60 <= timeDifference && timeDifference < 60 * 60) {
+      const outputT = Math.floor(timeDifference / 60);
+      outputTime = outputT.toString() + ' m ago';
+    }
+
+    if (60 * 60 <= timeDifference && timeDifference < 60 * 60 * 24) {
+      const outputT = Math.floor(timeDifference / (60 * 60));
+      outputTime = outputT.toString() + ' hr ago';
+    }
+
+    if (60 * 60 * 24 <= timeDifference && timeDifference < 60 * 60 * 24 * 4) {
+      const outputT = Math.floor(timeDifference / (60 * 60 * 24));
+      outputTime = outputT.toString() + ' d ago';
+    }
+
+    if (timeDifference >= 60 * 60 * 24 * 4) {
+      outputTime = months[month] + ' ' + day + ' ' + (year - 2000);
+    }
+
+    return outputTime;
+  } else if (type == 'priority' || type == 'task') {
+    const hour = date.getHours()
+    const minutes = date.getMinutes()
+    const am = hour < 12 ? 'am' : 'pm'
+    outputTime = `${month + 1}/${day}/${year-2000} ${hour <= 12 ? hour : hour - 12}:${minutes < 10 ? '0' : ''}${minutes} ${am}`
+
+    return outputTime
   }
-
-  if (60 <= timeDifference && timeDifference < 60 * 60) {
-    const outputT = Math.floor(timeDifference / 60);
-    outputTime = outputT.toString() + ' m ago';
-  }
-
-  if (60 * 60 <= timeDifference && timeDifference < 60 * 60 * 24) {
-    const outputT = Math.floor(timeDifference / (60 * 60));
-    outputTime = outputT.toString() + ' hr ago';
-  }
-
-  if (60 * 60 * 24 <= timeDifference && timeDifference < 60 * 60 * 24 * 4) {
-    const outputT = Math.floor(timeDifference / (60 * 60 * 24));
-    outputTime = outputT.toString() + ' d ago';
-  }
-
-  if (timeDifference >= 60 * 60 * 24 * 4) {
-    outputTime = months[month] + ' ' + day + ' ' + (year - 2000);
-  }
-
-  return outputTime;
 };
 
 export const getSundays = time => {
@@ -248,8 +268,7 @@ export const countDownFormat = time => {
   return timeDisplay;
 };
 
-
-export const getMonth = (time) => {
+export const getMonth = time => {
   const input = time || Date.now();
   const today = new Date(input);
   const year = today.getUTCFullYear();
@@ -274,26 +293,42 @@ export const getMonth = (time) => {
     'Dec',
   ];
 
-  const month_days = [31, year % 4 == 0 ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  const month_days = [
+    31,
+    year % 4 == 0 ? 29 : 28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31,
+  ];
   // the first day of a month at UTC 1 am
   const offset = 1 * 60 * 60;
-  const diff_to_begin = (((date - 1) * 24 + hour) * 60 + minute) * 60 + seconds
+  const diff_to_begin = (((date - 1) * 24 + hour) * 60 + minute) * 60 + seconds;
   let begin = null;
   let end = null;
 
-  if (diff_to_begin < offset){
+  if (diff_to_begin < offset) {
+    const month_time = (month - 1 ? 31 : month_days[month - 1]) * 24 * 60 * 60;
 
-    const month_time = ((month - 1) ? 31 : month_days[month - 1]) * 24 * 60 * 60
-
-    begin = new Date((Math.floor(input / 1000) - diff_to_begin - month_time + offset) * 1000)
-    end = new Date( (Math.floor(input / 1000) - diff_to_begin + offset) * 1000 )
+    begin = new Date(
+      (Math.floor(input / 1000) - diff_to_begin - month_time + offset) * 1000,
+    );
+    end = new Date((Math.floor(input / 1000) - diff_to_begin + offset) * 1000);
   } else {
-    const month_time = month_days[month] * 24 * 60 * 60
-    begin = new Date( (Math.floor(input / 1000) - diff_to_begin + offset) * 1000 )
-    end = new Date( (Math.floor(input / 1000) - diff_to_begin + month_time + offset) * 1000 )
+    const month_time = month_days[month] * 24 * 60 * 60;
+    begin = new Date(
+      (Math.floor(input / 1000) - diff_to_begin + offset) * 1000,
+    );
+    end = new Date(
+      (Math.floor(input / 1000) - diff_to_begin + month_time + offset) * 1000,
+    );
   }
-  
-  return {month_begin: begin, month_end: end, month: months[month]}
 
-
-}
+  return {month_begin: begin, month_end: end, month: months[month]};
+};

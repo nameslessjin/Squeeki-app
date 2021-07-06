@@ -252,14 +252,14 @@ export default class PostHeader extends React.Component {
             width: 85,
             justifyContent: 'space-between',
           }}>
-          {priority !== 0 ? (
+          {/* {priority !== 0 ? (
             <View style={{flexDirection: 'row', marginRight: 5}}>
               <MaterialIcons name={'feather'} size={20} color={priorityColor} />
               <Text style={{fontSize: 10, color: priorityColor}}>
                 {priority}
               </Text>
             </View>
-          ) : null}
+          ) : null} */}
           <Text
             style={[styles.timeStyle, {marginRight: selectionMode ? 5 : 0}]}>
             {date}

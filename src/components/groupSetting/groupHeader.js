@@ -134,9 +134,9 @@ class GroupSettingsHeader extends React.Component {
 
     if (initialize) {
       (memberCount = 1), (date = date.getTime());
-      date = dateConversion(date);
+      date = dateConversion(date, 'group');
     } else {
-      date = dateConversion(createdAt);
+      date = dateConversion(createdAt, 'group');
     }
 
     const {container, underImageStyle, component} = styles;

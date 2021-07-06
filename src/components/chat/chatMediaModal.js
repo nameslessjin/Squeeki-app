@@ -11,7 +11,7 @@ import {MessageImagePicker} from '../../utils/imagePicker';
 // import PhotoEditor from 'react-native-photo-editor'
 // import RNFS from 'react-native-fs'
 
-export default class PostSettingModal extends React.Component {
+export default class chatMediaModal extends React.Component {
   onPress = type => {
     const {onBackdropPress, onMediaUpload} = this.props;
     onBackdropPress()

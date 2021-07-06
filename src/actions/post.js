@@ -96,14 +96,8 @@ export const getPost = data => {
     }
 
     const post = result.data.getPost;
-    const expiration_date = new Date(parseInt(post.priority_expiration_date));
-    const diff = expiration_date - Date.now();
-    let duration = 0;
-    if (diff > 0) {
-      duration = Math.ceil(diff / (1000 * 60 * 60 * 24));
-    }
 
-    return {...post, priorityDuration: duration};
+    return {...post, priorityExpiration: new Date(parseInt(post.priorityExpiration))};
   };
 };
 
@@ -112,7 +106,7 @@ export const createPost = data => {
     image,
     content,
     priority,
-    priorityDuration,
+    priorityExpiration,
     allowComment,
     type,
     groupId,
@@ -121,6 +115,7 @@ export const createPost = data => {
     visibility,
     confirmButton,
     denyButton,
+    taskExpiration
   } = data;
 
   return async function(dispatch) {
@@ -156,10 +151,7 @@ export const createPost = data => {
       };
     }
 
-    const priority_expiration_date = new Date(
-      Date.now() + priorityDuration * 24 * 60 * 60 * 1000,
-    );
-
+    
     const postInput = {
       content: content,
       priority: priority,
@@ -169,9 +161,10 @@ export const createPost = data => {
       image: uploadImage,
       visibility: visibility,
       nomination: nomination,
-      priority_expiration_date: priority_expiration_date,
+      priorityExpiration: new Date(priorityExpiration),
       confirmButton: confirmButton,
       denyButton: denyButton,
+      taskExpiration: type == 'task' ? new Date(taskExpiration) : null
     };
 
     const graphql = {
@@ -199,24 +192,26 @@ export const updatePost = data => {
     image,
     content,
     priority,
-    priorityDuration,
+    priorityExpiration,
     allowComment,
     type,
     visibility,
     confirmButton,
     denyButton,
+    taskExpiration
   } = updateData;
 
   return async function(dispatch) {
     let newImage = image;
     let newContent = content;
     let newPriority = priority;
-    let newPriorityDuration = priorityDuration;
+    let newPriorityExpiration = priorityExpiration;
     let newAllowComment = allowComment;
     let newType = type;
     let newVisibility = visibility;
     let newConfirmButton = confirmButton;
     let newDenyButton = denyButton;
+    let newTaskExpiration = taskExpiration
 
     if (image != null) {
       const imageData = new FormData();
@@ -256,8 +251,8 @@ export const updatePost = data => {
       newPriority = origin.priority;
     }
 
-    if (priorityDuration == null) {
-      newPriorityDuration = origin.priorityDuration;
+    if (priorityExpiration == null) {
+      newPriorityExpiration = origin.priorityExpiration;
     }
 
     if (allowComment == null) {
@@ -280,9 +275,9 @@ export const updatePost = data => {
       newDenyButton = origin.denyButton;
     }
 
-    const priority_expiration_date = new Date(
-      Date.now() + newPriorityDuration * 24 * 60 * 60 * 1000,
-    );
+    if (taskExpiration == null){
+      newTaskExpiration = origin.taskExpiration
+    }
 
     const postInput = {
       groupId: groupId,
@@ -295,7 +290,8 @@ export const updatePost = data => {
       visibility: newVisibility,
       denyButton: newDenyButton,
       confirmButton: newConfirmButton,
-      priority_expiration_date: priority_expiration_date,
+      priorityExpiration: new Date(parseInt(newPriorityExpiration)),
+      taskExpiration: newType == 'task' ? new Date(parseInt(newTaskExpiration)) : null
     };
 
     const graphql = {

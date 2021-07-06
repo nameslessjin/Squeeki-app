@@ -52,7 +52,7 @@ export default class ResponseCard extends React.Component {
             </View>
           </View>
           <View style={styles.buttonContainer}>
-            {taskReplyId ? (
+            {taskReplyId && taskResponse != 'deny' ? (
               <TouchableOpacity
                 onPress={() => onPress(userId, 'getVerification')}>
                 <View

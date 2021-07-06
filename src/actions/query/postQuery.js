@@ -27,11 +27,12 @@ query getGroupPosts($input: GetPostInput!){
             priority
             visibility
             checked
-            priority_expiration_date
+            priorityExpiration
             allowComment
             type
             confirmButton
             denyButton
+            taskExpiration
             commentCount
             auth
             groupId
@@ -81,10 +82,11 @@ query getFeed($count: Int!){
             priority
             visibility
             checked
-            priority_expiration_date
+            priorityExpiration
             allowComment
             confirmButton
             denyButton
+            taskExpiration
             type
             commentCount
             auth
@@ -137,7 +139,8 @@ query getPost($postId: ID!){
             visibility
             confirmButton
             denyButton
-            priority_expiration_date
+            taskExpiration
+            priorityExpiration
             allowComment
             type
             commentCount
@@ -211,7 +214,7 @@ query getNominationPost($nominationPostInput: NominationPostInput!){
             }
             priority
             visibility
-            priority_expiration_date
+            priorityExpiration
             allowComment
             type
             commentCount
@@ -265,7 +268,7 @@ query getGroupPostForCheckIn($input: GetPostInput!){
             checked
             priority
             visibility
-            priority_expiration_date
+            priorityExpiration
             allowComment
             type
             commentCount

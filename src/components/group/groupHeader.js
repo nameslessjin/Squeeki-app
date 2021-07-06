@@ -176,7 +176,7 @@ class GroupHeader extends React.Component {
     const {users} = leaderboard;
     const {container, underImageStyle, component} = styles;
     const {notificationToggled} = this.state;
-    const date = dateConversion(createdAt);
+    const date = dateConversion(createdAt, 'post');
 
     const total_point_display = pointFormat(total_point);
     const base_point_time_display = pointFormat(base_point_time);

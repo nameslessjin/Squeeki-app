@@ -17,7 +17,7 @@ import {
   respondPost,
   changePostNotification,
   reportPost,
-  getUserTaskVerification
+  getUserTaskVerification,
 } from '../../actions/post';
 import {getSingleGroupById} from '../../actions/group';
 import {voteNominee} from '../../actions/nomination';
@@ -139,7 +139,6 @@ class PostCard extends React.Component {
       return {notification: !prevState.notification};
     });
 
-    // this.onBackDropPress();
   };
 
   componentDidMount() {
@@ -209,6 +208,7 @@ class PostCard extends React.Component {
       const postData = {
         ...this.props.item,
       };
+
       navigation.navigate('PostSetting', {
         postData: postData,
         create: false,
@@ -221,31 +221,36 @@ class PostCard extends React.Component {
   };
 
   onRespondPost = async type => {
-
     const {auth, respondPost, navigation, getUserTaskVerification} = this.props;
-    const {id, taskResponse} = this.state;
+    const {id, taskResponse, taskExpiration} = this.state;
     const data = {
       postId: id,
       token: auth.token,
       type,
     };
 
+    if (parseInt(taskExpiration) <= Date.now()){
+      alert('Task expired')
+      this.setState(prevState => {return prevState})
+      return
+    }
+
     if (type == 'verify') {
       // search database for existing ones
-      const request = {token: auth.token, postId: id}
-      const req = await getUserTaskVerification(request)
-      if (req.errors){
-        console.log(req.errors)
-        alert('Cannot fetch verification at this time, please try again later')
-        return
+      const request = {token: auth.token, postId: id};
+      const req = await getUserTaskVerification(request);
+      if (req.errors) {
+        console.log(req.errors);
+        alert('Cannot fetch verification at this time, please try again later');
+        return;
       }
 
-      navigation.navigate("TaskVerify", {
+      navigation.navigate('TaskVerify', {
         postId: id,
         ...req,
         respondentId: auth.user.id,
-        taskResponse
-      })
+        taskResponse,
+      });
       return;
     }
 
@@ -285,6 +290,7 @@ class PostCard extends React.Component {
 
   onBackDropPress = () => {
     this.setState({modalToggled: false, is_report_toggled: false, report: ''});
+    console.log('backdrop press')
   };
 
   onVotePress = async () => {
@@ -334,7 +340,8 @@ class PostCard extends React.Component {
       group,
       navigation,
     } = this.props;
-    const date = dateConversion(createdAt);
+
+    const date = dateConversion(createdAt, 'post');
 
     let backgroundColor = 'white';
     if (priority == 3) {
@@ -451,7 +458,7 @@ const mapDispatchToProps = dispatch => {
     reportPost: data => dispatch(reportPost(data)),
     voteNominee: data => dispatch(voteNominee(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
-    getUserTaskVerification: data => dispatch(getUserTaskVerification(data))
+    getUserTaskVerification: data => dispatch(getUserTaskVerification(data)),
   };
 };
 

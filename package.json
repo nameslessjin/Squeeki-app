@@ -14,6 +14,7 @@
     "@react-native-clipboard/clipboard": "^1.7.0",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/cameraroll": "^4.0.4",
+    "@react-native-community/datetimepicker": "^3.5.2",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/netinfo": "^5.9.9",
     "@react-native-community/picker": "^1.8.1",
@@ -54,7 +55,6 @@
     "subscriptions-transport-ws": "^0.9.18",
     "validator": "^13.5.2"
   },
-
   "react-native-unimodules": {
     "ios": {
       "exclude": [
@@ -62,7 +62,6 @@
       ]
     }
   },
-
   "devDependencies": {
     "@babel/core": "^7.6.2",
     "@babel/runtime": "^7.6.2",
