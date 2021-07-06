@@ -48,8 +48,8 @@ export const apolloClient = (token) => {
   return client;
 };
 
-// export const http = 'http://squeeki.appspot.com/graphql';
-// export const http_no_graphql = 'http://squeeki.appspot.com'
+export const http = 'http://squeeki.appspot.com/graphql';
+export const http_no_graphql = 'http://squeeki.appspot.com'
 
 // export const http = 'http://172.20.10.4:8080/graphql'
 // export const http_no_graphql = 'http://172.20.10.4:8080'
@@ -57,8 +57,8 @@ export const apolloClient = (token) => {
 // export const http = 'http://192.168.86.226:8080/graphql'
 // export const http_no_graphql = 'http://192.168.86.226:8080'
 
-export const http = 'http://192.168.1.151:8080/graphql'
-export const http_no_graphql = 'http://192.168.1.151:8080'
+// export const http = 'http://192.168.1.151:8080/graphql'
+// export const http_no_graphql = 'http://192.168.1.151:8080'
 
 export const http_upload = 'http://squeeki.appspot.com/uploadImage'
 
