@@ -8,39 +8,44 @@ import {
   Modal,
   KeyboardAvoidingView,
   Keyboard,
-  FlatList
+  FlatList,
+  Dimensions
 } from 'react-native';
 
+const { width } = Dimensions.get('screen')
 
 const extractKey = ({id}) => id;
 export default class RewardModal extends React.Component {
-  state = {};
 
-  onBackdropPress = () => {
-    const {onBackdropPress} = this.props;
-    onBackdropPress();
-  };
+  onInputChange = value => {
+    const {onInputChange, onBackdropPress} = this.props
+    onInputChange('listNum', value)
+    onBackdropPress()
+  }
 
   renderItem = i => {
-    const {name, rate} = i.item;
+    const {value, label} = i.item;
     return (
-      <View style={[styles.reward, {marginTop: name == 'Bronze' ? 30 : 0}]}>
-        <Text style={{width: 100}}>{name}:</Text>
-        <Text>{rate}</Text>
-      </View>
+      <TouchableOpacity onPress={() => this.onInputChange(value)}>
+        <View
+          style={[
+            styles.options,
+          ]}>
+          <Text style={{color: '#3498db'}}>{label}</Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
   render() {
     const {modalVisible, onBackdropPress} = this.props;
-    const reward_rate = [
-      {id: '1', name: 'Bronze', rate: '40%'},
-      {id: '2', name: 'Silver', rate: '30%'},
-      {id: '3', name: 'Gold', rate: '15%'},
-      {id: '4', name: 'Emerald', rate: '10%'},
-      {id: '5', name: 'Sapphire', rate: '4%'},
-      {id: '6', name: 'Diamond', rate: '1%'},
+
+    const listNo = [
+      {id: '1', label: '1', value: '1'},
+      {id: '2', label: '2', value: '2'},
+      {id: '3', label: '3', value: '3'},
     ];
+    let name = 'List No.'
 
     return (
       <View style={styles.centeredView}>
@@ -49,22 +54,18 @@ export default class RewardModal extends React.Component {
             <View style={styles.centeredView}>
               <TouchableWithoutFeedback>
                 <KeyboardAvoidingView style={styles.view}>
-                  <View style={styles.reward_display}>
+                  <View style={styles.display}>
+                    <View style={styles.header}>
+                      <Text>{name}</Text>
+                    </View>
                     <FlatList
-                      data={reward_rate}
+                      data={listNo}
                       renderItem={this.renderItem}
                       alwaysBounceVertical={false}
                       alwaysBounceHorizontal={false}
                       showsVerticalScrollIndicator={false}
                       keyExtractor={extractKey}
                     />
-                  </View>
-                  <View style={styles.footer}>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={onBackdropPress}>
-                      <Text style={{color: 'grey'}}>Close</Text>
-                    </TouchableOpacity>
                   </View>
                 </KeyboardAvoidingView>
               </TouchableWithoutFeedback>
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   },
   view: {
     backgroundColor: 'white',
-    width: '95%',
+    width: '50%',
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -99,28 +100,23 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 100,
   },
-  footer: {
-    height: 35,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
+  options: {
     alignItems: 'center',
-  },
-  button: {
-    width: '50%',
     justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
+    width: width * 0.45,
+    height: 45,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'grey'
   },
-  reward: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 150,
-    marginVertical: 10,
-  },
-  reward_display: {
+  display: {
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  header: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
   },
 });

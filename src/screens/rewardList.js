@@ -14,32 +14,32 @@ class RewardList extends React.Component {
   };
 
   componentDidMount() {
-    this.loadGroupReward(true, false);
-    this.getMonthlyGiftCardCount()
+    // this.loadGroupReward(true, false);
+    // this.getMonthlyGiftCardCount()
   }
 
-  loadGroupReward = (init, redeemed) => {
-    const {
-      group,
-      auth,
-      userLogout,
-      navigation,
-      getGroupReward,
-      reward,
-    } = this.props;
-    const data = {
-      group,
-      userLogout,
-      auth,
-      navigation,
-      count: init ? 0 : reward.count,
-      func: getGroupReward,
-      redeemed: redeemed,
-    };
+  // loadGroupReward = (init, redeemed) => {
+  //   const {
+  //     group,
+  //     auth,
+  //     userLogout,
+  //     navigation,
+  //     getGroupReward,
+  //     reward,
+  //   } = this.props;
+  //   const data = {
+  //     group,
+  //     userLogout,
+  //     auth,
+  //     navigation,
+  //     count: init ? 0 : reward.count,
+  //     func: getGroupReward,
+  //     redeemed: redeemed,
+  //   };
 
-    loadGroupRewardsFunc(data);
+  //   loadGroupRewardsFunc(data);
 
-  };
+  // };
 
   getMonthlyGiftCardCount = async() => {
     const {getMonthlyGiftCardCount, group, auth, userLogout, navigation} = this.props
@@ -94,9 +94,9 @@ class RewardList extends React.Component {
     this.setState({modalVisible: true});
   };
 
-  onEndReached = redeemed => {
-    this.loadGroupReward(false, redeemed == null ? false : redeemed);
-  };
+  // onEndReached = redeemed => {
+  //   this.loadGroupReward(false, redeemed == null ? false : redeemed);
+  // };
 
   render() {
     const {reward, group} = this.props;
@@ -107,7 +107,7 @@ class RewardList extends React.Component {
     return (
       <View>
         <StatusBar barStyle={'dark-content'} />
-        <List
+        {/* <List
           rewards={rewards}
           auth={group.group.auth}
           onDeleteReward={this.onDeleteReward}
@@ -116,7 +116,7 @@ class RewardList extends React.Component {
           route={'list'}
           onQuestionMarkPress={this.onQuestionMarkPress}
           remaining_gift_card_count={remaining_gift_card_count}
-        />
+        /> */}
         <RewardModal modalVisible={modalVisible} onBackdropPress={this.onBackdropPress} />
       </View>
     );

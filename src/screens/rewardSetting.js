@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
 import TopRightButton from '../components/reward/topRightButton';
@@ -13,16 +14,22 @@ import Input from '../components/reward/settingInput';
 import {createGroupReward, getGroupReward} from '../actions/reward';
 import {loadGroupRewardsFunc} from '../functions/reward';
 import {userLogout} from '../actions/auth';
-import RewardModal from '../components/reward/rewardModal'
+import RewardModal from '../components/reward/rewardModal';
+import validator from 'validator';
+import {v4 as uuidv4} from 'uuid';
 
 class RewardSetting extends React.Component {
   state = {
     loading: false,
     name: '',
     content: '',
-    chance: '',
+    chance: '10',
     hide: false,
-    modalVisible: false
+    modalVisible: false,
+    count: '1',
+    separateContent: false,
+    listNum: '1',
+    contentList: [],
   };
 
   componentDidMount() {
@@ -36,34 +43,40 @@ class RewardSetting extends React.Component {
           disabled={true}
         />
       ),
-      headerTitle: 'Settings'
+      headerTitle: 'Settings',
     });
   }
 
   validation = () => {
-    let {name, content, chance, hide} = this.state;
+    let {name, content, chance, hide, count, listNum} = this.state;
     name = name.trim();
     content = content.trim();
-    chance = parseInt(chance.trim());
 
     if (name.length == 0) {
       return false;
     }
 
-    if (content.length == 0) {
+    // if chance is not a float or either count and list No is not int, return false
+    if (
+      !validator.isFloat(chance) ||
+      !validator.isInt(count) ||
+      !validator.isInt(listNum)
+    ) {
       return false;
     }
 
-    if (
-      !(
-        chance == 1 ||
-        chance == 4 ||
-        chance == 10 ||
-        chance == 15 ||
-        chance == 30 ||
-        chance == 40
-      )
-    ) {
+    // list No should be 1, 2 or 3
+    if (parseInt(listNum) > 3 || parseInt(listNum) < 1) {
+      return false;
+    }
+
+    // count should be between 1 and 9999
+    if (parseInt(count) < 1 || parseInt(count) > 9999) {
+      return false;
+    }
+
+    // chance should be between 0.1 and 100
+    if (parseFloat(chance) < 0.1 || parseFloat(chance) > 100) {
       return false;
     }
 
@@ -71,17 +84,11 @@ class RewardSetting extends React.Component {
   };
 
   componentWillUnmount() {
-    this.loadGroupReward();
+    // this.loadGroupReward();
   }
 
   loadGroupReward = () => {
-    const {
-      group,
-      auth,
-      userLogout,
-      navigation,
-      getGroupReward,
-    } = this.props;
+    const {group, auth, userLogout, navigation, getGroupReward} = this.props;
     const data = {
       group,
       userLogout,
@@ -126,22 +133,22 @@ class RewardSetting extends React.Component {
       from: 'group',
     };
 
-    this.setState({loading: true});
-    const req = await createGroupReward(request);
-    if (req.errors) {
-      // alert(req.errors[0].message);
-      alert('Cannot add reward at this time, please try again later')
-      if (req.errors[0].message == 'Not Authenticated') {
-        userLogout();
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'SignIn'}],
-        });
-      }
-      return;
-    }
-    this.setState({loading: false});
-    navigation.navigate('List');
+    // this.setState({loading: true});
+    // const req = await createGroupReward(request);
+    // if (req.errors) {
+    //   // alert(req.errors[0].message);
+    //   alert('Cannot add reward at this time, please try again later')
+    //   if (req.errors[0].message == 'Not Authenticated') {
+    //     userLogout();
+    //     navigation.reset({
+    //       index: 0,
+    //       routes: [{name: 'SignIn'}],
+    //     });
+    //   }
+    //   return;
+    // }
+    // this.setState({loading: false});
+    // navigation.navigate('List');
   };
 
   onInputChange = (type, value) => {
@@ -158,48 +165,136 @@ class RewardSetting extends React.Component {
           hide: !prevState.hide,
         };
       });
+    } else if (type == 'count') {
+      this.setState({count: value.trim()});
+    } else if (type == 'listNum') {
+      console.log('value');
+      this.setState({listNum: value.trim()});
+    } else if (type == 'separateContent') {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          separateContent: !prevState.separateContent,
+        };
+      });
     }
   };
 
   onBackdropPress = () => {
-    Keyboard.dismiss()
-    this.setState({modalVisible: false})
-  }
+    Keyboard.dismiss();
+    this.setState({modalVisible: false});
+  };
 
-  onQuestionMarkPress = () => {
-    this.setState({modalVisible: true})
-  }
+  onPress = type => {
+    if (type == 'listNum') {
+      this.setState({modalVisible: true});
+    } else if (type == 'contentList') {
+      const {count, contentList} = this.state;
+      if (
+        !validator.isInt(count) ||
+        parseInt(count) > 9999 ||
+        parseInt(count) < 1
+      ) {
+        alert('Count is not a valid integer');
+        return;
+      }
+      let updatedContentList = [...contentList];
+      if (contentList.length < parseInt(count)) {
+        for (let i = 0; i < parseInt(count) - contentList.length; i++) {
+          console.log('<');
+          updatedContentList.push({id: uuidv4(), content: ''});
+        }
+      } else if (contentList.length > parseInt(count)) {
+        console.log('>');
+        for (let i = 0; i < contentList.length - parseInt(count); i++) {
+          updatedContentList.pop();
+        }
+      }
+
+      this.setState({contentList: updatedContentList});
+
+      console.log(updatedContentList);
+
+      // this.props.navigation.navigate()
+    }
+  };
 
   render() {
-    const {loading, name, content, chance, hide, modalVisible} = this.state;
+    const {
+      loading,
+      name,
+      content,
+      count,
+      chance,
+      hide,
+      modalVisible,
+      separateContent,
+      listNum,
+      contentList,
+    } = this.state;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
+        <ScrollView style={styles.container} bounces={false}>
           <StatusBar barStyle={'dark-content'} />
           <Input
             type={'name'}
             value={name}
             onInputChange={this.onInputChange}
+            onPress={this.onPress}
           />
           <Input
-            type={'content'}
-            value={content}
+            type={'chance'}
+            value={chance.toString()}
             onInputChange={this.onInputChange}
+            onPress={this.onPress}
           />
+          <Input
+            type={'listNum'}
+            value={listNum.toString()}
+            onInputChange={this.onInputChange}
+            onPress={this.onPress}
+          />
+          <Input
+            type={'count'}
+            value={count.toString()}
+            onInputChange={this.onInputChange}
+            onPress={this.onPress}
+          />
+          <Input
+            type={'separateContent'}
+            value={separateContent}
+            onInputChange={this.onInputChange}
+            onPress={this.onPress}
+          />
+
+          {separateContent ? (
+            <Input
+              type={'contentList'}
+              value={contentList}
+              onInputChange={this.onInputChange}
+              onPress={this.onPress}
+            />
+          ) : (
+            <Input
+              type={'content'}
+              value={content}
+              onInputChange={this.onInputChange}
+              onPress={this.onPress}
+            />
+          )}
           <Input
             type={'hide'}
             value={hide}
             onInputChange={this.onInputChange}
+            onPress={this.onPress}
           />
-          <Input
-            type={'chance'}
-            value={chance}
+          <ActivityIndicator animating={loading} color={'grey'} />
+          <RewardModal
+            modalVisible={modalVisible}
+            onBackdropPress={this.onBackdropPress}
             onInputChange={this.onInputChange}
-            onQuestionMarkPress={this.onQuestionMarkPress}
           />
-          <ActivityIndicator animating={loading} color={'grey'}/>
-          <RewardModal modalVisible={modalVisible} onBackdropPress={this.onBackdropPress} />
-        </KeyboardAvoidingView>
+        </ScrollView>
       </TouchableWithoutFeedback>
     );
   }
@@ -207,8 +302,8 @@ class RewardSetting extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    // alignItems: 'center',
+    // justifyContent: 'flex-start',
     height: '100%',
     width: '100%',
   },

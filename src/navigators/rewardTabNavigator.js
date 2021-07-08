@@ -5,6 +5,7 @@ import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Reward from '../screens/reward';
 import RewardList from '../screens/rewardList';
+import RewardHistory from '../screens/rewardHistory';
 import TopRightButton from '../components/reward/topRightButton';
 import {getGroupReward} from '../actions/reward';
 import {loadGroupRewardsFunc} from '../functions/reward';
@@ -20,9 +21,9 @@ class RewardTabNavigator extends React.Component {
     navigation.setOptions({
       headerTitle: 'Reward',
       headerBackTitleVisible: false,
-      headerRight: () => (
-        <TopRightButton type={'history'} onPress={this.onTopRightButtonPress} />
-      ),
+      // headerRight: () => (
+      //   <TopRightButton type={'history'} onPress={this.onTopRightButtonPress} />
+      // ),
     });
   }
 
@@ -35,77 +36,69 @@ class RewardTabNavigator extends React.Component {
   componentDidUpdate() {
     const routeName = this.getRouteName();
     const {navigation, group} = this.props;
+
     if (routeName == 'Reward') {
       navigation.setOptions({
-        headerTitle: 'Reward',
-        headerBackTitleVisible: false,
-        headerRight: () => (
-          <TopRightButton
-            type={'history'}
-            onPress={this.onTopRightButtonPress}
-          />
-        ),
+        headerRight: () =>
+          group.group.auth.rank <= 1 ? (
+            <TopRightButton type={'add'} onPress={this.onTopRightButtonPress} />
+          ) : null,
       });
-    } else if (routeName == 'List') {
+    } else if (routeName == 'History') {
       navigation.setOptions({
-        headerTitle: 'Reward List',
-        headerBackTitleVisible: false,
-        headerRight: () => group.group.auth.rank <= 1 ? (
-          <TopRightButton type={'add'} onPress={this.onTopRightButtonPress} />
-        ) : null,
+        headerRight: null
       });
     }
   }
 
-  loadGroupReward = () => {
-    const {
-      group,
-      auth,
-      userLogout,
-      navigation,
-      reward,
-      getGroupReward,
-    } = this.props;
+  // loadGroupReward = () => {
+  //   const {
+  //     group,
+  //     auth,
+  //     userLogout,
+  //     navigation,
+  //     reward,
+  //     getGroupReward,
+  //   } = this.props;
 
-    const data = {
-      group,
-      userLogout,
-      auth,
-      navigation,
-      count: 0,
-      func: getGroupReward,
-      redeemed: false,
-    };
+  //   const data = {
+  //     group,
+  //     userLogout,
+  //     auth,
+  //     navigation,
+  //     count: 0,
+  //     func: getGroupReward,
+  //     redeemed: false,
+  //   };
 
-    loadGroupRewardsFunc(data);
-  };
+  //   loadGroupRewardsFunc(data);
+  // };
 
   onTopRightButtonPress = () => {
     const {navigation} = this.props;
     const routeName = this.getRouteName();
+
     if (routeName.toLowerCase() == 'reward') {
-      navigation.navigate('RewardHistory')
-    } else if (routeName.toLowerCase() == 'list') {
-      navigation.navigate('RewardSetting');
-    }
+      navigation.navigate('RewardSetting')
+    } 
   };
 
   render() {
     return (
       <Tabs.Navigator
-        initialRouteName="Reward"
+        initialRouteName="History"
         tabBarOptions={{
           activeTintColor: 'tomato',
           inactiveTintColor: 'grey',
         }}>
         <Tabs.Screen
-          name="Reward"
-          component={Reward}
+          name="History"
+          component={RewardHistory}
           options={{
             tabBarIcon: ({focused, color, size}) => {
               return (
                 <MaterialIcons
-                  name={'treasure-chest'}
+                  name={'format-list-bulleted'}
                   size={25}
                   color={color}
                 />
@@ -114,13 +107,13 @@ class RewardTabNavigator extends React.Component {
           }}
         />
         <Tabs.Screen
-          name="List"
-          component={RewardList}
+          name="Reward"
+          component={Reward}
           options={{
             tabBarIcon: ({focused, color, size}) => {
               return (
                 <MaterialIcons
-                  name={'format-list-bulleted'}
+                  name={'treasure-chest'}
                   size={25}
                   color={color}
                 />
@@ -140,7 +133,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getGroupReward: data => dispatch(getGroupReward(data)),
+    // getGroupReward: data => dispatch(getGroupReward(data)),
     userLogout: () => dispatch(userLogout()),
   };
 };

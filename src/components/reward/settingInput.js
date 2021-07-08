@@ -11,33 +11,33 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class RewardSettingInput extends React.Component {
   render() {
-    const {type, value, onInputChange, onQuestionMarkPress} = this.props;
+    const {type, value, onInputChange, onPress} = this.props;
     let title = 'Name';
     let display = <View />;
     if (type == 'content') {
       title = 'Content';
     } else if (type == 'chance') {
-      title = 'Chance(%)';
+      title = 'Chance(0.1 - 100%)';
     } else if (type == 'hide') {
       title = 'Hide Content';
+    } else if (type == 'count') {
+      title = 'Count';
+    } else if (type == 'listNum') {
+      title = 'List No.';
+    } else if (type == 'separateContent') {
+      title = 'Separate Content For Each Reward';
+    } else if (type == 'contentList') {
+      title = 'Content List';
     }
 
-    const question_mark = (
-      <View
-        style={styles.question_mark_container}>
-        <TouchableOpacity onPress={onQuestionMarkPress}>
-          <View
-            style={styles.question_mark}>
-            <MaterialIcons name={'help'} size={15} color={'white'} />
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
+    const numericKeyboard =
+      type == 'chance' || type == 'count' || type == 'listNum' ? true : false;
 
-    if (type == 'hide') {
+    if (type == 'hide' || type == 'separateContent') {
       display = (
         <View style={[styles.container, {justifyContent: 'space-between'}]}>
-          <Text>{title}</Text>
+          <Text style={{color: 'grey'}}>{title}</Text>
+
           <TouchableWithoutFeedback onPress={() => onInputChange(type)}>
             <MaterialIcons
               name={value ? 'toggle-switch' : 'toggle-switch-off-outline'}
@@ -47,29 +47,60 @@ export default class RewardSettingInput extends React.Component {
           </TouchableWithoutFeedback>
         </View>
       );
+    } else if (type == 'contentList') {
+      display = (
+        <View style={[styles.container, {justifyContent: 'space-between'}]}>
+          <Text style={{color: 'grey'}}>{title}</Text>
+
+          <TouchableWithoutFeedback onPress={() => onInputChange(type)}>
+            <MaterialIcons name={'chevron-right'} size={30} color={'black'} />
+          </TouchableWithoutFeedback>
+        </View>
+      );
     } else {
       display = (
-        <View style={[styles.container, {height: type=='content' ? 80 : 45}]}>
-          <Text style={{color: 'grey'}} >{title}</Text>
-          <TextInput
-            style={[
-              styles.textInputStyle,
-              {width: type == 'chance' ? '70%' : '81%', height: type=='content' ? 55 : 45},
-            ]}
-            value={value.toString()}
-            keyboardType={type == 'chance' ? 'numeric' : null}
-            onChangeText={t => onInputChange(type, t)}
-            maxLength={type == 'chance' ? 3 : ( type == 'content' ? 100 : 40)}
-            multiline={type == 'content'}
-            placeholderTextColor={'#7f8fa6'}
-            placeholder={type == 'chance' ? '1, 4, 10, 15, 30 or 40' : null}
-          />
-          {type == 'chance' ? question_mark : null}
+        <View style={[styles.container, {height: type == 'content' ? 80 : 45}]}>
+          <Text style={{color: 'grey'}}>{title}</Text>
+          {type == 'listNum' ? (
+            <Text style={{marginLeft: 10, width: '100%'}}>
+              {value.toString()}
+            </Text>
+          ) : (
+            <TextInput
+              style={[
+                styles.textInputStyle,
+                {
+                  width: type == 'chance' ? '70%' : '81%',
+                  height: type == 'content' ? 80 : 45,
+                },
+              ]}
+              value={value.toString()}
+              keyboardType={numericKeyboard ? 'numeric' : 'default'}
+              onChangeText={t => onInputChange(type, t)}
+              maxLength={
+                type == 'chance'
+                  ? 3
+                  : type == 'count'
+                  ? 4
+                  : type == 'listNum'
+                  ? 2
+                  : type == 'content'
+                  ? 200
+                  : 40
+              }
+              multiline={type == 'content'}
+              placeholderTextColor={'#7f8fa6'}
+            />
+          )}
         </View>
       );
     }
 
-    return display;
+    return (
+      <TouchableWithoutFeedback onPress={() => onPress(type)}>
+        {display}
+      </TouchableWithoutFeedback>
+    );
   }
 }
 
@@ -89,7 +120,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginLeft: 10,
     color: 'black',
-    height: 50,
+    height: 45,
   },
   question_mark: {
     width: 20,
@@ -99,10 +130,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  question_mark_container:{
+  question_mark_container: {
     width: '4%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });

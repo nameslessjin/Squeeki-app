@@ -19,6 +19,7 @@ class Reward extends React.Component {
     point: 0,
     loading: false,
     reward: {},
+    rewardList: []
   };
 
   componentDidMount() {
@@ -84,14 +85,14 @@ class Reward extends React.Component {
   };
 
   render() {
-    const {point, loading, reward} = this.state;
+    const {point, loading, reward, rewardList} = this.state;
     const {auth, rank_setting} = this.props.group.group
     const disabled = loading || point < 100 || rank_setting.reward_rank_required < auth.rank;
     return (
       <View style={styles.container}>
         <StatusBar barStyle={'dark-content'} />
         <View style={styles.container}>
-          <View style={styles.rewardContainer}>
+          {/* <View style={styles.rewardContainer}>
             {loading ? (
               <ActivityIndicator animating={loading} size={'large'} color={'grey'} />
             ) : reward.id ? (
@@ -104,8 +105,8 @@ class Reward extends React.Component {
                 style={styles.treasure}
               />
             )}
-          </View>
-          <View style={styles.pointButtonContainer}>
+          </View> */}
+          {/* <View style={styles.pointButtonContainer}>
             <Text style={styles.point}>Points: {point}</Text>
             <TouchableOpacity disabled={disabled} onPress={this.onLootPress}>
               <View
@@ -125,7 +126,7 @@ class Reward extends React.Component {
               }}>
               Cost: 100
             </Text>
-          </View>
+          </View> */}
         </View>
       </View>
     );

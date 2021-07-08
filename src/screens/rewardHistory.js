@@ -17,11 +17,11 @@ class RewardHistory extends React.Component {
 
   componentDidMount() {
     const {navigation} = this.props
-    navigation.setOptions({
-      headerTitle: 'History'
-    })
+    // navigation.setOptions({
+    //   headerTitle: 'History'
+    // })
 
-    this.loadUserGroupRewardHistory(true);
+    // this.loadUserGroupRewardHistory(true);
   }
 
   loadUserGroupRewardHistory = init => {
@@ -42,18 +42,18 @@ class RewardHistory extends React.Component {
       func: getUserGroupRewardHistory,
     };
 
-    loadGroupRewardsFunc(data);
+    // loadGroupRewardsFunc(data);
   };
 
   onEndReached = () => {
-    this.loadUserGroupRewardHistory(false);
+    // this.loadUserGroupRewardHistory(false);
   };
 
   render() {
     const {reward} = this.props;
     const {history} = reward;
     return (
-      <View>
+      <View style={{backgroundColor: 'white'}}>
         <StatusBar barStyle={'dark-content'} />
         <List rewards={history} onEndReached={this.onEndReached} auth={null} route={'history'}/>
       </View>
