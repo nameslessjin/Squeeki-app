@@ -1,16 +1,12 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {StyleSheet, KeyboardAvoidingView} from 'react-native';
 import {connect} from 'react-redux';
 import {
   getPostTaskResponse,
   getUserTaskVerification,
-  verifyUserTaskCompletion,
+  manageUserTaskResponse,
 } from '../actions/post';
+import {getSingleGroupById} from '../actions/group';
 import TaskResponseList from '../components/taskManagement/taskResponseList';
 
 class TaskManagement extends React.Component {
@@ -19,6 +15,7 @@ class TaskManagement extends React.Component {
     taskResponse: [],
     count: 0,
     postId: '',
+    type: 'pending',
     ...this.props.route.params,
   };
 
@@ -28,8 +25,37 @@ class TaskManagement extends React.Component {
       headerBackTitleVisible: false,
       headerTitle: 'Task Management',
     });
-    this.loadParticipants(true);
+    // this.loadParticipants(true);
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps != this.props) {
+      if (this.props.route.params.change){
+        this.loadParticipants(true, this.state.type)
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    const {group} = this.props;
+    if (group.group.id) {
+      this.getGroup();
+    }
+  }
+
+  getGroup = async () => {
+    const {group, auth, getSingleGroupById} = this.props;
+    const request = {
+      token: auth.token,
+      id: group.group.id,
+    };
+
+    const req = await getSingleGroupById(request);
+    if (req.errors) {
+      console.log(req.errors);
+      return;
+    }
+  };
 
   onPress = async (respondentId, type) => {
     const {postId, taskResponse} = this.state;
@@ -37,13 +63,14 @@ class TaskManagement extends React.Component {
       getUserTaskVerification,
       auth,
       navigation,
-      verifyUserTaskCompletion,
+      manageUserTaskResponse,
     } = this.props;
 
     const request = {
       postId,
       token: auth.token,
       respondentId,
+      type,
     };
 
     if (type == 'getVerification') {
@@ -60,9 +87,10 @@ class TaskManagement extends React.Component {
         respondentId: respondentId,
         taskResponse: taskResponse.filter(u => u.userId == respondentId)[0]
           .taskResponse,
+        prevRoute: 'TaskManagement'
       });
-    } else if (type == 'verifyTaskCompletion') {
-      const req = await verifyUserTaskCompletion(request);
+    } else if (type == 'completed' || type == 'deny') {
+      const req = await manageUserTaskResponse(request);
       if (req.errors) {
         console.log(req.errors);
         alert('Verify error');
@@ -73,7 +101,7 @@ class TaskManagement extends React.Component {
       this.setState({
         taskResponse: taskResponse.map(t => {
           if (t.userId == respondentId) {
-            return {...t, taskResponse: 'verified'};
+            return {...t, taskResponse: type};
           }
           return t;
         }),
@@ -81,15 +109,18 @@ class TaskManagement extends React.Component {
     }
   };
 
-  loadParticipants = async init => {
+  loadParticipants = async (init, type) => {
     const {auth, getPostTaskResponse} = this.props;
     const {postId, count} = this.state;
 
     const request = {
       token: auth.token,
-      count,
+      count: init ? 0 : count,
       postId,
+      type: type == 'pending' ? 'confirm' : type == 'denied' ? 'deny' : type,
     };
+
+    this.setState({type});
 
     const req = await getPostTaskResponse(request);
     if (req.error) {
@@ -98,21 +129,19 @@ class TaskManagement extends React.Component {
       return;
     }
 
-    if (req.response.length != 0) {
-      this.setState(prevState => {
-        return {
-          taskResponse: init
-            ? req.response
-            : prevState.taskResponse.concat(req.taskResponse),
-          count: req.count,
-        };
-      });
-    }
+    this.setState(prevState => {
+      return {
+        taskResponse: init
+          ? req.response
+          : prevState.taskResponse.concat(req.response),
+        count: req.count,
+      };
+    });
   };
 
-  onEndReached = () => {
+  onEndReached = type => {
     this.setState({loading: true});
-    this.loadParticipants(false);
+    this.loadParticipants(false, type);
     this.setState({loading: false});
   };
 
@@ -125,6 +154,7 @@ class TaskManagement extends React.Component {
           taskResponse={taskResponse}
           onPress={this.onPress}
           onEndReached={this.onEndReached}
+          loadParticipants={this.loadParticipants}
         />
       </KeyboardAvoidingView>
     );
@@ -151,7 +181,8 @@ const mapDispatchToProps = dispatch => {
   return {
     getPostTaskResponse: data => dispatch(getPostTaskResponse(data)),
     getUserTaskVerification: data => dispatch(getUserTaskVerification(data)),
-    verifyUserTaskCompletion: data => dispatch(verifyUserTaskCompletion(data)),
+    manageUserTaskResponse: data => dispatch(manageUserTaskResponse(data)),
+    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
   };
 };
 

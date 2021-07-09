@@ -83,7 +83,7 @@ export default class PostFooter extends React.Component {
         </View>
         {type == 'task' ? (
           parseInt(taskExpiration) <= Date.now() &&
-          taskResponse != 'verified' ? (
+          taskResponse != 'completed' ? (
             <View
               style={[
                 styles.rowContainer,
@@ -105,11 +105,11 @@ export default class PostFooter extends React.Component {
                 </View>
               </TouchableOpacity>
             </View>
-          ) : taskResponse == 'verified' ? (
+          ) : taskResponse == 'completed' ? (
             <View
               style={[
                 styles.rowContainer,
-                {backgroundColor: '#f9ca24', height: 40},
+                {backgroundColor: '#6ab04c', height: 40},
               ]}>
               <TouchableOpacity disabled={true}>
                 <View style={styles.viewButton}>

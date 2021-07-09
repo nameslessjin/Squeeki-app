@@ -208,7 +208,7 @@ class PostCard extends React.Component {
       const postData = {
         ...this.props.item,
       };
-
+ 
       navigation.navigate('PostSetting', {
         postData: postData,
         create: false,
@@ -250,6 +250,7 @@ class PostCard extends React.Component {
         ...req,
         respondentId: auth.user.id,
         taskResponse,
+        prevRoute: 'PostCard'
       });
       return;
     }
@@ -290,7 +291,6 @@ class PostCard extends React.Component {
 
   onBackDropPress = () => {
     this.setState({modalToggled: false, is_report_toggled: false, report: ''});
-    console.log('backdrop press')
   };
 
   onVotePress = async () => {

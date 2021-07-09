@@ -38,6 +38,7 @@ class PostSetting extends React.Component {
       type: 'general',
       groupId: null,
       visibility: 'public',
+      auth: true,
       originContent: '',
       confirmButton: 'Yes',
       denyButton: 'No',
@@ -79,6 +80,7 @@ class PostSetting extends React.Component {
         confirmButton,
         denyButton,
         taskExpiration,
+        auth
       } = this.props.route.params.postData;
       this.setState({
         postData: {
@@ -96,6 +98,7 @@ class PostSetting extends React.Component {
           confirmButton,
           denyButton,
           taskExpiration,
+          auth
         },
       });
 
@@ -626,6 +629,7 @@ class PostSetting extends React.Component {
       confirmButton,
       denyButton,
       taskExpiration,
+      auth
     } = this.state.postData;
     const {
       onToggle,
@@ -656,7 +660,8 @@ class PostSetting extends React.Component {
               modifyInput={this.modifyInput}
               onKeyboardInputFocus={this.onKeyboardInputFocus}
               type={'post'}
-              disabled={false}
+              disabled={!auth}
+
             />
 
             {atSearchResult.length == 0 ? null : (

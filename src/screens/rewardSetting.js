@@ -201,16 +201,13 @@ class RewardSetting extends React.Component {
       let updatedContentList = [...contentList];
       if (contentList.length < parseInt(count)) {
         for (let i = 0; i < parseInt(count) - contentList.length; i++) {
-          console.log('<');
           updatedContentList.push({id: uuidv4(), content: ''});
         }
       } else if (contentList.length > parseInt(count)) {
-        console.log('>');
         for (let i = 0; i < contentList.length - parseInt(count); i++) {
           updatedContentList.pop();
         }
       }
-
       this.setState({contentList: updatedContentList});
 
       console.log(updatedContentList);

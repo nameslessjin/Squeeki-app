@@ -6,13 +6,15 @@ import {
   TouchableWithoutFeedback,
   View,
   ScrollView,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import {connect} from 'react-redux';
 import InputContent from '../components/postSetting/inputContent';
 import InputImage from '../components/postSetting/inputImage';
 import ImageModal from '../components/postSetting/postSettingModal';
 import AddOrModify from '../components/postSetting/addOrModifyPost';
-import {createUpdateTaskVerify} from '../actions/post';
+import {createUpdateTaskVerify, manageUserTaskResponse} from '../actions/post';
 
 class TaskVerify extends React.Component {
   state = {
@@ -23,48 +25,78 @@ class TaskVerify extends React.Component {
     postId: '',
     modalVisible: false,
     loading: false,
+    change: null,
     ...this.props.route.params,
   };
 
   componentDidMount() {
-    const {navigation, route} = this.props;
+    const {navigation, auth} = this.props;
+    const {respondentId, taskResponse} = this.state;
+    const isSelf = respondentId == auth.user.id;
+    const disabled = taskResponse == 'completed' || !isSelf;
+
     navigation.setOptions({
-      headerTitle: 'Verify Completion',
-      headerRight: () => (
-        <AddOrModify
-          update={false}
-          onPress={this.createOrUpdate}
-          loading={this.state.loading}
-        />
-      ),
+      headerTitle: 'Verification',
+      headerRight: disabled
+        ? null
+        : () => (
+            <AddOrModify
+              update={false}
+              onPress={this.createOrUpdate}
+              loading={this.state.loading}
+            />
+          ),
       headerBackTitleVisible: false,
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
-      this.props.navigation.setOptions({
-        headerRight: () => (
-          <AddOrModify
-            update={this.validation(prevState)}
-            onPress={this.createOrUpdate}
-            loading={this.state.loading}
-          />
-        ),
+      const {navigation, auth} = this.props;
+      const {respondentId, taskResponse} = this.state;
+      const isSelf = respondentId == auth.user.id;
+      const disabled = taskResponse == 'completed' || !isSelf;
+
+      navigation.setOptions({
+        headerRight: disabled
+          ? null
+          : () => (
+              <AddOrModify
+                update={this.validation(prevState)}
+                onPress={this.createOrUpdate}
+                loading={this.state.loading}
+              />
+            ),
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const {prevRoute} = this.state;
+
+    if (prevRoute == 'TaskManagement') {
+      // reload the list
+      this.props.navigation.navigate('TaskManagement', {
+        change: this.state.change,
       });
     }
   }
 
   validation = prevState => {
-    const {image, content} = this.state;
+    const {image, content, create} = this.state;
 
     if (content.length > 255 || content.length == 0) {
       return false;
     }
 
-    if (content != prevState.content || image != prevState.image) {
-      return true;
+    if (!create) {
+      if (content != prevState.content || image != prevState.image) {
+        return true;
+      }
+      return false;
     }
+
+    return true;
   };
 
   createOrUpdate = async () => {
@@ -118,6 +150,30 @@ class TaskVerify extends React.Component {
     Keyboard.dismiss();
   };
 
+  onPress = async type => {
+    const {respondentId, postId} = this.state;
+    const {auth, manageUserTaskResponse} = this.props;
+    const request = {
+      postId,
+      token: auth.token,
+      respondentId,
+      type,
+    };
+
+    const req = await manageUserTaskResponse(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Verify error');
+      return;
+    }
+
+    // update task response on user or reload the list
+    this.setState({
+      taskResponse: type,
+      change: {respondentId, taskResponse: type},
+    });
+  };
+
   render() {
     const {
       image,
@@ -125,10 +181,10 @@ class TaskVerify extends React.Component {
       content,
       modalVisible,
       respondentId,
-      taskResponse
+      taskResponse,
     } = this.state;
     const isSelf = respondentId == this.props.auth.user.id;
-    const disabled = taskResponse == 'verified' || !isSelf
+    const disabled = taskResponse == 'completed' || !isSelf;
 
     return (
       <TouchableWithoutFeedback onPress={this.onBackdropPress}>
@@ -147,6 +203,47 @@ class TaskVerify extends React.Component {
               type={'verify'}
               disabled={disabled}
             />
+
+            {isSelf ||
+            taskResponse == 'completed' ||
+            taskResponse == 'deny' ? null : (
+              <View style={[styles.button, {marginTop: 30}]}>
+                <TouchableOpacity onPress={() => this.onPress('completed')}>
+                  <Text style={styles.buttonText}>Confirm</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {isSelf ||
+            taskResponse == 'completed' ||
+            taskResponse == 'deny' ? null : (
+              <View style={styles.button}>
+                <TouchableOpacity onPress={() => this.onPress('deny')}>
+                  <Text style={[styles.buttonText, {color: '#EA2027'}]}>
+                    Deny
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {taskResponse == 'completed' || taskResponse == 'deny' ? (
+              <View style={[styles.button, {marginTop: 30}]}>
+                <Text
+                  style={[
+                    styles.buttonText,
+                    {
+                      color:
+                        taskResponse == 'completed' ? '#1e90ff' : '#EA2027',
+                    },
+                  ]}>
+                  {taskResponse == 'completed'
+                    ? 'Completed'
+                    : taskResponse == 'deny'
+                    ? 'Denied'
+                    : null}
+                </Text>
+              </View>
+            ) : null}
 
             <View style={styles.emptySpace} />
 
@@ -179,6 +276,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 350,
   },
+  buttonText: {
+    fontSize: 18,
+    color: '#1e90ff',
+  },
+  button: {
+    height: 20,
+    marginTop: 15,
+  },
 });
 
 const mapStateToProps = state => {
@@ -189,6 +294,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     createUpdateTaskVerify: data => dispatch(createUpdateTaskVerify(data)),
+    manageUserTaskResponse: data => dispatch(manageUserTaskResponse(data)),
   };
 };
 

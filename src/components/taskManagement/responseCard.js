@@ -35,7 +35,7 @@ export default class ResponseCard extends React.Component {
                   backgroundColor:
                     taskResponse == 'confirm'
                       ? '#f39c12'
-                      : taskResponse == 'verified'
+                      : taskResponse == 'completed'
                       ? '#2ed573'
                       : '#EA2027',
                 },
@@ -66,20 +66,36 @@ export default class ResponseCard extends React.Component {
                   <Text style={{color: 'white'}}>Proof</Text>
                 </View>
               </TouchableOpacity>
-            ) : null}
-            {taskResponse == 'verified' || taskResponse == 'confirm' ? (
+            ) : !taskReplyId && taskResponse != 'completed' && taskResponse != 'deny' ? (
               <TouchableOpacity
-                onPress={() => onPress(userId, 'verifyTaskCompletion')}
-                disabled={taskResponse == 'verified'}>
+                onPress={() => onPress(userId, 'deny')}>
                 <View
                   style={[
                     styles.button,
                     {
-                      backgroundColor: taskResponse == 'verified' ? '#2ed573' : '#1e90ff',
+                      marginRight: 5,
+                      backgroundColor: '#EA2027',
+                    },
+                  ]}>
+                  <Text style={{color: 'white'}}>Deny</Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
+
+            {taskResponse == 'completed' || taskResponse == 'confirm' ? (
+              <TouchableOpacity
+                onPress={() => onPress(userId, 'completed')}
+                disabled={taskResponse == 'completed'}>
+                <View
+                  style={[
+                    styles.button,
+                    {
+                      backgroundColor:
+                        taskResponse == 'completed' ? '#2ed573' : '#1e90ff',
                     },
                   ]}>
                   <Text style={{color: 'white'}}>
-                    {taskResponse == 'verified' ? 'Verified' : 'Confirm'}
+                    {taskResponse == 'completed' ? 'Completed' : 'Confirm'}
                   </Text>
                 </View>
               </TouchableOpacity>

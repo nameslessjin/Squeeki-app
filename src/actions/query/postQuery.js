@@ -327,8 +327,8 @@ query getUserTaskVerification($input: RespondPostInput!){
 }
 `
 
-export const verifyUserTaskCompletionMutation = `
-mutation verifyUserTaskCompletion($input: RespondPostInput!){
-    verifyUserTaskCompletion(input: $input)
+export const manageUserTaskResponseMutation = `
+mutation manageUserTaskResponse($input: RespondPostInput!){
+    manageUserTaskResponse(input: $input)
 }
 `

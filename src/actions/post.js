@@ -13,7 +13,7 @@ import {
   getPostTaskResponseQuery,
   createUpdateTaskVerifyMutation,
   getUserTaskVerificationQuery,
-  verifyUserTaskCompletionMutation
+  manageUserTaskResponseMutation
 } from './query/postQuery';
 import {http_upload} from '../../server_config';
 import {httpCall, httpUpload} from './utils/httpCall';
@@ -166,6 +166,8 @@ export const createPost = data => {
       denyButton: denyButton,
       taskExpiration: type == 'task' ? new Date(taskExpiration) : null
     };
+
+    console.log(postInput)
 
     const graphql = {
       query: createPostMutation,
@@ -463,12 +465,13 @@ export const getGroupPostForCheckIn = request => {
 };
 
 export const getPostTaskResponse = request => {
-  const {token, postId, count} = request;
+  const {token, postId, count, type} = request;
 
   return async function(dispatch) {
     const input = {
       postId,
       count,
+      type
     };
 
     const graphql = {
@@ -542,16 +545,16 @@ export const getUserTaskVerification = request => {
   };
 };
 
-export const verifyUserTaskCompletion = request => {
-  const {token, respondentId, postId} = request
+export const manageUserTaskResponse = request => {
+  const {token, respondentId, postId, type} = request
 
   return async function(dispatch){
     const input = {
-      respondentId, postId
+      respondentId, postId, type
     }
-
+    console.log(input)
     const graphql = {
-      query: verifyUserTaskCompletionMutation,
+      query: manageUserTaskResponseMutation,
       variables: {input}
     }
 

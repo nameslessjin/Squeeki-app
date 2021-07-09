@@ -49,4 +49,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 400,
   },
+  contentContainer: {
+    width: '100%',
+    height: 80,
+    marginTop: 1,
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    padding: 5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'grey',
+  }
 });
