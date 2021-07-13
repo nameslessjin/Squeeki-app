@@ -19,7 +19,7 @@ export default class RewardTopRightButton extends React.Component {
     }
 
     return (
-      <TouchableOpacity style={styles.container} onPress={onPress}>
+      <TouchableOpacity style={styles.container} onPress={onPress} disabled={disabled}>
         {button}
       </TouchableOpacity>
     );

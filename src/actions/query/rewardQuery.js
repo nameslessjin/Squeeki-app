@@ -16,7 +16,7 @@ query getGroupRewardList($input: RewardInput!){
         chance5
         rewardEntryList {
             title
-            rewardEntry {
+            data {
                 id
                 name
                 hideContent

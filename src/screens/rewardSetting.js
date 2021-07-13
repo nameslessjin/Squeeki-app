@@ -163,8 +163,10 @@ class RewardSetting extends React.Component {
     }
 
     if (prevProps != this.props) {
-      if (this.props.route.params.contentList) {
-        this.setState({contentList: this.props.route.params.contentList});
+      if (this.props.route.params) {
+        if (this.props.route.params.contentList) {
+          this.setState({contentList: this.props.route.params.contentList});
+        }
       }
     }
   }
@@ -209,8 +211,6 @@ class RewardSetting extends React.Component {
       to: 'group',
       toId: group.group.id,
     };
-
-    console.log(request);
 
     this.setState({loading: true});
     const req = await createGroupReward(request);

@@ -8,6 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import RewardEntryList from './rewardEntryList';
 import {Swipeable} from 'react-native-gesture-handler';
 
 const {width, height} = Dimensions.get('screen');
@@ -15,8 +16,16 @@ const {width, height} = Dimensions.get('screen');
 export default class RewardListCard extends React.Component {
   render() {
     const {onSettingPress, item} = this.props;
-    const {id, listName, chance1, chance2, chance3, chance4, chance5} = item;
-
+    const {
+      id,
+      listName,
+      chance1,
+      chance2,
+      chance3,
+      chance4,
+      chance5,
+      rewardEntryList,
+    } = item;
     return (
       //   <Swipeable>
       <View
@@ -38,6 +47,14 @@ export default class RewardListCard extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
+          <View style={styles.list}>
+            <RewardEntryList rewardEntryList={rewardEntryList || []} />
+          </View>
+          <TouchableOpacity>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Loot</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
       //   </Swipeable>
@@ -89,5 +106,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  list: {
+    width: '100%',
+    minHeight: height * 0.95 - 70 - 220,
+    maxHeight: height * 0.95 - 60 - 220,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  button: {
+    width: 100,
+    height: 50,
+    backgroundColor: '#EA2027',
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'white',
   },
 });

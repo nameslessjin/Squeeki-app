@@ -37,6 +37,7 @@ class GroupRules extends React.Component {
     if (rules_duplicate != rules && rules_duplicate.length != 0) {
       const {auth, rank_setting} = this.props.group.group;
       if (auth.rank <= rank_setting.group_setting_rank_required) {
+        console.log('here')
         this.onUpdate();
       }
     }
