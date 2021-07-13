@@ -4,26 +4,23 @@ import {connect} from 'react-redux';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Reward from '../screens/reward';
-import RewardList from '../screens/rewardList';
 import RewardHistory from '../screens/rewardHistory';
 import TopRightButton from '../components/reward/topRightButton';
-import {getGroupReward} from '../actions/reward';
+import {getGroupRewardList} from '../actions/reward';
 import {loadGroupRewardsFunc} from '../functions/reward';
 import {userLogout} from '../actions/auth';
-import {TouchableWithoutFeedback, View} from 'react-native';
+import {TouchableWithoutFeedback, View, TouchableOpacity} from 'react-native';
 
 const Tabs = createBottomTabNavigator();
 
 class RewardTabNavigator extends React.Component {
+
   componentDidMount() {
     const {navigation} = this.props;
 
     navigation.setOptions({
       headerTitle: 'Reward',
       headerBackTitleVisible: false,
-      // headerRight: () => (
-      //   <TopRightButton type={'history'} onPress={this.onTopRightButtonPress} />
-      // ),
     });
   }
 
@@ -46,41 +43,36 @@ class RewardTabNavigator extends React.Component {
       });
     } else if (routeName == 'History') {
       navigation.setOptions({
-        headerRight: null
+        headerRight: null,
       });
     }
   }
 
-  // loadGroupReward = () => {
-  //   const {
-  //     group,
-  //     auth,
-  //     userLogout,
-  //     navigation,
-  //     reward,
-  //     getGroupReward,
-  //   } = this.props;
+  getGroupRewardList = async () => {
+    const {auth, group, getGroupRewardList, navigation} = this.props;
 
-  //   const data = {
-  //     group,
-  //     userLogout,
-  //     auth,
-  //     navigation,
-  //     count: 0,
-  //     func: getGroupReward,
-  //     redeemed: false,
-  //   };
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+    };
 
-  //   loadGroupRewardsFunc(data);
-  // };
+    navigation.navigate('Reward')
+
+    const req = await getGroupRewardList(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot get reward list at this time, please try again later');
+      return;
+    }
+  };
 
   onTopRightButtonPress = () => {
     const {navigation} = this.props;
     const routeName = this.getRouteName();
 
     if (routeName.toLowerCase() == 'reward') {
-      navigation.navigate('RewardSetting')
-    } 
+      navigation.navigate('RewardSetting');
+    }
   };
 
   render() {
@@ -119,6 +111,7 @@ class RewardTabNavigator extends React.Component {
                 />
               );
             },
+            tabBarButton: props => <TouchableOpacity {...props} onPress={this.getGroupRewardList} />,
           }}
         />
       </Tabs.Navigator>
@@ -133,7 +126,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    // getGroupReward: data => dispatch(getGroupReward(data)),
+    getGroupRewardList: data => dispatch(getGroupRewardList(data)),
     userLogout: () => dispatch(userLogout()),
   };
 };

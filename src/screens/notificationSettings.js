@@ -273,6 +273,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 12,
+    color: 'grey'
   },
 });
 

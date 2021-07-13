@@ -8,7 +8,6 @@ import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {loadGroupRewardsFunc} from '../functions/reward';
 import {getUserGroupRewardHistory} from '../actions/reward';
-import List from '../components/reward/rewardList';
 
 class RewardHistory extends React.Component {
   state = {
@@ -55,7 +54,6 @@ class RewardHistory extends React.Component {
     return (
       <View style={{backgroundColor: 'white'}}>
         <StatusBar barStyle={'dark-content'} />
-        <List rewards={history} onEndReached={this.onEndReached} auth={null} route={'history'}/>
       </View>
     );
   }

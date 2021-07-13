@@ -5,11 +5,17 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 export default class RewardTopRightButton extends React.Component {
   render() {
     const {type, onPress, disabled} = this.props;
-    let button = <MaterialIcons name="plus" size={30} color={'#EA2027'} />
-    if (type == 'history'){
-      button = <Text style={{color: '#EA2027'}}>History</Text>
-    } else if (type == 'done'){
-      button = <Text style={{ fontSize: 16, color: disabled ? '#95a5a6' : 'black'}}>Done</Text>
+    let button = <MaterialIcons name="cog" size={30} color={'#EA2027'} />;
+    if (type == 'history') {
+      button = <Text style={{color: '#EA2027'}}>History</Text>;
+    } else if (type == 'done') {
+      button = (
+        <Text style={{fontSize: 16, color: disabled ? '#95a5a6' : 'black'}}>
+          Done
+        </Text>
+      );
+    } else if (type == 'add') {
+      button = <MaterialIcons name="plus" size={30} color={'#EA2027'} />;
     }
 
     return (

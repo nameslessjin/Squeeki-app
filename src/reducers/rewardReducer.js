@@ -1,5 +1,34 @@
 const INITIAL_STATE = {
   rewards: [],
+  rewardList: [
+    {
+      id: '1',
+      listName: 'List 1',
+      chance1: 5,
+      chance2: 10,
+      chance3: 15,
+      chance4: 30,
+      chance5: 40,
+    },
+    {
+      id: '2',
+      listName: 'List 2',
+      chance1: 5,
+      chance2: 10,
+      chance3: 15,
+      chance4: 30,
+      chance5: 40,
+    },
+    {
+      id: '3',
+      listName: 'List 3',
+      chance1: 5,
+      chance2: 10,
+      chance3: 15,
+      chance4: 30,
+      chance5: 40,
+    },
+  ],
   count: 0,
   history: [],
   history_count: 0,
@@ -7,34 +36,11 @@ const INITIAL_STATE = {
 
 export default (pointReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case 'getGroupReward':
+    case 'getGroupRewardList':
+      console.log(action);
       return {
         ...state,
-        count: action.data.count,
-        rewards:
-          action.data.count > 10 && action.data.count == state.count
-            ? state.rewards
-            : action.data.count == 10
-            ? action.data.rewards
-            : state.rewards.concat(action.data.rewards),
-      };
-
-    case 'deleteGroupReward':
-      return {
-        ...state,
-        rewards: state.rewards.filter(r => r.id != action.rewardId),
-      };
-
-    case 'getUserGroupRewardHistory':
-      return {
-        ...state,
-        history_count: action.data.count,
-        history:
-          action.data.count > 10 && action.data.count == state.history_count
-            ? state.history
-            : action.data.count == 10
-            ? action.data.rewards
-            : state.history.concat(action.data.rewards),
+        rewardList: action.data,
       };
 
     case 'logout':

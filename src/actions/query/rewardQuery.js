@@ -1,34 +1,36 @@
 export const createGroupRewardMutation = `
-mutation createGroupReward($input: CreateGroupRewardInput!){
+mutation createGroupReward($input: RewardInput!){
     createGroupReward(input: $input)
 }
 `;
 
-export const getGroupRewardQuery = `
-query getGroupReward($input: GroupRewardInput!){
-    getGroupReward(input: $input){
-        rewards{
-            id
-            from
-            type
-            content
-            name
-            chance
-            hide
-            createdAt
-            user {
+export const getGroupRewardListQuery = `
+query getGroupRewardList($input: RewardInput!){
+    getGroupRewardList(input: $input){
+        id
+        listName
+        chance1
+        chance2
+        chance3
+        chance4
+        chance5
+        rewardEntryList {
+            title
+            rewardEntry {
                 id
-                username
-                displayName
-                group_username
-                icon{
-                    uri
-                }
+                name
+                hideContent
+                createdAt
+                count
             }
         }
-        count
-
     }
+}
+`;
+
+export const updateGroupRewardSettingMutation = `
+mutation updateGroupRewardSetting($input: GroupRewardSettingInput){
+    updateGroupRewardSetting(input: $input)
 }
 `;
 

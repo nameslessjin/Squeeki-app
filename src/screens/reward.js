@@ -6,20 +6,26 @@ import {
   StatusBar,
   TouchableOpacity,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {lootReward} from '../actions/reward';
 import {getUserGroupPoint} from '../actions/point';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Card from '../components/reward/rewardCard';
+import RewardList from '../components/reward/rewardList';
+
+const {width, height} = Dimensions.get('screen');
 
 class Reward extends React.Component {
   state = {
     point: 0,
     loading: false,
-    reward: {},
-    rewardList: []
+    rewardList: [
+      {id: '1', listName: 'List 1'},
+      {id: '2', listName: 'List 2'},
+      {id: '3', listName: 'List 3'},
+    ],
   };
 
   componentDidMount() {
@@ -29,7 +35,7 @@ class Reward extends React.Component {
 
   componentWillUnmount() {
     // get group points
-    this.getUserGroupPoint();
+    // this.getUserGroupPoint();
   }
 
   getUserGroupPoint = async () => {
@@ -41,7 +47,7 @@ class Reward extends React.Component {
     const req = await getUserGroupPoint(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load points at this time, please try again later')
+      alert('Cannot load points at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -63,7 +69,7 @@ class Reward extends React.Component {
     const req = await lootReward(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot loot reward at this time, please try again later')
+      alert('Cannot loot reward at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -84,50 +90,39 @@ class Reward extends React.Component {
     this.setState({loading: false});
   };
 
+  onSettingPress = async list => {
+    const {navigation} = this.props;
+    const updateList = {
+      ...list,
+      chance1: list.chance1.toString(),
+      chance2: list.chance2.toString(),
+      chance3: list.chance3.toString(),
+      chance4: list.chance4.toString(),
+      chance5: list.chance5.toString(),
+    };
+
+    navigation.navigate('RewardListSetting', {
+      list: updateList,
+    });
+  };
+
   render() {
-    const {point, loading, reward, rewardList} = this.state;
-    const {auth, rank_setting} = this.props.group.group
-    const disabled = loading || point < 100 || rank_setting.reward_rank_required < auth.rank;
+    const {group, reward} = this.props;
+    const {point, loading} = this.state;
+    const {auth, rank_setting} = group.group;
+    const {rewardList} = reward;
+
+    const disabled =
+      loading || point < 100 || rank_setting.reward_rank_required < auth.rank;
     return (
       <View style={styles.container}>
         <StatusBar barStyle={'dark-content'} />
-        <View style={styles.container}>
-          {/* <View style={styles.rewardContainer}>
-            {loading ? (
-              <ActivityIndicator animating={loading} size={'large'} color={'grey'} />
-            ) : reward.id ? (
-              <Card item={reward} route={'reward'} />
-            ) : (
-              <MaterialIcons
-                name={'treasure-chest'}
-                size={200}
-                color={'gold'}
-                style={styles.treasure}
-              />
-            )}
-          </View> */}
-          {/* <View style={styles.pointButtonContainer}>
-            <Text style={styles.point}>Points: {point}</Text>
-            <TouchableOpacity disabled={disabled} onPress={this.onLootPress}>
-              <View
-                style={[
-                  styles.buttonContainer,
-                  {backgroundColor: disabled ? 'silver' : '#EA2027'},
-                ]}>
-                <Text style={styles.buttonText}>Loot</Text>
-              </View>
-            </TouchableOpacity>
-            <Text
-              style={{
-                color: 'grey',
-                marginTop: 5,
-                fontStyle: 'italic',
-                fontSize: 12,
-              }}>
-              Cost: 100
-            </Text>
-          </View> */}
-        </View>
+
+        <RewardList
+          rewardList={rewardList}
+          onSettingPress={this.onSettingPress}
+        />
+        <View style={{width: '100%', height: 20, marginBottom: 5}} />
       </View>
     );
   }
@@ -137,6 +132,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rewardContainer: {
     width: '100%',
@@ -188,8 +185,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group, auth, point} = state;
-  return {group, auth, point};
+  const {group, auth, point, reward} = state;
+  return {group, auth, point, reward};
 };
 
 const mapDispatchToProps = dispatch => {

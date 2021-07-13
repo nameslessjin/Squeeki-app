@@ -1,25 +1,47 @@
 import {
   createGroupRewardMutation,
-  getGroupRewardQuery,
+  getGroupRewardListQuery,
+  updateGroupRewardSettingMutation,
   deleteGroupRewardMutation,
   getUserGroupRewardHistoryQuery,
   getMonthlyGiftCardCountQuery,
-  lootRewardMutation
+  lootRewardMutation,
 } from './query/rewardQuery';
-import {httpCall} from './utils/httpCall'
+import {httpCall} from './utils/httpCall';
 
 export const createGroupReward = request => {
-  const {token, groupId, from, type, content, name, chance, hide} = request;
+  const {
+    name,
+    chance,
+    listNum,
+    count,
+    content,
+    contentList,
+    hideContent,
+    separateContent,
+    from,
+    fromId,
+    to,
+    toId,
+    status,
+    token,
+  } = request;
 
   return async function(dispatch) {
     const input = {
-      groupId: groupId,
-      from: from,
-      type: type,
-      content: content,
-      name: name,
-      chance: chance,
-      hide: hide,
+      name,
+      chance,
+      listNum,
+      count: parseInt(count),
+      content: separateContent ? null : content,
+      contentList: separateContent ? contentList.map(c => c.content) : null,
+      hideContent,
+      separateContent,
+      from,
+      fromId,
+      to,
+      toId,
+      status: 'active',
     };
 
     const graphql = {
@@ -29,7 +51,7 @@ export const createGroupReward = request => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -39,39 +61,89 @@ export const createGroupReward = request => {
   };
 };
 
-export const getGroupReward = request => {
-  const {count, groupId, token, redeemed} = request;
+export const getGroupRewardList = request => {
+  const {groupId, token} = request;
 
   return async function(dispatch) {
     const input = {
-      groupId: groupId,
-      count: count,
-      redeemed: redeemed,
+      groupId,
     };
 
     const graphql = {
-      query: getGroupRewardQuery,
+      query: getGroupRewardListQuery,
       variables: {
         input: input,
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
     }
-    dispatch(getGroupRewardReducer(result.data.getGroupReward, 'list'));
+
+    dispatch(getGroupRewardListReducer(result.data.getGroupRewardList));
+
     return 0;
   };
 };
 
-const getGroupRewardReducer = (data, type) => {
+const getGroupRewardListReducer = data => {
   return {
-    type: type == 'list' ? 'getGroupReward' : 'getUserGroupRewardHistory',
-    data: data,
+    type: 'getGroupRewardList',
+    data,
   };
 };
+
+export const updateGroupRewardSetting = request => {
+  const {
+    token,
+    groupId,
+    listNum,
+    listName,
+    chance1,
+    chance2,
+    chance3,
+    chance4,
+    chance5,
+  } = request;
+
+  return async function(dispatch) {
+    const input = {
+      groupId,
+      listNum,
+      listName,
+      chance1,
+      chance2,
+      chance3,
+      chance4,
+      chance5,
+    };
+
+    const graphql = {
+      query: updateGroupRewardSettingMutation,
+      variables: {
+        input
+      }
+    }
+
+    const result = await httpCall(token, graphql)
+    
+    if (result.errors){
+      return result
+    }
+
+    return 0
+
+  };
+};
+
+// const getGroupRewardReducer = (data, type) => {
+//   return {
+//     type: type == 'list' ? 'getGroupReward' : 'getUserGroupRewardHistory',
+//     data: data,
+//   };
+// };
 
 export const deleteGroupReward = request => {
   const {token, rewardId} = request;
@@ -84,7 +156,7 @@ export const deleteGroupReward = request => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -112,22 +184,22 @@ export const getUserGroupRewardHistory = request => {
       count: count,
     };
 
-    const graphql = {
-      query: getUserGroupRewardHistoryQuery,
-      variables: {
-        input: input,
-      },
-    };
+    // const graphql = {
+    //   query: getUserGroupRewardHistoryQuery,
+    //   variables: {
+    //     input: input,
+    //   },
+    // };
 
-    const result = await httpCall(token, graphql)
+    // const result = await httpCall(token, graphql);
 
-    if (result.errors) {
-      return result;
-    }
+    // if (result.errors) {
+    //   return result;
+    // }
 
-    dispatch(
-      getGroupRewardReducer(result.data.getUserGroupRewardHistory, 'history'),
-    );
+    // dispatch(
+    //   getGroupRewardReducer(result.data.getUserGroupRewardHistory, 'history'),
+    // );
 
     return 0;
   };
@@ -144,7 +216,7 @@ export const getMonthlyGiftCardCount = request => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -155,22 +227,22 @@ export const getMonthlyGiftCardCount = request => {
 };
 
 export const lootReward = request => {
-  const {token, groupId} = request
+  const {token, groupId} = request;
 
   return async function(dispatch) {
     const graphql = {
       query: lootRewardMutation,
       variables: {
-        groupId: groupId
-      }
-    }
+        groupId: groupId,
+      },
+    };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
     }
 
     return result.data.lootReward;
-  }
-}
+  };
+};

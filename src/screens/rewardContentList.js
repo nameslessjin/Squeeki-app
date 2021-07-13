@@ -5,25 +5,71 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  TouchableWithoutFeedback,
 } from 'react-native';
 
 const extractKey = ({id}) => id;
 export default class rewardContentList extends React.Component {
-  renderItem = ({item}) => {
+  state = {
+    ...this.props.route.params,
+  };
+
+  componentDidMount(){
+    this.props.navigation.setOptions({
+      headerBackTitleVisible: false,
+      headerTitle: 'Content List'
+    })
+  }
+
+  componentWillUnmount(){
+    this.props.navigation.navigate('RewardSetting', {
+      contentList: this.state.contentList
+    })
+  }
+
+  onInputChange = (value, index) => {
+
+    let updatedContentList = [...this.state.contentList];
+    updatedContentList[index].content = value;
+    this.setState({contentList: updatedContentList});
+  };
+
+  renderItem = ({index, item}) => {
     const {id, content} = item;
 
     if (id == 'empty') {
       return <View style={styles.empty} />;
     }
 
-    
+    return (
+      <View style={styles.contentContainer}>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRightWidth: StyleSheet.hairlineWidth,
+            paddingRight: 10,
+          }}>
+          <Text style={{color: 'grey'}}>Content</Text>
+          <Text style={{color: 'grey'}} multiline={true}>
+            {index + 1}
+          </Text>
+        </View>
 
-    return;
+        <TextInput
+          style={[styles.textInputStyle]}
+          value={content}
+          keyboardType={'default'}
+          onChangeText={t => this.onInputChange(t, index)}
+          maxLength={200}
+          multiline={true}
+          placeholderTextColor={'#7f8fa6'}
+        />
+      </View>
+    );
   };
 
   render() {
-    const {contentList} = this.props;
+    const {contentList} = this.state;
 
     let contentListWithEmptySpace = contentList.concat([{id: 'empty'}]);
 
@@ -52,12 +98,17 @@ const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',
     height: 80,
-    marginTop: 1,
     flexDirection: 'row',
     backgroundColor: 'white',
     alignItems: 'center',
-    padding: 5,
+    paddingHorizontal: 5,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'grey',
-  }
+  },
+  textInputStyle: {
+    width: '81%',
+    marginLeft: 10,
+    color: 'black',
+    paddingRight: 2
+  },
 });

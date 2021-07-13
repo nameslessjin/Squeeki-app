@@ -9,28 +9,24 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   FlatList,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 
-const { width } = Dimensions.get('screen')
+const {width} = Dimensions.get('screen');
 
 const extractKey = ({id}) => id;
 export default class RewardModal extends React.Component {
-
-  onInputChange = value => {
-    const {onInputChange, onBackdropPress} = this.props
-    onInputChange('listNum', value)
-    onBackdropPress()
-  }
+  onInputChange = ({value, label}) => {
+    const {onInputChange, onBackdropPress, modalType} = this.props;
+    onInputChange(modalType, {id: value.toString(), label});
+    onBackdropPress();
+  };
 
   renderItem = i => {
     const {value, label} = i.item;
     return (
-      <TouchableOpacity onPress={() => this.onInputChange(value)}>
-        <View
-          style={[
-            styles.options,
-          ]}>
+      <TouchableOpacity onPress={() => this.onInputChange({value, label})}>
+        <View style={[styles.options]}>
           <Text style={{color: '#3498db'}}>{label}</Text>
         </View>
       </TouchableOpacity>
@@ -38,14 +34,54 @@ export default class RewardModal extends React.Component {
   };
 
   render() {
-    const {modalVisible, onBackdropPress} = this.props;
+    const {
+      modalVisible,
+      onBackdropPress,
+      modalType,
+      rewardList,
+      listNum,
+    } = this.props;
 
-    const listNo = [
-      {id: '1', label: '1', value: '1'},
-      {id: '2', label: '2', value: '2'},
-      {id: '3', label: '3', value: '3'},
-    ];
-    let name = 'List No.'
+    const listNo = rewardList.map(r => {
+      return {
+        id: r.id,
+        label: r.listName,
+        value: r.id,
+      };
+    });
+
+    let listChance = [];
+    let currentList = rewardList[0];
+    switch (listNum) {
+      case '1':
+        currentList = rewardList[0];
+        break;
+      case '2':
+        currentList = rewardList[1];
+        break;
+      case '3':
+        currentList = rewardList[2];
+        break;
+      default:
+        currentList = rewardList[0];
+        break;
+    }
+
+    listChance[0] = currentList.chance1;
+    listChance[1] = currentList.chance2;
+    listChance[2] = currentList.chance3;
+    listChance[3] = currentList.chance4;
+    listChance[4] = currentList.chance5;
+
+    listChance = listChance.map((c, i) => {
+      return {
+        id: c,
+        label: `${c}%`,
+        value: i + 1,
+      };
+    });
+
+    let name = modalType == 'listNum' ? 'List' : 'Chance';
 
     return (
       <View style={styles.centeredView}>
@@ -59,7 +95,7 @@ export default class RewardModal extends React.Component {
                       <Text>{name}</Text>
                     </View>
                     <FlatList
-                      data={listNo}
+                      data={modalType == 'listNum' ? listNo : listChance}
                       renderItem={this.renderItem}
                       alwaysBounceVertical={false}
                       alwaysBounceHorizontal={false}
@@ -106,7 +142,7 @@ const styles = StyleSheet.create({
     width: width * 0.45,
     height: 45,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey'
+    borderBottomColor: 'grey',
   },
   display: {
     width: '100%',
