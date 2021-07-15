@@ -37,8 +37,6 @@ export default class RewardSettingInput extends React.Component {
       title = 'Content';
     } else if (type == 'chance') {
       title = 'Chance';
-    } else if (type == 'hide') {
-      title = 'Hide Content';
     } else if (type == 'count') {
       title = 'Count';
     } else if (type == 'listNum') {
@@ -71,7 +69,7 @@ export default class RewardSettingInput extends React.Component {
         ? true
         : false;
 
-    if (type == 'hide' || type == 'separateContent') {
+    if (type == 'separateContent') {
       display = (
         <View
           style={[

@@ -19,7 +19,6 @@ query getGroupRewardList($input: RewardInput!){
             data {
                 id
                 name
-                hideContent
                 createdAt
                 count
             }

@@ -23,7 +23,6 @@ class RewardSetting extends React.Component {
     content: '',
     chance: '1',
     chanceDisplay: `${this.props.reward.rewardList[0].chance1}%`,
-    hide: false,
     modalVisible: false,
     count: '1',
     separateContent: false,
@@ -36,7 +35,7 @@ class RewardSetting extends React.Component {
   componentDidMount() {
     const {navigation} = this.props;
     navigation.setOptions({
-      headerBackTitleVisible: false,
+      headerBackTitle: 'Cancel',
       headerRight: () => (
         <TopRightButton
           type={'done'}
@@ -188,7 +187,6 @@ class RewardSetting extends React.Component {
       count,
       content,
       contentList,
-      hide,
       separateContent,
       from,
       to,
@@ -206,7 +204,6 @@ class RewardSetting extends React.Component {
       contentList,
       separateContent,
       fromId: group.group.id,
-      hideContent: hide,
       from: 'group',
       to: 'group',
       toId: group.group.id,
@@ -231,13 +228,6 @@ class RewardSetting extends React.Component {
       this.setState({content: value});
     } else if (type == 'chance') {
       this.setState({chance: value.id, chanceDisplay: value.label});
-    } else if (type == 'hide') {
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          hide: !prevState.hide,
-        };
-      });
     } else if (type == 'count') {
       this.setState({count: value.trim()});
     } else if (type == 'listNum') {
@@ -275,7 +265,6 @@ class RewardSetting extends React.Component {
       name,
       content,
       count,
-      hide,
       modalVisible,
       separateContent,
       contentList,
@@ -334,11 +323,6 @@ class RewardSetting extends React.Component {
               onInputChange={this.onInputChange}
             />
           )}
-          <Input
-            type={'hide'}
-            value={hide}
-            onInputChange={this.onInputChange}
-          />
           <ActivityIndicator animating={loading} color={'grey'} />
           <RewardModal
             modalVisible={modalVisible}

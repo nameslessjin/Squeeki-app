@@ -54,11 +54,9 @@ export const apolloClient = (token) => {
 // export const http = 'http://172.20.10.4:8080/graphql'
 // export const http_no_graphql = 'http://172.20.10.4:8080'
 
-export const http = 'http://192.168.86.219:8080/graphql'
-export const http_no_graphql = 'http://192.168.86.219:8080'
 
-// export const http = 'http://192.168.1.151:8080/graphql'
-// export const http_no_graphql = 'http://192.168.1.151:8080'
+export const http = 'http://192.168.1.151:8080/graphql'
+export const http_no_graphql = 'http://192.168.1.151:8080'
 
 export const http_upload = 'http://squeeki.appspot.com/uploadImage'
 

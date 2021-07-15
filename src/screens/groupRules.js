@@ -27,21 +27,46 @@ class GroupRules extends React.Component {
     navigation.setOptions({
       headerTitle: 'Rules',
       headerBackTitleVisible: false,
+      headerRight: () => (
+        <HeaderButton loading={false} onPress={this.onUpdate} update={false} />
+      ),
     });
     this.getGroupRule();
   }
 
-  componentWillUnmount() {
-    // update rules if it changes
-    const {rules, rules_duplicate} = this.state;
-    if (rules_duplicate != rules && rules_duplicate.length != 0) {
-      const {auth, rank_setting} = this.props.group.group;
-      if (auth.rank <= rank_setting.group_setting_rank_required) {
-        console.log('here')
-        this.onUpdate();
-      }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState != this.state) {
+      const update = this.validation();
+      this.props.navigation.setOptions({
+        headerRight: () => (
+          <HeaderButton
+            loading={false}
+            onPress={this.onUpdate}
+            update={update}
+          />
+        ),
+      });
     }
   }
+
+  validation = () => {
+    const {rules, rules_duplicate} = this.state;
+    const {auth, rank_setting} = this.props.group.group;
+
+    if (rules.length == 0) {
+      return false;
+    }
+
+    if (rules == rules_duplicate) {
+      return false;
+    }
+
+    if (auth.rank > rank_setting.group_setting_rank_required) {
+      return false;
+    }
+
+    return true;
+  };
 
   getGroupRule = async () => {
     const {auth, group, userLogout, navigation, getGroupRules} = this.props;
@@ -101,7 +126,9 @@ class GroupRules extends React.Component {
       return;
     }
 
-    this.setState({loading: false});
+    Keyboard.dismiss()
+
+    this.setState({loading: false, rules_duplicate: rules});
   };
 
   render() {
