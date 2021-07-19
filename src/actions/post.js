@@ -167,8 +167,6 @@ export const createPost = data => {
       taskExpiration: type == 'task' ? new Date(taskExpiration) : null
     };
 
-    console.log(postInput)
-
     const graphql = {
       query: createPostMutation,
       variables: {
@@ -498,7 +496,7 @@ export const createUpdateTaskVerify = request => {
       if (image.data) {
         imageData = await httpUpload(token, image, 'taskVerification');
         if (imageData.errors) {
-          alert('Upload failed, please try again later');
+          alert('Upload image failed, please try again later');
           return;
         }
       }

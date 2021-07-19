@@ -1,48 +1,44 @@
 import React from 'react';
-import {FlatList, SectionList, View, Text, StyleSheet} from 'react-native';
+import {
+  SectionList,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
 const extractKey = ({id}) => id;
 
 export default class rewardEntryList extends React.Component {
-  renderItem = ({item}) => {
+  renderItem = ({item, index, section}) => {
     const {name, count} = item;
+    const {onPress} = this.props
+    
     return (
       <View style={styles.card}>
-        <Text style={styles.name}>{name}</Text>
-        <Text>Remain: {count}</Text>
+        <View style={styles.cardInfo}>
+          <Text style={styles.name}>{name}</Text>
+          <Text>{count} Remaining</Text>
+        </View>
+        <TouchableOpacity onPress={() => onPress(item)}>
+          <View
+            style={styles.button}>
+            <Text style={{color: 'white'}}>View</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   };
 
   renderSectionHeader = ({section}) => {
-    const {title, data, index} = section;
+    const {title, data, index, id, chance} = section;
 
     if (data.length != 0) {
-      let prefix = 'First Reward';
-
-      switch (index) {
-        case 0:
-          prefix = 'First Reward';
-          break
-        case 1:
-          prefix = 'Second Reward';
-          break
-        case 2:
-          prefix = 'Third Reward';
-          break
-        case 3:
-          prefix = 'Fourth Reward';
-          break
-        case 4:
-          prefix = 'Fifth Reward';
-          break
-      }
-
       return (
-        <Text style={styles.title}>
-          {`${prefix}`}
-          <Text style={styles.chance}>{`(${title}%)`}</Text>
-        </Text>
+        <View style={styles.title}>
+          <Text style={styles.titleText}>{`${title}`}</Text>
+          <Text style={styles.chance}>{`(${chance}%)`}</Text>
+        </View>
       );
     }
   };
@@ -58,6 +54,7 @@ export default class rewardEntryList extends React.Component {
         showsVerticalScrollIndicator={false}
         renderSectionHeader={this.renderSectionHeader}
         style={{width: '100%', height: '100%'}}
+        stickySectionHeadersEnabled={false}
       />
     );
   }
@@ -65,25 +62,49 @@ export default class rewardEntryList extends React.Component {
 
 const styles = StyleSheet.create({
   title: {
+    justifyContent: 'center',
+    width: '100%',
+    minHeight: 45,
+    maxHeight: 80,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  titleText: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginVertical: 10,
-    marginTop: 15,
   },
   card: {
-    maxHeight: 80,
+    maxHeight: 100,
+    minHeight: 70,
     width: '100%',
-    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    // backgroundColor: 'yellow',
+  },
+  cardInfo: {
+    height: '100%',
+    width: '80%',
     alignItems: 'flex-start',
+    justifyContent: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    paddingVertical: 10
+    borderBottomColor: 'silver'
   },
   name: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '500',
   },
   chance: {
-      fontSize: 14,
-      fontWeight: 'normal',
+    fontSize: 13,
+    fontWeight: 'normal',
+    color: 'grey'
+  },
+  button: {
+    width: 60,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'silver',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });

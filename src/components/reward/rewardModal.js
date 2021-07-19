@@ -11,6 +11,7 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
+import {PostImagePicker} from '../../utils/imagePicker';
 
 const {width} = Dimensions.get('screen');
 
@@ -18,16 +19,27 @@ const extractKey = ({id}) => id;
 export default class RewardModal extends React.Component {
   onInputChange = ({value, label}) => {
     const {onInputChange, onBackdropPress, modalType} = this.props;
-    onInputChange(modalType, {id: value.toString(), label});
+
+    onInputChange({id: value.toString(), label}, modalType);
+    onBackdropPress();
+  };
+
+  onPress = type => {
+    const {onBackdropPress, onInputChange} = this.props;
+    PostImagePicker(onInputChange, type, onBackdropPress);
     onBackdropPress();
   };
 
   renderItem = i => {
     const {value, label} = i.item;
+    const {modalType} = this.props;
     return (
       <TouchableOpacity onPress={() => this.onInputChange({value, label})}>
         <View style={[styles.options]}>
-          <Text style={{color: '#3498db'}}>{label}</Text>
+          <Text style={{color: '#3498db'}}>
+            {label}
+            {modalType == 'chance' ? '%' : ''}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -39,7 +51,7 @@ export default class RewardModal extends React.Component {
       onBackdropPress,
       modalType,
       rewardList,
-      listNum,
+      listId,
     } = this.props;
 
     const listNo = rewardList.map(r => {
@@ -52,7 +64,7 @@ export default class RewardModal extends React.Component {
 
     let listChance = [];
     let currentList = rewardList[0];
-    switch (listNum) {
+    switch (listId) {
       case '1':
         currentList = rewardList[0];
         break;
@@ -76,35 +88,57 @@ export default class RewardModal extends React.Component {
     listChance = listChance.map((c, i) => {
       return {
         id: c,
-        label: `${c}%`,
+        label: c,
         value: i + 1,
       };
     });
 
-    let name = modalType == 'listNum' ? 'List' : 'Chance';
+    let name = modalType == 'listId' ? 'List' : 'Chance';
 
     return (
       <View style={styles.centeredView}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={styles.centeredView}>
-              <TouchableWithoutFeedback>
-                <KeyboardAvoidingView style={styles.view}>
-                  <View style={styles.display}>
-                    <View style={styles.header}>
-                      <Text>{name}</Text>
+              {modalType == 'image' ? (
+                <View style={[styles.imageModalView]}>
+                  <TouchableOpacity onPress={() => this.onPress('camera')}>
+                    <View style={styles.button}>
+                      <Text>Take Photo</Text>
                     </View>
-                    <FlatList
-                      data={modalType == 'listNum' ? listNo : listChance}
-                      renderItem={this.renderItem}
-                      alwaysBounceVertical={false}
-                      alwaysBounceHorizontal={false}
-                      showsVerticalScrollIndicator={false}
-                      keyExtractor={extractKey}
-                    />
-                  </View>
-                </KeyboardAvoidingView>
-              </TouchableWithoutFeedback>
+                  </TouchableOpacity>
+                  <View style={styles.underline} />
+                  <TouchableOpacity onPress={() => this.onPress('library')}>
+                    <View style={styles.button}>
+                      <Text>Select From Image Library</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <View style={styles.underline} />
+                  <TouchableOpacity onPress={() => onBackdropPress()}>
+                    <View style={styles.button}>
+                      <Text style={{color: 'red'}}>Cancel</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <TouchableWithoutFeedback>
+                  <KeyboardAvoidingView style={styles.view}>
+                    <View style={styles.display}>
+                      <View style={styles.header}>
+                        <Text>{name}</Text>
+                      </View>
+                      <FlatList
+                        data={modalType == 'listId' ? listNo : listChance}
+                        renderItem={this.renderItem}
+                        alwaysBounceVertical={false}
+                        alwaysBounceHorizontal={false}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={extractKey}
+                      />
+                    </View>
+                  </KeyboardAvoidingView>
+                </TouchableWithoutFeedback>
+              )}
             </View>
           </TouchableWithoutFeedback>
         </Modal>
@@ -136,6 +170,34 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 100,
   },
+  underline: {
+    width: 300,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  imageModalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    height: 150,
+    width: 300,
+  },
+  button: {
+    width: 300,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+  },
+
   options: {
     alignItems: 'center',
     justifyContent: 'center',

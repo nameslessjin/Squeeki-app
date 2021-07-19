@@ -26,20 +26,20 @@ export default class RewardSettingInput extends React.Component {
         }
       }
     }
-    onInputChange(type, output);
+    onInputChange(output, type);
   };
 
   render() {
     const {type, value, onInputChange, onPress} = this.props;
     let title = 'Name';
     let display = <View />;
-    if (type == 'content') {
-      title = 'Content';
+    if (type == 'description') {
+      title = 'Description';
     } else if (type == 'chance') {
       title = 'Chance';
     } else if (type == 'count') {
       title = 'Count';
-    } else if (type == 'listNum') {
+    } else if (type == 'listId') {
       title = 'List';
     } else if (type == 'separateContent') {
       title = 'Separate Content For Each Reward';
@@ -57,6 +57,16 @@ export default class RewardSettingInput extends React.Component {
       title = 'Chance 4';
     } else if (type == 'chance5') {
       title = 'Chance 5';
+    } else if (type == 'chance1Name') {
+      title = 'Chance 1 Name';
+    } else if (type == 'chance2Name') {
+      title = 'Chance 2 Name';
+    } else if (type == 'chance3Name') {
+      title = 'Chance 3 Name';
+    } else if (type == 'chance4Name') {
+      title = 'Chance 4 Name';
+    } else if (type == 'chance5Name') {
+      title = 'Chance 5 Name';
     }
 
     const numericKeyboard =
@@ -78,7 +88,7 @@ export default class RewardSettingInput extends React.Component {
           ]}>
           <Text style={{color: 'grey'}}>{title}</Text>
 
-          <TouchableWithoutFeedback onPress={() => onInputChange(type)}>
+          <TouchableWithoutFeedback onPress={() => onInputChange(null, type)}>
             <MaterialIcons
               name={value ? 'toggle-switch' : 'toggle-switch-off-outline'}
               size={45}
@@ -97,11 +107,16 @@ export default class RewardSettingInput extends React.Component {
       );
     } else {
       display = (
-        <View style={[styles.container, {height: type == 'content' ? 80 : 45}]}>
+        <View
+          style={[styles.container, {height: type == 'description' ? 80 : 45}]}>
           <Text style={{color: 'grey'}}>{title}</Text>
 
-          {type == 'listNum' || type == 'chance' ? (
-            <Text style={{marginLeft: 10, width: '100%'}}>
+          {type == 'listId' || type == 'chance' ? (
+            <Text
+              style={{
+                marginLeft: 10,
+                width: type == 'chance' ? '75%' : '100%',
+              }}>
               {value.toString()}
             </Text>
           ) : (
@@ -109,15 +124,13 @@ export default class RewardSettingInput extends React.Component {
               style={[
                 styles.textInputStyle,
                 {
-                  width: '81%',
-                  height: type == 'content' ? null : 45,
+                  height: type == 'description' ? null : 45,
                 },
               ]}
               value={value.toString()}
               keyboardType={numericKeyboard ? 'numeric' : 'default'}
               onChangeText={t => this.onChangeText(t)}
               maxLength={
-                type == 'chance' ||
                 type == 'chance1' ||
                 type == 'chance2' ||
                 type == 'chance3' ||
@@ -126,16 +139,25 @@ export default class RewardSettingInput extends React.Component {
                   ? 4
                   : type == 'count'
                   ? 3
-                  : type == 'listNum'
+                  : type == 'listId'
                   ? 2
-                  : type == 'content'
+                  : type == 'description'
                   ? 255
                   : 30
               }
-              multiline={type == 'content'}
+              multiline={type == 'description'}
               placeholderTextColor={'#7f8fa6'}
             />
           )}
+
+          {type == 'chance' ||
+          type == 'chance1' ||
+          type == 'chance2' ||
+          type == 'chance3' ||
+          type == 'chance4' ||
+          type == 'chance5' ? (
+            <Text>%</Text>
+          ) : null}
         </View>
       );
     }
@@ -161,7 +183,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey',
   },
   textInputStyle: {
-    width: '100%',
+    width: '75%',
     marginLeft: 10,
     color: 'black',
     height: 45,

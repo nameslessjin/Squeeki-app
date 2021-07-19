@@ -16,10 +16,20 @@ export default class RewardTopRightButton extends React.Component {
       );
     } else if (type == 'add') {
       button = <MaterialIcons name="plus" size={30} color={'#EA2027'} />;
+    } else if (type == 'edit')
+      button = (
+        <Text style={{fontSize: 16, color: disabled ? '#95a5a6' : 'black'}}>
+          Edit
+        </Text>
+      );
+    if (type == 'edit') {
     }
 
     return (
-      <TouchableOpacity style={styles.container} onPress={onPress} disabled={disabled}>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={onPress}
+        disabled={disabled}>
         {button}
       </TouchableOpacity>
     );

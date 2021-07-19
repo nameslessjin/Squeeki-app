@@ -47,7 +47,7 @@ export default class InputImage extends React.Component {
           imageSelected && contentKeyboard ? {maxHeight: 250} : null,
         ]}
         disabled={disabled}
-        onPress={() => onPress()}>
+        onPress={() => onPress ? onPress() : null}>
         {!imageSelected ? null : (
           <Image
             source={{uri: image.uri}}

@@ -1,21 +1,23 @@
 import {
-  createGroupRewardMutation,
+  createUpdateGroupRewardMutation,
   getGroupRewardListQuery,
   updateGroupRewardSettingMutation,
+  getRewardEntryQuery,
+
   deleteGroupRewardMutation,
   getUserGroupRewardHistoryQuery,
   getMonthlyGiftCardCountQuery,
   lootRewardMutation,
 } from './query/rewardQuery';
-import {httpCall} from './utils/httpCall';
+import {httpCall, httpUpload} from './utils/httpCall';
 
-export const createGroupReward = request => {
+export const createUpdateGroupReward = request => {
   const {
     name,
     chance,
-    listNum,
+    listId,
     count,
-    content,
+    description,
     contentList,
     separateContent,
     from,
@@ -24,15 +26,30 @@ export const createGroupReward = request => {
     toId,
     status,
     token,
+    image,
+    entryId
   } = request;
 
   return async function(dispatch) {
+
+    let imageData = null
+    if (image != null){
+      if (image.data){
+        imageData = await httpUpload(token, image, 'rewardImage')
+        if (imageData.errors){
+          alert('Upload image failed, please try again later')
+          return
+        }
+      }
+    }
+
     const input = {
+      entryId,
       name,
       chance,
-      listNum,
+      listId,
       count: parseInt(count),
-      content: separateContent ? null : content,
+      description: description,
       contentList: separateContent ? contentList.map(c => c.content) : null,
       separateContent,
       from,
@@ -40,10 +57,11 @@ export const createGroupReward = request => {
       to,
       toId,
       status: 'active',
+      image: imageData
     };
 
     const graphql = {
-      query: createGroupRewardMutation,
+      query: createUpdateGroupRewardMutation,
       variables: {
         input: input,
       },
@@ -97,25 +115,35 @@ export const updateGroupRewardSetting = request => {
   const {
     token,
     groupId,
-    listNum,
+    listId,
     listName,
     chance1,
     chance2,
     chance3,
     chance4,
     chance5,
+    chance1Name,
+    chance2Name,
+    chance3Name,
+    chance4Name,
+    chance5Name
   } = request;
 
   return async function(dispatch) {
     const input = {
       groupId,
-      listNum,
+      listId,
       listName,
       chance1,
       chance2,
       chance3,
       chance4,
       chance5,
+      chance1Name,
+      chance2Name,
+      chance3Name,
+      chance4Name,
+      chance5Name
     };
 
     const graphql = {
@@ -135,6 +163,29 @@ export const updateGroupRewardSetting = request => {
 
   };
 };
+
+export const getRewardEntry = request => {
+  const {entryId, token} = request
+
+  return async function(dispatch){
+    const input = {entryId}
+
+    const graphql = {
+      query: getRewardEntryQuery,
+      variables: {
+        input
+      }
+    }
+
+    const result = await httpCall(token, graphql)
+    if(result.errors){
+      return result
+    }
+
+    return result.data.getRewardEntry
+
+  }
+}
 
 // const getGroupRewardReducer = (data, type) => {
 //   return {

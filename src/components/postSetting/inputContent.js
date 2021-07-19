@@ -3,14 +3,22 @@ import {View, Text, TextInput, StyleSheet} from 'react-native';
 
 export default class InputContent extends React.Component {
   render() {
-    const {content, modifyInput, onKeyboardInputFocus, type, disabled} = this.props;
+    const {
+      content,
+      modifyInput,
+      onKeyboardInputFocus,
+      type,
+      disabled,
+    } = this.props;
     return (
       <View style={styles.container}>
         {content.length == 0 ? null : (
           <Text style={styles.contentPlaceHolderStyle}>
             {type == 'post'
               ? "What's in your mind..."
-              : 'Show that you completed the task...'}
+              : type == 'verify'
+              ? 'Show that you completed the task...'
+              : 'Description'}
           </Text>
         )}
         <TextInput
@@ -23,12 +31,14 @@ export default class InputContent extends React.Component {
           placeholder={
             type == 'post'
               ? "What's in your mind..."
-              : 'Show that you completed the task...'
+              : type == 'verify'
+              ? 'Show that you completed the task...'
+              : 'Description'
           }
           placeholderTextColor={'#7f8fa6'}
           value={content}
-          onChangeText={v => modifyInput(v, 'content')}
-          onFocus={onKeyboardInputFocus}
+          onChangeText={v => (modifyInput ? modifyInput(v, 'content') : null)}
+          onFocus={() => (onKeyboardInputFocus ? onKeyboardInputFocus() : null)}
           editable={!disabled}
         />
       </View>

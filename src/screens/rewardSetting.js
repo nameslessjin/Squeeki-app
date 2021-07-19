@@ -7,29 +7,37 @@ import {
   Keyboard,
   StatusBar,
   ScrollView,
+  View,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import {connect} from 'react-redux';
 import TopRightButton from '../components/reward/topRightButton';
 import Input from '../components/reward/settingInput';
-import {createGroupReward, getGroupRewardList} from '../actions/reward';
+import {createUpdateGroupReward, getGroupRewardList} from '../actions/reward';
 import RewardModal from '../components/reward/rewardModal';
 import validator from 'validator';
 import {v4 as uuidv4} from 'uuid';
+import InputImage from '../components/postSetting/inputImage';
 
 class RewardSetting extends React.Component {
   state = {
     loading: false,
+    id: null,
     name: '',
-    content: '',
+    description: '',
     chance: '1',
-    chanceDisplay: `${this.props.reward.rewardList[0].chance1}%`,
+    chanceDisplay: `${this.props.reward.rewardList[0].chance1}`,
     modalVisible: false,
     count: '1',
     separateContent: false,
-    listNum: '1',
+    listId: '1',
     listName: this.props.reward.rewardList[0].listName,
-    modalType: 'listNum',
+    modalType: 'listId',
     contentList: [],
+    image: null,
+    ...this.props.route.params,
+    origin: this.props.route.params,
   };
 
   componentDidMount() {
@@ -48,17 +56,25 @@ class RewardSetting extends React.Component {
   }
 
   validation = () => {
+    // need to check for update later
     let {
       name,
-      content,
+      description,
       chance,
       count,
-      listNum,
+      listId,
       separateContent,
       contentList,
+      origin,
+      image,
+      id,
     } = this.state;
 
     if (name.trim().length == 0 || name.length > 30) {
+      return false;
+    }
+
+    if (description.trim().length < 1 || description.length > 255) {
       return false;
     }
 
@@ -66,13 +82,13 @@ class RewardSetting extends React.Component {
     if (
       !validator.isInt(chance) ||
       !validator.isInt(count) ||
-      !validator.isInt(listNum)
+      !validator.isInt(listId)
     ) {
       return false;
     }
 
     // list No should be 1, 2 or 3
-    if (parseInt(listNum) > 3 || parseInt(listNum) < 1) {
+    if (parseInt(listId) > 3 || parseInt(listId) < 1) {
       return false;
     }
 
@@ -81,30 +97,49 @@ class RewardSetting extends React.Component {
       return false;
     }
 
-    // chance should be between 1 and 5
-    if (parseInt(chance) < 1 || parseInt(chance) > 5) {
+    // chance should be between 1 and 3
+    if (parseInt(chance) < 1 || parseInt(chance) > 3) {
       return false;
     }
 
     // check for content list and content
-    if (separateContent) {
-      let empty = false;
-      if (contentList.length != count) {
-        return false;
-      }
-
-      contentList.forEach(c => {
-        if (c.content.trim().length == 0) {
-          empty = true;
+    if (!id) {
+      if (separateContent) {
+        let empty = false;
+        if (contentList.length != count) {
+          return false;
         }
-      });
 
-      if (empty) {
-        return false;
+        contentList.forEach(c => {
+          if (c.content.trim().length == 0) {
+            empty = true;
+          }
+        });
+
+        if (empty) {
+          return false;
+        }
       }
-    } else {
-      if (content.trim().length < 1 || content.length > 255) {
-        return false;
+    }
+
+    // check again origin one if update existing one
+    if (id) {
+      if (
+        origin.name == name &&
+        origin.description == description &&
+        origin.listId == listId &&
+        origin.chance == chance
+      ) {
+        // if origin image exists
+        if (origin.image) {
+          if (origin.image.uri == image.uri) {
+            return false;
+          }
+        } else {
+          if (image == null) {
+            return false;
+          }
+        }
       }
     }
 
@@ -113,20 +148,20 @@ class RewardSetting extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const {navigation} = this.props;
+    const {count, contentList, separateContent} = this.state;
     if (prevState != this.state) {
       const disabled = !this.validation();
       navigation.setOptions({
         headerRight: () => (
           <TopRightButton
             type={'done'}
-            onPress={this.createGroupReward}
+            onPress={this.createUpdateGroupReward}
             disabled={disabled || this.state.loading}
           />
         ),
       });
 
       // check count and contentList and separateContent
-      const {count, contentList, separateContent} = this.state;
       if (prevState.count != count) {
         if (parseInt(count) == 1) {
           setTimeout(() => {
@@ -179,65 +214,106 @@ class RewardSetting extends React.Component {
     getGroupRewardList(request);
   }
 
-  createGroupReward = async () => {
+  createUpdateGroupReward = async () => {
     const {
       name,
       chance,
-      listNum,
+      chanceDisplay,
+      listId,
       count,
-      content,
+      description,
       contentList,
       separateContent,
       from,
       to,
       toId,
+      image,
+      id,
     } = this.state;
-    const {auth, group, createGroupReward, navigation} = this.props;
+    const {
+      auth,
+      group,
+      createUpdateGroupReward,
+      navigation,
+      reward,
+    } = this.props;
+
+    // check if the chance already have 3 items
+    const chosenRewardList = reward.rewardList
+      .filter(r => r.id == listId)[0]
+      .rewardEntryList.filter(l => l.chance == chanceDisplay)[0];
+    if (chosenRewardList.data.length >= 3) {
+      alert('Each chance in each list can only contain up to 3 rewards');
+      return;
+    }
 
     const request = {
       token: auth.token,
+      entryId: id,
       name,
       chance,
-      listNum,
+      listId,
       count,
-      content,
+      description,
       contentList,
       separateContent,
       fromId: group.group.id,
       from: 'group',
       to: 'group',
       toId: group.group.id,
+      image,
     };
 
     this.setState({loading: true});
-    const req = await createGroupReward(request);
+    const req = await createUpdateGroupReward(request);
     this.setState({loading: false});
 
     if (req.errors) {
       console.log(req.errors);
-      alert('Cannot add reward at this time, please try again later');
+      if (
+        req.errors[0].message ==
+        'Each chance in each list can only contain up to 3 rewards'
+      ) {
+        alert('Each chance in each list can only contain up to 3 rewards');
+      } else {
+        alert('Cannot add reward at this time, please try again later');
+      }
       return;
     }
     navigation.navigate('Reward');
   };
 
-  onInputChange = (type, value) => {
+  onInputChange = (value, type) => {
     if (type == 'name') {
       this.setState({name: value.substr(0, 30)});
-    } else if (type == 'content') {
-      this.setState({content: value});
+    } else if (type == 'description') {
+      this.setState({description: value});
     } else if (type == 'chance') {
       this.setState({chance: value.id, chanceDisplay: value.label});
     } else if (type == 'count') {
       this.setState({count: value.trim()});
-    } else if (type == 'listNum') {
-      this.setState({listNum: value.id, listName: value.label});
+    } else if (type == 'listId') {
+      const rewardList = this.props.reward.rewardList.filter(
+        r => r.id == value.id,
+      );
+      const rewardChance1 = rewardList[0].chance1;
+      this.setState({
+        listId: value.id,
+        listName: value.label,
+        chanceDisplay: `${rewardChance1}`,
+        chance: '1',
+      });
     } else if (type == 'separateContent') {
       this.setState(prevState => {
         return {
           ...prevState,
           separateContent: !prevState.separateContent,
         };
+      });
+    } else if (type == 'image') {
+      this.setState({
+        modalVIsible: false,
+        image: {...value},
       });
     }
   };
@@ -248,14 +324,18 @@ class RewardSetting extends React.Component {
   };
 
   onPress = type => {
-    if (type == 'listNum') {
-      this.setState({modalVisible: true, modalType: 'listNum'});
+    if (type == 'listId') {
+      this.setState({modalVisible: true, modalType: 'listId'});
     } else if (type == 'chance') {
       this.setState({modalVisible: true, modalType: 'chance'});
     } else if (type == 'contentList') {
       this.props.navigation.navigate('RewardContentList', {
         contentList: this.state.contentList,
       });
+    } else if (type == 'image') {
+      this.setState({modalVisible: true, modalType: 'image'});
+    } else if (type == 'delete'){
+      console.log('delete')
     }
   };
 
@@ -263,15 +343,17 @@ class RewardSetting extends React.Component {
     const {
       loading,
       name,
-      content,
+      description,
       count,
       modalVisible,
       separateContent,
       contentList,
       modalType,
       listName,
-      listNum,
+      listId,
       chanceDisplay,
+      image,
+      id,
     } = this.state;
 
     return (
@@ -283,8 +365,14 @@ class RewardSetting extends React.Component {
             value={name}
             onInputChange={this.onInputChange}
           />
+
           <Input
-            type={'listNum'}
+            type={'description'}
+            value={description}
+            onInputChange={this.onInputChange}
+          />
+          <Input
+            type={'listId'}
             value={listName}
             onInputChange={this.onInputChange}
             onPress={this.onPress}
@@ -295,13 +383,16 @@ class RewardSetting extends React.Component {
             onInputChange={this.onInputChange}
             onPress={this.onPress}
           />
-          <Input
-            type={'count'}
-            value={count.toString()}
-            onInputChange={this.onInputChange}
-          />
 
-          {count > 1 || separateContent ? (
+          {!id ? (
+            <Input
+              type={'count'}
+              value={count.toString()}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {(count > 1 || separateContent) && !id ? (
             <Input
               type={'separateContent'}
               value={separateContent}
@@ -309,28 +400,38 @@ class RewardSetting extends React.Component {
             />
           ) : null}
 
-          {separateContent ? (
+          {separateContent && !id ? (
             <Input
               type={'contentList'}
               value={contentList}
               onInputChange={this.onInputChange}
               onPress={this.onPress}
             />
-          ) : (
-            <Input
-              type={'content'}
-              value={content}
-              onInputChange={this.onInputChange}
-            />
-          )}
+          ) : null}
+          <InputImage
+            image={image}
+            contentKeyboard={false}
+            onPress={() => this.onPress('image')}
+            disabled={false}
+          />
+
+          <View style={styles.button}>
+            <TouchableOpacity onPress={() => this.onPress('delete')}>
+              <Text style={[styles.buttonText, {color: '#EA2027'}]}>
+                Remove
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           <ActivityIndicator animating={loading} color={'grey'} />
+
           <RewardModal
             modalVisible={modalVisible}
             onBackdropPress={this.onBackdropPress}
             onInputChange={this.onInputChange}
             modalType={modalType}
             rewardList={this.props.reward.rewardList}
-            listNum={listNum}
+            listId={listId}
           />
         </ScrollView>
       </TouchableWithoutFeedback>
@@ -344,6 +445,18 @@ const styles = StyleSheet.create({
     // justifyContent: 'flex-start',
     height: '100%',
     width: '100%',
+    backgroundColor: 'white'
+  },
+  buttonText: {
+    fontSize: 16,
+    color: '#1e90ff',
+  },
+  button: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 20,
+    marginTop: 15,
   },
 });
 
@@ -354,7 +467,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createGroupReward: data => dispatch(createGroupReward(data)),
+    createUpdateGroupReward: data => dispatch(createUpdateGroupReward(data)),
     getGroupRewardList: data => dispatch(getGroupRewardList(data)),
   };
 };

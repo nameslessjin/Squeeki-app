@@ -92,14 +92,21 @@ class Reward extends React.Component {
 
   onSettingPress = async list => {
     const {navigation} = this.props;
+    const chanceNameList = list.rewardEntryList.map(l => l.title);
     const updateList = {
-      ...list,
+      listName: list.listName,
       chance1: list.chance1.toString(),
       chance2: list.chance2.toString(),
       chance3: list.chance3.toString(),
       chance4: list.chance4.toString(),
       chance5: list.chance5.toString(),
+      chance1Name: chanceNameList[0],
+      chance2Name: chanceNameList[1],
+      chance3Name: chanceNameList[2],
+      chance4Name: chanceNameList[3],
+      chance5Name: chanceNameList[4],
     };
+
 
     navigation.navigate('RewardListSetting', {
       list: updateList,
@@ -107,7 +114,7 @@ class Reward extends React.Component {
   };
 
   render() {
-    const {group, reward} = this.props;
+    const {group, reward, navigation} = this.props;
     const {point, loading} = this.state;
     const {auth, rank_setting} = group.group;
     const {rewardList} = reward;
@@ -121,6 +128,7 @@ class Reward extends React.Component {
         <RewardList
           rewardList={rewardList}
           onSettingPress={this.onSettingPress}
+          navigation={navigation}
         />
         <View style={{width: '100%', height: 20, marginBottom: 5}} />
       </View>
@@ -134,53 +142,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  rewardContainer: {
-    width: '100%',
-    height: '70%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  treasure: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  pointButtonContainer: {
-    width: '100%',
-    height: '30%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  point: {
-    fontWeight: '500',
-    fontSize: 20,
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    width: 150,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 20,
   },
 });
 

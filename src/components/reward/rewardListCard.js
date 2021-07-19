@@ -14,8 +14,15 @@ import {Swipeable} from 'react-native-gesture-handler';
 const {width, height} = Dimensions.get('screen');
 
 export default class RewardListCard extends React.Component {
+  onPress = (entry) => {
+    const {navigation} = this.props;
+    navigation.navigate('RewardDetailView', {
+      ...entry,
+    });
+  };
+
   render() {
-    const {onSettingPress, item} = this.props;
+    const {onSettingPress, item, navigation} = this.props;
     const {
       id,
       listName,
@@ -31,7 +38,6 @@ export default class RewardListCard extends React.Component {
       <View
         style={{
           width: width,
-          // backgroundColor: 'yellow',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
@@ -48,7 +54,10 @@ export default class RewardListCard extends React.Component {
             </View>
           </View>
           <View style={styles.list}>
-            <RewardEntryList rewardEntryList={rewardEntryList || []} />
+            <RewardEntryList
+              rewardEntryList={rewardEntryList || []}
+              onPress={this.onPress}
+            />
           </View>
           <TouchableOpacity>
             <View style={styles.button}>
@@ -64,7 +73,7 @@ export default class RewardListCard extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: 0.85 * width,
+    width: 0.9 * width,
     height: '95%',
     borderRadius: 25,
     justifyContent: 'flex-start',
@@ -95,7 +104,7 @@ const styles = StyleSheet.create({
   },
   headerTextContainer: {
     height: '100%',
-    width: width * 0.85 - 70,
+    width: width * 0.9 - 70,
     paddingVertical: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: 'silver',
@@ -113,7 +122,7 @@ const styles = StyleSheet.create({
     maxHeight: height * 0.95 - 60 - 220,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 15,
   },
   button: {
     width: 100,

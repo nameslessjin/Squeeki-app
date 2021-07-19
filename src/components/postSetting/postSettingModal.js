@@ -156,7 +156,7 @@ export default class PostSettingModal extends React.Component {
     ) : (
       <View style={[styles.centeredView]}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
-          <TouchableWithoutFeedback onPress={() => onBackdropPress()}>
+          <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={[styles.centeredView]}>
               {type == 'image' ? (
                 <View style={[styles.modalView]}>
