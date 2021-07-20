@@ -8,6 +8,7 @@ export const getGroupRewardListQuery = `
 query getGroupRewardList($input: RewardInput!){
     getGroupRewardList(input: $input){
         id
+        type
         listName
         chance1
         chance2
@@ -24,6 +25,13 @@ query getGroupRewardList($input: RewardInput!){
                 count
             }
         }
+        redeemRewardEntryList {
+            id
+            name
+            point
+            createdAt
+            count
+        }
     }
 }
 `;
@@ -33,7 +41,6 @@ mutation updateGroupRewardSetting($input: GroupRewardSettingInput){
     updateGroupRewardSetting(input: $input)
 }
 `;
-
 
 export const getRewardEntryQuery = `
 query getRewardEntry($input: RewardInput!){
@@ -50,17 +57,19 @@ query getRewardEntry($input: RewardInput!){
         description
         image
         count
+        point
         chanceDisplay
     }
 }
-`
+`;
 
-
-export const deleteGroupRewardMutation = `
-mutation deleteGroupReward($rewardId: ID!){
-    deleteGroupReward(rewardId: $rewardId)
+export const updateRewardEntryStatusMutation = `
+mutation updateRewardEntryStatus($input: RewardInput!){
+    updateRewardEntryStatus(input: $input)
 }
 `;
+
+// legacy
 
 export const getUserGroupRewardHistoryQuery = `
 query getUserGroupRewardHistory($input: GroupRewardInput!){

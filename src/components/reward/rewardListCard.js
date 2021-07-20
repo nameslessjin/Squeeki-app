@@ -14,24 +14,21 @@ import {Swipeable} from 'react-native-gesture-handler';
 const {width, height} = Dimensions.get('screen');
 
 export default class RewardListCard extends React.Component {
-  onPress = (entry) => {
+  onPress = entry => {
     const {navigation} = this.props;
+    console.log(entry)
     navigation.navigate('RewardDetailView', {
       ...entry,
     });
   };
 
   render() {
-    const {onSettingPress, item, navigation} = this.props;
+    const {onSettingPress, item} = this.props;
     const {
-      id,
       listName,
-      chance1,
-      chance2,
-      chance3,
-      chance4,
-      chance5,
+      type,
       rewardEntryList,
+      redeemRewardEntryList,
     } = item;
     return (
       //   <Swipeable>
@@ -55,15 +52,20 @@ export default class RewardListCard extends React.Component {
           </View>
           <View style={styles.list}>
             <RewardEntryList
-              rewardEntryList={rewardEntryList || []}
+              rewardEntryList={
+                rewardEntryList ? rewardEntryList : redeemRewardEntryList
+              }
+              type={type}
               onPress={this.onPress}
             />
           </View>
-          <TouchableOpacity>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>Loot</Text>
-            </View>
-          </TouchableOpacity>
+          {type == 'loot' ? (
+            <TouchableOpacity>
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>Loot</Text>
+              </View>
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
       //   </Swipeable>
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
     maxHeight: height * 0.95 - 60 - 220,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
   },
   button: {
     width: 100,

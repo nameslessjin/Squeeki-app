@@ -5,27 +5,50 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  FlatList,
+  Dimensions,
 } from 'react-native';
+
+const {width, height} = Dimensions.get('window');
 
 const extractKey = ({id}) => id;
 
 export default class rewardEntryList extends React.Component {
   renderItem = ({item, index, section}) => {
-    const {name, count} = item;
-    const {onPress} = this.props
-    
+    const {name, count, point} = item;
+    const {onPress, type} = this.props;
+
     return (
       <View style={styles.card}>
-        <View style={styles.cardInfo}>
+        <View
+          style={[
+            styles.cardInfo,
+            {width: type == 'redeem' ? width * 0.9 - 95 : width * 0.9 - 90},
+          ]}>
           <Text style={styles.name}>{name}</Text>
-          <Text>{count} Remaining</Text>
+          {type == 'redeem' ? (
+            <Text style={styles.infoText}>{point} pts</Text>
+          ) : null}
+          <Text style={styles.infoText}>{count} Remaining</Text>
         </View>
-        <TouchableOpacity onPress={() => onPress(item)}>
-          <View
-            style={styles.button}>
-            <Text style={{color: 'white'}}>View</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          {type == 'redeem' ? (
+            <TouchableOpacity>
+              <View style={styles.redeemButton}>
+                <Text style={{color: 'white'}}>Redeem</Text>
+              </View>
+            </TouchableOpacity>
+          ) : null}
+          <TouchableOpacity onPress={() => onPress(item)}>
+            {type == 'redeem' ? (
+              <Text style={{color: 'grey'}}>View</Text>
+            ) : (
+              <View style={styles.viewButton}>
+                <Text style={{color: 'white'}}>View</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -44,9 +67,9 @@ export default class rewardEntryList extends React.Component {
   };
 
   render() {
-    const {rewardEntryList} = this.props;
+    const {rewardEntryList, type} = this.props;
 
-    return (
+    return type == 'loot' ? (
       <SectionList
         sections={rewardEntryList.map((r, index) => ({...r, index}))}
         keyExtractor={extractKey}
@@ -55,6 +78,14 @@ export default class rewardEntryList extends React.Component {
         renderSectionHeader={this.renderSectionHeader}
         style={{width: '100%', height: '100%'}}
         stickySectionHeadersEnabled={false}
+      />
+    ) : (
+      <FlatList
+        keyExtractor={extractKey}
+        renderItem={this.renderItem}
+        data={rewardEntryList}
+        showsVerticalScrollIndicator={false}
+        style={{width: '100%', height: '100%'}}
       />
     );
   }
@@ -84,27 +115,45 @@ const styles = StyleSheet.create({
   },
   cardInfo: {
     height: '100%',
-    width: '80%',
+    width: width * 0.9 - 100,
     alignItems: 'flex-start',
     justifyContent: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'silver'
+    borderBottomColor: 'silver',
   },
   name: {
     fontSize: 17,
     fontWeight: '500',
   },
+  infoText: {
+    fontSize: 13,
+  },
   chance: {
     fontSize: 13,
     fontWeight: 'normal',
-    color: 'grey'
+    color: 'grey',
   },
-  button: {
+  viewButton: {
     width: 60,
     height: 30,
     borderRadius: 15,
     backgroundColor: 'silver',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  redeemButton: {
+    width: 65,
+    height: 35,
+    borderRadius: 15,
+    backgroundColor: '#EA2027',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  buttonContainer: {
+    height: '100%',
+    width: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

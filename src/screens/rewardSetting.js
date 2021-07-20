@@ -10,11 +10,16 @@ import {
   View,
   TouchableOpacity,
   Text,
+  Alert,
 } from 'react-native';
 import {connect} from 'react-redux';
 import TopRightButton from '../components/reward/topRightButton';
 import Input from '../components/reward/settingInput';
-import {createUpdateGroupReward, getGroupRewardList} from '../actions/reward';
+import {
+  createUpdateGroupReward,
+  getGroupRewardList,
+  updateRewardEntryStatus,
+} from '../actions/reward';
 import RewardModal from '../components/reward/rewardModal';
 import validator from 'validator';
 import {v4 as uuidv4} from 'uuid';
@@ -34,8 +39,10 @@ class RewardSetting extends React.Component {
     listId: '1',
     listName: this.props.reward.rewardList[0].listName,
     modalType: 'listId',
-    contentList: [],
+    contentList: [{id: uuidv4(), content: ''}],
     image: null,
+    redeemable: false,
+    point: '0',
     ...this.props.route.params,
     origin: this.props.route.params,
   };
@@ -68,6 +75,8 @@ class RewardSetting extends React.Component {
       origin,
       image,
       id,
+      point,
+      redeemable,
     } = this.state;
 
     if (name.trim().length == 0 || name.length > 30) {
@@ -82,23 +91,29 @@ class RewardSetting extends React.Component {
     if (
       !validator.isInt(chance) ||
       !validator.isInt(count) ||
-      !validator.isInt(listId)
+      !validator.isInt(listId) ||
+      !validator.isInt(point)
     ) {
       return false;
     }
 
-    // list No should be 1, 2 or 3
-    if (parseInt(listId) > 3 || parseInt(listId) < 1) {
-      return false;
+    if (redeemable) {
+      if (parseInt(point) < 1 || parseInt(point) > 999999) {
+        return false;
+      }
+    } else {
+      if (parseInt(listId) > 3 || parseInt(listId) < 1) {
+        return false;
+      }
+
+      // chance should be between 1 and 3
+      if (parseInt(chance) < 1 || parseInt(chance) > 3) {
+        return false;
+      }
     }
 
     // count should be between 1 and 9999
     if (parseInt(count) < 1 || parseInt(count) > 999) {
-      return false;
-    }
-
-    // chance should be between 1 and 3
-    if (parseInt(chance) < 1 || parseInt(chance) > 3) {
       return false;
     }
 
@@ -128,7 +143,8 @@ class RewardSetting extends React.Component {
         origin.name == name &&
         origin.description == description &&
         origin.listId == listId &&
-        origin.chance == chance
+        origin.chance == chance &&
+        origin.point == point
       ) {
         // if origin image exists
         if (origin.image) {
@@ -148,7 +164,7 @@ class RewardSetting extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const {navigation} = this.props;
-    const {count, contentList, separateContent} = this.state;
+    const {count, contentList} = this.state;
     if (prevState != this.state) {
       const disabled = !this.validation();
       navigation.setOptions({
@@ -163,18 +179,10 @@ class RewardSetting extends React.Component {
 
       // check count and contentList and separateContent
       if (prevState.count != count) {
-        if (parseInt(count) == 1) {
-          setTimeout(() => {
-            if (this.state.count == 1) {
-              this.setState({separateContent: false});
-            }
-          }, 500);
-        }
-
         if (
           !validator.isInt(count) ||
           parseInt(count) > 999 ||
-          parseInt(count) <= 1
+          parseInt(count) < 1
         ) {
           return;
         } else {
@@ -184,9 +192,14 @@ class RewardSetting extends React.Component {
               updatedContentList.push({id: uuidv4(), content: ''});
             }
           } else if (contentList.length > parseInt(count)) {
-            for (let i = 0; i < contentList.length - parseInt(count); i++) {
-              updatedContentList.pop();
-            }
+            // set timer, don't delete immediate
+            setTimeout(() => {
+              if (this.state.contentList.length > parseInt(this.state.count)) {
+                for (let i = 0; i < contentList.length - parseInt(count); i++) {
+                  updatedContentList.pop();
+                }
+              }
+            }, 300);
           }
 
           if (contentList != updatedContentList) {
@@ -214,11 +227,41 @@ class RewardSetting extends React.Component {
     getGroupRewardList(request);
   }
 
+  checkRewardCountLimit = () => {
+    const {redeemable, id, listId, chanceDisplay} = this.state;
+    const {reward} = this.props;
+
+    let chosenRewardList = redeemable
+      ? reward.rewardList.filter(r => r.id == '0')[0].redeemRewardEntryList
+      : reward.rewardList
+          .filter(r => r.id == listId)[0]
+          .rewardEntryList.filter(l => l.chance == chanceDisplay)[0];
+
+    // if updaing an exisiting one
+    if (id) {
+      chosenRewardList = redeemable ? chosenRewardList : chosenRewardList.data;
+      if (chosenRewardList.filter(r => r.id == id).length > 0) {
+        return true;
+      }
+    }
+
+    if (redeemable && chosenRewardList.length >= 10) {
+      alert('Each group can only have up to 10 redeemable rewards');
+      return false;
+    }
+
+    if (!redeemable && chosenRewardList.length >= 3) {
+      alert('Each group can only have up to 10 redeemable rewards');
+      return false;
+    }
+
+    return true;
+  };
+
   createUpdateGroupReward = async () => {
     const {
       name,
       chance,
-      chanceDisplay,
       listId,
       count,
       description,
@@ -229,6 +272,7 @@ class RewardSetting extends React.Component {
       toId,
       image,
       id,
+      point,
     } = this.state;
     const {
       auth,
@@ -238,12 +282,8 @@ class RewardSetting extends React.Component {
       reward,
     } = this.props;
 
-    // check if the chance already have 3 items
-    const chosenRewardList = reward.rewardList
-      .filter(r => r.id == listId)[0]
-      .rewardEntryList.filter(l => l.chance == chanceDisplay)[0];
-    if (chosenRewardList.data.length >= 3) {
-      alert('Each chance in each list can only contain up to 3 rewards');
+    // if the number of rewards in a list/chance reach limit, return
+    if (!this.checkRewardCountLimit()) {
       return;
     }
 
@@ -262,6 +302,7 @@ class RewardSetting extends React.Component {
       to: 'group',
       toId: group.group.id,
       image,
+      point,
     };
 
     this.setState({loading: true});
@@ -269,7 +310,7 @@ class RewardSetting extends React.Component {
     this.setState({loading: false});
 
     if (req.errors) {
-      console.log(req.errors);
+      // console.log(req.errors);
       if (
         req.errors[0].message ==
         'Each chance in each list can only contain up to 3 rewards'
@@ -315,6 +356,24 @@ class RewardSetting extends React.Component {
         modalVIsible: false,
         image: {...value},
       });
+    } else if (type == 'redeemable') {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          redeemable: !prevState.redeemable,
+          point: '0',
+          chance: prevState.redeemable ? '1' : '0',
+          chanceDisplay: prevState.redeemable
+            ? `${this.props.reward.rewardList[0].chance1}`
+            : 0,
+          listId: prevState.redeemable ? '1' : '0',
+          listName: prevState.redeemable
+            ? this.props.reward.rewardList[0].listName
+            : 'Redeem List',
+        };
+      });
+    } else if (type == 'point') {
+      this.setState({point: value.trim()});
     }
   };
 
@@ -323,9 +382,31 @@ class RewardSetting extends React.Component {
     this.setState({modalVisible: false});
   };
 
+  updateRewardEntryStatus = async type => {
+    const {auth, updateRewardEntryStatus, navigation} = this.props;
+    const {id} = this.state;
+    const request = {
+      token: auth.token,
+      entryId: id,
+      status: type,
+    };
+    this.setState({loading: true});
+    const req = await updateRewardEntryStatus(request);
+    this.setState({loading: false});
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot delete reward at this time, please try again later');
+      return;
+    }
+    navigation.navigate('Reward');
+  };
+
   onPress = type => {
     if (type == 'listId') {
-      this.setState({modalVisible: true, modalType: 'listId'});
+      const {redeemable} = this.state;
+      if (!redeemable) {
+        this.setState({modalVisible: true, modalType: 'listId'});
+      }
     } else if (type == 'chance') {
       this.setState({modalVisible: true, modalType: 'chance'});
     } else if (type == 'contentList') {
@@ -334,8 +415,18 @@ class RewardSetting extends React.Component {
       });
     } else if (type == 'image') {
       this.setState({modalVisible: true, modalType: 'image'});
-    } else if (type == 'delete'){
-      console.log('delete')
+    } else if (type == 'delete') {
+      Alert.alert('Delete reward', null, [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: () => this.updateRewardEntryStatus(type),
+          style: 'destructive',
+        },
+      ]);
     }
   };
 
@@ -354,8 +445,10 @@ class RewardSetting extends React.Component {
       chanceDisplay,
       image,
       id,
+      redeemable,
+      point,
     } = this.state;
-
+    console.log(this.state);
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView style={styles.container} bounces={false}>
@@ -371,18 +464,37 @@ class RewardSetting extends React.Component {
             value={description}
             onInputChange={this.onInputChange}
           />
+
+          {!id ? (
+            <Input
+              type={'redeemable'}
+              value={redeemable}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
           <Input
             type={'listId'}
             value={listName}
             onInputChange={this.onInputChange}
             onPress={this.onPress}
           />
-          <Input
-            type={'chance'}
-            value={chanceDisplay}
-            onInputChange={this.onInputChange}
-            onPress={this.onPress}
-          />
+
+          {redeemable ? (
+            <Input
+              type={'point'}
+              value={point}
+              onInputChange={this.onInputChange}
+              onPress={this.onPress}
+            />
+          ) : (
+            <Input
+              type={'chance'}
+              value={chanceDisplay}
+              onInputChange={this.onInputChange}
+              onPress={this.onPress}
+            />
+          )}
 
           {!id ? (
             <Input
@@ -392,7 +504,7 @@ class RewardSetting extends React.Component {
             />
           ) : null}
 
-          {(count > 1 || separateContent) && !id ? (
+          {!id ? (
             <Input
               type={'separateContent'}
               value={separateContent}
@@ -415,15 +527,21 @@ class RewardSetting extends React.Component {
             disabled={false}
           />
 
-          <View style={styles.button}>
-            <TouchableOpacity onPress={() => this.onPress('delete')}>
-              <Text style={[styles.buttonText, {color: '#EA2027'}]}>
-                Remove
-              </Text>
-            </TouchableOpacity>
-          </View>
+          {id && !loading ? (
+            <View style={styles.button}>
+              <TouchableOpacity onPress={() => this.onPress('delete')}>
+                <Text style={[styles.buttonText, {color: '#EA2027'}]}>
+                  Remove
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
 
-          <ActivityIndicator animating={loading} color={'grey'} />
+          <ActivityIndicator
+            animating={loading}
+            color={'grey'}
+            style={{marginTop: 30}}
+          />
 
           <RewardModal
             modalVisible={modalVisible}
@@ -445,7 +563,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'flex-start',
     height: '100%',
     width: '100%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   buttonText: {
     fontSize: 16,
@@ -469,6 +587,7 @@ const mapDispatchToProps = dispatch => {
   return {
     createUpdateGroupReward: data => dispatch(createUpdateGroupReward(data)),
     getGroupRewardList: data => dispatch(getGroupRewardList(data)),
+    updateRewardEntryStatus: data => dispatch(updateRewardEntryStatus(data)),
   };
 };
 

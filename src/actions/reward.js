@@ -3,8 +3,8 @@ import {
   getGroupRewardListQuery,
   updateGroupRewardSettingMutation,
   getRewardEntryQuery,
+  updateRewardEntryStatusMutation,
 
-  deleteGroupRewardMutation,
   getUserGroupRewardHistoryQuery,
   getMonthlyGiftCardCountQuery,
   lootRewardMutation,
@@ -27,18 +27,18 @@ export const createUpdateGroupReward = request => {
     status,
     token,
     image,
-    entryId
+    entryId,
+    point
   } = request;
 
   return async function(dispatch) {
-
-    let imageData = null
-    if (image != null){
-      if (image.data){
-        imageData = await httpUpload(token, image, 'rewardImage')
-        if (imageData.errors){
-          alert('Upload image failed, please try again later')
-          return
+    let imageData = null;
+    if (image != null) {
+      if (image.data) {
+        imageData = await httpUpload(token, image, 'rewardImage');
+        if (imageData.errors) {
+          alert('Upload image failed, please try again later');
+          return;
         }
       }
     }
@@ -57,7 +57,8 @@ export const createUpdateGroupReward = request => {
       to,
       toId,
       status: 'active',
-      image: imageData
+      image: imageData,
+      point: parseInt(point)
     };
 
     const graphql = {
@@ -126,7 +127,7 @@ export const updateGroupRewardSetting = request => {
     chance2Name,
     chance3Name,
     chance4Name,
-    chance5Name
+    chance5Name,
   } = request;
 
   return async function(dispatch) {
@@ -143,65 +144,13 @@ export const updateGroupRewardSetting = request => {
       chance2Name,
       chance3Name,
       chance4Name,
-      chance5Name
+      chance5Name,
     };
 
     const graphql = {
       query: updateGroupRewardSettingMutation,
       variables: {
-        input
-      }
-    }
-
-    const result = await httpCall(token, graphql)
-    
-    if (result.errors){
-      return result
-    }
-
-    return 0
-
-  };
-};
-
-export const getRewardEntry = request => {
-  const {entryId, token} = request
-
-  return async function(dispatch){
-    const input = {entryId}
-
-    const graphql = {
-      query: getRewardEntryQuery,
-      variables: {
-        input
-      }
-    }
-
-    const result = await httpCall(token, graphql)
-    if(result.errors){
-      return result
-    }
-
-    return result.data.getRewardEntry
-
-  }
-}
-
-// const getGroupRewardReducer = (data, type) => {
-//   return {
-//     type: type == 'list' ? 'getGroupReward' : 'getUserGroupRewardHistory',
-//     data: data,
-//   };
-// };
-
-export const deleteGroupReward = request => {
-  const {token, rewardId} = request;
-
-  return async function(dispatch) {
-    const graphql = {
-      query: deleteGroupRewardMutation,
-      variables: {
-        rewardId: rewardId,
+        input,
       },
     };
 
@@ -211,18 +160,55 @@ export const deleteGroupReward = request => {
       return result;
     }
 
-    dispatch(deleteGroupRewardReducer(rewardId));
+    return 0;
+  };
+};
+
+export const getRewardEntry = request => {
+  const {entryId, token} = request;
+
+  return async function(dispatch) {
+    const input = {entryId};
+
+    const graphql = {
+      query: getRewardEntryQuery,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.getRewardEntry;
+  };
+};
+
+export const updateRewardEntryStatus = request => {
+  const {entryId, status, token} = request;
+
+  return async function(dispatch) {
+    const input = {entryId, status};
+
+    const graphql = {
+      query: updateRewardEntryStatusMutation,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
 
     return 0;
   };
 };
 
-const deleteGroupRewardReducer = data => {
-  return {
-    type: 'deleteGroupReward',
-    rewardId: data,
-  };
-};
+// legacy
 
 export const getUserGroupRewardHistory = request => {
   const {token, groupId, count} = request;

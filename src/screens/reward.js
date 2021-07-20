@@ -24,7 +24,7 @@ class Reward extends React.Component {
     rewardList: [
       {id: '1', listName: 'List 1'},
       {id: '2', listName: 'List 2'},
-      {id: '3', listName: 'List 3'},
+      {id: '0', listName: 'Redeem List'},
     ],
   };
 

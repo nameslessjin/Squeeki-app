@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  FlatList,
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-} from 'react-native';
+import {FlatList, View, Text, TextInput, StyleSheet} from 'react-native';
 
 const extractKey = ({id}) => id;
 export default class rewardContentList extends React.Component {
@@ -13,23 +7,23 @@ export default class rewardContentList extends React.Component {
     ...this.props.route.params,
   };
 
-  componentDidMount(){
+  componentDidMount() {
     this.props.navigation.setOptions({
       headerBackTitleVisible: false,
-      headerTitle: 'Content List'
-    })
+      headerTitle: 'Content List',
+    });
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.props.navigation.navigate('RewardSetting', {
-      contentList: this.state.contentList
-    })
+      contentList: this.state.contentList,
+    });
   }
 
-  onInputChange = (value, index) => {
-
+  onInputChange = (value, id) => {
     let updatedContentList = [...this.state.contentList];
-    updatedContentList[index].content = value;
+    const updateContent = updatedContentList.findIndex(l => l.id == id);
+    updatedContentList[updateContent].content = value;
     this.setState({contentList: updatedContentList});
   };
 
@@ -38,6 +32,13 @@ export default class rewardContentList extends React.Component {
 
     if (id == 'empty') {
       return <View style={styles.empty} />;
+    }
+    if (id == 'note') {
+      return (
+        <Text style={{margin: 5}}>
+          Content will be hidden and only visible to users win the reward
+        </Text>
+      );
     }
 
     return (
@@ -51,7 +52,7 @@ export default class rewardContentList extends React.Component {
           }}>
           <Text style={{color: 'grey'}}>Content</Text>
           <Text style={{color: 'grey'}} multiline={true}>
-            {index + 1}
+            {index}
           </Text>
         </View>
 
@@ -59,8 +60,8 @@ export default class rewardContentList extends React.Component {
           style={[styles.textInputStyle]}
           value={content}
           keyboardType={'default'}
-          onChangeText={t => this.onInputChange(t, index)}
-          maxLength={200}
+          onChangeText={t => this.onInputChange(t, id)}
+          maxLength={255}
           multiline={true}
           placeholderTextColor={'#7f8fa6'}
         />
@@ -71,7 +72,10 @@ export default class rewardContentList extends React.Component {
   render() {
     const {contentList} = this.state;
 
-    let contentListWithEmptySpace = contentList.concat([{id: 'empty'}]);
+    let contentListWithEmptySpace = [{id: 'note'}];
+    contentListWithEmptySpace = contentListWithEmptySpace
+      .concat(contentList)
+      .concat([{id: 'empty'}]);
 
     return (
       <FlatList
@@ -109,6 +113,6 @@ const styles = StyleSheet.create({
     width: '81%',
     marginLeft: 10,
     color: 'black',
-    paddingRight: 2
+    paddingRight: 2,
   },
 });

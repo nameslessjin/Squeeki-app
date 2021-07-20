@@ -67,9 +67,14 @@ export default class RewardSettingInput extends React.Component {
       title = 'Chance 4 Name';
     } else if (type == 'chance5Name') {
       title = 'Chance 5 Name';
+    } else if (type == 'redeemable') {
+      title = 'Redeem Reward With Points'
+    } else if (type == 'point'){
+      title = 'Required Points'
     }
 
     const numericKeyboard =
+      type == 'point'
       type == 'chance1' ||
       type == 'chance2' ||
       type == 'chance3' ||
@@ -79,7 +84,7 @@ export default class RewardSettingInput extends React.Component {
         ? true
         : false;
 
-    if (type == 'separateContent') {
+    if (type == 'separateContent' || type == 'redeemable') {
       display = (
         <View
           style={[
@@ -143,6 +148,8 @@ export default class RewardSettingInput extends React.Component {
                   ? 2
                   : type == 'description'
                   ? 255
+                  : type == 'point'
+                  ? 6
                   : 30
               }
               multiline={type == 'description'}

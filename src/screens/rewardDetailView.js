@@ -12,18 +12,18 @@ import InputImage from '../components/postSetting/inputImage';
 import InputContent from '../components/postSetting/inputContent';
 import TopRightButton from '../components/reward/topRightButton';
 
-class RewardDeteailView extends React.Component {
+class RewardDetailView extends React.Component {
   state = {
     id: null,
     description: '',
     image: null,
     count: 0,
     createdAt: null,
+    point: '0',
     ...this.props.route.params,
   };
 
   componentDidMount() {
-    console.log(this.state);
     const {navigation} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
@@ -64,7 +64,8 @@ class RewardDeteailView extends React.Component {
       separateContent,
       listId,
       image,
-      id
+      id,
+      point,
     } = this.state;
     const {navigation, reward} = this.props;
     const entry = {
@@ -75,6 +76,8 @@ class RewardDeteailView extends React.Component {
       listId,
       chanceDisplay,
       image,
+      point,
+      redeemable: point == '0' ? false : true,
       listName: reward.rewardList.filter(l => l.id == listId)[0].listName,
     };
 
@@ -107,8 +110,9 @@ class RewardDeteailView extends React.Component {
       createdAt,
       name,
       chanceDisplay,
+      point,
     } = this.state;
-
+    
     return (
       <TouchableWithoutFeedback>
         <ScrollView style={styles.container}>
@@ -122,7 +126,9 @@ class RewardDeteailView extends React.Component {
           <View style={styles.infoContaier}>
             <View style={styles.infoSubContainer}>
               <Text>{count} remaining</Text>
-              <Text style={{marginTop: 10}}>Chance: {chanceDisplay}%</Text>
+              <Text style={{marginTop: 10}}>
+                {point == '0' ? `Chance: ${chanceDisplay}%` : `${point} pts`}
+              </Text>
             </View>
           </View>
         </ScrollView>
@@ -163,4 +169,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(RewardDeteailView);
+)(RewardDetailView);
