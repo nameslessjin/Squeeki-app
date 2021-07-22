@@ -65,10 +65,9 @@ class CommentCard extends React.Component {
 
   onGetReplies = async () => {
     const {auth, getReplies, postId} = this.props;
-    const {replies, count} = this.state.reply;
     const request = {
       token: auth.token,
-      count: replies.length,
+      count: this.state.reply ? this.state.reply.replies.length : 0,
       postId: postId,
       replyId: this.state.id,
       commentId: null,
@@ -84,6 +83,7 @@ class CommentCard extends React.Component {
       return;
     }
     this.setState({reply_loading: false});
+    console.log('good here');
   };
 
   onOptionToggle = () => {
@@ -106,6 +106,7 @@ class CommentCard extends React.Component {
       user,
     } = this.state;
 
+    console.log(this.state);
     const {container, commentContainer, rightContainer, commentStyle} = styles;
     const {
       onCommentReplyPress,
@@ -115,6 +116,7 @@ class CommentCard extends React.Component {
     } = this.props;
     let replies = [];
     if (num_of_replies > 0 && reply) {
+      console.log('here');
       replies = reply.replies;
     }
     const {icon} = user;

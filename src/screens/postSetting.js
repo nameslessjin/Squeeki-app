@@ -80,7 +80,7 @@ class PostSetting extends React.Component {
         confirmButton,
         denyButton,
         taskExpiration,
-        auth
+        auth,
       } = this.props.route.params.postData;
       this.setState({
         postData: {
@@ -98,7 +98,7 @@ class PostSetting extends React.Component {
           confirmButton,
           denyButton,
           taskExpiration,
-          auth
+          auth,
         },
       });
 
@@ -348,6 +348,7 @@ class PostSetting extends React.Component {
       confirmButton,
       denyButton,
       initTime,
+      taskExpiration,
     } = this.state.postData;
     if (content.trim().length == 0) {
       return false;
@@ -367,6 +368,12 @@ class PostSetting extends React.Component {
 
     if (denyButton.length > 10) {
       return false;
+    }
+
+    if (taskExpiration) {
+      if (taskExpiration <= Date.now()) {
+        return false;
+      }
     }
 
     return true;
@@ -629,7 +636,7 @@ class PostSetting extends React.Component {
       confirmButton,
       denyButton,
       taskExpiration,
-      auth
+      auth,
     } = this.state.postData;
     const {
       onToggle,
@@ -661,7 +668,6 @@ class PostSetting extends React.Component {
               onKeyboardInputFocus={this.onKeyboardInputFocus}
               type={'post'}
               disabled={!auth}
-
             />
 
             {atSearchResult.length == 0 ? null : (

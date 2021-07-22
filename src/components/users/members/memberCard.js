@@ -36,7 +36,7 @@ class MemberCard extends React.Component {
       lastActiveAt,
       group_username,
     } = item;
-    const time = dateConversion(lastActiveAt, 'member');
+    const time = dateConversion(lastActiveAt, 'timeDisplay');
 
     let group_username_size = 16;
 

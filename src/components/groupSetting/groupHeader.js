@@ -136,7 +136,7 @@ class GroupSettingsHeader extends React.Component {
       (memberCount = 1), (date = date.getTime());
       date = dateConversion(date, 'group');
     } else {
-      date = dateConversion(createdAt, 'group');
+      date = dateConversion(createdAt, 'timeDisplay');
     }
 
     const {container, underImageStyle, component} = styles;

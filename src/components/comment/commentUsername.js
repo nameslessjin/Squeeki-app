@@ -8,7 +8,7 @@ export default class CommentUsername extends React.Component {
   render() {
     const {user, createdAt} = this.props;
     const {group_username, displayName, username} = user;
-    const date = dateConversion(createdAt, 'comment');
+    const date = dateConversion(createdAt, 'timeDisplay');
 
     // sizing displayNmae
     let displayNameSize = 14;

@@ -20,6 +20,7 @@ query getGroupRewardList($input: RewardInput!){
             chance
             data {
                 id
+                expiration
                 name
                 createdAt
                 count
@@ -28,6 +29,7 @@ query getGroupRewardList($input: RewardInput!){
         redeemRewardEntryList {
             id
             name
+            expiration
             point
             createdAt
             count
@@ -59,6 +61,7 @@ query getRewardEntry($input: RewardInput!){
         count
         point
         chanceDisplay
+        expiration
     }
 }
 `;

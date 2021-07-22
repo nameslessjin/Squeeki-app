@@ -185,7 +185,7 @@ export default class PostFooter extends React.Component {
                 </TouchableOpacity>
               </View>
               <View style={[styles.rowContainer, {height: 25,width: '100%'}]}>
-                <Text>{`End at ${dateConversion(taskExpiration, 'task')}`}</Text>
+                <Text>{dateConversion(taskExpiration, 'expirationDisplay')}</Text>
               </View>
             </View>
           )

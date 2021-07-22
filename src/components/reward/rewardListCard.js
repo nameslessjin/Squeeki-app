@@ -14,22 +14,45 @@ import {Swipeable} from 'react-native-gesture-handler';
 const {width, height} = Dimensions.get('screen');
 
 export default class RewardListCard extends React.Component {
-  onPress = entry => {
+  onPress = (item, type) => {
     const {navigation} = this.props;
-    console.log(entry)
-    navigation.navigate('RewardDetailView', {
-      ...entry,
-    });
+
+    if (type == 'detail') {
+      navigation.navigate('RewardDetailView', {
+        ...item,
+      });
+    } else if (type == 'setting') {
+      const {type} = item;
+      let chanceNameList = [];
+      let updatedList = {};
+      if (type == 'loot') {
+        chanceNameList = item.rewardEntryList.map(l => l.title);
+        updatedList = {
+          ...item,
+          chance1: item.chance1.toString(),
+          chance2: item.chance2.toString(),
+          chance3: item.chance3.toString(),
+          chance4: item.chance4.toString(),
+          chance5: item.chance5.toString(),
+          chance1Name: chanceNameList[0],
+          chance2Name: chanceNameList[1],
+          chance3Name: chanceNameList[2],
+          chance4Name: chanceNameList[3],
+          chance5Name: chanceNameList[4],
+        };
+      } else {
+        updatedList = item
+      }
+
+      navigation.navigate('RewardListSetting', {
+        list: updatedList,
+      });
+    }
   };
 
   render() {
-    const {onSettingPress, item} = this.props;
-    const {
-      listName,
-      type,
-      rewardEntryList,
-      redeemRewardEntryList,
-    } = item;
+    const {item} = this.props;
+    const {listName, type, rewardEntryList, redeemRewardEntryList} = item;
     return (
       //   <Swipeable>
       <View
@@ -45,7 +68,7 @@ export default class RewardListCard extends React.Component {
               <Text style={styles.headerText}>{listName}</Text>
             </View>
             <View style={styles.headerSide}>
-              <TouchableOpacity onPress={() => onSettingPress(item)}>
+              <TouchableOpacity onPress={() => this.onPress(item, 'setting')}>
                 <MaterialIcons name={'cog'} size={20} color={'#EA2027'} />
               </TouchableOpacity>
             </View>

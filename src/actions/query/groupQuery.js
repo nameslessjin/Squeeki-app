@@ -50,7 +50,6 @@ query getGroup($groupId: ID!){
             priority_1_rank_required
             priority_2_rank_required
             priority_3_rank_required
-            reward_rank_required
             manage_member_rank_required
             group_setting_rank_required
             nominate_rank_required
@@ -115,7 +114,6 @@ mutation createGroup($GroupInput: GroupInput!){
             priority_1_rank_required
             priority_2_rank_required
             priority_3_rank_required
-            reward_rank_required
             manage_member_rank_required
             group_setting_rank_required
             nominate_rank_required
@@ -162,7 +160,6 @@ mutation updateGroup($GroupInput: GroupInput!){
             priority_1_rank_required
             priority_2_rank_required
             priority_3_rank_required
-            reward_rank_required
             manage_member_rank_required
             group_setting_rank_required
             nominate_rank_required
@@ -210,7 +207,6 @@ mutation joinGroup($groupId: ID!){
                 priority_1_rank_required
                 priority_2_rank_required
                 priority_3_rank_required
-                reward_rank_required
                 manage_member_rank_required
                 group_setting_rank_required
                 nominate_rank_required

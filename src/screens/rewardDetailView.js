@@ -11,6 +11,7 @@ import {getRewardEntry} from '../actions/reward';
 import InputImage from '../components/postSetting/inputImage';
 import InputContent from '../components/postSetting/inputContent';
 import TopRightButton from '../components/reward/topRightButton';
+import {dateConversion} from '../utils/time';
 
 class RewardDetailView extends React.Component {
   state = {
@@ -66,6 +67,7 @@ class RewardDetailView extends React.Component {
       image,
       id,
       point,
+      expiration,
     } = this.state;
     const {navigation, reward} = this.props;
     const entry = {
@@ -79,7 +81,11 @@ class RewardDetailView extends React.Component {
       point,
       redeemable: point == '0' ? false : true,
       listName: reward.rewardList.filter(l => l.id == listId)[0].listName,
+      expiration,
+      hasExpiration: expiration != null,
     };
+
+    console.log(new Date(parseInt(expiration)));
 
     navigation.navigate('RewardSetting', {
       ...entry,
@@ -111,8 +117,9 @@ class RewardDetailView extends React.Component {
       name,
       chanceDisplay,
       point,
+      expiration,
     } = this.state;
-    
+
     return (
       <TouchableWithoutFeedback>
         <ScrollView style={styles.container}>
@@ -129,6 +136,11 @@ class RewardDetailView extends React.Component {
               <Text style={{marginTop: 10}}>
                 {point == '0' ? `Chance: ${chanceDisplay}%` : `${point} pts`}
               </Text>
+              {expiration ? (
+                <Text style={{marginTop: 10}}>
+                  {dateConversion(expiration, 'expirationDisplay')}
+                </Text>
+              ) : null}
             </View>
           </View>
         </ScrollView>

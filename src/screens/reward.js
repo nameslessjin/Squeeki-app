@@ -90,44 +90,18 @@ class Reward extends React.Component {
     this.setState({loading: false});
   };
 
-  onSettingPress = async list => {
-    const {navigation} = this.props;
-    const chanceNameList = list.rewardEntryList.map(l => l.title);
-    const updateList = {
-      listName: list.listName,
-      chance1: list.chance1.toString(),
-      chance2: list.chance2.toString(),
-      chance3: list.chance3.toString(),
-      chance4: list.chance4.toString(),
-      chance5: list.chance5.toString(),
-      chance1Name: chanceNameList[0],
-      chance2Name: chanceNameList[1],
-      chance3Name: chanceNameList[2],
-      chance4Name: chanceNameList[3],
-      chance5Name: chanceNameList[4],
-    };
-
-
-    navigation.navigate('RewardListSetting', {
-      list: updateList,
-    });
-  };
-
   render() {
     const {group, reward, navigation} = this.props;
     const {point, loading} = this.state;
     const {auth, rank_setting} = group.group;
     const {rewardList} = reward;
 
-    // const disabled =
-    //   loading || point < 100 || rank_setting.reward_rank_required < auth.rank;
     return (
       <View style={styles.container}>
         <StatusBar barStyle={'dark-content'} />
 
         <RewardList
           rewardList={rewardList}
-          onSettingPress={this.onSettingPress}
           navigation={navigation}
         />
         <View style={{width: '100%', height: 20, marginBottom: 5}} />

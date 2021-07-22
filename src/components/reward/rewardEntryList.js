@@ -8,6 +8,7 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
+import {dateConversion} from '../../utils/time';
 
 const {width, height} = Dimensions.get('window');
 
@@ -15,7 +16,7 @@ const extractKey = ({id}) => id;
 
 export default class rewardEntryList extends React.Component {
   renderItem = ({item, index, section}) => {
-    const {name, count, point} = item;
+    const {name, count, point, expiration} = item;
     const {onPress, type} = this.props;
 
     return (
@@ -30,6 +31,11 @@ export default class rewardEntryList extends React.Component {
             <Text style={styles.infoText}>{point} pts</Text>
           ) : null}
           <Text style={styles.infoText}>{count} Remaining</Text>
+          {expiration ? (
+            <Text style={styles.infoText}>
+              {dateConversion(expiration, 'expirationDisplay')}
+            </Text>
+          ) : null}
         </View>
         <View style={styles.buttonContainer}>
           {type == 'redeem' ? (
@@ -39,7 +45,7 @@ export default class rewardEntryList extends React.Component {
               </View>
             </TouchableOpacity>
           ) : null}
-          <TouchableOpacity onPress={() => onPress(item)}>
+          <TouchableOpacity onPress={() => onPress(item, 'detail')}>
             {type == 'redeem' ? (
               <Text style={{color: 'grey'}}>View</Text>
             ) : (
@@ -105,7 +111,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   card: {
-    maxHeight: 100,
+    maxHeight: 110,
     minHeight: 70,
     width: '100%',
     alignItems: 'center',

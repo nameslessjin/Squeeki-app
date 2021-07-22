@@ -96,7 +96,7 @@ export default class UserChatList extends React.Component {
           </View>
           <View style={styles.time}>
             <Text style={{color: 'grey', fontSize: 11}}>
-              Last seen: {dateConversion(lastActiveAt, 'chat')}
+              Last seen: {dateConversion(lastActiveAt, 'timeDisplay')}
             </Text>
           </View>
         </View>

@@ -16,6 +16,7 @@ import {updateGroupRewardSetting, getGroupRewardList} from '../actions/reward';
 class RewardListSetting extends React.Component {
   state = {
     id: '1',
+    type: 'loot',
     listName: 'List 1',
     chance1: '5',
     chance2: '10',
@@ -27,6 +28,7 @@ class RewardListSetting extends React.Component {
     chance3Name: 'Third Reward',
     chance4Name: 'Forth Reward',
     chance5Name: 'Fifth Reward',
+    pointCost: '100',
     loading: false,
     ...this.props.route.params.list,
     origin: this.props.route.params.list,
@@ -75,6 +77,7 @@ class RewardListSetting extends React.Component {
   validation = () => {
     let {
       listName,
+      type,
       chance1,
       chance2,
       chance3,
@@ -86,6 +89,7 @@ class RewardListSetting extends React.Component {
       chance4Name,
       chance5Name,
       origin,
+      pointCost,
     } = this.state;
 
     // list name must be between 0 and 30
@@ -93,76 +97,91 @@ class RewardListSetting extends React.Component {
       return false;
     }
 
-    // chance name must be between 0 and 30
-    if (
-      chance1Name.trim().length == 0 ||
-      chance1Name.length > 30 ||
-      chance2Name.trim().length == 0 ||
-      chance2Name.length > 30 ||
-      chance3Name.trim().length == 0 ||
-      chance3Name.length > 30 ||
-      chance4Name.trim().length == 0 ||
-      chance4Name.length > 30 ||
-      chance5Name.trim().length == 0 ||
-      chance5Name.length > 30
-    ) {
-      return false;
-    }
+    if (type == 'loot') {
+      // chance name must be between 0 and 30
+      if (
+        chance1Name.trim().length == 0 ||
+        chance1Name.length > 30 ||
+        chance2Name.trim().length == 0 ||
+        chance2Name.length > 30 ||
+        chance3Name.trim().length == 0 ||
+        chance3Name.length > 30 ||
+        chance4Name.trim().length == 0 ||
+        chance4Name.length > 30 ||
+        chance5Name.trim().length == 0 ||
+        chance5Name.length > 30
+      ) {
+        return false;
+      }
 
-    // chance must be float
-    if (
-      !validator.isFloat(chance1) ||
-      !validator.isFloat(chance2) ||
-      !validator.isFloat(chance3) ||
-      !validator.isFloat(chance4) ||
-      !validator.isFloat(chance5)
-    ) {
-      return false;
-    }
+      // chance must be float
+      if (
+        !validator.isFloat(chance1) ||
+        !validator.isFloat(chance2) ||
+        !validator.isFloat(chance3) ||
+        !validator.isFloat(chance4) ||
+        !validator.isFloat(chance5) ||
+        !validator.isInt(pointCost)
+      ) {
+        return false;
+      }
 
-    // chance must be unique
-    if (
-      chance1 == chance2 ||
-      chance1 == chance3 ||
-      chance1 == chance4 ||
-      chance1 == chance5 ||
-      chance2 == chance3 ||
-      chance2 == chance4 ||
-      chance2 == chance5 ||
-      chance3 == chance4 ||
-      chance3 == chance5 ||
-      chance4 == chance5
-    ) {
-      return false;
-    }
+      // point cost needs to be between 100 and 9999
+      if (parseInt(pointCost) < 100 || parseInt(pointCost) > 9999) {
+        return false;
+      }
 
-    // sum of chances must be not greater than 100
-    const sum =
-      parseFloat(chance1) +
-      parseFloat(chance2) +
-      parseFloat(chance3) +
-      parseFloat(chance4) +
-      parseFloat(chance5);
+      // chance must be unique
+      if (
+        chance1 == chance2 ||
+        chance1 == chance3 ||
+        chance1 == chance4 ||
+        chance1 == chance5 ||
+        chance2 == chance3 ||
+        chance2 == chance4 ||
+        chance2 == chance5 ||
+        chance3 == chance4 ||
+        chance3 == chance5 ||
+        chance4 == chance5
+      ) {
+        return false;
+      }
 
-    if (sum > 100 || sum < 0) {
-      return false;
+      // sum of chances must be not greater than 100
+      const sum =
+        parseFloat(chance1) +
+        parseFloat(chance2) +
+        parseFloat(chance3) +
+        parseFloat(chance4) +
+        parseFloat(chance5);
+
+      if (sum > 100 || sum < 0) {
+        return false;
+      }
+    } else {
     }
 
     // check if data is updated
-    if (
-      origin.listName == listName &&
-      origin.chance1 == chance1 &&
-      origin.chance2 == chance2 &&
-      origin.chance3 == chance3 &&
-      origin.chance4 == chance4 &&
-      origin.chance5 == chance5 &&
-      origin.chance1Name == chance1Name &&
-      origin.chance2Name == chance2Name &&
-      origin.chance3Name == chance3Name &&
-      origin.chance4Name == chance4Name &&
-      origin.chance5Name == chance5Name
-    ) {
-      return false;
+    if (origin.listName == listName) {
+      if (type == 'loot') {
+        if (
+          origin.chance1 == chance1 &&
+          origin.chance2 == chance2 &&
+          origin.chance3 == chance3 &&
+          origin.chance4 == chance4 &&
+          origin.chance5 == chance5 &&
+          origin.chance1Name == chance1Name &&
+          origin.chance2Name == chance2Name &&
+          origin.chance3Name == chance3Name &&
+          origin.chance4Name == chance4Name &&
+          origin.chance5Name == chance5Name &&
+          origin.pointCost == pointCost
+        ) {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
 
     return true;
@@ -171,6 +190,7 @@ class RewardListSetting extends React.Component {
   updateGroupRewardSetting = async () => {
     const {
       id,
+      type,
       listName,
       chance1,
       chance2,
@@ -182,53 +202,73 @@ class RewardListSetting extends React.Component {
       chance3Name,
       chance4Name,
       chance5Name,
+      pointCost,
     } = this.state;
     const {auth, group, updateGroupRewardSetting, navigation} = this.props;
 
-    const sum =
-      parseFloat(chance1) +
-      parseFloat(chance2) +
-      parseFloat(chance3) +
-      parseFloat(chance4) +
-      parseFloat(chance5);
+    let request = {};
 
-    if (sum > 100 || sum < 0) {
-      alert('The sum of chance needs to be between 0 and 100');
-      return false;
+    // loot list
+    if (type == 'loot') {
+      const sum =
+        parseFloat(chance1) +
+        parseFloat(chance2) +
+        parseFloat(chance3) +
+        parseFloat(chance4) +
+        parseFloat(chance5);
+
+      if (sum > 100 || sum < 0) {
+        alert('The sum of chance needs to be between 0 and 100');
+        return false;
+      }
+
+      if (
+        chance1 == chance2 ||
+        chance1 == chance3 ||
+        chance1 == chance4 ||
+        chance1 == chance5 ||
+        chance2 == chance3 ||
+        chance2 == chance4 ||
+        chance2 == chance5 ||
+        chance3 == chance4 ||
+        chance3 == chance5 ||
+        chance4 == chance5
+      ) {
+        alert('Each chance must be unique');
+        return false;
+      }
+
+      if (parseInt(pointCost) < 100 || parseInt(pointCost) > 9999) {
+        alert('Point costs need to be between 100 and 9999');
+        return false;
+      }
+
+      request = {
+        listId: id,
+        listName: listName.trim(),
+        chance1: parseFloat(chance1),
+        chance2: parseFloat(chance2),
+        chance3: parseFloat(chance3),
+        chance4: parseFloat(chance4),
+        chance5: parseFloat(chance5),
+        chance1Name,
+        chance2Name,
+        chance3Name,
+        chance4Name,
+        chance5Name,
+        pointCost: parseInt(pointCost),
+        token: auth.token,
+        groupId: group.group.id,
+      };
+    } else {
+      // redeem list
+      request = {
+        listId: id,
+        listName: listName.trim(),
+        token: auth.token,
+        groupId: group.group.id,
+      };
     }
-
-    if (
-      chance1 == chance2 ||
-      chance1 == chance3 ||
-      chance1 == chance4 ||
-      chance1 == chance5 ||
-      chance2 == chance3 ||
-      chance2 == chance4 ||
-      chance2 == chance5 ||
-      chance3 == chance4 ||
-      chance3 == chance5 ||
-      chance4 == chance5
-    ) {
-      alert('Each chance must be unique');
-      return false;
-    }
-
-    const request = {
-      groupRewardSettingId: id,
-      listName: listName.trim(),
-      chance1: parseFloat(chance1),
-      chance2: parseFloat(chance2),
-      chance3: parseFloat(chance3),
-      chance4: parseFloat(chance4),
-      chance5: parseFloat(chance5),
-      chance1Name,
-      chance2Name,
-      chance3Name,
-      chance4Name,
-      chance5Name,
-      token: auth.token,
-      groupId: group.group.id,
-    };
 
     this.setState({loading: true});
     const req = await updateGroupRewardSetting(request);
@@ -238,9 +278,8 @@ class RewardListSetting extends React.Component {
       alert('Cannot update reward settings, please try again later');
       return;
     }
-    
-    navigation.goBack()
 
+    navigation.goBack();
   };
 
   onInputChange = (value, type) => {
@@ -266,14 +305,15 @@ class RewardListSetting extends React.Component {
       this.setState({chance4Name: value.substr(0, 30)});
     } else if (type == 'chance5Name') {
       this.setState({chance5Name: value.substr(0, 30)});
+    } else if (type == 'pointCost') {
+      this.setState({pointCost: value.trim()});
     }
   };
-
-  onPress = () => {};
 
   render() {
     const {
       listName,
+      type,
       chance1,
       chance2,
       chance3,
@@ -285,6 +325,7 @@ class RewardListSetting extends React.Component {
       chance3Name,
       chance4Name,
       chance5Name,
+      pointCost,
     } = this.state;
 
     return (
@@ -295,60 +336,102 @@ class RewardListSetting extends React.Component {
             value={listName}
             onInputChange={this.onInputChange}
           />
-          <Input
-            type={'chance1Name'}
-            value={chance1Name}
-            onInputChange={this.onInputChange}
-          />
-          <Input
-            type={'chance1'}
-            value={chance1.toString()}
-            onInputChange={this.onInputChange}
-          />
-          <Input
-            type={'chance2Name'}
-            value={chance2Name}
-            onInputChange={this.onInputChange}
-          />
-          <Input
-            type={'chance2'}
-            value={chance2.toString()}
-            onInputChange={this.onInputChange}
-          />
-          <Input
-            type={'chance3Name'}
-            value={chance3Name}
-            onInputChange={this.onInputChange}
-          />
-          <Input
-            type={'chance3'}
-            value={chance3.toString()}
-            onInputChange={this.onInputChange}
-          />
-          <Input
-            type={'chance4Name'}
-            value={chance4Name}
-            onInputChange={this.onInputChange}
-          />
-          <Input
-            type={'chance4'}
-            value={chance4.toString()}
-            onInputChange={this.onInputChange}
-          />
-          <Input
-            type={'chance5Name'}
-            value={chance5Name}
-            onInputChange={this.onInputChange}
-          />
-          <Input
-            type={'chance5'}
-            value={chance5.toString()}
-            onInputChange={this.onInputChange}
-          />
-          <Text style={styles.text}>
-            The sum of all chances must be not greater than 100% and each chance
-            must be unique
-          </Text>
+
+          {type == 'loot' ? (
+            <Input
+              type={'pointCost'}
+              value={pointCost}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Input
+              type={'chance1Name'}
+              value={chance1Name}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Input
+              type={'chance1'}
+              value={chance1.toString()}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Input
+              type={'chance2Name'}
+              value={chance2Name}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Input
+              type={'chance2'}
+              value={chance2.toString()}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Input
+              type={'chance3Name'}
+              value={chance3Name}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Input
+              type={'chance3'}
+              value={chance3.toString()}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Input
+              type={'chance4Name'}
+              value={chance4Name}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Input
+              type={'chance4'}
+              value={chance4.toString()}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Input
+              type={'chance5Name'}
+              value={chance5Name}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Input
+              type={'chance5'}
+              value={chance5.toString()}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {type == 'loot' ? (
+            <Text style={styles.text}>
+              The sum of all chances must be not greater than 100% and each
+              chance must be unique
+            </Text>
+          ) : null}
+
           <ActivityIndicator animating={loading} color={'grey'} />
         </ScrollView>
       </TouchableWithoutFeedback>

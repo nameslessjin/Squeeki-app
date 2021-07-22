@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import validator from 'validator';
+import {dateConversion} from '../../utils/time';
 
 export default class RewardSettingInput extends React.Component {
   onChangeText = text => {
@@ -30,7 +31,7 @@ export default class RewardSettingInput extends React.Component {
   };
 
   render() {
-    const {type, value, onInputChange, onPress} = this.props;
+    const {type, value, onInputChange, onPress, pointCost} = this.props;
     let title = 'Name';
     let display = <View />;
     if (type == 'description') {
@@ -68,23 +69,34 @@ export default class RewardSettingInput extends React.Component {
     } else if (type == 'chance5Name') {
       title = 'Chance 5 Name';
     } else if (type == 'redeemable') {
-      title = 'Redeem Reward With Points'
-    } else if (type == 'point'){
-      title = 'Required Points'
+      title = 'Redeem Reward With Points';
+    } else if (type == 'point') {
+      title = 'Required Points';
+    } else if (type == 'expiration') {
+      title = 'Expiration';
+    } else if (type == 'hasExpiration') {
+      title = 'Has Expiration Date';
+    } else if (type == 'pointCost') {
+      title = 'Point Cost';
     }
 
     const numericKeyboard =
-      type == 'point'
+      type == 'point' ||
       type == 'chance1' ||
       type == 'chance2' ||
       type == 'chance3' ||
       type == 'chance4' ||
       type == 'chance5' ||
-      type == 'count'
+      type == 'count' ||
+      type == 'pointCost'
         ? true
         : false;
 
-    if (type == 'separateContent' || type == 'redeemable') {
+    if (
+      type == 'separateContent' ||
+      type == 'redeemable' ||
+      type == 'hasExpiration'
+    ) {
       display = (
         <View
           style={[
@@ -116,13 +128,17 @@ export default class RewardSettingInput extends React.Component {
           style={[styles.container, {height: type == 'description' ? 80 : 45}]}>
           <Text style={{color: 'grey'}}>{title}</Text>
 
-          {type == 'listId' || type == 'chance' ? (
+          {type == 'listId' || type == 'chance' || type == 'expiration' ? (
             <Text
               style={{
                 marginLeft: 10,
                 width: type == 'chance' ? '75%' : '100%',
               }}>
-              {value.toString()}
+              {type == 'expiration'
+                ? value
+                  ? dateConversion(value, 'expiration')
+                  : 'Permanent'
+                : value.toString()}
             </Text>
           ) : (
             <TextInput
@@ -140,7 +156,8 @@ export default class RewardSettingInput extends React.Component {
                 type == 'chance2' ||
                 type == 'chance3' ||
                 type == 'chance4' ||
-                type == 'chance5'
+                type == 'chance5' ||
+                type == 'pointCost'
                   ? 4
                   : type == 'count'
                   ? 3

@@ -43,7 +43,6 @@ class RankSetting extends React.Component {
       priority_1_rank_required,
       priority_2_rank_required,
       priority_3_rank_required,
-      reward_rank_required,
       manage_member_rank_required,
       nominate_rank_required,
       group_setting_rank_required,
@@ -51,7 +50,7 @@ class RankSetting extends React.Component {
       manage_comment_rank_required,
       manage_check_in_rank_required,
       manage_chat_rank_required,
-      manage_task_rank_required
+      manage_task_rank_required,
     } = this.state;
     const request = {
       token: auth.token,
@@ -61,7 +60,6 @@ class RankSetting extends React.Component {
         priority_1_rank_required,
         priority_2_rank_required,
         priority_3_rank_required,
-        reward_rank_required,
         manage_member_rank_required,
         nominate_rank_required,
         group_setting_rank_required,
@@ -69,7 +67,7 @@ class RankSetting extends React.Component {
         manage_comment_rank_required,
         manage_check_in_rank_required,
         manage_chat_rank_required,
-        manage_task_rank_required
+        manage_task_rank_required,
       },
     };
     const req = await updateRankFeatures(request);
@@ -81,7 +79,6 @@ class RankSetting extends React.Component {
       priority_1_rank_required,
       priority_2_rank_required,
       priority_3_rank_required,
-      reward_rank_required,
       manage_member_rank_required,
       nominate_rank_required,
       group_setting_rank_required,
@@ -89,7 +86,7 @@ class RankSetting extends React.Component {
       manage_comment_rank_required,
       manage_check_in_rank_required,
       manage_chat_rank_required,
-      manage_task_rank_required
+      manage_task_rank_required,
     } = this.state;
     const {rank_setting} = this.props.group.group;
 
@@ -98,7 +95,6 @@ class RankSetting extends React.Component {
       rank_setting.priority_1_rank_required == priority_1_rank_required &&
       rank_setting.priority_2_rank_required == priority_2_rank_required &&
       rank_setting.priority_3_rank_required == priority_3_rank_required &&
-      rank_setting.reward_rank_required == reward_rank_required &&
       rank_setting.manage_member_rank_required == manage_member_rank_required &&
       rank_setting.nominate_rank_required == nominate_rank_required &&
       rank_setting.group_setting_rank_required == group_setting_rank_required &&
@@ -138,8 +134,6 @@ class RankSetting extends React.Component {
       this.setState({priority_2_rank_required: value});
     } else if (type == 'priority3') {
       this.setState({priority_3_rank_required: value});
-    } else if (type == 'reward') {
-      this.setState({reward_rank_required: value});
     } else if (type == 'member') {
       this.setState({manage_member_rank_required: value});
     } else if (type == 'nominate') {
@@ -154,8 +148,8 @@ class RankSetting extends React.Component {
       this.setState({manage_check_in_rank_required: value});
     } else if (type == 'manage_chat') {
       this.setState({manage_chat_rank_required: value});
-    } else if (type == 'manage_task'){
-      this.setState({manage_task_rank_required: value})
+    } else if (type == 'manage_task') {
+      this.setState({manage_task_rank_required: value});
     }
   };
 
@@ -165,7 +159,6 @@ class RankSetting extends React.Component {
       priority_1_rank_required,
       priority_2_rank_required,
       priority_3_rank_required,
-      reward_rank_required,
       manage_member_rank_required,
       nominate_rank_required,
       group_setting_rank_required,
@@ -237,11 +230,6 @@ class RankSetting extends React.Component {
           <RankFunction
             type={'member'}
             value={manage_member_rank_required}
-            onPress={this.onPress}
-          />
-          <RankFunction
-            type={'reward'}
-            value={reward_rank_required}
             onPress={this.onPress}
           />
           <RankFunction

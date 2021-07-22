@@ -4,7 +4,6 @@ import {
   updateGroupRewardSettingMutation,
   getRewardEntryQuery,
   updateRewardEntryStatusMutation,
-
   getUserGroupRewardHistoryQuery,
   getMonthlyGiftCardCountQuery,
   lootRewardMutation,
@@ -28,7 +27,8 @@ export const createUpdateGroupReward = request => {
     token,
     image,
     entryId,
-    point
+    point,
+    expiration,
   } = request;
 
   return async function(dispatch) {
@@ -58,7 +58,8 @@ export const createUpdateGroupReward = request => {
       toId,
       status: 'active',
       image: imageData,
-      point: parseInt(point)
+      point: parseInt(point),
+      expiration: expiration ? new Date(expiration) : null,
     };
 
     const graphql = {
@@ -128,6 +129,7 @@ export const updateGroupRewardSetting = request => {
     chance3Name,
     chance4Name,
     chance5Name,
+    pointCost,
   } = request;
 
   return async function(dispatch) {
@@ -145,6 +147,7 @@ export const updateGroupRewardSetting = request => {
       chance3Name,
       chance4Name,
       chance5Name,
+      pointCost
     };
 
     const graphql = {

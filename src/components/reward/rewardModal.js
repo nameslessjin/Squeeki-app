@@ -10,24 +10,51 @@ import {
   Keyboard,
   FlatList,
   Dimensions,
+  Platform,
 } from 'react-native';
 import {PostImagePicker} from '../../utils/imagePicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const {width} = Dimensions.get('screen');
 
 const extractKey = ({id}) => id;
 export default class RewardModal extends React.Component {
+  state = {
+    time: new Date(),
+    process: 1,
+  };
+
   onInputChange = ({value, label}) => {
     const {onInputChange, onBackdropPress, modalType} = this.props;
 
     onInputChange({id: value.toString(), label}, modalType);
-    onBackdropPress();
   };
 
   onPress = type => {
     const {onBackdropPress, onInputChange} = this.props;
     PostImagePicker(onInputChange, type, onBackdropPress);
     onBackdropPress();
+  };
+
+  setTimeOnAndroid = (time, type) => {
+    let newTime = this.state.time;
+    if (type == 'date') {
+      const day = time.getDate();
+      const month = time.getMonth();
+      const year = time.getFullYear();
+      newTime.setFullYear(year);
+      newTime.setMonth(month);
+      newTime.setDate(day);
+      this.setState({time: newTime, process: 2});
+    }
+
+    if (type == 'time') {
+      const hours = time.getHours();
+      const minutes = time.getMinutes();
+      newTime.setHours(hours);
+      newTime.setMinutes(minutes);
+      this.setState({time: newTime, process: 3});
+    }
   };
 
   renderItem = i => {
@@ -52,7 +79,10 @@ export default class RewardModal extends React.Component {
       modalType,
       rewardList,
       listId,
+      expiration,
+      onInputChange,
     } = this.props;
+    const {process} = this.state;
 
     const listNo = rewardList.map(r => {
       return {
@@ -93,9 +123,69 @@ export default class RewardModal extends React.Component {
       };
     });
 
-    let name = modalType == 'listId' ? 'List' : 'Chance';
+    let name = 'List';
+    if (modalType == 'listId') {
+      name = 'List';
+    } else if (modalType == 'chance') {
+      name = 'Chance';
+    }
 
-    return (
+    // for expiration time
+    let timeModal = null;
+
+    // create an reward with expiration up to 1 year
+    let maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+
+    if (Platform.OS == 'ios') {
+      timeModal = (
+        <View style={[styles.modalView, {width: 210, height: 100}]}>
+          <Text>SELECT DATE</Text>
+          <DateTimePicker
+            mode={'datetime'}
+            value={new Date(parseInt(expiration))}
+            minimumDate={new Date()}
+            maximumDate={maxDate}
+            display={'default'}
+            style={{width: 190, marginLeft: 20}}
+            onChange={(event, date) => onInputChange(date, modalType)}
+          />
+        </View>
+      );
+    } else {
+      if (process == 1) {
+        timeModal = (
+          <DateTimePicker
+            mode={'date'}
+            value={new Date(parseInt(expiration))}
+            minimumDate={new Date()}
+            maximumDate={maxDate}
+            display={'default'}
+            onChange={(event, date) => this.setTimeOnAndroid(date, 'date')}
+          />
+        );
+      } else if (process == 2) {
+        timeModal = (
+          <DateTimePicker
+            mode={'time'}
+            value={new Date(parseInt(expiration))}
+            minimumDate={new Date()}
+            display={'default'}
+            onChange={(event, date) => this.setTimeOnAndroid(date, 'time')}
+          />
+        );
+      }
+      if (process == 3) {
+        onInputChange(this.state.time, modalType);
+        this.setState({time: new Date()});
+        onBackdropPress();
+        return null;
+      }
+    }
+
+    return modalType == 'expiration' && Platform.OS == 'android' ? (
+      timeModal
+    ) : (
       <View style={styles.centeredView}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <TouchableWithoutFeedback onPress={onBackdropPress}>
@@ -120,6 +210,8 @@ export default class RewardModal extends React.Component {
                     </View>
                   </TouchableOpacity>
                 </View>
+              ) : modalType == 'expiration' ? (
+                timeModal
               ) : (
                 <TouchableWithoutFeedback>
                   <KeyboardAvoidingView style={styles.view}>
@@ -153,6 +245,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 0,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    height: 150,
+    width: 300,
   },
   view: {
     backgroundColor: 'white',

@@ -43,6 +43,8 @@ class RewardSetting extends React.Component {
     image: null,
     redeemable: false,
     point: '0',
+    expiration: null,
+    hasExpiration: false,
     ...this.props.route.params,
     origin: this.props.route.params,
   };
@@ -77,6 +79,7 @@ class RewardSetting extends React.Component {
       id,
       point,
       redeemable,
+      expiration,
     } = this.state;
 
     if (name.trim().length == 0 || name.length > 30) {
@@ -85,6 +88,13 @@ class RewardSetting extends React.Component {
 
     if (description.trim().length < 1 || description.length > 255) {
       return false;
+    }
+
+    // check expiration date
+    if (expiration) {
+      if (expiration <= Date.now()) {
+        return false;
+      }
     }
 
     // if chance is not a float or either count and list No is not int, return false
@@ -144,7 +154,8 @@ class RewardSetting extends React.Component {
         origin.description == description &&
         origin.listId == listId &&
         origin.chance == chance &&
-        origin.point == point
+        origin.point == point &&
+        origin.expiration == expiration
       ) {
         // if origin image exists
         if (origin.image) {
@@ -273,6 +284,7 @@ class RewardSetting extends React.Component {
       image,
       id,
       point,
+      expiration,
     } = this.state;
     const {
       auth,
@@ -284,6 +296,14 @@ class RewardSetting extends React.Component {
 
     // if the number of rewards in a list/chance reach limit, return
     if (!this.checkRewardCountLimit()) {
+      return;
+    }
+
+    // check validation one last time
+    if (!this.validation()) {
+      alert(
+        'Cannot create reward, please check your information then resubmit',
+      );
       return;
     }
 
@@ -303,6 +323,7 @@ class RewardSetting extends React.Component {
       toId: group.group.id,
       image,
       point,
+      expiration,
     };
 
     this.setState({loading: true});
@@ -310,7 +331,7 @@ class RewardSetting extends React.Component {
     this.setState({loading: false});
 
     if (req.errors) {
-      // console.log(req.errors);
+      console.log(req.errors);
       if (
         req.errors[0].message ==
         'Each chance in each list can only contain up to 3 rewards'
@@ -325,6 +346,18 @@ class RewardSetting extends React.Component {
   };
 
   onInputChange = (value, type) => {
+    const {expiration, origin} = this.state;
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        expiration: expiration
+          ? expiration < Date.now()
+            ? Date.now()
+            : expiration
+          : null,
+      };
+    });
+
     if (type == 'name') {
       this.setState({name: value.substr(0, 30)});
     } else if (type == 'description') {
@@ -353,7 +386,7 @@ class RewardSetting extends React.Component {
       });
     } else if (type == 'image') {
       this.setState({
-        modalVIsible: false,
+        modalVisible: false,
         image: {...value},
       });
     } else if (type == 'redeemable') {
@@ -369,17 +402,40 @@ class RewardSetting extends React.Component {
           listId: prevState.redeemable ? '1' : '0',
           listName: prevState.redeemable
             ? this.props.reward.rewardList[0].listName
-            : 'Redeem List',
+            : this.props.reward.rewardList[2].listName,
         };
       });
     } else if (type == 'point') {
       this.setState({point: value.trim()});
+    } else if (type == 'expiration') {
+      this.setState({expiration: value.getTime()});
+    } else if (type == 'hasExpiration') {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          hasExpiration: !prevState.hasExpiration,
+          expiration: prevState.hasExpiration ? null : origin.expiration,
+        };
+      });
     }
   };
 
   onBackdropPress = () => {
     Keyboard.dismiss();
+
     this.setState({modalVisible: false});
+    const {expiration} = this.state;
+
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        expiration: expiration
+          ? expiration < Date.now()
+            ? Date.now()
+            : expiration
+          : null,
+      };
+    });
   };
 
   updateRewardEntryStatus = async type => {
@@ -427,6 +483,8 @@ class RewardSetting extends React.Component {
           style: 'destructive',
         },
       ]);
+    } else if (type == 'expiration') {
+      this.setState({modalVisible: true, modalType: 'expiration'});
     }
   };
 
@@ -447,8 +505,9 @@ class RewardSetting extends React.Component {
       id,
       redeemable,
       point,
+      expiration,
+      hasExpiration,
     } = this.state;
-    console.log(this.state);
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView style={styles.container} bounces={false}>
@@ -504,6 +563,21 @@ class RewardSetting extends React.Component {
             />
           ) : null}
 
+          <Input
+            type={'hasExpiration'}
+            value={hasExpiration}
+            onInputChange={this.onInputChange}
+          />
+
+          {hasExpiration ? (
+            <Input
+              type={'expiration'}
+              value={expiration}
+              onInputChange={this.onInputChange}
+              onPress={this.onPress}
+            />
+          ) : null}
+
           {!id ? (
             <Input
               type={'separateContent'}
@@ -550,6 +624,7 @@ class RewardSetting extends React.Component {
             modalType={modalType}
             rewardList={this.props.reward.rewardList}
             listId={listId}
+            expiration={expiration}
           />
         </ScrollView>
       </TouchableWithoutFeedback>

@@ -21,55 +21,84 @@ export const dateConversion = (time, type) => {
     'Nov',
     'Dec',
   ];
-  const postSecond = Math.floor(date.getTime() / 1000);
-
   let outputTime = '';
-
-  const today = new Date();
 
   if (
     type == 'post' ||
     type == 'member' ||
     type == 'comment' ||
     type == 'chat' ||
-    type == 'group'
+    type == 'group' ||
+    type == 'timeDisplay'
   ) {
-    const currentSecond = Math.floor(today.getTime() / 1000);
+    outputTime = months[month] + ' ' + day + ' ' + (year - 2000);
 
-    const timeDifference = currentSecond - postSecond;
-
-    if (0 <= timeDifference && timeDifference < 60) {
-      outputTime = timeDifference.toString() + ' s ago';
-    }
-
-    if (60 <= timeDifference && timeDifference < 60 * 60) {
-      const outputT = Math.floor(timeDifference / 60);
-      outputTime = outputT.toString() + ' m ago';
-    }
-
-    if (60 * 60 <= timeDifference && timeDifference < 60 * 60 * 24) {
-      const outputT = Math.floor(timeDifference / (60 * 60));
-      outputTime = outputT.toString() + ' hr ago';
-    }
-
-    if (60 * 60 * 24 <= timeDifference && timeDifference < 60 * 60 * 24 * 4) {
-      const outputT = Math.floor(timeDifference / (60 * 60 * 24));
-      outputTime = outputT.toString() + ' d ago';
-    }
-
-    if (timeDifference >= 60 * 60 * 24 * 4) {
-      outputTime = months[month] + ' ' + day + ' ' + (year - 2000);
+    if (type == 'timeDisplay') {
+      const check = withInAWeekCheck(date, 'up');
+      outputTime = check ? check : outputTime;
     }
 
     return outputTime;
-  } else if (type == 'priority' || type == 'task') {
-    const hour = date.getHours()
-    const minutes = date.getMinutes()
-    const am = hour < 12 ? 'am' : 'pm'
-    outputTime = `${month + 1}/${day}/${year-2000} ${hour <= 12 ? hour : hour - 12}:${minutes < 10 ? '0' : ''}${minutes} ${am}`
+  } else if (
+    type == 'priority' ||
+    type == 'task' ||
+    type == 'expiration' ||
+    type == 'expirationDisplay'
+  ) {
+    const hour = date.getHours();
+    const minutes = date.getMinutes();
+    const am = hour < 12 ? 'am' : 'pm';
+    outputTime = `${month + 1}/${day}/${year - 2000} ${
+      hour <= 12 ? hour : hour - 12
+    }:${minutes < 10 ? '0' : ''}${minutes} ${am}`;
 
-    return outputTime
+    if (type == 'expirationDisplay') {
+      const check = withInAWeekCheck(date, 'down');
+      outputTime = check ? check : `End At: ${outputTime}`;
+    }
+
+    return outputTime;
   }
+};
+
+const withInAWeekCheck = (date, type) => {
+  const today = new Date();
+  let outputTime = null;
+
+  const timeDifference =
+    type == 'down'
+      ? Math.floor((date.getTime() - today.getTime()) / 1000)
+      : Math.floor((today.getTime() - date.getTime()) / 1000);
+
+  // less than 1 min left
+  if (0 <= timeDifference && timeDifference < 60) {
+    outputTime =
+      timeDifference.toString() + (type == 'down' ? 's left' : 's ago');
+  }
+  // less than 1 hour lef
+  if (60 <= timeDifference && timeDifference < 60 * 60) {
+    outputTime =
+      Math.floor(timeDifference / 60).toString() +
+      (type == 'down' ? 'm left' : 'm ago');
+  }
+  // less than 1 day left
+  if (60 * 60 <= timeDifference && timeDifference < 60 * 60 * 24) {
+    outputTime =
+      Math.floor(timeDifference / (60 * 60)).toString() +
+      (type == 'down' ? 'hr left' : 'hr ago');
+  }
+  // less than 1 week left
+  if (60 * 60 * 24 <= timeDifference && timeDifference < 60 * 60 * 24 * 7) {
+    outputTime =
+      Math.floor(timeDifference / (60 * 60 * 24)).toString() +
+      (type == 'down' ? 'd left' : 'd ago');
+  }
+
+  if (timeDifference <= 0){
+    outputTime = 'Expired'
+  }
+
+  return outputTime;
 };
 
 export const getSundays = time => {

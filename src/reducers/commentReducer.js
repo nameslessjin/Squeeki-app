@@ -93,10 +93,9 @@ export default (commentReducer = (state = INITIAL_STATE, action) => {
                 num_of_replies: action.i.reply.num_of_replies,
                 reply: {
                   count: action.i.reply.count,
-                  replies: c.reply.replies.concat(action.i.reply.replies)
-                    // action.i.reply.count == 10
-                    //   ? action.i.reply.replies
-                    //   : c.reply.replies.concat(action.i.reply.replies),
+                  replies: c.reply
+                    ? c.reply.replies.concat(action.i.reply.replies)
+                    : action.i.reply.replies,
                 },
               };
             }

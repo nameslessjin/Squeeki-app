@@ -60,6 +60,8 @@ export const createComment = data => {
       return result;
     }
 
+    console.log(result.data.createComment)
+
     dispatch(createCommentToReducer(result.data.createComment));
 
     return 0;
@@ -220,6 +222,8 @@ export const getReplies = request => {
       commentId: replyId,
       reply: result.data.getReplies
     }
+
+    console.log(data)
 
     dispatch(getRepliesReducer(data))
 

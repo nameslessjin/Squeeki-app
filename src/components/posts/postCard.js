@@ -341,7 +341,7 @@ class PostCard extends React.Component {
       navigation,
     } = this.props;
 
-    const date = dateConversion(createdAt, 'post');
+    const date = dateConversion(createdAt, 'timeDisplay');
 
     let backgroundColor = 'white';
     if (priority == 3) {
