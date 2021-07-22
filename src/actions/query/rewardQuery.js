@@ -15,6 +15,7 @@ query getGroupRewardList($input: RewardInput!){
         chance3
         chance4
         chance5
+        pointCost
         rewardEntryList {
             title
             chance

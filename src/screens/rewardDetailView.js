@@ -42,9 +42,12 @@ class RewardDetailView extends React.Component {
         from == 'group' &&
         toId == fromId &&
         fromId == group.group.id;
+      const hasRewardManagementAuthority =
+        group.group.auth.rank <=
+          group.group.rank_setting.manage_reward_rank_required && inGroup;
       navigation.setOptions({
         headerRight: () =>
-          inGroup ? (
+          hasRewardManagementAuthority ? (
             <TopRightButton
               type={'edit'}
               onPress={this.onPress}

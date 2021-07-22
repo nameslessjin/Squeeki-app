@@ -13,8 +13,8 @@ export default class RankFunction extends React.Component {
       name = 'Create priority 2 post';
     } else if (type == 'priority3') {
       name = 'Create priority 3 post';
-    } else if (type == 'reward') {
-      name = 'Loot reward';
+    } else if (type == 'manage_reward') {
+      name = 'Manage reward';
     } else if (type == 'member') {
       name = 'Manage member'
     } else if (type == 'nominate') {

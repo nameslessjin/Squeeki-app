@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Text,
+  View
 } from 'react-native';
 import {connect} from 'react-redux';
 import Input from '../components/reward/settingInput';
@@ -433,6 +434,7 @@ class RewardListSetting extends React.Component {
           ) : null}
 
           <ActivityIndicator animating={loading} color={'grey'} />
+          <View style={styles.empty}/>
         </ScrollView>
       </TouchableWithoutFeedback>
     );
@@ -449,6 +451,10 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 12,
     marginLeft: 5,
+  },
+  empty: {
+    width: '100%',
+    height: 400,
   },
 });
 

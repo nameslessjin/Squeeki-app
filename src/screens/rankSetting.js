@@ -51,6 +51,7 @@ class RankSetting extends React.Component {
       manage_check_in_rank_required,
       manage_chat_rank_required,
       manage_task_rank_required,
+      manage_reward_rank_required,
     } = this.state;
     const request = {
       token: auth.token,
@@ -68,6 +69,7 @@ class RankSetting extends React.Component {
         manage_check_in_rank_required,
         manage_chat_rank_required,
         manage_task_rank_required,
+        manage_reward_rank_required,
       },
     };
     const req = await updateRankFeatures(request);
@@ -87,6 +89,7 @@ class RankSetting extends React.Component {
       manage_check_in_rank_required,
       manage_chat_rank_required,
       manage_task_rank_required,
+      manage_reward_rank_required,
     } = this.state;
     const {rank_setting} = this.props.group.group;
 
@@ -104,7 +107,8 @@ class RankSetting extends React.Component {
       rank_setting.manage_check_in_rank_required ==
         manage_check_in_rank_required &&
       rank_setting.manage_chat_rank_required == manage_chat_rank_required &&
-      rank_setting.manage_task_rank_required == manage_task_rank_required
+      rank_setting.manage_task_rank_required == manage_task_rank_required &&
+      rank_setting.manage_reward_rank_required == manage_reward_rank_required
     ) {
       return false;
     }
@@ -150,6 +154,8 @@ class RankSetting extends React.Component {
       this.setState({manage_chat_rank_required: value});
     } else if (type == 'manage_task') {
       this.setState({manage_task_rank_required: value});
+    } else if (type == 'manage_reward') {
+      this.setState({manage_reward_rank_required: value});
     }
   };
 
@@ -167,6 +173,7 @@ class RankSetting extends React.Component {
       manage_check_in_rank_required,
       manage_chat_rank_required,
       manage_task_rank_required,
+      manage_reward_rank_required,
       modalVisible,
       type,
     } = this.state;
@@ -205,6 +212,11 @@ class RankSetting extends React.Component {
           <RankFunction
             type={'manage_post'}
             value={manage_post_rank_required}
+            onPress={this.onPress}
+          />
+          <RankFunction
+            type={'manage_reward'}
+            value={manage_reward_rank_required}
             onPress={this.onPress}
           />
           <RankFunction

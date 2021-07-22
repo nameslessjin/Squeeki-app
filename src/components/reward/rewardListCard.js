@@ -34,6 +34,7 @@ export default class RewardListCard extends React.Component {
           chance3: item.chance3.toString(),
           chance4: item.chance4.toString(),
           chance5: item.chance5.toString(),
+          pointCost: item.pointCost.toString(),
           chance1Name: chanceNameList[0],
           chance2Name: chanceNameList[1],
           chance3Name: chanceNameList[2],
@@ -41,7 +42,7 @@ export default class RewardListCard extends React.Component {
           chance5Name: chanceNameList[4],
         };
       } else {
-        updatedList = item
+        updatedList = item;
       }
 
       navigation.navigate('RewardListSetting', {
@@ -51,8 +52,18 @@ export default class RewardListCard extends React.Component {
   };
 
   render() {
-    const {item} = this.props;
-    const {listName, type, rewardEntryList, redeemRewardEntryList} = item;
+    const {item, group} = this.props;
+    const {
+      id,
+      listName,
+      type,
+      rewardEntryList,
+      redeemRewardEntryList,
+      pointCost,
+    } = item;
+    const hasRewardManagementAuthority =
+      group.auth.rank <= group.rank_setting.manage_reward_rank_required &&
+      (id == '0' || id == '1' || id == '2' || id == '3');
     return (
       //   <Swipeable>
       <View
@@ -68,9 +79,11 @@ export default class RewardListCard extends React.Component {
               <Text style={styles.headerText}>{listName}</Text>
             </View>
             <View style={styles.headerSide}>
-              <TouchableOpacity onPress={() => this.onPress(item, 'setting')}>
-                <MaterialIcons name={'cog'} size={20} color={'#EA2027'} />
-              </TouchableOpacity>
+              {hasRewardManagementAuthority ? (
+                <TouchableOpacity onPress={() => this.onPress(item, 'setting')}>
+                  <MaterialIcons name={'cog'} size={20} color={'#EA2027'} />
+                </TouchableOpacity>
+              ) : null}
             </View>
           </View>
           <View style={styles.list}>
@@ -86,6 +99,9 @@ export default class RewardListCard extends React.Component {
             <TouchableOpacity>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>Loot</Text>
+                <Text style={{color: 'white', fontSize: 11}}>
+                  {pointCost}pts
+                </Text>
               </View>
             </TouchableOpacity>
           ) : null}
@@ -159,7 +175,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 23,
     color: 'white',
   },
 });

@@ -58,7 +58,7 @@ class Groups extends React.Component {
     });
 
     if (groupsData.errors) {
-      // alert(groupsData.errors[0].message);
+      console.log(groupsData.errors[0].message);
       alert('Cannot load groups at this time, please try again later');
       if (groupsData.errors[0].message == 'Not Authenticated') {
         userLogout();

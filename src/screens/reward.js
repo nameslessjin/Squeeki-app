@@ -103,6 +103,7 @@ class Reward extends React.Component {
         <RewardList
           rewardList={rewardList}
           navigation={navigation}
+          group={group.group}
         />
         <View style={{width: '100%', height: 20, marginBottom: 5}} />
       </View>

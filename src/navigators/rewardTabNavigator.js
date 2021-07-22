@@ -14,7 +14,6 @@ import {TouchableWithoutFeedback, View, TouchableOpacity} from 'react-native';
 const Tabs = createBottomTabNavigator();
 
 class RewardTabNavigator extends React.Component {
-
   componentDidMount() {
     const {navigation} = this.props;
 
@@ -35,9 +34,12 @@ class RewardTabNavigator extends React.Component {
     const {navigation, group} = this.props;
 
     if (routeName == 'Reward') {
+      const hasRewardManagementAuthority =
+        group.group.auth.rank <=
+        group.group.rank_setting.manage_reward_rank_required;
       navigation.setOptions({
         headerRight: () =>
-          group.group.auth.rank <= 1 ? (
+          hasRewardManagementAuthority ? (
             <TopRightButton type={'add'} onPress={this.onTopRightButtonPress} />
           ) : null,
       });
@@ -56,7 +58,7 @@ class RewardTabNavigator extends React.Component {
       groupId: group.group.id,
     };
 
-    navigation.navigate('Reward')
+    navigation.navigate('Reward');
 
     const req = await getGroupRewardList(request);
     if (req.errors) {
@@ -111,7 +113,9 @@ class RewardTabNavigator extends React.Component {
                 />
               );
             },
-            tabBarButton: props => <TouchableOpacity {...props} onPress={this.getGroupRewardList} />,
+            tabBarButton: props => (
+              <TouchableOpacity {...props} onPress={this.getGroupRewardList} />
+            ),
           }}
         />
       </Tabs.Navigator>
