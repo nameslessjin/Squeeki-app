@@ -31,7 +31,7 @@ query getGroupRewardList($input: RewardInput!){
             id
             name
             expiration
-            point
+            pointCost
             createdAt
             count
         }
@@ -60,7 +60,7 @@ query getRewardEntry($input: RewardInput!){
         description
         image
         count
-        point
+        pointCost
         chanceDisplay
         expiration
     }
@@ -72,6 +72,18 @@ mutation updateRewardEntryStatus($input: RewardInput!){
     updateRewardEntryStatus(input: $input)
 }
 `;
+
+export const lootRedeemRewardMutation = `
+mutation lootRedeemReward($input: LootRedeemRewardInput!){
+    lootRedeemReward(input: $input){
+        name
+        description
+        pointCost
+        chanceDisplay
+        errorMessage
+    }
+}
+`
 
 // legacy
 

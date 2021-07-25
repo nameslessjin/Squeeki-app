@@ -70,8 +70,6 @@ export default class RewardSettingInput extends React.Component {
       title = 'Chance 5 Name';
     } else if (type == 'redeemable') {
       title = 'Redeem Reward With Points';
-    } else if (type == 'point') {
-      title = 'Required Points';
     } else if (type == 'expiration') {
       title = 'Expiration';
     } else if (type == 'hasExpiration') {

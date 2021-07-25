@@ -20,7 +20,7 @@ class RewardDetailView extends React.Component {
     image: null,
     count: 0,
     createdAt: null,
-    point: '0',
+    pointCost: '0',
     ...this.props.route.params,
   };
 
@@ -69,7 +69,7 @@ class RewardDetailView extends React.Component {
       listId,
       image,
       id,
-      point,
+      pointCost,
       expiration,
     } = this.state;
     const {navigation, reward} = this.props;
@@ -81,8 +81,8 @@ class RewardDetailView extends React.Component {
       listId,
       chanceDisplay,
       image,
-      point,
-      redeemable: point == '0' ? false : true,
+      pointCost,
+      redeemable: pointCost == '0' ? false : true,
       listName: reward.rewardList.filter(l => l.id == listId)[0].listName,
       expiration,
       hasExpiration: expiration != null,
@@ -119,7 +119,7 @@ class RewardDetailView extends React.Component {
       createdAt,
       name,
       chanceDisplay,
-      point,
+      pointCost,
       expiration,
     } = this.state;
 
@@ -137,7 +137,7 @@ class RewardDetailView extends React.Component {
             <View style={styles.infoSubContainer}>
               <Text>{count} remaining</Text>
               <Text style={{marginTop: 10}}>
-                {point == '0' ? `Chance: ${chanceDisplay}%` : `${point} pts`}
+                {pointCost == '0' ? `Chance: ${chanceDisplay}%` : `${pointCost} pts`}
               </Text>
               {expiration ? (
                 <Text style={{marginTop: 10}}>

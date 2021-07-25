@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import {dateConversion} from '../../utils/time';
 
@@ -15,10 +16,22 @@ const {width, height} = Dimensions.get('window');
 const extractKey = ({id}) => id;
 
 export default class rewardEntryList extends React.Component {
-  renderItem = ({item, index, section}) => {
-    const {name, count, point, expiration} = item;
-    const {onPress, type} = this.props;
+  state = {
+    redeemItemId: null,
+  };
 
+  onRedeemPress = item => {
+    const {onLootRedeemPress} = this.props;
+    const {id} = item;
+    onLootRedeemPress('redeem', item);
+    this.setState({redeemItemId: id});
+    this.setState({redeemItemId: null});
+  };
+
+  renderItem = ({item, index, section}) => {
+    const {name, count, pointCost, expiration, id} = item;
+    const {onPress, type} = this.props;
+    const {redeemItemId} = this.state;
     return (
       <View style={styles.card}>
         <View
@@ -28,7 +41,7 @@ export default class rewardEntryList extends React.Component {
           ]}>
           <Text style={styles.name}>{name}</Text>
           {type == 'redeem' ? (
-            <Text style={styles.infoText}>{point} pts</Text>
+            <Text style={styles.infoText}>{pointCost} pts</Text>
           ) : null}
           <Text style={styles.infoText}>{count} Remaining</Text>
           {expiration ? (
@@ -39,9 +52,19 @@ export default class rewardEntryList extends React.Component {
         </View>
         <View style={styles.buttonContainer}>
           {type == 'redeem' ? (
-            <TouchableOpacity>
-              <View style={styles.redeemButton}>
-                <Text style={{color: 'white'}}>Redeem</Text>
+            <TouchableOpacity
+              onPress={() => this.onRedeemPress(item)}
+              disabled={redeemItemId == id}>
+              <View
+                style={[
+                  styles.redeemButton,
+                  {backgroundColor: redeemItemId == id ? 'grey' : '#EA2027'},
+                ]}>
+                {redeemItemId == id ? (
+                  <ActivityIndicator animating={true} color={'white'} />
+                ) : (
+                  <Text style={{color: 'white'}}>Redeem</Text>
+                )}
               </View>
             </TouchableOpacity>
           ) : null}

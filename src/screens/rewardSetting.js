@@ -42,7 +42,7 @@ class RewardSetting extends React.Component {
     contentList: [{id: uuidv4(), content: ''}],
     image: null,
     redeemable: false,
-    point: '0',
+    pointCost: '0',
     expiration: null,
     hasExpiration: false,
     ...this.props.route.params,
@@ -77,7 +77,7 @@ class RewardSetting extends React.Component {
       origin,
       image,
       id,
-      point,
+      pointCost,
       redeemable,
       expiration,
     } = this.state;
@@ -102,13 +102,13 @@ class RewardSetting extends React.Component {
       !validator.isInt(chance) ||
       !validator.isInt(count) ||
       !validator.isInt(listId) ||
-      !validator.isInt(point)
+      !validator.isInt(pointCost)
     ) {
       return false;
     }
 
     if (redeemable) {
-      if (parseInt(point) < 1 || parseInt(point) > 999999) {
+      if (parseInt(pointCost) < 1 || parseInt(pointCost) > 999999) {
         return false;
       }
     } else {
@@ -154,7 +154,7 @@ class RewardSetting extends React.Component {
         origin.description == description &&
         origin.listId == listId &&
         origin.chance == chance &&
-        origin.point == point &&
+        origin.pointCost == pointCost &&
         origin.expiration == expiration
       ) {
         // if origin image exists
@@ -283,7 +283,7 @@ class RewardSetting extends React.Component {
       toId,
       image,
       id,
-      point,
+      pointCost,
       expiration,
     } = this.state;
     const {
@@ -322,7 +322,7 @@ class RewardSetting extends React.Component {
       to: 'group',
       toId: group.group.id,
       image,
-      point,
+      pointCost,
       expiration,
     };
 
@@ -394,7 +394,7 @@ class RewardSetting extends React.Component {
         return {
           ...prevState,
           redeemable: !prevState.redeemable,
-          point: '0',
+          pointCost: '0',
           chance: prevState.redeemable ? '1' : '0',
           chanceDisplay: prevState.redeemable
             ? `${this.props.reward.rewardList[0].chance1}`
@@ -405,8 +405,8 @@ class RewardSetting extends React.Component {
             : this.props.reward.rewardList[2].listName,
         };
       });
-    } else if (type == 'point') {
-      this.setState({point: value.trim()});
+    } else if (type == 'pointCost') {
+      this.setState({pointCost: value.trim()});
     } else if (type == 'expiration') {
       this.setState({expiration: value.getTime()});
     } else if (type == 'hasExpiration') {
@@ -504,7 +504,7 @@ class RewardSetting extends React.Component {
       image,
       id,
       redeemable,
-      point,
+      pointCost,
       expiration,
       hasExpiration,
     } = this.state;
@@ -541,8 +541,8 @@ class RewardSetting extends React.Component {
 
           {redeemable ? (
             <Input
-              type={'point'}
-              value={point}
+              type={'pointCost'}
+              value={pointCost}
               onInputChange={this.onInputChange}
               onPress={this.onPress}
             />

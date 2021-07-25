@@ -6,14 +6,20 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {connect} from 'react-redux';
 import RewardEntryList from './rewardEntryList';
 import {Swipeable} from 'react-native-gesture-handler';
 
 const {width, height} = Dimensions.get('screen');
 
 export default class RewardListCard extends React.Component {
+  state = {
+    loading: false,
+  };
+
   onPress = (item, type) => {
     const {navigation} = this.props;
 
@@ -51,8 +57,17 @@ export default class RewardListCard extends React.Component {
     }
   };
 
+  onLootPress = async (item) => {
+    const {onLootRedeemPress} = this.props;
+
+    onLootRedeemPress('loot', item);
+    //   this.setState({loading: true});
+    //   this.setState({loading: false});
+
+  };
+
   render() {
-    const {item, group} = this.props;
+    const {item, group, onLootRedeemPress} = this.props;
     const {
       id,
       listName,
@@ -64,6 +79,7 @@ export default class RewardListCard extends React.Component {
     const hasRewardManagementAuthority =
       group.auth.rank <= group.rank_setting.manage_reward_rank_required &&
       (id == '0' || id == '1' || id == '2' || id == '3');
+    const {loading} = this.state;
     return (
       //   <Swipeable>
       <View
@@ -93,15 +109,28 @@ export default class RewardListCard extends React.Component {
               }
               type={type}
               onPress={this.onPress}
+              onLootRedeemPress={onLootRedeemPress}
             />
           </View>
           {type == 'loot' ? (
-            <TouchableOpacity>
-              <View style={styles.button}>
-                <Text style={styles.buttonText}>Loot</Text>
-                <Text style={{color: 'white', fontSize: 11}}>
-                  {pointCost}pts
-                </Text>
+            <TouchableOpacity
+              disabled={loading}
+              onPress={() => this.onLootPress(item)}>
+              <View
+                style={[
+                  styles.button,
+                  {backgroundColor: loading ? 'grey' : '#EA2027'},
+                ]}>
+                {loading ? (
+                  <ActivityIndicator animating={loading} color={'white'} />
+                ) : (
+                  <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={styles.buttonText}>Loot</Text>
+                    <Text style={{color: 'white', fontSize: 11}}>
+                      {pointCost}pts
+                    </Text>
+                  </View>
+                )}
               </View>
             </TouchableOpacity>
           ) : null}
@@ -115,7 +144,7 @@ export default class RewardListCard extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: 0.9 * width,
-    height: '95%',
+    height: '93%',
     borderRadius: 25,
     justifyContent: 'flex-start',
     backgroundColor: 'white',
@@ -159,8 +188,8 @@ const styles = StyleSheet.create({
   },
   list: {
     width: '100%',
-    minHeight: height * 0.95 - 70 - 220,
-    maxHeight: height * 0.95 - 60 - 220,
+    minHeight: height * 0.93 - 70 - 220,
+    maxHeight: height * 0.93 - 60 - 220,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 10,

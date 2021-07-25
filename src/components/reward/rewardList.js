@@ -11,8 +11,15 @@ const extractKey = ({id}) => id;
 
 export default class rewardList extends React.Component {
   renderItem = ({item}) => {
-    const {onSettingPress, navigation, group} = this.props;
-    return <RewardListCard item={item} onSettingPress={onSettingPress} navigation={navigation} group={group} />;
+    const {navigation, group, onLootRedeemPress} = this.props;
+    return (
+      <RewardListCard
+        item={item}
+        navigation={navigation}
+        group={group}
+        onLootRedeemPress={onLootRedeemPress}
+      />
+    );
   };
 
   LeftAction = () => {};

@@ -7,6 +7,7 @@ import {
   getUserGroupRewardHistoryQuery,
   getMonthlyGiftCardCountQuery,
   lootRewardMutation,
+  lootRedeemRewardMutation,
 } from './query/rewardQuery';
 import {httpCall, httpUpload} from './utils/httpCall';
 
@@ -27,7 +28,7 @@ export const createUpdateGroupReward = request => {
     token,
     image,
     entryId,
-    point,
+    pointCost,
     expiration,
   } = request;
 
@@ -58,7 +59,7 @@ export const createUpdateGroupReward = request => {
       toId,
       status: 'active',
       image: imageData,
-      point: parseInt(point),
+      pointCost: parseInt(pointCost),
       expiration: expiration ? new Date(expiration) : null,
     };
 
@@ -147,7 +148,7 @@ export const updateGroupRewardSetting = request => {
       chance3Name,
       chance4Name,
       chance5Name,
-      pointCost
+      pointCost,
     };
 
     const graphql = {
@@ -211,6 +212,30 @@ export const updateRewardEntryStatus = request => {
   };
 };
 
+export const lootRedeemReward = request => {
+  const {token, entryId, type, GroupRewardList} = request;
+
+  return async function(dispatch) {
+    const input = {
+      type,
+      entryId,
+      GroupRewardList,
+    };
+
+    const graphql = {
+      query: lootRedeemRewardMutation,
+      variables: {input},
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.lootRedeemReward;
+  };
+};
+
 // legacy
 
 export const getUserGroupRewardHistory = request => {
@@ -264,23 +289,3 @@ export const getMonthlyGiftCardCount = request => {
   };
 };
 
-export const lootReward = request => {
-  const {token, groupId} = request;
-
-  return async function(dispatch) {
-    const graphql = {
-      query: lootRewardMutation,
-      variables: {
-        groupId: groupId,
-      },
-    };
-
-    const result = await httpCall(token, graphql);
-
-    if (result.errors) {
-      return result;
-    }
-
-    return result.data.lootReward;
-  };
-};
