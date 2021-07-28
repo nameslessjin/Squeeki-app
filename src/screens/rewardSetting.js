@@ -262,7 +262,7 @@ class RewardSetting extends React.Component {
     }
 
     if (!redeemable && chosenRewardList.length >= 3) {
-      alert('Each group can only have up to 10 redeemable rewards');
+      alert('Each group can only have up to 3 redeemable rewards');
       return false;
     }
 
@@ -337,6 +337,11 @@ class RewardSetting extends React.Component {
         'Each chance in each list can only contain up to 3 rewards'
       ) {
         alert('Each chance in each list can only contain up to 3 rewards');
+      } else if (
+        req.errors[0].message ==
+        'Each chance in each list can only contain up to 10 rewards'
+      ) {
+        alert('Redeem list can only contain up to 10 rewards');
       } else {
         alert('Cannot add reward at this time, please try again later');
       }
@@ -414,7 +419,13 @@ class RewardSetting extends React.Component {
         return {
           ...prevState,
           hasExpiration: !prevState.hasExpiration,
-          expiration: prevState.hasExpiration ? null : origin.expiration,
+          expiration: prevState.hasExpiration
+            ? null
+            : origin
+            ? origin.expiration
+              ? origin.expiration
+              : Date.now()
+            : Date.now(),
         };
       });
     }
@@ -422,7 +433,6 @@ class RewardSetting extends React.Component {
 
   onBackdropPress = () => {
     Keyboard.dismiss();
-
     this.setState({modalVisible: false});
     const {expiration} = this.state;
 
@@ -508,6 +518,7 @@ class RewardSetting extends React.Component {
       expiration,
       hasExpiration,
     } = this.state;
+    console.log(this.state);
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView style={styles.container} bounces={false}>

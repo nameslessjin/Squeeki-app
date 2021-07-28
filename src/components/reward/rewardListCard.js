@@ -61,8 +61,6 @@ export default class RewardListCard extends React.Component {
     const {onLootRedeemPress} = this.props;
 
     onLootRedeemPress('loot', item);
-    //   this.setState({loading: true});
-    //   this.setState({loading: false});
 
   };
 
@@ -188,8 +186,8 @@ const styles = StyleSheet.create({
   },
   list: {
     width: '100%',
-    minHeight: height * 0.93 - 70 - 220,
-    maxHeight: height * 0.93 - 60 - 220,
+    minHeight: height * 0.92 - 70 - 220,
+    maxHeight: height * 0.92 - 60 - 220,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 10,

@@ -213,12 +213,14 @@ export const updateRewardEntryStatus = request => {
 };
 
 export const lootRedeemReward = request => {
-  const {token, entryId, type, GroupRewardList} = request;
+  const {token, entryId, type, GroupRewardList, groupId, pointCost} = request;
 
   return async function(dispatch) {
     const input = {
       type,
       entryId,
+      groupId,
+      pointCost: parseInt(pointCost),
       GroupRewardList,
     };
 
@@ -288,4 +290,3 @@ export const getMonthlyGiftCardCount = request => {
     return result.data.getMonthlyGiftCardCount;
   };
 };
-

@@ -11,9 +11,12 @@ import {
   FlatList,
   Dimensions,
   Platform,
+  ScrollView,
+  Image,
 } from 'react-native';
 import {PostImagePicker} from '../../utils/imagePicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const {width} = Dimensions.get('screen');
 
@@ -28,6 +31,7 @@ export default class RewardModal extends React.Component {
     const {onInputChange, onBackdropPress, modalType} = this.props;
 
     onInputChange({id: value.toString(), label}, modalType);
+    onBackdropPress();
   };
 
   onPress = type => {
@@ -81,53 +85,60 @@ export default class RewardModal extends React.Component {
       listId,
       expiration,
       onInputChange,
+      result,
     } = this.props;
     const {process} = this.state;
 
-    const listNo = rewardList.map(r => {
-      return {
-        id: r.id,
-        label: r.listName,
-        value: r.id,
-      };
-    });
-
+    let listNo = [];
     let listChance = [];
-    let currentList = rewardList[0];
-    switch (listId) {
-      case '1':
-        currentList = rewardList[0];
-        break;
-      case '2':
-        currentList = rewardList[1];
-        break;
-      case '3':
-        currentList = rewardList[2];
-        break;
-      default:
-        currentList = rewardList[0];
-        break;
+
+    if (modalType == 'listId' || modalType == 'chance') {
+      listNo = rewardList.map(r => {
+        return {
+          id: r.id,
+          label: r.listName,
+          value: r.id,
+        };
+      });
+
+      let currentList = rewardList[0];
+      switch (listId) {
+        case '1':
+          currentList = rewardList[0];
+          break;
+        case '2':
+          currentList = rewardList[1];
+          break;
+        case '3':
+          currentList = rewardList[2];
+          break;
+        default:
+          currentList = rewardList[0];
+          break;
+      }
+
+      listChance[0] = currentList.chance1;
+      listChance[1] = currentList.chance2;
+      listChance[2] = currentList.chance3;
+      listChance[3] = currentList.chance4;
+      listChance[4] = currentList.chance5;
+
+      listChance = listChance.map((c, i) => {
+        return {
+          id: c,
+          label: c,
+          value: i + 1,
+        };
+      });
     }
-
-    listChance[0] = currentList.chance1;
-    listChance[1] = currentList.chance2;
-    listChance[2] = currentList.chance3;
-    listChance[3] = currentList.chance4;
-    listChance[4] = currentList.chance5;
-
-    listChance = listChance.map((c, i) => {
-      return {
-        id: c,
-        label: c,
-        value: i + 1,
-      };
-    });
 
     let name = 'List';
     if (modalType == 'listId') {
       name = 'List';
     } else if (modalType == 'chance') {
       name = 'Chance';
+    } else if (modalType == 'result') {
+      name = 'Result';
     }
 
     // for expiration time
@@ -212,6 +223,85 @@ export default class RewardModal extends React.Component {
                 </View>
               ) : modalType == 'expiration' ? (
                 timeModal
+              ) : modalType == 'result' ? (
+                <TouchableWithoutFeedback>
+                  <View style={styles.resultContainer}>
+                    <View
+                      style={[
+                        styles.modalView,
+                        {
+                          width: '100%',
+                          height: 200,
+                          margin: 0,
+                          justifyContent: 'flex-start',
+                          alignItems: 'center',
+                          padding: 5,
+                          paddingHorizontal: 8,
+                        },
+                      ]}>
+                      <View style={styles.resultTitle}>
+                        <Text style={{fontSize: 18, fontWeight: '500'}}>
+                          Your reward
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          width: '100%',
+                          height: 140,
+                          flexDirection: 'row',
+                        }}>
+                        <View style={styles.resultImageContainer}>
+                          <View
+                            style={{
+                              height: 130,
+                              width: '95%',
+                              alignItems: 'center',
+                            }}>
+                            {result.image ? (
+                              <Image
+                                style={{width: '90%', height: 125}}
+                                source={{
+                                  uri: result.image,
+                                }}
+                              />
+                            ) : (
+                              <MaterialIcons
+                                name={'treasure-chest'}
+                                size={120}
+                                color={'#EA2027'}
+                              />
+                            )}
+                          </View>
+                          <Text>
+                            {result.chanceDisplay
+                              ? `Chance: ${result.chanceDisplay}%`
+                              : result.pointCost
+                              ? `Cost: ${result.pointCost}pts`
+                              : null}
+                          </Text>
+                        </View>
+                        <View style={styles.resultContent}>
+                          <Text style={{fontWeight: 'bold'}}>
+                            {result.name}
+                          </Text>
+                          <ScrollView
+                            style={{
+                              height: 10,
+                              width: '100%',
+                            }}>
+                            <Text>{result.description}</Text>
+                          </ScrollView>
+                          <View style={{width: '100%', height: 10}} />
+                        </View>
+                      </View>
+                    </View>
+                    <TouchableOpacity onPress={onBackdropPress}>
+                      <View style={styles.closeButton}>
+                        <Text style={{color: 'white'}}>Close</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableWithoutFeedback>
               ) : (
                 <TouchableWithoutFeedback>
                   <KeyboardAvoidingView style={styles.view}>
@@ -306,7 +396,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 50,
   },
-
   options: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -325,5 +414,38 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 40,
+  },
+  resultContainer: {
+    width: width * 0.9,
+    height: 250,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  resultTitle: {
+    width: '100%',
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  resultContent: {
+    height: 160,
+    width: '45%',
+    alignItems: 'flex-start',
+    paddingHorizontal: 5,
+  
+  },
+  resultImageContainer: {
+    height: 160,
+    width: '55%',
+    alignItems: 'center',
+  },
+  closeButton: {
+    width: 65,
+    height: 35,
+    backgroundColor: 'grey',
+    borderRadius: 17,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 3,
   },
 });

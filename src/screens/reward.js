@@ -13,8 +13,8 @@ import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {lootRedeemReward, getGroupRewardList} from '../actions/reward';
 import {getUserGroupPoint} from '../actions/point';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import RewardList from '../components/reward/rewardList';
+import RewardModal from '../components/reward/rewardModal';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -28,6 +28,14 @@ class Reward extends React.Component {
       {id: '2', listName: 'List 2'},
       {id: '0', listName: 'Redeem List'},
     ],
+    result: {
+      name: null,
+      description: null,
+      pointCost: null,
+      chanceDisplay: null,
+      errorMessage: null,
+      image: null,
+    },
   };
 
   componentDidMount() {
@@ -89,14 +97,20 @@ class Reward extends React.Component {
 
     if (req.errorMessage) {
       alert(req.errorMessage);
+      console.log(req);
       return;
     } else {
       console.log('Everything is good');
-
+      console.log(req);
+      this.setState({modalVisible: true, result: req});
     }
 
-    this.getGroupRewardList()
-    this.getUserGroupPoint()
+    this.getGroupRewardList();
+    this.getUserGroupPoint();
+  };
+
+  onBackdropPress = () => {
+    this.setState({modalVisible: false});
   };
 
   onLootRedeemPress = async (type, item) => {
@@ -110,7 +124,7 @@ class Reward extends React.Component {
       chance4,
       chance5,
     } = item;
-    const {point, auth} = this.props;
+    const {point, auth, group} = this.props;
     let request = {};
 
     // check if there is enough points
@@ -142,6 +156,8 @@ class Reward extends React.Component {
       request = {
         token: auth.token,
         type: 'loot',
+        pointCost,
+        groupId: group.group.id,
         GroupRewardList,
       };
       Alert.alert(
@@ -161,6 +177,8 @@ class Reward extends React.Component {
         entryId: id,
         token: auth.token,
         type: 'redeem',
+        pointCost,
+        groupId: group.group.id,
       };
       Alert.alert(
         'Redeem',
@@ -179,12 +197,12 @@ class Reward extends React.Component {
 
   render() {
     const {group, reward, navigation, point} = this.props;
-    const {modalVisible} = this.state;
+    const {modalVisible, result} = this.state;
     const {auth, rank_setting} = group.group;
     const {rewardList} = reward;
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, {opacity: modalVisible ? 0.5 : 1}]}>
         <StatusBar barStyle={'dark-content'} />
 
         <RewardList
@@ -196,6 +214,12 @@ class Reward extends React.Component {
         <View style={styles.point}>
           <Text>Points: {point.total_point}</Text>
         </View>
+        <RewardModal
+          modalType={'result'}
+          modalVisible={modalVisible}
+          result={result}
+          onBackdropPress={this.onBackdropPress}
+        />
       </View>
     );
   }

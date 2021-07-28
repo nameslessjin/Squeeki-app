@@ -77,6 +77,7 @@ export const lootRedeemRewardMutation = `
 mutation lootRedeemReward($input: LootRedeemRewardInput!){
     lootRedeemReward(input: $input){
         name
+        image
         description
         pointCost
         chanceDisplay
