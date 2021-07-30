@@ -4,10 +4,9 @@ import {
   updateGroupRewardSettingMutation,
   getRewardEntryQuery,
   updateRewardEntryStatusMutation,
-  getUserGroupRewardHistoryQuery,
   getMonthlyGiftCardCountQuery,
-  lootRewardMutation,
   lootRedeemRewardMutation,
+  getGroupRewardHistoryQuery,
 } from './query/rewardQuery';
 import {httpCall, httpUpload} from './utils/httpCall';
 
@@ -110,6 +109,46 @@ export const getGroupRewardList = request => {
 const getGroupRewardListReducer = data => {
   return {
     type: 'getGroupRewardList',
+    data,
+  };
+};
+
+export const getGroupRewardHistory = request => {
+  const {groupId, count, token, init} = request;
+
+  return async function(dispatch) {
+    const input = {
+      groupId,
+      count,
+    };
+
+    const graphql = {
+      query: getGroupRewardHistoryQuery,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(
+      getGroupRewardHistoryReducer({
+        ...result.data.getGroupRewardHistory,
+        init,
+      }),
+    );
+
+    return 0;
+  };
+};
+
+const getGroupRewardHistoryReducer = data => {
+  return {
+    type: 'getGroupRewardHistory',
     data,
   };
 };
@@ -239,36 +278,6 @@ export const lootRedeemReward = request => {
 };
 
 // legacy
-
-export const getUserGroupRewardHistory = request => {
-  const {token, groupId, count} = request;
-
-  return async function(dispatch) {
-    const input = {
-      groupId: groupId,
-      count: count,
-    };
-
-    // const graphql = {
-    //   query: getUserGroupRewardHistoryQuery,
-    //   variables: {
-    //     input: input,
-    //   },
-    // };
-
-    // const result = await httpCall(token, graphql);
-
-    // if (result.errors) {
-    //   return result;
-    // }
-
-    // dispatch(
-    //   getGroupRewardReducer(result.data.getUserGroupRewardHistory, 'history'),
-    // );
-
-    return 0;
-  };
-};
 
 export const getMonthlyGiftCardCount = request => {
   const {token, groupId} = request;

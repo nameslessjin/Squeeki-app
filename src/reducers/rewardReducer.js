@@ -1,5 +1,4 @@
 const INITIAL_STATE = {
-  rewards: [],
   rewardList: [
     {
       id: '1',
@@ -29,18 +28,25 @@ const INITIAL_STATE = {
       chance5: 40,
     },
   ],
-  count: 0,
-  history: [],
-  history_count: 0,
+  rewardHistory: [],
+  rewardHistoryCount: 0,
 };
 
 export default (pointReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case 'getGroupRewardList':
-      console.log(action);
       return {
         ...state,
         rewardList: action.data,
+      };
+
+    case 'getGroupRewardHistory':
+      return {
+        ...state,
+        rewardHistory: action.data.init
+          ? action.data.reward
+          : state.rewardHistory.concat(action.reward),
+        rewardHistoryCount: action.data.count,
       };
 
     case 'logout':

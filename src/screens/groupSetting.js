@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import {connect} from 'react-redux';
 import GroupHeader from '../components/groupSetting/groupHeader';
@@ -20,6 +21,7 @@ import {
   setGroupVisibility,
   setGroupRequestToJoin,
   getSingleGroupById,
+  leaveGroup,
 } from '../actions/group';
 import {getStatusInGroup} from '../actions/user';
 import {userLogout} from '../actions/auth';
@@ -67,9 +69,7 @@ class GroupSetting extends React.Component {
     }
 
     // short description must have length greater than 20
-    if (
-      shortDescription.length < 20
-    ) {
+    if (shortDescription.length < 20) {
       return false;
     }
 
@@ -338,6 +338,41 @@ class GroupSetting extends React.Component {
     });
   };
 
+  onLeaveGroupPress = () => {
+    const {auth} = this.props.group.group;
+    const rank = auth ? auth.rank : 7;
+    const title = rank <= 1 ? 'Disband the group' : 'Leave the group';
+    const message =
+      rank != 1
+        ? 'Are you sure you want to leave the group?'
+        : 'Disband the group can force everyone to leave the group';
+
+    Alert.alert(title, message, [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {text: 'Confirm', onPress: this.leaveGroup, style: 'destructive'},
+    ]);
+  };
+
+  leaveGroup = async () => {
+    const {leaveGroup, navigation, auth, group} = this.props;
+
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+    };
+
+    const req = await leaveGroup(request);
+
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot leave group at this time, please try again later');
+    }
+    navigation.navigate('Groups');
+  };
+
   render() {
     const {visibility, loading, request_to_join, type} = this.state;
     const {auth, rank_setting} = this.props.group.group;
@@ -345,6 +380,7 @@ class GroupSetting extends React.Component {
     const required_rank = rank_setting
       ? rank_setting.group_setting_rank_required
       : 1;
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
@@ -401,6 +437,23 @@ class GroupSetting extends React.Component {
               disabled={false}
             />
 
+            <View
+              style={{
+                width: '100%',
+                height: 50,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: 15,
+              }}>
+              <TouchableOpacity onPress={this.onLeaveGroupPress}>
+                <Text style={{color: 'red'}}>
+                  {rank <= 1 ? 'Disband' : 'Leave'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.empty} />
+
             <ActivityIndicator
               style={{marginTop: 30}}
               animating={this.state.loading}
@@ -420,6 +473,10 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#ffffff',
   },
+  empty: {
+    height: 200,
+    width: '100%',
+  },
 });
 
 const mapStateToProps = state => {
@@ -435,6 +492,7 @@ const mapDispatchToProps = dispatch => {
     setGroupRequestToJoin: data => dispatch(setGroupRequestToJoin(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
     getStatusInGroup: data => dispatch(getStatusInGroup(data)),
+    leaveGroup: data => dispatch(leaveGroup(data)),
   };
 };
 

@@ -7,13 +7,12 @@ import {
   Text,
   Modal,
   KeyboardAvoidingView,
-  Keyboard,
   FlatList,
   Dimensions,
   Platform,
   ScrollView,
-  Image,
 } from 'react-native';
+import ImageModal from 'react-native-image-modal';
 import {PostImagePicker} from '../../utils/imagePicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -258,8 +257,13 @@ export default class RewardModal extends React.Component {
                               alignItems: 'center',
                             }}>
                             {result.image ? (
-                              <Image
-                                style={{width: '90%', height: 125}}
+                              <ImageModal
+                                style={{
+                                  width: width * 0.9 * 0.55 * 0.95 * 0.95,
+                                  height: 125,
+                                }}
+                                resizeMode="cover"
+                                modalImageResizeMode={'contain'}
                                 source={{
                                   uri: result.image,
                                 }}
@@ -432,7 +436,6 @@ const styles = StyleSheet.create({
     width: '45%',
     alignItems: 'flex-start',
     paddingHorizontal: 5,
-  
   },
   resultImageContainer: {
     height: 160,

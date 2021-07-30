@@ -4,6 +4,8 @@ import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {getGroupMembers} from '../actions/user';
 import {getGroupMembersFunc} from '../functions/user';
+import {getGroupJoinRequestCountFunc} from '../functions/group';
+import {getGroupJoinRequestCount} from '../actions/group';
 import MemberList from '../components/users/members/memberList';
 import AddButton from '../components/users/members/addButton';
 import {searchGroupMembers} from '../actions/user';
@@ -27,7 +29,6 @@ class Users extends React.Component {
       this.setState({searched_users: [], count: 0});
       return;
     }
-
 
     const {
       auth,
@@ -98,7 +99,26 @@ class Users extends React.Component {
       headerBackTitleVisible: false,
     });
     this.loadGroupMembers(true);
+    this.getGroupJoinRequestCount()
   }
+
+  getGroupJoinRequestCount = () => {
+    const {
+      getGroupJoinRequestCount,
+      auth,
+      group,
+      navigation,
+      userLogout,
+    } = this.props;
+    const data = {
+      func: getGroupJoinRequestCount,
+      auth,
+      group,
+      navigation,
+      userLogout,
+    };
+    getGroupJoinRequestCountFunc(data);
+  };
 
   componentDidUpdate() {
     const {navigation, group} = this.props;
@@ -153,7 +173,8 @@ class Users extends React.Component {
   render() {
     const {user, navigation, group} = this.props;
     const {search_term, searched_users} = this.state;
-    const members = searched_users.length == 0 ? user.members.members : searched_users;
+    const members =
+      searched_users.length == 0 ? user.members.members : searched_users;
 
     return (
       <View style={{width: '100%', height: '100%', backgroundColor: 'white'}}>
@@ -181,6 +202,7 @@ const mapDispatchToProps = dispatch => {
     getGroupMembers: data => dispatch(getGroupMembers(data)),
     userLogout: () => dispatch(userLogout()),
     searchGroupMembers: data => dispatch(searchGroupMembers(data)),
+    getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data)),
   };
 };
 

@@ -86,46 +86,32 @@ mutation lootRedeemReward($input: LootRedeemRewardInput!){
 }
 `
 
-// legacy
-
-export const getUserGroupRewardHistoryQuery = `
-query getUserGroupRewardHistory($input: GroupRewardInput!){
-    getUserGroupRewardHistory(input: $input){
-        rewards{
+export const getGroupRewardHistoryQuery = `
+query getGroupRewardHistory($input: RewardInput!){
+    getGroupRewardHistory(input: $input){
+        reward {
             id
-            from
-            type
-            content
             name
+            entryId
+            groupDisplayName
             chance
-            hide
+            pointCost
             createdAt
+            winner {
+                displayName
+                icon
+                userId
+            }
         }
         count
-
     }
 }
-`;
+`
+
+// legacy
 
 export const getMonthlyGiftCardCountQuery = `
 query getMonthlyGiftCardCount($groupId: ID!){
     getMonthlyGiftCardCount(groupId: $groupId)
-}
-`;
-
-export const lootRewardMutation = `
-mutation lootReward($groupId: ID!){
-    lootReward(groupId: $groupId){
-        reward {
-            id
-            from
-            type
-            content
-            name
-            chance
-            hide
-        }
-        total_point
-    }
 }
 `;

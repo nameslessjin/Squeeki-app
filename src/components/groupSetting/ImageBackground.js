@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import LeaveButton from './leaveButton';
 import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 export default class HeaderImageBackground extends React.Component {
@@ -18,7 +17,6 @@ export default class HeaderImageBackground extends React.Component {
       auth,
       backgroundImg,
       icon,
-      onLeave,
       auth_rank,
       onMediaPress,
       required_rank,
@@ -68,7 +66,7 @@ export default class HeaderImageBackground extends React.Component {
           >
             {iconImage}
           </TouchableOpacity>
-          {!initialize ? <LeaveButton auth={auth} onPress={onLeave} /> : null}
+ 
         </View>
       </View>
     );

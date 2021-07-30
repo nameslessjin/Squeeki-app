@@ -29,7 +29,8 @@ export const dateConversion = (time, type) => {
     type == 'comment' ||
     type == 'chat' ||
     type == 'group' ||
-    type == 'timeDisplay'
+    type == 'timeDisplay' ||
+    type == 'reward'
   ) {
     outputTime = months[month] + ' ' + day + ' ' + (year - 2000);
 

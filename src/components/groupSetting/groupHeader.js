@@ -3,7 +3,6 @@ import {StyleSheet, View, Text, TextInput, Platform, Dimensions} from 'react-nat
 import {dateConversion} from '../../utils/time';
 import HeaderImageBackground from './ImageBackground';
 import {connect} from 'react-redux';
-import {leaveGroup} from '../../actions/group';
 import {userLogout} from '../../actions/auth';
 import GroupSettingModal from './groupSettingModal';
 
@@ -75,33 +74,6 @@ class GroupSettingsHeader extends React.Component {
     }
   };
 
-  leaveGroup = async () => {
-    const {data, leaveGroup, navigation} = this.props;
-    const {token} = this.props.auth;
-    const {id, auth} = data;
-
-    const input = {
-      groupId: id,
-      token: token,
-    };
-
-    const group = await leaveGroup(input);
-
-    if (group.errors) {
-      // alert(group.errors[0].message);
-      alert('Cannot leave group at this time, please try again later');
-      if (group.errors[0].message == 'Not Authenticated') {
-        userLogout();
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'SignIn'}],
-        });
-      }
-    }
-
-    navigation.navigate('Groups');
-  };
-
   onBackdropPress = () => {
     this.setState({modalVisible: false});
   };
@@ -148,7 +120,6 @@ class GroupSettingsHeader extends React.Component {
           auth={this.props.data.auth}
           backgroundImg={backgroundImg}
           icon={icon}
-          onLeave={this.leaveGroup}
           auth_rank={auth_rank}
           onMediaPress={this.onMediaPress}
           required_rank={required_rank}
@@ -253,7 +224,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    leaveGroup: data => dispatch(leaveGroup(data)),
     userLogout: () => dispatch(userLogout()),
   };
 };

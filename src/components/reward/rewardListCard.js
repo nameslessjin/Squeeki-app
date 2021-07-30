@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
   },
   list: {
     width: '100%',
-    minHeight: height * 0.92 - 70 - 220,
-    maxHeight: height * 0.92 - 60 - 220,
+    minHeight: height * 0.915 - 70 - 220,
+    maxHeight: height * 0.915 - 60 - 220,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 10,

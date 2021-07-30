@@ -6,8 +6,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Reward from '../screens/reward';
 import RewardHistory from '../screens/rewardHistory';
 import TopRightButton from '../components/reward/topRightButton';
-import {getGroupRewardList} from '../actions/reward';
-import {loadGroupRewardsFunc} from '../functions/reward';
+import {getGroupRewardList, getGroupRewardHistory} from '../actions/reward';
 import {userLogout} from '../actions/auth';
 import {TouchableWithoutFeedback, View, TouchableOpacity} from 'react-native';
 
@@ -68,6 +67,27 @@ class RewardTabNavigator extends React.Component {
     }
   };
 
+  loadGroupRewardHistory = async () => {
+    const {group, getGroupRewardHistory, auth, navigation} = this.props;
+
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+      count: 0,
+      init: true,
+    };
+
+    navigation.navigate('History');
+
+    const req = await getGroupRewardHistory(request);
+
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot get reward history at this time, please try again later');
+      return;
+    }
+  };
+
   onTopRightButtonPress = () => {
     const {navigation} = this.props;
     const routeName = this.getRouteName();
@@ -98,6 +118,12 @@ class RewardTabNavigator extends React.Component {
                 />
               );
             },
+            tabBarButton: props => (
+              <TouchableOpacity
+                {...props}
+                onPress={this.loadGroupRewardHistory}
+              />
+            ),
           }}
         />
         <Tabs.Screen
@@ -132,6 +158,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getGroupRewardList: data => dispatch(getGroupRewardList(data)),
     userLogout: () => dispatch(userLogout()),
+    getGroupRewardHistory: data => dispatch(getGroupRewardHistory(data)),
   };
 };
 
