@@ -50,7 +50,7 @@ class RewardSetting extends React.Component {
   };
 
   componentDidMount() {
-    const {navigation} = this.props;
+    const {navigation, route} = this.props;
     navigation.setOptions({
       headerBackTitle: 'Cancel',
       headerRight: () => (
@@ -62,6 +62,15 @@ class RewardSetting extends React.Component {
       ),
       headerTitle: 'Settings',
     });
+
+    if (route.params) {
+      if (route.params.pointCost == null) {
+        this.setState({
+          pointCost: '0',
+          origin: {...this.props.route.params, pointCost: '0'},
+        });
+      }
+    }
   }
 
   validation = () => {
@@ -322,7 +331,7 @@ class RewardSetting extends React.Component {
       to: 'group',
       toId: group.group.id,
       image,
-      pointCost,
+      pointCost: pointCost == '0' ? null : pointCost,
       expiration,
     };
 
@@ -636,6 +645,7 @@ class RewardSetting extends React.Component {
             rewardList={this.props.reward.rewardList}
             listId={listId}
             expiration={expiration}
+            redeemable={redeemable}
           />
         </ScrollView>
       </TouchableWithoutFeedback>

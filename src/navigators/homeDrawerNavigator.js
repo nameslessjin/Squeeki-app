@@ -29,11 +29,11 @@ import {userLogout} from '../actions/auth';
 import {socket} from '../../server_config';
 import {unsubSocket} from '../functions/chat';
 import {singleDefaultIcon} from '../utils/defaultIcon';
+import MyReward from '../screens/myReward';
 
 const {height} = Dimensions.get('screen');
 
 class HomeDrawerNavigator extends React.Component {
-
   onToggleHeaderLeftButton = () => {
     const {navigation} = this.props;
     navigation.dispatch(DrawerActions.openDrawer());
@@ -114,6 +114,12 @@ class HomeDrawerNavigator extends React.Component {
       });
 
       this.unsubSocket();
+    } else if (name == 'MyRewards') {
+      navigation.setOptions({
+        headerRight: null,
+        headerTitle: 'My Rewards'
+      });
+      this.unsubSocket();
     } else if (name == 'Chats') {
       navigation.setOptions({
         headerRight: () => (
@@ -141,18 +147,17 @@ class HomeDrawerNavigator extends React.Component {
       <Drawer.Navigator
         initialRouteName="Home"
         drawerContent={props => (
-          <CustomDrawerContent
-            {...props}
-            logout={logout}
-            auth={auth}
-          />
+          <CustomDrawerContent {...props} logout={logout} auth={auth} />
         )}
         drawerStyle={styles.drawerStyle}>
         <Drawer.Screen name="Home" component={Home} />
         <Drawer.Screen name="Groups" component={Groups} />
         <Drawer.Screen name="Chats" component={Chats} />
-
-        {/* <Drawer.Screen name="Settings" component={UserSettings} /> */}
+        <Drawer.Screen
+          name="MyRewards"
+          component={MyReward}
+          options={() => ({drawerLabel: 'My Rewards', title: 'My Rewards'})}
+        />
       </Drawer.Navigator>
     );
   }

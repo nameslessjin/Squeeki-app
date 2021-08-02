@@ -92,13 +92,15 @@ export default class RewardModal extends React.Component {
     let listChance = [];
 
     if (modalType == 'listId' || modalType == 'chance') {
-      listNo = rewardList.map(r => {
-        return {
-          id: r.id,
-          label: r.listName,
-          value: r.id,
-        };
-      });
+      listNo = rewardList
+        .map(r => {
+          return {
+            id: r.id,
+            label: r.listName,
+            value: r.id,
+          };
+        })
+        .filter(r => r.id != '0');
 
       let currentList = rewardList[0];
       switch (listId) {

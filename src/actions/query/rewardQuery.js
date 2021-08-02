@@ -92,11 +92,11 @@ query getGroupRewardHistory($input: RewardInput!){
         reward {
             id
             name
-            entryId
             groupDisplayName
             chance
             pointCost
             createdAt
+            fromId
             winner {
                 displayName
                 icon
@@ -108,10 +108,38 @@ query getGroupRewardHistory($input: RewardInput!){
 }
 `
 
-// legacy
-
-export const getMonthlyGiftCardCountQuery = `
-query getMonthlyGiftCardCount($groupId: ID!){
-    getMonthlyGiftCardCount(groupId: $groupId)
+export const getUserRewardHistoryQuery = `
+query getUserRewardHistory($input: RewardInput!){
+    getUserRewardHistory(input: $input){
+        reward {
+            id
+            name
+            groupDisplayName
+            chance
+            pointCost
+            createdAt
+            fromId
+            status
+        }
+        count
+    }
 }
-`;
+
+`
+
+export const getRewardQuery = `
+query getReward($input: RewardInput!){
+    getReward(input: $input){
+        pointCost
+        chance
+        chanceDisplay
+        name
+        description
+        fromId
+        image
+        groupDisplayName
+        content
+        status
+    }
+}
+`

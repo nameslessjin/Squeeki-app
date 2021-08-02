@@ -26,6 +26,8 @@ export default class RewardListCard extends React.Component {
     if (type == 'detail') {
       navigation.navigate('RewardDetailView', {
         ...item,
+        prevRoute: 'reward',
+        isPrivate: 'false'
       });
     } else if (type == 'setting') {
       const {type} = item;
@@ -40,7 +42,7 @@ export default class RewardListCard extends React.Component {
           chance3: item.chance3.toString(),
           chance4: item.chance4.toString(),
           chance5: item.chance5.toString(),
-          pointCost: item.pointCost.toString(),
+          pointCost: item.pointCost ? item.pointCost.toString() : null,
           chance1Name: chanceNameList[0],
           chance2Name: chanceNameList[1],
           chance3Name: chanceNameList[2],
@@ -57,11 +59,10 @@ export default class RewardListCard extends React.Component {
     }
   };
 
-  onLootPress = async (item) => {
+  onLootPress = async item => {
     const {onLootRedeemPress} = this.props;
 
     onLootRedeemPress('loot', item);
-
   };
 
   render() {
@@ -122,7 +123,8 @@ export default class RewardListCard extends React.Component {
                 {loading ? (
                   <ActivityIndicator animating={loading} color={'white'} />
                 ) : (
-                  <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <View
+                    style={{justifyContent: 'center', alignItems: 'center'}}>
                     <Text style={styles.buttonText}>Loot</Text>
                     <Text style={{color: 'white', fontSize: 11}}>
                       {pointCost}pts

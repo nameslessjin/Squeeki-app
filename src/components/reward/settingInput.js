@@ -73,7 +73,7 @@ export default class RewardSettingInput extends React.Component {
     } else if (type == 'expiration') {
       title = 'Expiration';
     } else if (type == 'hasExpiration') {
-      title = 'Has Expiration Date';
+      title = 'Listing Expiration Date';
     } else if (type == 'pointCost') {
       title = 'Point Cost';
     }

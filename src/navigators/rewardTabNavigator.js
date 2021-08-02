@@ -6,9 +6,15 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Reward from '../screens/reward';
 import RewardHistory from '../screens/rewardHistory';
 import TopRightButton from '../components/reward/topRightButton';
-import {getGroupRewardList, getGroupRewardHistory} from '../actions/reward';
+import {
+  getGroupRewardList,
+  getGroupRewardHistory,
+  getUserRewardHistory,
+} from '../actions/reward';
 import {userLogout} from '../actions/auth';
 import {TouchableWithoutFeedback, View, TouchableOpacity} from 'react-native';
+import MyReward from '../screens/myReward';
+import RewardManagement from '../screens/rewardManagement';
 
 const Tabs = createBottomTabNavigator();
 
@@ -42,7 +48,7 @@ class RewardTabNavigator extends React.Component {
             <TopRightButton type={'add'} onPress={this.onTopRightButtonPress} />
           ) : null,
       });
-    } else if (routeName == 'History') {
+    } else {
       navigation.setOptions({
         headerRight: null,
       });
@@ -57,7 +63,7 @@ class RewardTabNavigator extends React.Component {
       groupId: group.group.id,
     };
 
-    navigation.navigate('Reward');
+    navigation.navigate('Rewards');
 
     const req = await getGroupRewardList(request);
     if (req.errors) {
@@ -88,6 +94,26 @@ class RewardTabNavigator extends React.Component {
     }
   };
 
+  loadUserRewardHistory = async () => {
+    const {group, getUserRewardHistory, auth, navigation} = this.props;
+
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+      count: 0,
+      init: true,
+    };
+
+    navigation.navigate('MyRewards');
+
+    const req = await getUserRewardHistory(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot get reward history at this time, please try again later');
+      return;
+    }
+  };
+
   onTopRightButtonPress = () => {
     const {navigation} = this.props;
     const routeName = this.getRouteName();
@@ -98,6 +124,11 @@ class RewardTabNavigator extends React.Component {
   };
 
   render() {
+    const {group} = this.props;
+    const hasRewardManagementAuthority =
+      group.group.auth.rank <=
+      group.group.rank_setting.manage_reward_rank_required;
+
     return (
       <Tabs.Navigator
         initialRouteName="History"
@@ -127,7 +158,7 @@ class RewardTabNavigator extends React.Component {
           }}
         />
         <Tabs.Screen
-          name="Reward"
+          name="Rewards"
           component={Reward}
           options={{
             tabBarIcon: ({focused, color, size}) => {
@@ -144,6 +175,41 @@ class RewardTabNavigator extends React.Component {
             ),
           }}
         />
+        <Tabs.Screen
+          name="MyRewards"
+          component={MyReward}
+          options={{
+            tabBarLabel: 'My Rewards',
+            tabBarIcon: ({focused, color, size}) => {
+              return <MaterialIcons name={'book'} size={25} color={color} />;
+            },
+            tabBarButton: props => (
+              <TouchableOpacity
+                {...props}
+                onPress={this.loadUserRewardHistory}
+              />
+            ),
+          }}
+        />
+        {hasRewardManagementAuthority ? (
+          <Tabs.Screen
+            name="RewardManagement"
+            component={RewardManagement}
+            options={{
+              tabBarLabel: 'Management',
+              tabBarIcon: ({focused, color, size}) => {
+                return (
+                  <MaterialIcons
+                    name={'book-multiple'}
+                    size={25}
+                    color={color}
+                  />
+                );
+              },
+              tabBarButton: props => <TouchableOpacity {...props} />,
+            }}
+          />
+        ) : null}
       </Tabs.Navigator>
     );
   }
@@ -159,6 +225,7 @@ const mapDispatchToProps = dispatch => {
     getGroupRewardList: data => dispatch(getGroupRewardList(data)),
     userLogout: () => dispatch(userLogout()),
     getGroupRewardHistory: data => dispatch(getGroupRewardHistory(data)),
+    getUserRewardHistory: data => dispatch(getUserRewardHistory(data)),
   };
 };
 

@@ -20,21 +20,27 @@ class RewardDetailView extends React.Component {
     image: null,
     count: 0,
     createdAt: null,
-    pointCost: '0',
+    pointCost: null,
+    chance: '1',
+    prevRoute: 'history',
+    isPrivate: false,
     ...this.props.route.params,
   };
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {prevRoute} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Details',
     });
-    this.getRewardEntry();
+    if (prevRoute == 'reward') {
+      this.getRewardEntry();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const {from, to, toId, fromId} = this.state;
+    const {from, to, toId, fromId, prevRoute} = this.state;
     const {group, navigation} = this.props;
     if (this.state != prevState) {
       const inGroup =
@@ -47,7 +53,7 @@ class RewardDetailView extends React.Component {
           group.group.rank_setting.manage_reward_rank_required && inGroup;
       navigation.setOptions({
         headerRight: () =>
-          hasRewardManagementAuthority ? (
+          hasRewardManagementAuthority && prevRoute == 'reward' ? (
             <TopRightButton
               type={'edit'}
               onPress={this.onPress}
@@ -82,7 +88,7 @@ class RewardDetailView extends React.Component {
       chanceDisplay,
       image,
       pointCost,
-      redeemable: pointCost == '0' ? false : true,
+      redeemable: pointCost ? true : false,
       listName: reward.rewardList.filter(l => l.id == listId)[0].listName,
       expiration,
       hasExpiration: expiration != null,
@@ -121,6 +127,10 @@ class RewardDetailView extends React.Component {
       chanceDisplay,
       pointCost,
       expiration,
+      prevRoute,
+      status,
+      isPrivate,
+      content,
     } = this.state;
 
     return (
@@ -135,17 +145,32 @@ class RewardDetailView extends React.Component {
           <InputContent content={description} disabled={true} />
           <View style={styles.infoContaier}>
             <View style={styles.infoSubContainer}>
-              <Text>{count} remaining</Text>
+              {prevRoute == 'reward' ? <Text>{count} remaining</Text> : null}
+              {isPrivate && content ? (
+                <Text>{`Hidden Content: ${content}`}</Text>
+              ) : null}
               <Text style={{marginTop: 10}}>
-                {pointCost == '0' ? `Chance: ${chanceDisplay}%` : `${pointCost} pts`}
+                {pointCost
+                  ? `Point Cost: ${pointCost} pts`
+                  : `Chance To Win: ${chanceDisplay}%`}
               </Text>
               {expiration ? (
                 <Text style={{marginTop: 10}}>
                   {dateConversion(expiration, 'expirationDisplay')}
                 </Text>
               ) : null}
+              {isPrivate ? (
+                <Text
+                  style={{
+                    color: status == 'default' ? 'black' : 'grey',
+                    marginTop: 10,
+                  }}>
+                  {status == 'default' ? 'Available' : 'Used'}
+                </Text>
+              ) : null}
             </View>
           </View>
+          <View style={styles.empty}/>
         </ScrollView>
       </TouchableWithoutFeedback>
     );
@@ -168,6 +193,10 @@ const styles = StyleSheet.create({
     width: '90%',
     padding: 5,
   },
+  empty: {
+    width: '100%',
+    height: 200
+  }
 });
 
 const mapStateToProps = state => {

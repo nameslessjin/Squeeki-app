@@ -4,9 +4,10 @@ import {
   updateGroupRewardSettingMutation,
   getRewardEntryQuery,
   updateRewardEntryStatusMutation,
-  getMonthlyGiftCardCountQuery,
   lootRedeemRewardMutation,
   getGroupRewardHistoryQuery,
+  getRewardQuery,
+  getUserRewardHistoryQuery,
 } from './query/rewardQuery';
 import {httpCall, httpUpload} from './utils/httpCall';
 
@@ -58,7 +59,7 @@ export const createUpdateGroupReward = request => {
       toId,
       status: 'active',
       image: imageData,
-      pointCost: parseInt(pointCost),
+      pointCost: pointCost ? parseInt(pointCost) : null,
       expiration: expiration ? new Date(expiration) : null,
     };
 
@@ -150,6 +151,31 @@ const getGroupRewardHistoryReducer = data => {
   return {
     type: 'getGroupRewardHistory',
     data,
+  };
+};
+
+export const getReward = request => {
+  const {token, rewardId, isPrivate} = request;
+
+  return async function(dispatch) {
+    const input = {
+      rewardId,
+      isPrivate,
+    };
+
+    const graphql = {
+      query: getRewardQuery,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.getReward;
   };
 };
 
@@ -259,7 +285,7 @@ export const lootRedeemReward = request => {
       type,
       entryId,
       groupId,
-      pointCost: parseInt(pointCost),
+      pointCost: pointCost ? parseInt(pointCost) : null,
       GroupRewardList,
     };
 
@@ -277,16 +303,16 @@ export const lootRedeemReward = request => {
   };
 };
 
-// legacy
-
-export const getMonthlyGiftCardCount = request => {
-  const {token, groupId} = request;
+export const getUserRewardHistory = request => {
+  const {token, groupId, count, init} = request;
 
   return async function(dispatch) {
+    const input = {groupId, count};
+    console.log(input);
     const graphql = {
-      query: getMonthlyGiftCardCountQuery,
+      query: getUserRewardHistoryQuery,
       variables: {
-        groupId: groupId,
+        input,
       },
     };
 
@@ -296,6 +322,22 @@ export const getMonthlyGiftCardCount = request => {
       return result;
     }
 
-    return result.data.getMonthlyGiftCardCount;
+    console.log(result);
+
+    dispatch(
+      getUserRewardHistoryReducer({
+        ...result.data.getUserRewardHistory,
+        init,
+      }),
+    );
+
+    return 0;
+  };
+};
+
+const getUserRewardHistoryReducer = data => {
+  return {
+    type: 'getUserRewardHistory',
+    data,
   };
 };

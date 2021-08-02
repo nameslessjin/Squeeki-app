@@ -1,36 +1,41 @@
 import React from 'react';
-import {StyleSheet, View, StatusBar, Text} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import {connect} from 'react-redux';
-import {userLogout} from '../actions/auth';
-import {getGroupRewardHistory, getReward} from '../actions/reward';
+import {getUserRewardHistory, getReward} from '../actions/reward';
 import RewardHistoryList from '../components/reward/rewardHistoryList';
 
-class RewardHistory extends React.Component {
-  state = {
-    loading: false,
-  };
+class MyReward extends React.Component {
 
-  componentDidMount() {
-    const {navigation} = this.props;
-    this.loadGroupRewardHistory(true);
+
+  componentDidMount () {
+
+    const {navigation} = this.props
+
+
   }
 
-  loadGroupRewardHistory = async init => {
-    const {group, getGroupRewardHistory, auth, reward} = this.props;
+  loadUserRewardHistory = async init => {
+    const {group, getUserRewardHistory, auth, reward} = this.props;
 
     const request = {
       token: auth.token,
       groupId: group.group.id,
-      count: init ? 0 : reward.groupRewardHistoryCount,
+      count: init ? 0 : reward.userRewardHistoryCount,
       init,
     };
 
-    const req = await getGroupRewardHistory(request);
-    if (req.errors) {
-      console.log(req.errors);
-      alert('Cannot get reward history at this time, please try again later');
-      return;
+    if (reward.userRewardHistoryCount != 0) {
+      const req = await getUserRewardHistory(request);
+      if (req.errors) {
+        console.log(req.errors);
+        alert('Cannot get reward history at this time, please try again later');
+        return;
+      }
     }
+  };
+
+  onEndReached = () => {
+    this.loadUserRewardHistory(false);
   };
 
   getReward = async id => {
@@ -39,7 +44,7 @@ class RewardHistory extends React.Component {
     const request = {
       token: auth.token,
       rewardId: id,
-      isPrivate: false,
+      isPrivate: true,
     };
 
     const req = await getReward(request);
@@ -54,31 +59,25 @@ class RewardHistory extends React.Component {
       ...req,
       image: req.image ? {uri: req.image} : null,
       prevRoute: 'history',
-      isPrivate: false,
+      isPrivate: true,
     });
-  };
-
-  onEndReached = () => {
-    this.loadGroupRewardHistory(false);
   };
 
   render() {
     const {reward, group} = this.props;
-
     return (
       <View style={{backgroundColor: 'white'}}>
-        <StatusBar barStyle={'dark-content'} />
-        {reward.groupRewardHistory.length == 0 ? (
+        {reward.userRewardHistory.length == 0 ? (
           <View style={styles.container}>
-            <Text style={styles.text}>No one has won any reward yet</Text>
+            <Text style={styles.text}>You have not won any reward yet</Text>
           </View>
         ) : (
           <RewardHistoryList
-            rewardHistory={reward.groupRewardHistory || []}
+            rewardHistory={reward.userRewardHistory || []}
             getReward={this.getReward}
             groupId={group.group.id}
             onEndReached={this.onEndReached}
-            type={'group'}
+            type={'user'}
           />
         )}
       </View>
@@ -106,7 +105,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getGroupRewardHistory: data => dispatch(getGroupRewardHistory(data)),
+    getUserRewardHistory: data => dispatch(getUserRewardHistory(data)),
     userLogout: () => dispatch(userLogout()),
     getReward: data => dispatch(getReward(data)),
   };
@@ -115,4 +114,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(RewardHistory);
+)(MyReward);

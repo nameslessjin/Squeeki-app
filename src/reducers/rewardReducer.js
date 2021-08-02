@@ -28,8 +28,11 @@ const INITIAL_STATE = {
       chance5: 40,
     },
   ],
-  rewardHistory: [],
-  rewardHistoryCount: 0,
+  groupRewardHistory: [],
+  groupRewardHistoryCount: 0,
+  userRewardHistory: [],
+  userRewardHistoryCount: 0
+  
 };
 
 export default (pointReducer = (state = INITIAL_STATE, action) => {
@@ -43,10 +46,20 @@ export default (pointReducer = (state = INITIAL_STATE, action) => {
     case 'getGroupRewardHistory':
       return {
         ...state,
-        rewardHistory: action.data.init
+        groupRewardHistory: action.data.init
           ? action.data.reward
-          : state.rewardHistory.concat(action.reward),
-        rewardHistoryCount: action.data.count,
+          : state.groupRewardHistory.concat(action.data.reward),
+          groupRewardHistoryCount: action.data.count,
+      };
+
+    case 'getUserRewardHistory':
+      console.log(action)
+      return {
+        ...state,
+        userRewardHistory: action.data.init
+          ? action.data.reward
+          : state.userRewardHistory.concat(action.data.reward),
+          userRewardHistoryCount: action.data.count,
       };
 
     case 'logout':
