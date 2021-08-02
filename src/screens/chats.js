@@ -254,18 +254,26 @@ class Chats extends React.Component {
     return (
       <View>
         <StatusBar barStyle={'dark-content'} />
-        <TouchableWithoutFeedback onPress={this.onBackdropPress}>
-          <List
-            chat={chat.chats}
-            onRefresh={this.onRefresh}
-            refreshing={refreshing}
-            onEndReached={this.onEndReached}
-            onChatPress={this.onChatPress}
-            userGroupAuthRank={group.group.auth ? group.group.auth.rank : null}
-            changeUserChatNotification={this.changeUserChatNotification}
-            updatePinChat={this.updatePinChat}
-          />
-        </TouchableWithoutFeedback>
+        {chat.chats.length == 0 ? (
+          <View style={styles.container}>
+            <Text style={styles.text}>You are not in any chat yet</Text>
+          </View>
+        ) : (
+          <TouchableWithoutFeedback onPress={this.onBackdropPress}>
+            <List
+              chat={chat.chats}
+              onRefresh={this.onRefresh}
+              refreshing={refreshing}
+              onEndReached={this.onEndReached}
+              onChatPress={this.onChatPress}
+              userGroupAuthRank={
+                group.group.auth ? group.group.auth.rank : null
+              }
+              changeUserChatNotification={this.changeUserChatNotification}
+              updatePinChat={this.updatePinChat}
+            />
+          </TouchableWithoutFeedback>
+        )}
         <NewChatModal
           onBackdropPress={this.onBackdropPress}
           modalVisible={modalVisible}
@@ -275,6 +283,19 @@ class Chats extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+  },
+  text: {
+    fontStyle: 'italic',
+    marginTop: 200,
+    color: 'grey',
+  },
+});
 
 const mapStateToProps = state => {
   const {auth, group, chat, currentScreen} = state;

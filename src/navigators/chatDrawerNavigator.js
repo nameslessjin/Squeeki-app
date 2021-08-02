@@ -25,35 +25,34 @@ class ChatDrawerkNavigator extends React.Component {
     const {navigation} = this.props;
     const {chat} = this.props.chat;
     let name = 'Chat';
-    let headerTitleSize = 18
+    let headerTitleSize = 18;
     if (chat) {
       name = chat.name.trim();
       this.getUserChat(chat.id);
 
-      if (name.length >= 15){
-        headerTitleSize = 16
+      if (name.length >= 15) {
+        headerTitleSize = 16;
       }
 
-      if (name.length >= 20){
-        headerTitleSize = 15
+      if (name.length >= 20) {
+        headerTitleSize = 15;
       }
 
-      if (name.length >= 30){
-        headerTitleSize = 13
+      if (name.length >= 30) {
+        headerTitleSize = 13;
       }
 
-      if (name.length >= 35){
-        headerTitleSize = 11
+      if (name.length >= 35) {
+        headerTitleSize = 11;
       }
 
-      if (name.length >= 40){
-        headerTitleSize = 10
+      if (name.length >= 40) {
+        headerTitleSize = 10;
       }
 
-      if (name.length >= 45){
-        headerTitleSize = 8
+      if (name.length >= 45) {
+        headerTitleSize = 8;
       }
-
     }
 
     navigation.setOptions({
@@ -63,8 +62,8 @@ class ChatDrawerkNavigator extends React.Component {
       headerBackTitleVisible: false,
       headerTitle: name,
       headerTitleStyle: {
-        fontSize: headerTitleSize
-      }
+        fontSize: headerTitleSize,
+      },
     });
   }
 
@@ -210,10 +209,13 @@ class ChatDrawerkNavigator extends React.Component {
     }
     return (
       <Drawer.Navigator
+        screenOptions={{
+          headerShown: false,
+          drawerPosition: 'right',
+          drawerStyle: styles.drawerStyle,
+        }}
         initialRouteName={'Chat'}
-        drawerPosition={'right'}
-        drawerContent={props => this.CustomDrawerContent(props)}
-        drawerStyle={styles.drawerStyle}>
+        drawerContent={props => this.CustomDrawerContent(props)}>
         <Drawer.Screen name={name || 'Chat'} component={Chat} />
       </Drawer.Navigator>
     );

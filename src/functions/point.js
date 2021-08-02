@@ -7,14 +7,16 @@ export const loadLeaderBoardFunc = async data => {
     group,
     count,
     limit,
-    period
+    period,
+    init
   } = data;
   const request = {
     token: auth.token,
     groupId: group.group.id,
-    count: count,
-    limit: limit,
-    period: period
+    count,
+    limit,
+    period,
+    init
   };
 
   const req = await getGroupPointLeaderBoard(request);

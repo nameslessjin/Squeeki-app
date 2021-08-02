@@ -83,14 +83,11 @@ class GroupDrawerNavigator extends React.Component {
         />
         <DrawerItem
           label="Chats"
-          icon={() => (
-            <MaterialIcons name="chat" color={'grey'} size={25} />
-          )}
+          icon={() => <MaterialIcons name="chat" color={'grey'} size={25} />}
           labelStyle={styles.labelStyle}
           onPress={() => {
             props.navigation.navigate('Chats');
           }}
-          
         />
         <DrawerItem
           label="Nomination"
@@ -139,10 +136,14 @@ class GroupDrawerNavigator extends React.Component {
 
     return (
       <Drawer.Navigator
+        screenOptions={{
+          headerShown: false,
+          drawerPosition: 'right',
+          drawerStyle: styles.drawerStyle,
+        }}
         initialRouteName="Group"
         drawerPosition="right"
-        drawerContent={props => this.CustomDrawerContent(props)}
-        drawerStyle={styles.drawerStyle}>
+        drawerContent={props => this.CustomDrawerContent(props)}>
         <Drawer.Screen name={display_name || 'Group'} component={Group} />
       </Drawer.Navigator>
     );

@@ -22,12 +22,11 @@ export default class addOrModifyPost extends React.Component {
 
 const styles = StyleSheet.create({
     headerRightButton: {
-        marginRight: 5,
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center'
-
+      width: 50,
+      height: 50,
+      marginRight: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     button:{
       fontSize: 16

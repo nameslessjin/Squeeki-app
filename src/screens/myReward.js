@@ -5,13 +5,15 @@ import {getUserRewardHistory, getReward} from '../actions/reward';
 import RewardHistoryList from '../components/reward/rewardHistoryList';
 
 class MyReward extends React.Component {
-
-
-  componentDidMount () {
-
-    const {navigation} = this.props
-
-
+  componentDidUpdate(prevProps) {
+    const {currentScreen} = this.props;
+    const prevScreen = prevProps.currentScreen;
+    if (
+      currentScreen.currentScreen == 'MyRewards' &&
+      prevScreen.currentScreen != 'MyRewards'
+    ) {
+      this.loadUserRewardHistory(true);
+    }
   }
 
   loadUserRewardHistory = async init => {
@@ -24,13 +26,11 @@ class MyReward extends React.Component {
       init,
     };
 
-    if (reward.userRewardHistoryCount != 0) {
-      const req = await getUserRewardHistory(request);
-      if (req.errors) {
-        console.log(req.errors);
-        alert('Cannot get reward history at this time, please try again later');
-        return;
-      }
+    const req = await getUserRewardHistory(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot get reward history at this time, please try again later');
+      return;
     }
   };
 
@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group, auth, reward} = state;
-  return {group, auth, reward};
+  const {group, auth, reward, currentScreen} = state;
+  return {group, auth, reward, currentScreen};
 };
 
 const mapDispatchToProps = dispatch => {

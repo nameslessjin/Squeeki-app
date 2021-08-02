@@ -63,6 +63,7 @@ query getRewardEntry($input: RewardInput!){
         pointCost
         chanceDisplay
         expiration
+        groupDisplayName
     }
 }
 `;

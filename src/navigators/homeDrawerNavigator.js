@@ -99,11 +99,13 @@ class HomeDrawerNavigator extends React.Component {
       // });
       navigation.setOptions({
         headerRight: null,
+        headerTitle: 'Home',
       });
       this.unsubSocket();
     } else if (name == 'Profile') {
       navigation.setOptions({
         headerRight: null,
+        headerTitle: 'Profile',
       });
       this.unsubSocket();
     } else if (name == 'Groups') {
@@ -111,21 +113,23 @@ class HomeDrawerNavigator extends React.Component {
         headerRight: () => (
           <GroupRightButton onPress={this.onToggleGroupsRightButton} />
         ),
+        headerTitle: 'Groups',
       });
 
       this.unsubSocket();
     } else if (name == 'MyRewards') {
       navigation.setOptions({
         headerRight: null,
-        headerTitle: 'My Rewards'
+        headerTitle: 'My Rewards',
       });
+      
       this.unsubSocket();
     } else if (name == 'Chats') {
       navigation.setOptions({
         headerRight: () => (
           <HeaderRightButton
             onPress={() =>
-              navigation.navigate('Home', {
+              navigation.navigate('HomeDrawerNavigator', {
                 screen: 'Chats',
                 params: {modalVisible: true},
               })
@@ -133,6 +137,7 @@ class HomeDrawerNavigator extends React.Component {
             type={'create'}
           />
         ),
+        headerTitle: 'Chats',
       });
     }
   }
@@ -145,6 +150,7 @@ class HomeDrawerNavigator extends React.Component {
     const {logout, auth} = this.props;
     return (
       <Drawer.Navigator
+        screenOptions={{headerShown: false, drawerStyle: {width: 200}}}
         initialRouteName="Home"
         drawerContent={props => (
           <CustomDrawerContent {...props} logout={logout} auth={auth} />
@@ -156,7 +162,10 @@ class HomeDrawerNavigator extends React.Component {
         <Drawer.Screen
           name="MyRewards"
           component={MyReward}
-          options={() => ({drawerLabel: 'My Rewards', title: 'My Rewards'})}
+          options={() => ({
+            drawerLabel: 'My Rewards',
+            headerTitle: 'My Rewards',
+          })}
         />
       </Drawer.Navigator>
     );

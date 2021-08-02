@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {getRewardEntry} from '../actions/reward';
@@ -119,6 +120,7 @@ class RewardDetailView extends React.Component {
 
   render() {
     const {
+      di,
       description,
       image,
       count,
@@ -131,7 +133,10 @@ class RewardDetailView extends React.Component {
       status,
       isPrivate,
       content,
+      fromId,
+      groupDisplayName,
     } = this.state;
+    const {group} = this.props.group;
 
     return (
       <TouchableWithoutFeedback>
@@ -149,28 +154,43 @@ class RewardDetailView extends React.Component {
               {isPrivate && content ? (
                 <Text>{`Hidden Content: ${content}`}</Text>
               ) : null}
-              <Text style={{marginTop: 10}}>
+              <Text style={styles.text}>
                 {pointCost
                   ? `Point Cost: ${pointCost} pts`
                   : `Chance To Win: ${chanceDisplay}%`}
               </Text>
               {expiration ? (
-                <Text style={{marginTop: 10}}>
+                <Text style={styles.text}>
+                  Listing Expiration:{' '}
                   {dateConversion(expiration, 'expirationDisplay')}
                 </Text>
               ) : null}
-              {isPrivate ? (
+              {fromId == group.id ? (
+                <Text style={styles.text}>Group: {groupDisplayName}</Text>
+              ) : (
+                <View style={[styles.text, {flexDirection: 'row'}]}>
+                  <Text>Group: </Text>
+                  <TouchableOpacity>
+                    <View style={styles.groupNameTag}>
+                      <Text style={{color: 'white'}}>{groupDisplayName}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              )}
+              {isPrivate && prevRoute == 'history' ? (
                 <Text
-                  style={{
-                    color: status == 'default' ? 'black' : 'grey',
-                    marginTop: 10,
-                  }}>
+                  style={[
+                    styles.text,
+                    {
+                      color: status == 'default' ? 'black' : 'grey',
+                    },
+                  ]}>
                   {status == 'default' ? 'Available' : 'Used'}
                 </Text>
               ) : null}
             </View>
           </View>
-          <View style={styles.empty}/>
+          <View style={styles.empty} />
         </ScrollView>
       </TouchableWithoutFeedback>
     );
@@ -195,8 +215,17 @@ const styles = StyleSheet.create({
   },
   empty: {
     width: '100%',
-    height: 200
-  }
+    height: 200,
+  },
+  groupNameTag: {
+    backgroundColor: '#1e90ff',
+    borderRadius: 5,
+    padding: 2,
+    paddingHorizontal: 5,
+  },
+  text: {
+    marginTop: 10,
+  },
 });
 
 const mapStateToProps = state => {

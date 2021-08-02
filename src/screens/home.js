@@ -27,6 +27,7 @@ class Home extends React.Component {
   componentDidMount() {
     this.setState({loading: true});
     this.loadFeed(true);
+    console.log('here')
     this.setState({loading: false});
     this.getNotificationToken();
   }

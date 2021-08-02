@@ -11,7 +11,7 @@ export default class HeaderRightButton extends React.Component {
         {type == 'create' ? (
           <MaterialIcons name={'plus'} size={30} color={ '#EA2027'}/>
         ) : (
-          <Text style={{color: disabled ? '#95a5a6' : null}} >Done</Text>
+          <Text style={{color: disabled ? '#95a5a6' : null, fontSize: 16}} >Done</Text>
         )}
       </TouchableOpacity>
     );
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 5,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
   },
 });

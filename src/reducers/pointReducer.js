@@ -19,12 +19,7 @@ export default (pointReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         leaderboard: {
-          users:
-            action.i.count > 20 && action.i.count == state.leaderboard.count
-              ? state.leaderboard.users
-              : action.i.count == 3 || action.i.count == 20
-              ? action.i.users
-              : state.leaderboard.users.concat(action.i.users),
+          users: action.i.init ? action.i.users : state.leaderboard.users.concat(action.i.users),
           count: action.i.count,
         },
       };

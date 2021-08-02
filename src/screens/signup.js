@@ -142,7 +142,7 @@ class SignUp extends React.Component {
     setTimeout(() => {
       this.props.navigation.reset({
         index: 0,
-        routes: [{name: 'Home'}],
+        routes: [{name: 'HomeDrawerNavigator'}],
       });
     }, 500);
   };
@@ -237,6 +237,7 @@ class SignUp extends React.Component {
             defaultIcons={defaultIcons}
             onDefaultIconPress={this.onDefaultIconPress}
           />
+          <View style={styles.empty}/>
         </ScrollView>
       </TouchableWithoutFeedback>
     );
@@ -275,6 +276,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#b2bec3',
   },
+  empty: {
+    width: '100%',
+    height: 200
+  }
 });
 
 const mapDispatchToProps = dispatch => {

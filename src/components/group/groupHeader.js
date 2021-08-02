@@ -18,7 +18,7 @@ import {changeGroupNotification} from '../../actions/user';
 import {userLogout} from '../../actions/auth';
 import TagList from '../tags/tagList';
 import {pointFormat} from '../../utils/point';
-import {getGroupPointLeaderBoard} from '../../actions/point';
+import {getGroupPointLeaderBoard, cleanLeaderboard} from '../../actions/point';
 import {loadLeaderBoardFunc} from '../../functions/point';
 import {getMonth} from '../../utils/time';
 
@@ -130,7 +130,7 @@ class GroupHeader extends React.Component {
 
   onLeaderboardPress = () => {
     const {cleanLeaderboard, navigation} = this.props;
-
+    cleanLeaderboard()
     navigation.navigate('Leaderboard');
   };
 

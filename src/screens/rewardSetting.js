@@ -356,7 +356,7 @@ class RewardSetting extends React.Component {
       }
       return;
     }
-    navigation.navigate('Reward');
+    navigation.navigate('Rewards');
   };
 
   onInputChange = (value, type) => {
@@ -473,7 +473,7 @@ class RewardSetting extends React.Component {
       alert('Cannot delete reward at this time, please try again later');
       return;
     }
-    navigation.navigate('Reward');
+    navigation.navigate('Rewards');
   };
 
   onPress = type => {
@@ -647,6 +647,7 @@ class RewardSetting extends React.Component {
             expiration={expiration}
             redeemable={redeemable}
           />
+          <View style={styles.empty} />
         </ScrollView>
       </TouchableWithoutFeedback>
     );
@@ -671,6 +672,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 20,
     marginTop: 15,
+  },
+  empty: {
+    width: '100%',
+    height: 200,
   },
 });
 

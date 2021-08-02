@@ -76,15 +76,10 @@ export default class RewardHistoryList extends React.Component {
                 {fromId == groupId ? (
                   <Text style={styles.text}>Group: {groupDisplayName}</Text>
                 ) : (
-                  <View style={{flexDirection: 'row', marginTop: 3}}>
+                  <View style={[styles.text, {flexDirection: 'row'}]}>
                     <Text>Group: </Text>
                     <TouchableOpacity>
-                      <View
-                        style={{
-                          backgroundColor: '#1e90ff',
-                          borderRadius: 5,
-                          padding: 2,
-                        }}>
+                      <View style={styles.groupNameTag}>
                         <Text style={{color: 'white'}}>{groupDisplayName}</Text>
                       </View>
                     </TouchableOpacity>
@@ -195,5 +190,11 @@ const styles = StyleSheet.create({
   empty: {
     width: '100%',
     height: 200,
+  },
+  groupNameTag: {
+    backgroundColor: '#1e90ff',
+    borderRadius: 5,
+    padding: 2,
+    paddingHorizontal: 5,
   },
 });

@@ -308,7 +308,6 @@ export const getUserRewardHistory = request => {
 
   return async function(dispatch) {
     const input = {groupId, count};
-    console.log(input);
     const graphql = {
       query: getUserRewardHistoryQuery,
       variables: {
@@ -322,7 +321,6 @@ export const getUserRewardHistory = request => {
       return result;
     }
 
-    console.log(result);
 
     dispatch(
       getUserRewardHistoryReducer({

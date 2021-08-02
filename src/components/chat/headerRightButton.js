@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageStyle: {
-    height: 30,
+    height: 35,
     aspectRatio: 1,
     borderRadius: 37,
     backgroundColor: 'white',

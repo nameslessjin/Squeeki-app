@@ -158,7 +158,7 @@ export default (App = () => {
             />
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen
-              name="Home"
+              name="HomeDrawerNavigator"
               component={HomeDrawerNavigator}
               options={({route}) => ({headerTitle: getHeaderTitle(route)})}
             />

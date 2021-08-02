@@ -30,7 +30,7 @@ class RewardTabNavigator extends React.Component {
 
   getRouteName = () => {
     const routeName =
-      getFocusedRouteNameFromRoute(this.props.route) ?? 'reward';
+      getFocusedRouteNameFromRoute(this.props.route) ?? 'Rewards';
     return routeName;
   };
 
@@ -38,7 +38,7 @@ class RewardTabNavigator extends React.Component {
     const routeName = this.getRouteName();
     const {navigation, group} = this.props;
 
-    if (routeName == 'Reward') {
+    if (routeName == 'Rewards') {
       const hasRewardManagementAuthority =
         group.group.auth.rank <=
         group.group.rank_setting.manage_reward_rank_required;
@@ -118,7 +118,7 @@ class RewardTabNavigator extends React.Component {
     const {navigation} = this.props;
     const routeName = this.getRouteName();
 
-    if (routeName.toLowerCase() == 'reward') {
+    if (routeName == 'Rewards') {
       navigation.navigate('RewardSetting');
     }
   };
@@ -132,9 +132,11 @@ class RewardTabNavigator extends React.Component {
     return (
       <Tabs.Navigator
         initialRouteName="History"
-        tabBarOptions={{
-          activeTintColor: 'tomato',
-          inactiveTintColor: 'grey',
+        screenOptions={{
+          tabBarHideOnKeyboard: true,
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'grey',
+          headerShown: false,
         }}>
         <Tabs.Screen
           name="History"

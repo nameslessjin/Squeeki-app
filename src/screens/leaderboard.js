@@ -5,7 +5,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   StatusBar,
-  Text
+  Text,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -18,14 +18,11 @@ class Leaderboard extends React.Component {
     loading: false,
   };
 
-
-
   componentDidMount() {
     const {navigation} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
     });
-
   }
 
   componentWillUnmount() {
@@ -43,34 +40,36 @@ class Leaderboard extends React.Component {
     } = this.props;
     const {count} = point.leaderboard;
     const data = {
-      userLogout: userLogout,
-      auth: auth,
-      getGroupPointLeaderBoard: getGroupPointLeaderBoard,
-      navigation: navigation,
-      group: group,
+      userLogout,
+      auth,
+      getGroupPointLeaderBoard,
+      navigation,
+      group,
       count: init ? 0 : count,
       limit: limit || 20,
-      period: period,
+      period,
+      init,
     };
 
     loadLeaderBoardFunc(data);
   };
 
-  onEndReached = (period) => {
-    this.setState({loading: true});
+  onEndReached = period => {
     this.loadLeaderBoard(false, period);
-    this.setState({loading: false});
   };
 
   render() {
     const {users} = this.props.point.leaderboard;
-
     return (
       <TouchableWithoutFeedback>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
           <View style={styles.leaderboard}>
-            <LeaderboardList users={users} onEndReached={this.onEndReached} loadLeaderBoard={this.loadLeaderBoard} />
+            <LeaderboardList
+              users={users}
+              onEndReached={this.onEndReached}
+              loadLeaderBoard={this.loadLeaderBoard}
+            />
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -85,11 +84,11 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  leaderboard:{
-      width: '100%',
-      height: '100%',
-      padding: 10
-  }
+  leaderboard: {
+    width: '100%',
+    height: '100%',
+    padding: 10,
+  },
 });
 
 const mapStateToProps = state => {

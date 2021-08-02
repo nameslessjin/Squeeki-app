@@ -22,12 +22,11 @@ export default class modifyButton extends React.Component{
 
 const styles = StyleSheet.create({
     headerRightButton: {
-        marginRight: 15,
-        width: '100%',
-        height: '100%',
+        width: 50,
+        height: 50,
+        marginRight: 5,
+        alignItems: 'center',
         justifyContent: 'center',
-        alignItems: 'center'
-
     },
     button:{
       fontSize: 16
