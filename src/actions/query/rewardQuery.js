@@ -143,6 +143,11 @@ query getReward($input: RewardInput!){
         groupDisplayName
         content
         status
+        updatedAt
+        redeemer {
+            username
+            displayName
+        }
     }
 }
 `;
@@ -168,3 +173,9 @@ query searchReward($input: RewardInput!){
 }
 
 `;
+
+export const redeemUserRewardMutation = `
+mutation redeemUserReward($input: RewardInput!){
+    redeemUserReward(input: $input)
+}
+`

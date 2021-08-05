@@ -9,6 +9,7 @@ import {
   getRewardQuery,
   getUserRewardHistoryQuery,
   searchRewardQuery,
+  redeemUserRewardMutation,
 } from './query/rewardQuery';
 import {httpCall, httpUpload} from './utils/httpCall';
 
@@ -359,5 +360,27 @@ export const searchReward = request => {
     }
 
     return result.data.searchReward;
+  };
+};
+
+export const redeemUserReward = request => {
+  const {rewardId, token} = request;
+
+  return async function(dispatch) {
+    const input = {rewardId};
+
+    const graphql = {
+      query: redeemUserRewardMutation,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return 0;
   };
 };

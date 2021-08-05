@@ -213,10 +213,12 @@ class RewardDetailView extends React.Component {
       content,
       fromId,
       groupDisplayName,
+      redeemer,
+      updatedAt
     } = this.state;
     const {group} = this.props.group;
 
-    console.log(prevRoute)
+    console.log(this.state);
 
     return (
       <TouchableWithoutFeedback>
@@ -257,10 +259,12 @@ class RewardDetailView extends React.Component {
                   </TouchableOpacity>
                 </View>
               )}
-              {isPrivate && (prevRoute == 'history' || prevRoute == 'management') ? (
+              {isPrivate &&
+              (prevRoute == 'history' || prevRoute == 'management') ? (
                 <Text style={[styles.text]}>Reward ID: {id}</Text>
               ) : null}
-              {isPrivate && (prevRoute == 'history' || prevRoute == 'management') ? (
+              {isPrivate &&
+              (prevRoute == 'history' || prevRoute == 'management') ? (
                 <Text
                   style={[
                     styles.text,
@@ -268,7 +272,27 @@ class RewardDetailView extends React.Component {
                       color: status == 'default' ? 'black' : 'grey',
                     },
                   ]}>
-                  {status == 'default' ? 'Available' : 'Redeemed'}
+                  {status == 'default'
+                    ? 'Available'
+                    : `Redeemed ${
+                        redeemer
+                          ? `by ${redeemer.displayName}(@${redeemer.username})`
+                          : ''
+                      }`}
+                </Text>
+              ) : null}
+              {isPrivate &&
+              redeemer &&
+              status == 'redeemed' &&
+              (prevRoute == 'history' || prevRoute == 'management') ? (
+                <Text
+                  style={[
+                    styles.text,
+                    {
+                      color: 'grey',
+                    },
+                  ]}>
+                  {`Redeemed at ${dateConversion(updatedAt, 'reward')}`}
                 </Text>
               ) : null}
             </View>

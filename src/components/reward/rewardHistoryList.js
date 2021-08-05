@@ -174,7 +174,7 @@ class RewardHistoryList extends React.Component {
                       ]}>
                       <Text
                         style={{
-                          color: status == 'default' ? 'white' : 'black',
+                          color: status == 'default' ? 'white' : 'grey',
                         }}>
                         {status == 'default' ? 'Redeem' : 'Redeemed'}
                       </Text>

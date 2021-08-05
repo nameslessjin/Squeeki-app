@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import SearchBar from '../components/reward/rewardSearchBar';
-import {searchReward} from '../actions/reward';
+import {searchReward, redeemUserReward} from '../actions/reward';
 import RewardHistoryList from '../components/reward/rewardHistoryList';
 
 class RewardManagement extends React.Component {
@@ -59,6 +59,32 @@ class RewardManagement extends React.Component {
   };
 
   redeemUserReward = async id => {
+    const {redeemUserReward, auth, group} = this.props;
+
+    const request = {
+      token: auth.token,
+      rewardId: id,
+    };
+
+    const hasRewardManagementAuthority =
+      group.group.auth.rank <=
+      group.group.rank_setting.manage_reward_rank_required;
+
+    if (!hasRewardManagementAuthority) {
+      alert(
+        'Your current rank is below allowed rank to manage rewards, please check with the group owner',
+      );
+      return;
+    }
+
+    const req = await redeemUserReward(request);
+
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot redeem user reward at this time, please try again later');
+      return;
+    }
+
     this.setState(prevState => {
       return {
         rewardList: prevState.rewardList.map(r => {
@@ -143,6 +169,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     searchReward: data => dispatch(searchReward(data)),
+    redeemUserReward: data => dispatch(redeemUserReward(data)),
   };
 };
 
