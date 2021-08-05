@@ -327,6 +327,7 @@ class RewardListSetting extends React.Component {
       chance4Name,
       chance5Name,
       pointCost,
+      id
     } = this.state;
 
     return (
@@ -343,6 +344,7 @@ class RewardListSetting extends React.Component {
               type={'pointCost'}
               value={pointCost}
               onInputChange={this.onInputChange}
+              listId = {id}
             />
           ) : null}
 

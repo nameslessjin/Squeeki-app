@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, StatusBar, Text} from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
-import {getGroupRewardHistory, getReward} from '../actions/reward';
+import {getGroupRewardHistory} from '../actions/reward';
 import RewardHistoryList from '../components/reward/rewardHistoryList';
 
 class RewardHistory extends React.Component {
@@ -33,37 +33,12 @@ class RewardHistory extends React.Component {
     }
   };
 
-  getReward = async id => {
-    const {getReward, auth, navigation} = this.props;
-
-    const request = {
-      token: auth.token,
-      rewardId: id,
-      isPrivate: false,
-    };
-
-    const req = await getReward(request);
-
-    if (req.errors) {
-      console.log(req.errors);
-      alert('Cannot get reward detail at this time, please try again later');
-      return;
-    }
-
-    navigation.navigate('RewardDetailView', {
-      ...req,
-      image: req.image ? {uri: req.image} : null,
-      prevRoute: 'history',
-      isPrivate: false,
-    });
-  };
-
   onEndReached = () => {
     this.loadGroupRewardHistory(false);
   };
 
   render() {
-    const {reward, group} = this.props;
+    const {reward, group, navigation} = this.props;
 
     return (
       <View style={{backgroundColor: 'white'}}>
@@ -75,10 +50,12 @@ class RewardHistory extends React.Component {
         ) : (
           <RewardHistoryList
             rewardHistory={reward.groupRewardHistory || []}
-            getReward={this.getReward}
+            isPrivate={false}
             groupId={group.group.id}
             onEndReached={this.onEndReached}
             type={'group'}
+            navigation={navigation}
+            prevRoute={'history'}
           />
         )}
       </View>
@@ -108,7 +85,6 @@ const mapDispatchToProps = dispatch => {
   return {
     getGroupRewardHistory: data => dispatch(getGroupRewardHistory(data)),
     userLogout: () => dispatch(userLogout()),
-    getReward: data => dispatch(getReward(data)),
   };
 };
 

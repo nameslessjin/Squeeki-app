@@ -85,7 +85,7 @@ mutation lootRedeemReward($input: LootRedeemRewardInput!){
         errorMessage
     }
 }
-`
+`;
 
 export const getGroupRewardHistoryQuery = `
 query getGroupRewardHistory($input: RewardInput!){
@@ -107,7 +107,7 @@ query getGroupRewardHistory($input: RewardInput!){
         count
     }
 }
-`
+`;
 
 export const getUserRewardHistoryQuery = `
 query getUserRewardHistory($input: RewardInput!){
@@ -126,21 +126,45 @@ query getUserRewardHistory($input: RewardInput!){
     }
 }
 
-`
+`;
 
 export const getRewardQuery = `
 query getReward($input: RewardInput!){
     getReward(input: $input){
+        id
         pointCost
         chance
         chanceDisplay
         name
         description
         fromId
+        from
         image
         groupDisplayName
         content
         status
     }
 }
-`
+`;
+export const searchRewardQuery = `
+query searchReward($input: RewardInput!){
+    searchReward(input: $input){
+        reward{
+            id
+            pointCost
+            chance
+            status
+            name
+            createdAt
+            fromId
+            winner {
+                userId
+                icon
+                displayName
+            }
+        }
+        count
+    }
+}
+
+`;

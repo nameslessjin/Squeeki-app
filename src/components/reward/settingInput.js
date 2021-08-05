@@ -31,7 +31,7 @@ export default class RewardSettingInput extends React.Component {
   };
 
   render() {
-    const {type, value, onInputChange, onPress, pointCost} = this.props;
+    const {type, value, onInputChange, onPress, listId} = this.props;
     let title = 'Name';
     let display = <View />;
     if (type == 'description') {
@@ -169,6 +169,7 @@ export default class RewardSettingInput extends React.Component {
               }
               multiline={type == 'description'}
               placeholderTextColor={'#7f8fa6'}
+              editable={!(type == 'pointCost' && listId == '1')}
             />
           )}
 

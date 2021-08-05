@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {connect} from 'react-redux';
-import {getUserRewardHistory, getReward} from '../actions/reward';
+import {getUserRewardHistory} from '../actions/reward';
 import RewardHistoryList from '../components/reward/rewardHistoryList';
 
 class MyReward extends React.Component {
@@ -38,33 +38,8 @@ class MyReward extends React.Component {
     this.loadUserRewardHistory(false);
   };
 
-  getReward = async id => {
-    const {getReward, auth, navigation} = this.props;
-
-    const request = {
-      token: auth.token,
-      rewardId: id,
-      isPrivate: true,
-    };
-
-    const req = await getReward(request);
-
-    if (req.errors) {
-      console.log(req.errors);
-      alert('Cannot get reward detail at this time, please try again later');
-      return;
-    }
-
-    navigation.navigate('RewardDetailView', {
-      ...req,
-      image: req.image ? {uri: req.image} : null,
-      prevRoute: 'history',
-      isPrivate: true,
-    });
-  };
-
   render() {
-    const {reward, group} = this.props;
+    const {reward, group, navigation} = this.props;
     return (
       <View style={{backgroundColor: 'white'}}>
         {reward.userRewardHistory.length == 0 ? (
@@ -74,10 +49,12 @@ class MyReward extends React.Component {
         ) : (
           <RewardHistoryList
             rewardHistory={reward.userRewardHistory || []}
-            getReward={this.getReward}
             groupId={group.group.id}
+            isPrivate={true}
             onEndReached={this.onEndReached}
             type={'user'}
+            navigation={navigation}
+            prevRoute={'history'}
           />
         )}
       </View>
@@ -107,7 +84,6 @@ const mapDispatchToProps = dispatch => {
   return {
     getUserRewardHistory: data => dispatch(getUserRewardHistory(data)),
     userLogout: () => dispatch(userLogout()),
-    getReward: data => dispatch(getReward(data)),
   };
 };
 

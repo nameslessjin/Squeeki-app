@@ -110,7 +110,7 @@ class GroupDrawerNavigator extends React.Component {
           }}
         />
         <DrawerItem
-          label="Reward"
+          label="Rewards"
           icon={() => (
             <MaterialIcons name="treasure-chest" color={'grey'} size={25} />
           )}
@@ -140,6 +140,7 @@ class GroupDrawerNavigator extends React.Component {
           headerShown: false,
           drawerPosition: 'right',
           drawerStyle: styles.drawerStyle,
+          
         }}
         initialRouteName="Group"
         drawerPosition="right"

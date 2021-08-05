@@ -8,6 +8,7 @@ import {
   getGroupRewardHistoryQuery,
   getRewardQuery,
   getUserRewardHistoryQuery,
+  searchRewardQuery,
 } from './query/rewardQuery';
 import {httpCall, httpUpload} from './utils/httpCall';
 
@@ -321,7 +322,6 @@ export const getUserRewardHistory = request => {
       return result;
     }
 
-
     dispatch(
       getUserRewardHistoryReducer({
         ...result.data.getUserRewardHistory,
@@ -337,5 +337,27 @@ const getUserRewardHistoryReducer = data => {
   return {
     type: 'getUserRewardHistory',
     data,
+  };
+};
+
+export const searchReward = request => {
+  const {token, groupId, count, searchTerm} = request;
+
+  return async function(dispatch) {
+    const input = {groupId, count, searchTerm};
+    const graphql = {
+      query: searchRewardQuery,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.searchReward;
   };
 };

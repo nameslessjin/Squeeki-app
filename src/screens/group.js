@@ -54,6 +54,8 @@ class Group extends React.Component {
   }
 
   componentWillUnmount() {
+    const {route} = this.props
+    console.log(route)
     this.props.cleanGroup();
     this.loadGroups(true);
   }
