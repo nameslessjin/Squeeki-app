@@ -73,7 +73,7 @@ import TaskVerify from './src/screens/taskVerify';
 import RewardContentList from './src/screens/rewardContentList';
 import RewardListSetting from './src/screens/rewardListSetting';
 import RewardDetail from './src/screens/rewardDetail';
-import Group from './src/screens/group'
+import GiftedRewardList from './src/screens/reward';
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -236,6 +236,10 @@ export default (App = () => {
               component={RewardListSetting}
             />
             <Stack.Screen name="RewardDetail" component={RewardDetail} />
+            <Stack.Screen
+              name="GiftedRewardList"
+              component={GiftedRewardList}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

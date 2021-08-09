@@ -67,6 +67,8 @@ query getRewardEntry($input: RewardInput!){
         chanceDisplay
         expiration
         groupDisplayName
+        giftedGroupDisplayName
+        giftedGroupName
     }
 }
 `;
@@ -202,6 +204,36 @@ query getSystemRewardListSetting {
             label
             value
             listId
+        }
+    }
+}
+`;
+
+export const getGroupGiftedRewardFromListQuery = `
+query getGroupGiftedRewardFromList($input: RewardInput!){
+    getGroupGiftedRewardFromList(input: $input){
+        id
+        type
+        listName
+        chance1
+        chance2
+        chance3
+        chance4
+        chance5
+        pointCost
+        rewardEntryList {
+            title
+            chance
+            data {
+                id
+                expiration
+                name
+                createdAt
+                giftedGroupDisplayName
+                toId
+                to
+                count
+            }
         }
     }
 }

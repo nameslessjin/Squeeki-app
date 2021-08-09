@@ -23,11 +23,7 @@ class Reward extends React.Component {
     point: 0,
     loading: false,
     modalVisible: false,
-    rewardList: [
-      {id: '1', listName: 'List 1'},
-      {id: '2', listName: 'List 2'},
-      {id: '0', listName: 'Redeem List'},
-    ],
+    prevRoute: 'RewardList',
     result: {
       name: null,
       description: null,
@@ -36,7 +32,28 @@ class Reward extends React.Component {
       errorMessage: null,
       image: null,
     },
+    ...this.props.route.params,
   };
+
+  componentDidMount() {
+    const {prevRoute} = this.state;
+    const {navigation} = this.props;
+    if (prevRoute == 'RewardManagement') {
+      navigation.setOptions({
+        headerBackTitleVisible: false,
+        headerTitle: 'Gift Management',
+      });
+      this.getGroupRewardList();
+    }
+  }
+
+  componentWillUnmount() {
+    const {prevRoute} = this.state;
+    const {navigation} = this.props;
+    if (prevRoute == 'RewardManagement') {
+      navigation.navigate(prevRoute);
+    }
+  }
 
   componentDidUpdate() {
     const {route, navigation} = this.props;
@@ -53,10 +70,11 @@ class Reward extends React.Component {
 
   getGroupRewardList = async groupId => {
     const {auth, group, getGroupRewardList} = this.props;
-
+    const {prevRoute} = this.state;
     const request = {
       token: auth.token,
       groupId: groupId ? groupId : group.group.id,
+      isGift: prevRoute == 'RewardManagement',
     };
 
     const req = await getGroupRewardList(request);
@@ -197,7 +215,7 @@ class Reward extends React.Component {
 
   render() {
     const {group, reward, navigation, point, auth} = this.props;
-    const {modalVisible, result} = this.state;
+    const {modalVisible, result, prevRoute} = this.state;
     const {rewardList} = reward;
 
     return (
@@ -209,10 +227,13 @@ class Reward extends React.Component {
           navigation={navigation}
           group={group.group}
           onLootRedeemPress={this.onLootRedeemPress}
+          prevRoute={prevRoute}
         />
-        <View style={styles.point}>
-          <Text>Points: {point.total_point}</Text>
-        </View>
+        {prevRoute == 'RewardManagement' ? null : (
+          <View style={styles.point}>
+            <Text>Points: {point.total_point}</Text>
+          </View>
+        )}
         <RewardModal
           modalType={'result'}
           modalVisible={modalVisible}

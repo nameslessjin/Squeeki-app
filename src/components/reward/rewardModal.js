@@ -104,6 +104,7 @@ export default class RewardModal extends React.Component {
         }
       } else {
         listNo = rewardList
+          .filter(r => parseInt(r.id) <= 3 && parseInt(r.id) > 0)
           .map(r => {
             return {
               id: r.id,

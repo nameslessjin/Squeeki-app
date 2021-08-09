@@ -14,6 +14,7 @@ const extractKey = ({id}) => id;
 export default class PostList extends React.Component {
   renderItem = ({item}) => {
     const {navigation, onAddPost, onPostSelect, selectionMode} = this.props;
+
     if (item.groupname) {
       return (
         <GroupHeader
@@ -56,15 +57,17 @@ export default class PostList extends React.Component {
 
       data = [groupHeader];
 
-      if (group.visibility == 'public' || group.auth != null) {
+      if (group.visibility == 'public' || group.auth) {
         data = data.concat(posts);
+        if (posts.length == 0) {
+          data = data.concat({id: 'null'});
+        }
       }
     } else {
       data = posts;
-    }
-
-    if (posts.length == 0) {
-      data = data.concat({id: 'null'});
+      if (posts.length == 0) {
+        data = data.concat({id: 'null'});
+      }
     }
 
     return (
@@ -77,7 +80,7 @@ export default class PostList extends React.Component {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps={'handled'}
         onEndReached={() => onEndReached()}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0.2}
         onRefresh={onRefresh}
         refreshing={refreshing}
       />
@@ -97,6 +100,6 @@ const styles = StyleSheet.create({
   placeholder: {
     width: '100%',
     alignItems: 'center',
-    marginTop: 50
+    marginTop: 50,
   },
 });

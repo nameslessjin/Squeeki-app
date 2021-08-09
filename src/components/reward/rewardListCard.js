@@ -20,12 +20,13 @@ export default class RewardListCard extends React.Component {
   };
 
   onPress = (item, type) => {
-    const {navigation} = this.props;
+    const {navigation, prevRoute} = this.props;
 
     if (type == 'detail') {
       navigation.navigate('RewardDetail', {
         ...item,
-        prevRoute: 'RewardList',
+        prevRoute:
+          prevRoute == 'RewardManagement' ? 'GiftedRewardList' : 'RewardList',
       });
     } else if (type == 'setting') {
       const {type} = item;
@@ -64,7 +65,7 @@ export default class RewardListCard extends React.Component {
   };
 
   render() {
-    const {item, group, onLootRedeemPress, navigation} = this.props;
+    const {item, group, onLootRedeemPress, navigation, prevRoute} = this.props;
     const {
       id,
       listName,
@@ -93,7 +94,8 @@ export default class RewardListCard extends React.Component {
               <Text style={styles.headerText}>{listName}</Text>
             </View>
             <View style={styles.headerSide}>
-              {hasRewardManagementAuthority ? (
+              {hasRewardManagementAuthority &&
+              prevRoute != 'RewardManagement' ? (
                 <TouchableOpacity onPress={() => this.onPress(item, 'setting')}>
                   <MaterialIcons name={'cog'} size={20} color={'#EA2027'} />
                 </TouchableOpacity>
@@ -109,9 +111,14 @@ export default class RewardListCard extends React.Component {
               onPress={this.onPress}
               onLootRedeemPress={onLootRedeemPress}
               navigation={navigation}
+              prevRoute={
+                prevRoute == 'RewardManagement'
+                  ? 'GiftedRewardList'
+                  : 'RewardList'
+              }
             />
           </View>
-          {type == 'loot' ? (
+          {type == 'loot' && prevRoute != 'RewardManagement' ? (
             <TouchableOpacity
               disabled={loading}
               onPress={() => this.onLootPress(item)}>

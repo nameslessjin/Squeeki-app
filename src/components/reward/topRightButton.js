@@ -22,7 +22,12 @@ export default class RewardTopRightButton extends React.Component {
           Edit
         </Text>
       );
-    if (type == 'edit') {
+    if (type == 'gift') {
+      button = (
+        <Text style={{fontSize: 16, color: disabled ? '#95a5a6' : '#EA2027'}}>
+          Gifts
+        </Text>
+      );
     }
 
     return (

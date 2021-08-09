@@ -23,12 +23,13 @@ class RewardEntryList extends React.Component {
   };
 
   getGroup = async reward => {
-    const {from, fromId} = reward;
-    const {auth, getSingleGroupById, navigation, group} = this.props;
+    const {from, fromId, toId, to} = reward;
+    const {auth, getSingleGroupById, navigation, group, prevRoute} = this.props;
 
-    if (from == 'group' && fromId) {
+
+    if ((from == 'group' && fromId) || (to == 'group' && toId)) {
       const request = {
-        id: fromId,
+        id: fromId ? fromId : toId,
         token: auth.token,
       };
 
@@ -40,9 +41,9 @@ class RewardEntryList extends React.Component {
       }
 
       navigation.push('GroupNavigator', {
-        prevRoute: 'RewardList',
-        groupId: group.group.id
-      })
+        prevRoute,
+        groupId: group.group.id,
+      });
     }
   };
 
@@ -70,9 +71,11 @@ class RewardEntryList extends React.Component {
       pointCost,
       expiration,
       id,
-      fromId,
       groupDisplayName,
+      giftedGroupDisplayName,
     } = item;
+
+
     const {onPress, type} = this.props;
     const {redeemItemId} = this.state;
     const expired = expiration
@@ -90,13 +93,27 @@ class RewardEntryList extends React.Component {
           {groupDisplayName ? (
             <View
               style={[
-                styles.text,
+                styles.infoText,
                 {flexDirection: 'row', alignItems: 'center'},
               ]}>
               <Text>From: </Text>
               <TouchableOpacity onPress={() => this.getGroup(item)}>
                 <View style={styles.groupNameTag}>
                   <Text style={{color: 'white'}}>{groupDisplayName}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          ) : null}
+          {giftedGroupDisplayName ? (
+            <View
+              style={[
+                styles.infoText,
+                {flexDirection: 'row', alignItems: 'center'},
+              ]}>
+              <Text>To: </Text>
+              <TouchableOpacity onPress={() => this.getGroup(item)}>
+                <View style={styles.groupNameTag}>
+                  <Text style={{color: 'white'}}>{giftedGroupDisplayName}</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -220,6 +237,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 13,
+    marginTop: 1
   },
   chance: {
     fontSize: 13,

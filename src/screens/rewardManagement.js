@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import {connect} from 'react-redux';
 import SearchBar from '../components/reward/rewardSearchBar';
@@ -66,9 +67,10 @@ class RewardManagement extends React.Component {
       rewardId: id,
     };
 
-    const hasRewardManagementAuthority =
-      group.group.auth.rank <=
-      group.group.rank_setting.manage_reward_rank_required;
+    const hasRewardManagementAuthority = group.group.auth
+      ? group.group.auth.rank <=
+        group.group.rank_setting.manage_reward_rank_required
+      : false;
 
     if (!hasRewardManagementAuthority) {
       alert(

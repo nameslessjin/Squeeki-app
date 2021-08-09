@@ -37,16 +37,26 @@ class RewardTabNavigator extends React.Component {
   componentDidUpdate() {
     const routeName = this.getRouteName();
     const {navigation, group} = this.props;
+    const hasRewardManagementAuthority = group.group.auth
+      ? group.group.auth.rank <=
+        group.group.rank_setting.manage_reward_rank_required
+      : false;
 
     if (routeName == 'RewardList') {
-      const hasRewardManagementAuthority = group.group.auth
-        ? group.group.auth.rank <=
-          group.group.rank_setting.manage_reward_rank_required
-        : false;
       navigation.setOptions({
         headerRight: () =>
           hasRewardManagementAuthority ? (
             <TopRightButton type={'add'} onPress={this.onTopRightButtonPress} />
+          ) : null,
+      });
+    } else if (routeName == 'RewardManagement') {
+      navigation.setOptions({
+        headerRight: () =>
+          hasRewardManagementAuthority ? (
+            <TopRightButton
+              type={'gift'}
+              onPress={this.onTopRightButtonPress}
+            />
           ) : null,
       });
     } else {
@@ -64,7 +74,9 @@ class RewardTabNavigator extends React.Component {
       groupId: group.group.id,
     };
 
-    navigation.navigate('RewardList');
+    navigation.navigate('RewardList', {
+      prevRoute: 'RewardList',
+    });
 
     const req = await getGroupRewardList(request);
     if (req.errors) {
@@ -120,7 +132,12 @@ class RewardTabNavigator extends React.Component {
     const routeName = this.getRouteName();
 
     if (routeName == 'RewardList') {
-      navigation.navigate('RewardSetting');
+      navigation.navigate('RewardSetting', {prevRoute: 'RewardList'});
+    } else if (routeName == 'RewardManagement') {
+      // direct to gifted reward management page
+      navigation.navigate('GiftedRewardList', {
+        prevRoute: 'RewardManagement',
+      });
     }
   };
 

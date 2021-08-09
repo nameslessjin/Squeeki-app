@@ -24,9 +24,8 @@ class GroupCard extends React.Component {
       userLogout,
     } = this.props;
 
-    // if prevRoute is rewardSetting, go back and pass the group data backward
+    // if prevRoute is rewardSetting, go back and pass the group data backward.  Used in search group to gift to
     if (prevRoute == 'rewardSetting') {
-      console.log(item);
       const {id, groupname, display_name} = item;
       navigation.navigate('RewardSetting', {
         giftTo: {

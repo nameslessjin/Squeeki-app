@@ -48,6 +48,7 @@ class RewardSetting extends React.Component {
     giftTo: null,
     isGift: false,
     systemRewardSetting: null,
+    prevRoute: 'RewardList',
     ...this.props.route.params,
     origin: this.props.route.params,
   };
@@ -73,9 +74,8 @@ class RewardSetting extends React.Component {
           origin: {...this.props.route.params, pointCost: '0'},
         });
       }
-    } else {
-      this.getSystemRewardListSetting();
     }
+    this.getSystemRewardListSetting();
   }
 
   getSystemRewardListSetting = async () => {
@@ -229,7 +229,7 @@ class RewardSetting extends React.Component {
       id = id + options[random];
     }
 
-    return id
+    return id;
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -269,7 +269,10 @@ class RewardSetting extends React.Component {
           let updatedContentList = [...contentList];
           if (contentList.length < parseInt(count)) {
             for (let i = 0; i < parseInt(count) - contentList.length; i++) {
-              updatedContentList.push({id: this.randomIdGenerator(), content: ''});
+              updatedContentList.push({
+                id: this.randomIdGenerator(),
+                content: '',
+              });
             }
           } else if (contentList.length > parseInt(count)) {
             // set timer, don't delete immediate
@@ -300,9 +303,11 @@ class RewardSetting extends React.Component {
 
   componentWillUnmount() {
     const {auth, group, getGroupRewardList} = this.props;
+    const {prevRoute} = this.state;
     const request = {
       token: auth.token,
       groupId: group.group.id,
+      isGift: prevRoute == 'GiftedRewardList',
     };
     getGroupRewardList(request);
   }
@@ -353,6 +358,7 @@ class RewardSetting extends React.Component {
       expiration,
       giftTo,
       isGift,
+      prevRoute,
     } = this.state;
     const {
       auth,
@@ -423,7 +429,9 @@ class RewardSetting extends React.Component {
       }
       return;
     }
-    navigation.navigate('RewardList');
+    navigation.navigate(
+      prevRoute == 'GiftedRewardList' ? 'GiftedRewardList' : 'RewardList',
+    );
   };
 
   onInputChange = (value, type) => {
@@ -553,7 +561,7 @@ class RewardSetting extends React.Component {
 
   updateRewardEntryStatus = async type => {
     const {auth, updateRewardEntryStatus, navigation} = this.props;
-    const {id} = this.state;
+    const {id, prevRoute} = this.state;
     const request = {
       token: auth.token,
       entryId: id,
@@ -567,7 +575,9 @@ class RewardSetting extends React.Component {
       alert('Cannot delete reward at this time, please try again later');
       return;
     }
-    navigation.navigate('RewardList');
+    navigation.navigate(
+      prevRoute == 'GiftedRewardList' ? 'GiftedRewardList' : 'RewardList',
+    );
   };
 
   onPress = type => {
@@ -599,7 +609,7 @@ class RewardSetting extends React.Component {
       ]);
     } else if (type == 'expiration') {
       this.setState({modalVisible: true, modalType: 'expiration'});
-    } else if (type == 'giftTo') {
+    } else if (type == 'giftTo' && !this.state.id) {
       navigation.navigate('Search', {prevRoute: 'rewardSetting'});
     }
   };
@@ -666,6 +676,7 @@ class RewardSetting extends React.Component {
               value={giftTo}
               onInputChange={this.onInputChange}
               onPress={this.onPress}
+              disabled={id}
             />
           ) : null}
 

@@ -37,7 +37,7 @@ class RewardDetail extends React.Component {
       headerBackTitleVisible: false,
       headerTitle: 'Details',
     });
-    if (prevRoute == 'RewardList') {
+    if (prevRoute == 'RewardList' || prevRoute == 'GiftedRewardList') {
       this.getRewardEntry();
     }
   }
@@ -47,12 +47,10 @@ class RewardDetail extends React.Component {
     const {navigation} = this.props;
     // if direct from home reward page to detail page then to a group, reload reward when coming back
     if (directToGroup) {
-      console.log(prevRoute);
       if (
         prevRoute == 'RewardHistory' ||
         prevRoute == 'MyGroupRewards' ||
-        prevRoute == 'MyRewards' ||
-        prevRoute == 'RewardList'
+        prevRoute == 'MyRewards'
       ) {
         // MyRewads have no previous group page
         // if has previous group page thus reload group and reward
@@ -61,31 +59,35 @@ class RewardDetail extends React.Component {
         });
       }
     }
+
+    // always refresh if coming from a reward list
+    if (prevRoute == 'RewardList' || prevRoute == 'GiftedRewardList') {
+      navigation.navigate(prevRoute, {
+        refresh: true,
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const {from, to, toId, fromId, prevRoute} = this.state;
     const {group, navigation} = this.props;
-    if (this.state != prevState) {
-      const inGroup =
-        from == to &&
-        from == 'group' &&
-        toId == fromId &&
-        fromId == group.group.id;
-      const hasRewardManagementAuthority =
-        group.group.auth.rank <=
-          group.group.rank_setting.manage_reward_rank_required && inGroup;
-      navigation.setOptions({
-        headerRight: () =>
-          hasRewardManagementAuthority && prevRoute == 'RewardList' ? (
-            <TopRightButton
-              type={'edit'}
-              onPress={this.onPress}
-              disabled={false}
-            />
-          ) : null,
-      });
-    }
+
+    const inGroup = from == to && from == 'group' && fromId == group.group.id;
+    const hasRewardManagementAuthority = group.group.auth
+      ? group.group.auth.rank <=
+          group.group.rank_setting.manage_reward_rank_required && inGroup
+      : false;
+    navigation.setOptions({
+      headerRight: () =>
+        hasRewardManagementAuthority &&
+        (prevRoute == 'RewardList' || prevRoute == 'GiftedRewardList') ? (
+          <TopRightButton
+            type={'edit'}
+            onPress={this.onPress}
+            disabled={false}
+          />
+        ) : null,
+    });
   }
 
   onPress = () => {
@@ -94,15 +96,21 @@ class RewardDetail extends React.Component {
       description,
       chance,
       chanceDisplay,
-      count,
-      separateContent,
       listId,
       image,
       id,
       pointCost,
       expiration,
+      to,
+      from,
+      toId,
+      fromId,
+      prevRoute,
+      giftedGroupDisplayName,
+      giftedGroupName,
     } = this.state;
     const {navigation, reward} = this.props;
+
     const entry = {
       id,
       name,
@@ -114,12 +122,24 @@ class RewardDetail extends React.Component {
       pointCost,
       redeemable: pointCost ? true : false,
       listName: reward.rewardList.filter(l => l.id == listId)[0].listName,
+      isGift: parseInt(listId) > 3,
       expiration,
       hasExpiration: expiration != null,
+      giftTo:
+        parseInt(listId) <= 3
+          ? null
+          : giftedGroupDisplayName
+          ? {
+              id: toId,
+              display_name: giftedGroupDisplayName,
+              groupname: giftedGroupName,
+            }
+          : null,
     };
 
     navigation.navigate('RewardSetting', {
       ...entry,
+      prevRoute,
     });
   };
 
@@ -140,12 +160,19 @@ class RewardDetail extends React.Component {
   };
 
   getGroup = async () => {
-    const {fromId, from, groupId} = this.state;
+    const {
+      fromId,
+      from,
+      groupId,
+      to,
+      toId,
+      giftedGroupDisplayName,
+    } = this.state;
     const {auth, getSingleGroupById, navigation} = this.props;
 
-    if (from == 'group' && fromId) {
+    if ((from == 'group' && fromId) || (to == 'group' && toId)) {
       const request = {
-        id: fromId,
+        id: giftedGroupDisplayName ? toId : fromId,
         token: auth.token,
       };
 
@@ -183,9 +210,11 @@ class RewardDetail extends React.Component {
       redeemer,
       updatedAt,
       winner,
+      toId,
+      giftedGroupDisplayName,
     } = this.state;
     const {group} = this.props.group;
-
+    console.log(this.state);
     return (
       <TouchableWithoutFeedback>
         <ScrollView style={styles.container}>
@@ -198,7 +227,7 @@ class RewardDetail extends React.Component {
           <InputContent content={description} disabled={true} />
           <View style={styles.infoContaier}>
             <View style={styles.infoSubContainer}>
-              {prevRoute == 'RewardList' ? (
+              {prevRoute == 'RewardList' || prevRoute == 'GiftedRewardList' ? (
                 <Text>{count} remaining</Text>
               ) : null}
               {content &&
@@ -216,9 +245,7 @@ class RewardDetail extends React.Component {
                   {dateConversion(expiration, 'expirationDisplay')}
                 </Text>
               ) : null}
-              {fromId == group.id ? (
-                <Text style={styles.text}>Group: {groupDisplayName}</Text>
-              ) : (
+              {fromId == group.id || !groupDisplayName ? null : (
                 <View
                   style={[
                     styles.text,
@@ -232,6 +259,23 @@ class RewardDetail extends React.Component {
                   </TouchableOpacity>
                 </View>
               )}
+              {toId == group.id || !giftedGroupDisplayName ? null : (
+                <View
+                  style={[
+                    styles.text,
+                    {flexDirection: 'row', alignItems: 'center'},
+                  ]}>
+                  <Text>To: </Text>
+                  <TouchableOpacity onPress={this.getGroup}>
+                    <View style={styles.groupNameTag}>
+                      <Text style={{color: 'white'}}>
+                        {giftedGroupDisplayName}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              )}
+
               {prevRoute == 'MyRewards' ||
               prevRoute == 'MyGroupRewards' ||
               prevRoute == 'RewardManagement' ? (

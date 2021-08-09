@@ -11,14 +11,14 @@ const extractKey = ({id}) => id;
 
 export default class rewardList extends React.Component {
   renderItem = ({item}) => {
-    const {navigation, group, onLootRedeemPress, auth} = this.props;
+    const {navigation, group, onLootRedeemPress, prevRoute} = this.props;
     return (
       <RewardListCard
         item={item}
         navigation={navigation}
         group={group}
         onLootRedeemPress={onLootRedeemPress}
-        auth={auth}
+        prevRoute={prevRoute}
       />
     );
   };
@@ -28,11 +28,30 @@ export default class rewardList extends React.Component {
   rightAction = () => {};
 
   render() {
-    const {rewardList} = this.props;
-
+    const {rewardList, group} = this.props;
+    const hasRewardManagementAuthority = group.auth
+      ? group.auth.rank <= group.rank_setting.manage_reward_rank_required
+      : false;
+    let authorizedList = [...rewardList];
+    if (!hasRewardManagementAuthority) {
+      authorizedList = authorizedList.filter(l => {
+        if (l.type == 'loot') {
+          let empty = true;
+          l.rewardEntryList.forEach(r => {
+            if (r.data.length > 0) {
+              empty = false;
+            }
+          });
+          return !empty;
+        } else if (l.type == 'redeem') {
+          return l.redeemRewardEntryList.length != 0;
+        }
+      });
+    }
+    // console.log(rewardList);
     return (
       <FlatList
-        data={rewardList}
+        data={authorizedList}
         keyExtractor={extractKey}
         horizontal={true}
         renderItem={this.renderItem}

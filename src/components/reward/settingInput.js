@@ -31,7 +31,7 @@ export default class RewardSettingInput extends React.Component {
   };
 
   render() {
-    const {type, value, onInputChange, onPress, listId} = this.props;
+    const {type, value, onInputChange, onPress, listId, disabled} = this.props;
     let title = 'Name';
     let display = <View />;
     if (type == 'description') {
@@ -155,6 +155,7 @@ export default class RewardSettingInput extends React.Component {
               style={{
                 marginLeft: 10,
                 width: type == 'chance' ? '75%' : '100%',
+                color: disabled ? 'grey' : 'black' 
               }}>
               {textDisplay}
             </Text>

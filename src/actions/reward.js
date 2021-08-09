@@ -11,6 +11,7 @@ import {
   searchRewardQuery,
   redeemUserRewardMutation,
   getSystemRewardListSettingQuery,
+  getGroupGiftedRewardFromListQuery,
 } from './query/rewardQuery';
 import {httpCall, httpUpload} from './utils/httpCall';
 
@@ -85,7 +86,7 @@ export const createUpdateGroupReward = request => {
 };
 
 export const getGroupRewardList = request => {
-  const {groupId, token} = request;
+  const {groupId, token, isGift} = request;
 
   return async function(dispatch) {
     const input = {
@@ -93,9 +94,11 @@ export const getGroupRewardList = request => {
     };
 
     const graphql = {
-      query: getGroupRewardListQuery,
+      query: isGift
+        ? getGroupGiftedRewardFromListQuery
+        : getGroupRewardListQuery,
       variables: {
-        input: input,
+        input,
       },
     };
 
@@ -105,7 +108,13 @@ export const getGroupRewardList = request => {
       return result;
     }
 
-    dispatch(getGroupRewardListReducer(result.data.getGroupRewardList));
+    dispatch(
+      getGroupRewardListReducer(
+        isGift
+          ? result.data.getGroupGiftedRewardFromList
+          : result.data.getGroupRewardList,
+      ),
+    );
 
     return 0;
   };
