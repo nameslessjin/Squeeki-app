@@ -24,6 +24,9 @@ query getGroupRewardList($input: RewardInput!){
                 expiration
                 name
                 createdAt
+                groupDisplayName
+                fromId
+                from
                 count
             }
         }
@@ -98,6 +101,7 @@ query getGroupRewardHistory($input: RewardInput!){
             pointCost
             createdAt
             fromId
+            from
             winner {
                 displayName
                 icon
@@ -120,6 +124,7 @@ query getUserRewardHistory($input: RewardInput!){
             pointCost
             createdAt
             fromId
+            from
             status
         }
         count
@@ -145,6 +150,10 @@ query getReward($input: RewardInput!){
         status
         updatedAt
         redeemer {
+            username
+            displayName
+        }
+        winner {
             username
             displayName
         }
@@ -178,4 +187,22 @@ export const redeemUserRewardMutation = `
 mutation redeemUserReward($input: RewardInput!){
     redeemUserReward(input: $input)
 }
-`
+`;
+
+export const getSystemRewardListSettingQuery = `
+query getSystemRewardListSetting {
+    getSystemRewardListSetting {
+        list {
+            id
+            label
+            value
+        }
+        chance {
+            id
+            label
+            value
+            listId
+        }
+    }
+}
+`;

@@ -7,7 +7,7 @@ import {
   Keyboard,
   Text,
   View,
-  StatusBar
+  StatusBar,
 } from 'react-native';
 import {connect} from 'react-redux';
 import GroupsSearchBar from '../components/groupsSearch/searchBar';
@@ -22,19 +22,20 @@ class GroupsSearch extends React.Component {
     searchTerm: '',
     groupsData: [],
     count: 0,
+    prevRoute: 'groups',
+    ...this.props.route.params,
   };
 
   componentDidMount() {
-    const {navigation} = this.props
+    const {navigation} = this.props;
 
     navigation.setOptions({
-        headerBackTitleVisible: false
-    })
+      headerBackTitleVisible: false,
+    });
   }
 
   onSearchChange = async text => {
-
-    const term = text.trim()
+    const term = text.trim();
     this.setState({searchTerm: text});
 
     if (term.length < 3) {
@@ -103,7 +104,8 @@ class GroupsSearch extends React.Component {
   };
 
   render() {
-    const {searchTerm, groupsData} = this.state;
+    const {searchTerm, groupsData, prevRoute} = this.state;
+    console.log(this.state);
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
@@ -113,7 +115,9 @@ class GroupsSearch extends React.Component {
               onChange={this.onSearchChange}
               value={searchTerm}
             />
-            <CreateGroupButton onPress={this.onCreateGroupButtonPress} />
+            {prevRoute == 'groups' ? (
+              <CreateGroupButton onPress={this.onCreateGroupButtonPress} />
+            ) : null}
           </View>
 
           <GroupList
@@ -121,6 +125,7 @@ class GroupsSearch extends React.Component {
             navigation={this.props.navigation}
             onEndReached={this.onEndReached}
             route={'search'}
+            prevRoute={prevRoute}
           />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

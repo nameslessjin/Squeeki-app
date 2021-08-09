@@ -38,21 +38,25 @@ class Reward extends React.Component {
     },
   };
 
-  componentDidMount() {
-    // this.getUserGroupPoint();
+  componentDidUpdate() {
+    const {route, navigation} = this.props;
+    if (route.params) {
+      const {refresh, groupId} = route.params;
+      if (refresh) {
+        setTimeout(() => {
+          this.getGroupRewardList(groupId);
+        }, 100);
+        navigation.setParams({refresh: false, groupId: null});
+      }
+    }
   }
 
-  componentWillUnmount() {
-    // get group points
-    // this.getUserGroupPoint();
-  }
-
-  getGroupRewardList = async () => {
+  getGroupRewardList = async groupId => {
     const {auth, group, getGroupRewardList} = this.props;
 
     const request = {
       token: auth.token,
-      groupId: group.group.id,
+      groupId: groupId ? groupId : group.group.id,
     };
 
     const req = await getGroupRewardList(request);
@@ -196,9 +200,8 @@ class Reward extends React.Component {
   };
 
   render() {
-    const {group, reward, navigation, point} = this.props;
+    const {group, reward, navigation, point, auth} = this.props;
     const {modalVisible, result} = this.state;
-    const {auth, rank_setting} = group.group;
     const {rewardList} = reward;
 
     return (

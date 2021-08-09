@@ -19,6 +19,7 @@ import {
   createUpdateGroupReward,
   getGroupRewardList,
   updateRewardEntryStatus,
+  getSystemRewardListSetting,
 } from '../actions/reward';
 import RewardModal from '../components/reward/rewardModal';
 import validator from 'validator';
@@ -45,6 +46,9 @@ class RewardSetting extends React.Component {
     pointCost: '0',
     expiration: null,
     hasExpiration: false,
+    giftTo: null,
+    isGift: false,
+    systemRewardSetting: null,
     ...this.props.route.params,
     origin: this.props.route.params,
   };
@@ -70,8 +74,22 @@ class RewardSetting extends React.Component {
           origin: {...this.props.route.params, pointCost: '0'},
         });
       }
+    } else {
+      this.getSystemRewardListSetting();
     }
   }
+
+  getSystemRewardListSetting = async () => {
+    const req = await this.props.getSystemRewardListSetting();
+    if (req.errors) {
+      console.log(req.errors);
+      alert(
+        'Cannot get system reward list setting at this time, please try again later',
+      );
+      return;
+    }
+    this.setState({systemRewardSetting: req});
+  };
 
   validation = () => {
     // need to check for update later
@@ -89,6 +107,9 @@ class RewardSetting extends React.Component {
       pointCost,
       redeemable,
       expiration,
+      isGift,
+      giftTo,
+      systemRewardSetting,
     } = this.state;
 
     if (name.trim().length == 0 || name.length > 30) {
@@ -121,12 +142,29 @@ class RewardSetting extends React.Component {
         return false;
       }
     } else {
-      if (parseInt(listId) > 3 || parseInt(listId) < 1) {
-        return false;
+      // if reward is a gift then the id is between 4 to 6 else 1 to 3
+      if (isGift) {
+        if (parseInt(listId) > 6 || parseInt(listId) < 4) {
+          return false;
+        }
+
+        // check systemRewardSetting
+        if (!systemRewardSetting) {
+          return false;
+        }
+
+        //check giftTo
+        if (!giftTo) {
+          return false;
+        }
+      } else {
+        if (parseInt(listId) > 3 || parseInt(listId) < 1) {
+          return false;
+        }
       }
 
       // chance should be between 1 and 3
-      if (parseInt(chance) < 1 || parseInt(chance) > 3) {
+      if (parseInt(chance) < 1 || parseInt(chance) > 5) {
         return false;
       }
     }
@@ -183,8 +221,18 @@ class RewardSetting extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const {navigation} = this.props;
+    const {navigation, route} = this.props;
     const {count, contentList} = this.state;
+
+    if (prevProps.route.params != route.params) {
+      if (route.params) {
+        if (route.params.giftTo) {
+          this.setState({giftTo: route.params.giftTo});
+        }
+      }
+    }
+
+    // if state is updated, check if all inputs are valid
     if (prevState != this.state) {
       const disabled = !this.validation();
       navigation.setOptions({
@@ -287,13 +335,12 @@ class RewardSetting extends React.Component {
       description,
       contentList,
       separateContent,
-      from,
-      to,
-      toId,
       image,
       id,
       pointCost,
       expiration,
+      giftTo,
+      isGift,
     } = this.state;
     const {
       auth,
@@ -303,9 +350,12 @@ class RewardSetting extends React.Component {
       reward,
     } = this.props;
 
-    // if the number of rewards in a list/chance reach limit, return
-    if (!this.checkRewardCountLimit()) {
-      return;
+    // if group is created for current group
+    if (!isGift) {
+      // if the number of rewards in a list/chance reach limit, return
+      if (!this.checkRewardCountLimit()) {
+        return;
+      }
     }
 
     // check validation one last time
@@ -329,7 +379,7 @@ class RewardSetting extends React.Component {
       fromId: group.group.id,
       from: 'group',
       to: 'group',
-      toId: group.group.id,
+      toId: giftTo ? giftTo.id : group.group.id,
       image,
       pointCost: pointCost == '0' ? null : pointCost,
       expiration,
@@ -351,6 +401,11 @@ class RewardSetting extends React.Component {
         'Each chance in each list can only contain up to 10 rewards'
       ) {
         alert('Redeem list can only contain up to 10 rewards');
+      } else if (
+        req.errors[0].message ==
+        'Each group can only gifts up to 2 rewards to other groups'
+      ) {
+        alert('Each group can only gifts up to 2 rewards to other groups');
       } else {
         alert('Cannot add reward at this time, please try again later');
       }
@@ -360,7 +415,7 @@ class RewardSetting extends React.Component {
   };
 
   onInputChange = (value, type) => {
-    const {expiration, origin} = this.state;
+    const {expiration, origin, systemRewardSetting} = this.state;
     this.setState(prevState => {
       return {
         ...prevState,
@@ -381,10 +436,16 @@ class RewardSetting extends React.Component {
     } else if (type == 'count') {
       this.setState({count: value.trim()});
     } else if (type == 'listId') {
-      const rewardList = this.props.reward.rewardList.filter(
-        r => r.id == value.id,
-      );
-      const rewardChance1 = rewardList[0].chance1;
+      let rewardList = [];
+      let rewardChance1 = '1';
+      if (parseInt(value.id) <= 3) {
+        rewardList = this.props.reward.rewardList.filter(r => r.id == value.id);
+        rewardChance1 = rewardList[0].chance1;
+      } else {
+        rewardChance1 = systemRewardSetting.chance.filter(
+          c => c.listId == value.id,
+        )[0].label;
+      }
       this.setState({
         listId: value.id,
         listName: value.label,
@@ -437,6 +498,27 @@ class RewardSetting extends React.Component {
             : Date.now(),
         };
       });
+    } else if (type == 'isGift') {
+      this.setState(prevState => {
+        return {
+          isGift: !prevState.isGift,
+          giftTo: null,
+          redeemable: false,
+          pointCost: '0',
+          listId: prevState.isGift ? '1' : '4',
+          listName: prevState.isGift
+            ? this.props.reward.rewardList[0].listName
+            : systemRewardSetting
+            ? systemRewardSetting.list[0].label
+            : 'List Not Found, please reload reward page',
+          chance: '1',
+          chanceDisplay: prevState.isGift
+            ? this.props.reward.rewardList[0].chance1
+            : systemRewardSetting
+            ? systemRewardSetting.chance.filter(c => c.listId == '4')[0].label
+            : 'Chance Not Found, please reload reward page',
+        };
+      });
     }
   };
 
@@ -477,6 +559,7 @@ class RewardSetting extends React.Component {
   };
 
   onPress = type => {
+    const {navigation} = this.props;
     if (type == 'listId') {
       const {redeemable} = this.state;
       if (!redeemable) {
@@ -504,6 +587,8 @@ class RewardSetting extends React.Component {
       ]);
     } else if (type == 'expiration') {
       this.setState({modalVisible: true, modalType: 'expiration'});
+    } else if (type == 'giftTo') {
+      navigation.navigate('Search', {prevRoute: 'rewardSetting'});
     }
   };
 
@@ -526,6 +611,9 @@ class RewardSetting extends React.Component {
       pointCost,
       expiration,
       hasExpiration,
+      giftTo,
+      isGift,
+      systemRewardSetting,
     } = this.state;
     console.log(this.state);
     return (
@@ -544,11 +632,28 @@ class RewardSetting extends React.Component {
             onInputChange={this.onInputChange}
           />
 
-          {!id ? (
+          {!id && !redeemable ? (
+            <Input
+              type={'isGift'}
+              value={isGift}
+              onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {!id && !isGift ? (
             <Input
               type={'redeemable'}
               value={redeemable}
               onInputChange={this.onInputChange}
+            />
+          ) : null}
+
+          {isGift ? (
+            <Input
+              type={'giftTo'}
+              value={giftTo}
+              onInputChange={this.onInputChange}
+              onPress={this.onPress}
             />
           ) : null}
 
@@ -587,6 +692,7 @@ class RewardSetting extends React.Component {
             type={'hasExpiration'}
             value={hasExpiration}
             onInputChange={this.onInputChange}
+            disabled={false}
           />
 
           {hasExpiration ? (
@@ -603,6 +709,7 @@ class RewardSetting extends React.Component {
               type={'separateContent'}
               value={separateContent}
               onInputChange={this.onInputChange}
+              disabled={false}
             />
           ) : null}
 
@@ -646,6 +753,8 @@ class RewardSetting extends React.Component {
             listId={listId}
             expiration={expiration}
             redeemable={redeemable}
+            isGift={isGift}
+            systemRewardSetting={systemRewardSetting}
           />
           <View style={styles.empty} />
         </ScrollView>
@@ -689,6 +798,7 @@ const mapDispatchToProps = dispatch => {
     createUpdateGroupReward: data => dispatch(createUpdateGroupReward(data)),
     getGroupRewardList: data => dispatch(getGroupRewardList(data)),
     updateRewardEntryStatus: data => dispatch(updateRewardEntryStatus(data)),
+    getSystemRewardListSetting: () => dispatch(getSystemRewardListSetting()),
   };
 };
 

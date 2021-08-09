@@ -76,6 +76,10 @@ export default class RewardSettingInput extends React.Component {
       title = 'Listing Expiration Date';
     } else if (type == 'pointCost') {
       title = 'Point Cost';
+    } else if (type == 'isGift') {
+      title = 'Gift Reward To Another Group';
+    } else if (type == 'giftTo') {
+      title = 'Gift To Group';
     }
 
     const numericKeyboard =
@@ -93,7 +97,8 @@ export default class RewardSettingInput extends React.Component {
     if (
       type == 'separateContent' ||
       type == 'redeemable' ||
-      type == 'hasExpiration'
+      type == 'hasExpiration' ||
+      type == 'isGift'
     ) {
       display = (
         <View
@@ -121,22 +126,37 @@ export default class RewardSettingInput extends React.Component {
         </View>
       );
     } else {
+      let textDisplay = null;
+      if (type == 'expiration') {
+        if (value) {
+          textDisplay = dateConversion(value, 'expiration');
+        } else {
+          textDisplay = 'Permanent';
+        }
+      } else if (type == 'giftTo') {
+
+        textDisplay = value
+          ? `${value.display_name} (g@${value.groupname})`
+          : 'Not Selected';
+      } else {
+        textDisplay = value.toString();
+      }
+
       display = (
         <View
           style={[styles.container, {height: type == 'description' ? 80 : 45}]}>
           <Text style={{color: 'grey'}}>{title}</Text>
 
-          {type == 'listId' || type == 'chance' || type == 'expiration' ? (
+          {type == 'listId' ||
+          type == 'chance' ||
+          type == 'expiration' ||
+          type == 'giftTo' ? (
             <Text
               style={{
                 marginLeft: 10,
                 width: type == 'chance' ? '75%' : '100%',
               }}>
-              {type == 'expiration'
-                ? value
-                  ? dateConversion(value, 'expiration')
-                  : 'Permanent'
-                : value.toString()}
+              {textDisplay}
             </Text>
           ) : (
             <TextInput

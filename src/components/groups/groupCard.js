@@ -14,12 +14,36 @@ import {userLogout} from '../../actions/auth';
 import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 class GroupCard extends React.Component {
-
   onPress = async () => {
-    const {id} = this.props.item;
-    const {navigation, getSingleGroupById, userLogout} = this.props;
-    const {token} = this.props.auth;
-    const groupData = await getSingleGroupById({id: id, token: token});
+    const {
+      prevRoute,
+      item,
+      auth,
+      navigation,
+      getSingleGroupById,
+      userLogout,
+    } = this.props;
+
+    // if prevRoute is rewardSetting, go back and pass the group data backward
+    if (prevRoute == 'rewardSetting') {
+      console.log(item);
+      const {id, groupname, display_name} = item;
+      navigation.navigate('RewardSetting', {
+        giftTo: {
+          id,
+          groupname,
+          display_name
+        },
+      });
+
+      return;
+    }
+
+    // the default is to load group and navigate to group page
+    const groupData = await getSingleGroupById({
+      id: item.id,
+      token: auth.token,
+    });
     if (groupData.errors) {
       console.log(groupData.errors[0].message);
       alert('Cannot load group at this time, please try again later');
@@ -33,7 +57,10 @@ class GroupCard extends React.Component {
       return;
     } else {
       Keyboard.dismiss();
-      navigation.navigate('GroupNavigator');
+      // direct to group page after search
+      navigation.navigate('GroupNavigator', {
+        prevRoute: 'GroupGeneral'
+      });
     }
   };
 

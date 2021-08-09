@@ -10,28 +10,75 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {dateConversion} from '../../utils/time';
+import {connect} from 'react-redux';
+import {getSingleGroupById} from '../../actions/group';
 
 const {width, height} = Dimensions.get('window');
 
 const extractKey = ({id}) => id;
 
-export default class rewardEntryList extends React.Component {
+class RewardEntryList extends React.Component {
   state = {
     redeemItemId: null,
   };
 
+  getGroup = async reward => {
+    const {from, fromId} = reward;
+    const {auth, getSingleGroupById, navigation, group} = this.props;
+
+    if (from == 'group' && fromId) {
+      const request = {
+        id: fromId,
+        token: auth.token,
+      };
+
+      const req = await getSingleGroupById(request);
+      if (req.errors) {
+        console.log(req.errors);
+        alert('Cannot load group at this time, please try again later');
+        return;
+      }
+
+      navigation.push('GroupNavigator', {
+        prevRoute: 'RewardList',
+        groupId: group.group.id
+      })
+    }
+  };
+
   onRedeemPress = item => {
     const {onLootRedeemPress} = this.props;
-    const {id} = item;
+    const {id, expiration} = item;
+    const expired = expiration
+      ? dateConversion(expiration, 'expirationDisplay') == 'Expired'
+      : false;
+
+    if (expired) {
+      alert('This reward listing is expired, please choose another reward');
+      return;
+    }
+
     onLootRedeemPress('redeem', item);
     this.setState({redeemItemId: id});
     this.setState({redeemItemId: null});
   };
 
   renderItem = ({item, index, section}) => {
-    const {name, count, pointCost, expiration, id} = item;
+    const {
+      name,
+      count,
+      pointCost,
+      expiration,
+      id,
+      fromId,
+      groupDisplayName,
+    } = item;
     const {onPress, type} = this.props;
     const {redeemItemId} = this.state;
+    const expired = expiration
+      ? dateConversion(expiration, 'expirationDisplay') == 'Expired'
+      : false;
+
     return (
       <View style={styles.card}>
         <View
@@ -40,6 +87,20 @@ export default class rewardEntryList extends React.Component {
             {width: type == 'redeem' ? width * 0.9 - 95 : width * 0.9 - 90},
           ]}>
           <Text style={styles.name}>{name}</Text>
+          {groupDisplayName ? (
+            <View
+              style={[
+                styles.text,
+                {flexDirection: 'row', alignItems: 'center'},
+              ]}>
+              <Text>From: </Text>
+              <TouchableOpacity onPress={() => this.getGroup(item)}>
+                <View style={styles.groupNameTag}>
+                  <Text style={{color: 'white'}}>{groupDisplayName}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          ) : null}
           {type == 'redeem' ? (
             <Text style={styles.infoText}>{pointCost} pts</Text>
           ) : null}
@@ -54,11 +115,14 @@ export default class rewardEntryList extends React.Component {
           {type == 'redeem' ? (
             <TouchableOpacity
               onPress={() => this.onRedeemPress(item)}
-              disabled={redeemItemId == id}>
+              disabled={redeemItemId == id || expired}>
               <View
                 style={[
                   styles.redeemButton,
-                  {backgroundColor: redeemItemId == id ? 'grey' : '#EA2027'},
+                  {
+                    backgroundColor:
+                      redeemItemId == id || expired ? 'grey' : '#EA2027',
+                  },
                 ]}>
                 {redeemItemId == id ? (
                   <ActivityIndicator animating={true} color={'white'} />
@@ -114,7 +178,7 @@ export default class rewardEntryList extends React.Component {
         renderItem={this.renderItem}
         data={rewardEntryList}
         showsVerticalScrollIndicator={false}
-        style={{width: '100%', height: '100%'}}
+        style={{width: '100%', height: '100%', marginTop: 20}}
       />
     );
   }
@@ -185,4 +249,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  groupNameTag: {
+    backgroundColor: '#1e90ff',
+    borderRadius: 7,
+    padding: 2,
+    paddingHorizontal: 5,
+  },
 });
+
+const mapStateToProps = state => {
+  const {group, auth} = state;
+  return {group, auth};
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RewardEntryList);

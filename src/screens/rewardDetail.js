@@ -8,18 +8,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {
-  getRewardEntry,
-  getUserRewardHistory,
-  getGroupRewardHistory,
-} from '../actions/reward';
+import {getRewardEntry} from '../actions/reward';
 import InputImage from '../components/postSetting/inputImage';
 import InputContent from '../components/postSetting/inputContent';
 import TopRightButton from '../components/reward/topRightButton';
 import {dateConversion} from '../utils/time';
 import {getSingleGroupById} from '../actions/group';
 
-class RewardDetailView extends React.Component {
+class RewardDetail extends React.Component {
   state = {
     id: null,
     description: '',
@@ -28,8 +24,7 @@ class RewardDetailView extends React.Component {
     createdAt: null,
     pointCost: null,
     chance: '1',
-    prevRoute: 'history',
-    isPrivate: false,
+    prevRoute: 'RewardHistory',
     groupId: this.props.group.group.id,
     directToGroup: false,
     ...this.props.route.params,
@@ -42,61 +37,31 @@ class RewardDetailView extends React.Component {
       headerBackTitleVisible: false,
       headerTitle: 'Details',
     });
-    if (prevRoute == 'reward') {
+    if (prevRoute == 'RewardList') {
       this.getRewardEntry();
     }
   }
 
   componentWillUnmount() {
-    const {groupId, directToGroup, prevRoute, isPrivate} = this.state;
-    console.log(this.state);
+    const {groupId, directToGroup, prevRoute} = this.state;
+    const {navigation} = this.props;
     // if direct from home reward page to detail page then to a group, reload reward when coming back
     if (directToGroup) {
-      if (prevRoute == 'history') {
-        if (isPrivate) {
-          this.loadUserRewardHistory();
-        } else {
-          this.loadUserRewardHistory();
-        }
+      console.log(prevRoute);
+      if (
+        prevRoute == 'RewardHistory' ||
+        prevRoute == 'MyGroupRewards' ||
+        prevRoute == 'MyRewards' ||
+        prevRoute == 'RewardList'
+      ) {
+        // MyRewads have no previous group page
+        // if has previous group page thus reload group and reward
+        navigation.navigate(prevRoute, {
+          refresh: true,
+        });
       }
     }
   }
-
-  loadGroupRewardHistory = async () => {
-    const {group, getGroupRewardHistory, auth} = this.props;
-
-    const request = {
-      token: auth.token,
-      groupId: group.group.id,
-      count: 0,
-      init: true,
-    };
-
-    const req = await getGroupRewardHistory(request);
-    if (req.errors) {
-      console.log(req.errors);
-      alert('Cannot get reward history at this time, please try again later');
-      return;
-    }
-  };
-
-  loadUserRewardHistory = async () => {
-    const {getUserRewardHistory, auth} = this.props;
-    const {groupId} = this.state;
-    const request = {
-      token: auth.token,
-      groupId,
-      count: 0,
-      init: true,
-    };
-
-    const req = await getUserRewardHistory(request);
-    if (req.errors) {
-      console.log(req.errors);
-      alert('Cannot get reward history at this time, please try again later');
-      return;
-    }
-  };
 
   componentDidUpdate(prevProps, prevState) {
     const {from, to, toId, fromId, prevRoute} = this.state;
@@ -112,7 +77,7 @@ class RewardDetailView extends React.Component {
           group.group.rank_setting.manage_reward_rank_required && inGroup;
       navigation.setOptions({
         headerRight: () =>
-          hasRewardManagementAuthority && prevRoute == 'reward' ? (
+          hasRewardManagementAuthority && prevRoute == 'RewardList' ? (
             <TopRightButton
               type={'edit'}
               onPress={this.onPress}
@@ -175,7 +140,7 @@ class RewardDetailView extends React.Component {
   };
 
   getGroup = async () => {
-    const {fromId, from} = this.state;
+    const {fromId, from, groupId} = this.state;
     const {auth, getSingleGroupById, navigation} = this.props;
 
     if (from == 'group' && fromId) {
@@ -192,7 +157,10 @@ class RewardDetailView extends React.Component {
         return;
       }
 
-      navigation.navigate('GroupNavigator');
+      navigation.push('GroupNavigator', {
+        prevRoute: 'RewardDetail',
+        groupId,
+      });
     }
   };
 
@@ -209,16 +177,14 @@ class RewardDetailView extends React.Component {
       expiration,
       prevRoute,
       status,
-      isPrivate,
       content,
       fromId,
       groupDisplayName,
       redeemer,
-      updatedAt
+      updatedAt,
+      winner,
     } = this.state;
     const {group} = this.props.group;
-
-    console.log(this.state);
 
     return (
       <TouchableWithoutFeedback>
@@ -232,8 +198,11 @@ class RewardDetailView extends React.Component {
           <InputContent content={description} disabled={true} />
           <View style={styles.infoContaier}>
             <View style={styles.infoSubContainer}>
-              {prevRoute == 'reward' ? <Text>{count} remaining</Text> : null}
-              {isPrivate && content && prevRoute == 'history' ? (
+              {prevRoute == 'RewardList' ? (
+                <Text>{count} remaining</Text>
+              ) : null}
+              {content &&
+              (prevRoute == 'MyRewards' || prevRoute == 'MyGroupRewards') ? (
                 <Text>{`Hidden Content: ${content}`}</Text>
               ) : null}
               <Text style={styles.text}>
@@ -250,8 +219,12 @@ class RewardDetailView extends React.Component {
               {fromId == group.id ? (
                 <Text style={styles.text}>Group: {groupDisplayName}</Text>
               ) : (
-                <View style={[styles.text, {flexDirection: 'row'}]}>
-                  <Text>Group: </Text>
+                <View
+                  style={[
+                    styles.text,
+                    {flexDirection: 'row', alignItems: 'center'},
+                  ]}>
+                  <Text>From: </Text>
                   <TouchableOpacity onPress={this.getGroup}>
                     <View style={styles.groupNameTag}>
                       <Text style={{color: 'white'}}>{groupDisplayName}</Text>
@@ -259,12 +232,26 @@ class RewardDetailView extends React.Component {
                   </TouchableOpacity>
                 </View>
               )}
-              {isPrivate &&
-              (prevRoute == 'history' || prevRoute == 'management') ? (
+              {prevRoute == 'MyRewards' ||
+              prevRoute == 'MyGroupRewards' ||
+              prevRoute == 'RewardManagement' ? (
                 <Text style={[styles.text]}>Reward ID: {id}</Text>
               ) : null}
-              {isPrivate &&
-              (prevRoute == 'history' || prevRoute == 'management') ? (
+              {winner &&
+              (prevRoute == 'MyRewards' ||
+                prevRoute == 'MyGroupRewards' ||
+                prevRoute == 'RewardManagement') ? (
+                <Text style={[styles.text, {color: 'grey'}]}>{`Won by ${
+                  winner.displayName
+                } ${
+                  winner.username == winner.displayName
+                    ? ''
+                    : `(@${winner.username})`
+                }`}</Text>
+              ) : null}
+              {prevRoute == 'MyRewards' ||
+              prevRoute == 'MyGroupRewards' ||
+              prevRoute == 'RewardManagement' ? (
                 <Text
                   style={[
                     styles.text,
@@ -276,15 +263,20 @@ class RewardDetailView extends React.Component {
                     ? 'Available'
                     : `Redeemed ${
                         redeemer
-                          ? `by ${redeemer.displayName}(@${redeemer.username})`
+                          ? `by ${redeemer.displayName}${
+                              redeemer.username == redeemer.displayName
+                                ? ''
+                                : `(@${redeemer.username})`
+                            }`
                           : ''
                       }`}
                 </Text>
               ) : null}
-              {isPrivate &&
-              redeemer &&
+              {redeemer &&
               status == 'redeemed' &&
-              (prevRoute == 'history' || prevRoute == 'management') ? (
+              (prevRoute == 'MyRewards' ||
+                prevRoute == 'MyGroupRewards' ||
+                prevRoute == 'RewardManagement') ? (
                 <Text
                   style={[
                     styles.text,
@@ -332,6 +324,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: 10,
+    color: 'black',
   },
 });
 
@@ -344,12 +337,10 @@ const mapDispatchToProps = dispatch => {
   return {
     getRewardEntry: data => dispatch(getRewardEntry(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
-    getUserRewardHistory: data => dispatch(getUserRewardHistory(data)),
-    getGroupRewardHistory: data => dispatch(getGroupRewardHistory(data)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(RewardDetailView);
+)(RewardDetail);

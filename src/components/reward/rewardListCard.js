@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {connect} from 'react-redux';
 import RewardEntryList from './rewardEntryList';
 import {Swipeable} from 'react-native-gesture-handler';
 
@@ -24,10 +23,9 @@ export default class RewardListCard extends React.Component {
     const {navigation} = this.props;
 
     if (type == 'detail') {
-      navigation.navigate('RewardDetailView', {
+      navigation.navigate('RewardDetail', {
         ...item,
-        prevRoute: 'reward',
-        isPrivate: 'false'
+        prevRoute: 'RewardList',
       });
     } else if (type == 'setting') {
       const {type} = item;
@@ -66,7 +64,7 @@ export default class RewardListCard extends React.Component {
   };
 
   render() {
-    const {item, group, onLootRedeemPress} = this.props;
+    const {item, group, onLootRedeemPress, navigation} = this.props;
     const {
       id,
       listName,
@@ -75,9 +73,10 @@ export default class RewardListCard extends React.Component {
       redeemRewardEntryList,
       pointCost,
     } = item;
-    const hasRewardManagementAuthority =
-      group.auth.rank <= group.rank_setting.manage_reward_rank_required &&
-      (id == '0' || id == '1' || id == '2' || id == '3');
+    const hasRewardManagementAuthority = group.auth
+      ? group.auth.rank <= group.rank_setting.manage_reward_rank_required &&
+        (id == '0' || id == '1' || id == '2' || id == '3')
+      : false;
     const {loading} = this.state;
     return (
       //   <Swipeable>
@@ -109,6 +108,7 @@ export default class RewardListCard extends React.Component {
               type={type}
               onPress={this.onPress}
               onLootRedeemPress={onLootRedeemPress}
+              navigation={navigation}
             />
           </View>
           {type == 'loot' ? (

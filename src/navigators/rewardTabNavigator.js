@@ -30,7 +30,7 @@ class RewardTabNavigator extends React.Component {
 
   getRouteName = () => {
     const routeName =
-      getFocusedRouteNameFromRoute(this.props.route) ?? 'Rewards';
+      getFocusedRouteNameFromRoute(this.props.route) ?? 'RewardHistory';
     return routeName;
   };
 
@@ -38,10 +38,11 @@ class RewardTabNavigator extends React.Component {
     const routeName = this.getRouteName();
     const {navigation, group} = this.props;
 
-    if (routeName == 'Rewards') {
-      const hasRewardManagementAuthority =
-        group.group.auth.rank <=
-        group.group.rank_setting.manage_reward_rank_required;
+    if (routeName == 'RewardList') {
+      const hasRewardManagementAuthority = group.group.auth
+        ? group.group.auth.rank <=
+          group.group.rank_setting.manage_reward_rank_required
+        : false;
       navigation.setOptions({
         headerRight: () =>
           hasRewardManagementAuthority ? (
@@ -63,7 +64,7 @@ class RewardTabNavigator extends React.Component {
       groupId: group.group.id,
     };
 
-    navigation.navigate('Rewards');
+    navigation.navigate('RewardList');
 
     const req = await getGroupRewardList(request);
     if (req.errors) {
@@ -83,7 +84,7 @@ class RewardTabNavigator extends React.Component {
       init: true,
     };
 
-    navigation.navigate('History');
+    navigation.navigate('RewardHistory');
 
     const req = await getGroupRewardHistory(request);
 
@@ -104,7 +105,7 @@ class RewardTabNavigator extends React.Component {
       init: true,
     };
 
-    navigation.navigate('MyRewards');
+    navigation.navigate('MyGroupRewards');
 
     const req = await getUserRewardHistory(request);
     if (req.errors) {
@@ -118,20 +119,21 @@ class RewardTabNavigator extends React.Component {
     const {navigation} = this.props;
     const routeName = this.getRouteName();
 
-    if (routeName == 'Rewards') {
+    if (routeName == 'RewardList') {
       navigation.navigate('RewardSetting');
     }
   };
 
   render() {
     const {group} = this.props;
-    const hasRewardManagementAuthority =
-      group.group.auth.rank <=
-      group.group.rank_setting.manage_reward_rank_required;
+    const hasRewardManagementAuthority = group.group.auth
+      ? group.group.auth.rank <=
+        group.group.rank_setting.manage_reward_rank_required
+      : false;
 
     return (
       <Tabs.Navigator
-        initialRouteName="History"
+        initialRouteName="RewardHistory"
         screenOptions={{
           tabBarHideOnKeyboard: true,
           tabBarActiveTintColor: 'tomato',
@@ -139,9 +141,10 @@ class RewardTabNavigator extends React.Component {
           headerShown: false,
         }}>
         <Tabs.Screen
-          name="History"
+          name="RewardHistory"
           component={RewardHistory}
           options={{
+            tabBarLabel: 'History',
             tabBarIcon: ({focused, color, size}) => {
               return (
                 <MaterialIcons
@@ -160,9 +163,10 @@ class RewardTabNavigator extends React.Component {
           }}
         />
         <Tabs.Screen
-          name="Rewards"
+          name="RewardList"
           component={Reward}
           options={{
+            tabBarLabel: 'Rewards',
             tabBarIcon: ({focused, color, size}) => {
               return (
                 <MaterialIcons
@@ -178,7 +182,7 @@ class RewardTabNavigator extends React.Component {
           }}
         />
         <Tabs.Screen
-          name="MyRewards"
+          name="MyGroupRewards"
           component={MyReward}
           options={{
             tabBarLabel: 'My Rewards',

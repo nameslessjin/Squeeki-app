@@ -77,7 +77,9 @@ class PostCard extends React.Component {
       return;
     }
 
-    navigation.navigate('GroupNavigator');
+    navigation.navigate('GroupNavigator', {
+      prevRoute: 'Home'
+    });
   };
 
   onPostReport = () => {

@@ -11,13 +11,14 @@ const extractKey = ({id}) => id;
 
 export default class rewardList extends React.Component {
   renderItem = ({item}) => {
-    const {navigation, group, onLootRedeemPress} = this.props;
+    const {navigation, group, onLootRedeemPress, auth} = this.props;
     return (
       <RewardListCard
         item={item}
         navigation={navigation}
         group={group}
         onLootRedeemPress={onLootRedeemPress}
+        auth={auth}
       />
     );
   };

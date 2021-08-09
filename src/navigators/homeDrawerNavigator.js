@@ -41,7 +41,7 @@ class HomeDrawerNavigator extends React.Component {
 
   onToggleGroupsRightButton = async () => {
     const {navigation} = this.props;
-    navigation.navigate('Search');
+    navigation.navigate('Search', {prevRoute: 'groups'});
   };
 
   onToggleHomeRightButton = () => {
@@ -122,7 +122,7 @@ class HomeDrawerNavigator extends React.Component {
         headerRight: null,
         headerTitle: 'My Rewards',
       });
-      
+
       this.unsubSocket();
     } else if (name == 'Chats') {
       navigation.setOptions({

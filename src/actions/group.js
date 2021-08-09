@@ -56,9 +56,8 @@ export const getSingleGroupById = data => {
         groupId: id,
       },
     };
-
     const result = await httpCall(token, graphql)
-
+    dispatch(cleanGroup());
     if (result.errors) {
       return result;
     }

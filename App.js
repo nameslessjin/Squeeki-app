@@ -52,7 +52,6 @@ import CheckInResult from './src/screens/checkinResult';
 import Leaderboard from './src/screens/leaderboard';
 import RewardTabNavigator from './src/navigators/rewardTabNavigator';
 import RewardSetting from './src/screens/rewardSetting';
-import RewardHistory from './src/screens/rewardHistory';
 import GroupJoinRequest from './src/screens/groupJoinRequest';
 import TermDisplay from './src/screens/termDisplay';
 import Terms from './src/screens/terms';
@@ -73,7 +72,8 @@ import TaskManagement from './src/screens/taskManagement';
 import TaskVerify from './src/screens/taskVerify';
 import RewardContentList from './src/screens/rewardContentList';
 import RewardListSetting from './src/screens/rewardListSetting';
-import RewardDetailView from './src/screens/rewardDetailView';
+import RewardDetail from './src/screens/rewardDetail';
+import Group from './src/screens/group'
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -197,7 +197,6 @@ export default (App = () => {
               component={RewardTabNavigator}
             />
             <Stack.Screen name="RewardSetting" component={RewardSetting} />
-            <Stack.Screen name="RewardHistory" component={RewardHistory} />
             <Stack.Screen
               name="GroupJoinRequest"
               component={GroupJoinRequest}
@@ -236,7 +235,7 @@ export default (App = () => {
               name="RewardListSetting"
               component={RewardListSetting}
             />
-            <Stack.Screen name="RewardDetailView" component={RewardDetailView} />
+            <Stack.Screen name="RewardDetail" component={RewardDetail} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

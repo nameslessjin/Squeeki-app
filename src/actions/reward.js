@@ -10,6 +10,7 @@ import {
   getUserRewardHistoryQuery,
   searchRewardQuery,
   redeemUserRewardMutation,
+  getSystemRewardListSettingQuery,
 } from './query/rewardQuery';
 import {httpCall, httpUpload} from './utils/httpCall';
 
@@ -65,6 +66,7 @@ export const createUpdateGroupReward = request => {
       expiration: expiration ? new Date(expiration) : null,
     };
 
+    console.log(input);
     const graphql = {
       query: createUpdateGroupRewardMutation,
       variables: {
@@ -157,12 +159,11 @@ const getGroupRewardHistoryReducer = data => {
 };
 
 export const getReward = request => {
-  const {token, rewardId, isPrivate} = request;
+  const {token, rewardId} = request;
 
   return async function(dispatch) {
     const input = {
       rewardId,
-      isPrivate,
     };
 
     const graphql = {
@@ -382,5 +383,20 @@ export const redeemUserReward = request => {
     }
 
     return 0;
+  };
+};
+
+export const getSystemRewardListSetting = request => {
+  return async function(dispatch) {
+    const graphql = {
+      query: getSystemRewardListSettingQuery,
+    };
+
+    const result = await httpCall(null, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.getSystemRewardListSetting;
   };
 };

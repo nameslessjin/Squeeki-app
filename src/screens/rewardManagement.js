@@ -128,12 +128,10 @@ class RewardManagement extends React.Component {
           <RewardHistoryList
             rewardHistory={rewardList || []}
             groupId={group.group.id}
-            isPrivate={true}
-            type={'management'}
             navigation={navigation}
             onEndReached={this.onEndReached}
             onRedeemPress={this.onRedeemPress}
-            prevRoute={'management'}
+            prevRoute={'RewardManagement'}
           />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

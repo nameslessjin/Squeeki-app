@@ -96,9 +96,9 @@ class GroupHeader extends React.Component {
 
     // if joined result is true then navigate to group page or change button to requested
     if (result) {
-      navigation.navigate('GroupNavigator');
-    } else {
-      // nothing
+      navigation.navigate('GroupNavigator', {
+        prevRoute: 'GroupSearch'
+      });
     }
   };
 

@@ -12,6 +12,14 @@ import HeaderRightButton from '../components/group/headerRight';
 // all screens
 import {connect} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  cleanGroup,
+  findUserGroupsByUserId,
+  getSingleGroupById,
+} from '../actions/group';
+import {userLogout} from '../actions/auth';
+import {invalidAuthentication} from '../functions/auth';
+import {getGroupRewardHistory, getUserRewardHistory} from '../actions/reward';
 
 class GroupDrawerNavigator extends React.Component {
   onToggleHeaderRightButton = () => {
@@ -42,6 +50,70 @@ class GroupDrawerNavigator extends React.Component {
         ),
     });
   }
+
+  componentWillUnmount() {
+    const {route, navigation, cleanGroup} = this.props;
+    const {prevRoute, groupId} = route.params;
+    console.log(prevRoute);
+    cleanGroup();
+
+    if (
+      prevRoute == 'RewardHistory' ||
+      prevRoute == 'MyGroupRewards' ||
+      prevRoute == 'MyRewards' ||
+      prevRoute == 'RewardList' ||
+      prevRoute == 'RewardDetail'
+    ) {
+      // MyRewads have no previous group page
+      // if has previous group page thus reload group and reward
+      if (groupId) {
+        this.getGroup(groupId);
+      }
+      navigation.navigate(prevRoute, {
+        refresh: true,
+        groupId,
+      });
+    } else {
+      // if the current route is general group page then load groups
+      this.loadGroups(true);
+    }
+  }
+
+  getGroup = async groupId => {
+    const {auth, getSingleGroupById} = this.props;
+    const request = {
+      id: groupId,
+      token: auth.token,
+    };
+
+    console.log(request);
+    const req = await getSingleGroupById(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot load group at this time, please try again later');
+      return;
+    }
+  };
+
+  loadGroups = async init => {
+    const {
+      findUserGroupsByUserId,
+      navigation,
+      userLogout,
+      auth,
+      group,
+    } = this.props;
+    const groupsData = await findUserGroupsByUserId({
+      token: auth.token,
+      count: init ? 0 : group.groups.count,
+    });
+
+    invalidAuthentication({
+      queryResult: groupsData,
+      userLogout: userLogout,
+      navigation: navigation,
+    });
+  };
 
   CustomDrawerContent = props => {
     const {group, group_join_request_count} = this.props.group;
@@ -140,7 +212,6 @@ class GroupDrawerNavigator extends React.Component {
           headerShown: false,
           drawerPosition: 'right',
           drawerStyle: styles.drawerStyle,
-          
         }}
         initialRouteName="Group"
         drawerPosition="right"
@@ -179,11 +250,20 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group} = state;
-  return {group};
+  const {group, auth} = state;
+  return {group, auth};
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    findUserGroupsByUserId: data => dispatch(findUserGroupsByUserId(data)),
+    cleanGroup: () => dispatch(cleanGroup()),
+    userLogout: () => dispatch(userLogout()),
+    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
+  };
 };
 
 export default connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(GroupDrawerNavigator);

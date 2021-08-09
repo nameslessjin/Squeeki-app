@@ -85,6 +85,8 @@ export default class RewardModal extends React.Component {
       expiration,
       onInputChange,
       result,
+      isGift,
+      systemRewardSetting,
     } = this.props;
     const {process} = this.state;
 
@@ -92,45 +94,55 @@ export default class RewardModal extends React.Component {
     let listChance = [];
 
     if (modalType == 'listId' || modalType == 'chance') {
-      listNo = rewardList
-        .map(r => {
+      if (isGift) {
+        // the system reward settings is directly fron the backend and only managable from there
+        if (systemRewardSetting) {
+          listNo = systemRewardSetting.list;
+          listChance = systemRewardSetting.chance.filter(
+            c => c.listId == listId,
+          );
+        }
+      } else {
+        listNo = rewardList
+          .map(r => {
+            return {
+              id: r.id,
+              label: r.listName,
+              value: r.id,
+            };
+          })
+          .filter(r => r.id != '0');
+
+        let currentList = rewardList[0];
+        switch (listId) {
+          case '1':
+            currentList = rewardList[0];
+            break;
+          case '2':
+            currentList = rewardList[1];
+            break;
+          case '3':
+            currentList = rewardList[2];
+            break;
+          default:
+            currentList = rewardList[0];
+            break;
+        }
+
+        listChance[0] = currentList.chance1;
+        listChance[1] = currentList.chance2;
+        listChance[2] = currentList.chance3;
+        listChance[3] = currentList.chance4;
+        listChance[4] = currentList.chance5;
+
+        listChance = listChance.map((c, i) => {
           return {
-            id: r.id,
-            label: r.listName,
-            value: r.id,
+            id: c,
+            label: c,
+            value: i + 1,
           };
-        })
-        .filter(r => r.id != '0');
-
-      let currentList = rewardList[0];
-      switch (listId) {
-        case '1':
-          currentList = rewardList[0];
-          break;
-        case '2':
-          currentList = rewardList[1];
-          break;
-        case '3':
-          currentList = rewardList[2];
-          break;
-        default:
-          currentList = rewardList[0];
-          break;
+        });
       }
-
-      listChance[0] = currentList.chance1;
-      listChance[1] = currentList.chance2;
-      listChance[2] = currentList.chance3;
-      listChance[3] = currentList.chance4;
-      listChance[4] = currentList.chance5;
-
-      listChance = listChance.map((c, i) => {
-        return {
-          id: c,
-          label: c,
-          value: i + 1,
-        };
-      });
     }
 
     let name = 'List';

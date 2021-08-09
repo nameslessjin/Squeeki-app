@@ -19,34 +19,35 @@ const extractKey = ({id}) => id;
 
 class RewardHistoryList extends React.Component {
   getGroup = async reward => {
-    console.log(reward);
-    const {auth, getSingleGroupById, navigation} = this.props;
+    const {from, fromId} = reward;
+    const {auth, getSingleGroupById, navigation, prevRoute, group} = this.props;
 
-    // if (from == 'group' && fromId) {
-    //   const request = {
-    //     id: fromId,
-    //     token: auth.token,
-    //   };
+    if (from == 'group' && fromId) {
+      const request = {
+        id: fromId,
+        token: auth.token,
+      };
 
-    //   const req = await getSingleGroupById(request);
-    //   this.setState({directToGroup: true});
-    //   if (req.errors) {
-    //     console.log(req.errors);
-    //     alert('Cannot load group at this time, please try again later');
-    //     return;
-    //   }
+      const req = await getSingleGroupById(request);
+      if (req.errors) {
+        console.log(req.errors);
+        alert('Cannot load group at this time, please try again later');
+        return;
+      }
 
-    //   navigation.navigate('GroupNavigator');
-    // }
+      navigation.push('GroupNavigator', {
+        prevRoute,
+        groupId: group.group.id
+      })
+    }
   };
 
   getReward = async id => {
-    const {getReward, auth, navigation, isPrivate, prevRoute} = this.props;
+    const {getReward, auth, navigation, prevRoute} = this.props;
 
     const request = {
       token: auth.token,
       rewardId: id,
-      isPrivate,
     };
 
     const req = await getReward(request);
@@ -57,11 +58,10 @@ class RewardHistoryList extends React.Component {
       return;
     }
 
-    navigation.navigate('RewardDetailView', {
+    navigation.navigate('RewardDetail', {
       ...req,
       image: req.image ? {uri: req.image} : null,
       prevRoute,
-      isPrivate,
     });
   };
 
@@ -78,7 +78,7 @@ class RewardHistoryList extends React.Component {
       status,
     } = item;
 
-    const {groupId, type, onRedeemPress} = this.props;
+    const {groupId, onRedeemPress, prevRoute} = this.props;
     let displayName = null;
     let icon = null;
     let userId = null;
@@ -97,7 +97,7 @@ class RewardHistoryList extends React.Component {
     } else if (id == 'empty') {
       return <View style={styles.empty} />;
     } else {
-      if (type == 'group' || type == 'management') {
+      if (prevRoute == 'RewardHistory' || prevRoute == 'RewardManagement') {
         displayName = winner.displayName;
         icon = winner.icon;
         userId = winner.userId;
@@ -125,15 +125,14 @@ class RewardHistoryList extends React.Component {
                   <Text style={styles.text}>Point Cost: {pointCost}pts</Text>
                 )}
 
-                {type == 'management' ? null : fromId == groupId ? (
-                  <Text style={styles.text}>Group: {groupDisplayName}</Text>
-                ) : (
+                {prevRoute == 'RewardManagement' ? null : fromId ==
+                  groupId ? null : (
                   <View
                     style={[
                       styles.text,
                       {flexDirection: 'row', alignItems: 'center'},
                     ]}>
-                    <Text>Group: </Text>
+                    <Text>From: </Text>
                     <TouchableOpacity onPress={() => this.getGroup(item)}>
                       <View style={styles.groupNameTag}>
                         <Text style={{color: 'white'}}>{groupDisplayName}</Text>
@@ -146,7 +145,7 @@ class RewardHistoryList extends React.Component {
                   On: {dateConversion(createdAt, 'reward')}
                 </Text>
               </View>
-              {type == 'group' ? (
+              {prevRoute == 'RewardHistory' ? (
                 <View style={styles.rightContainer}>
                   <Image
                     source={icon ? {uri: icon} : singleDefaultIcon()}
@@ -154,7 +153,7 @@ class RewardHistoryList extends React.Component {
                   />
                   <Text style={styles.text}>{displayName}</Text>
                 </View>
-              ) : type == 'management' ? (
+              ) : prevRoute == 'RewardManagement' ? (
                 <View style={[styles.rightContainer]}>
                   <Image
                     source={icon ? {uri: icon} : singleDefaultIcon()}
@@ -197,15 +196,13 @@ class RewardHistoryList extends React.Component {
   };
 
   render() {
-    const {rewardHistory, onEndReached, type} = this.props;
+    const {rewardHistory, onEndReached, prevRoute} = this.props;
 
     let data = [...rewardHistory];
 
-    if (type == 'group') {
+    if (prevRoute == 'RewardHistory') {
       data = [{id: 'header'}].concat(data).concat([{id: 'empty'}]);
-    } else if (type == 'user') {
-      data = data.concat([{id: 'empty'}]);
-    } else if (type == 'management') {
+    } else {
       data = data.concat([{id: 'empty'}]);
     }
 

@@ -16,13 +16,8 @@ import {getGroupPostsFunc} from '../functions/post';
 import {loadLeaderBoardFunc} from '../functions/point';
 import {getGroupJoinRequestCountFunc} from '../functions/group';
 import {userLogout} from '../actions/auth';
-import {
-  cleanGroup,
-  findUserGroupsByUserId,
-  getGroupJoinRequestCount,
-} from '../actions/group';
+import {getGroupJoinRequestCount} from '../actions/group';
 import {getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point';
-import {invalidAuthentication} from '../functions/auth';
 
 class Group extends React.Component {
   state = {
@@ -41,7 +36,7 @@ class Group extends React.Component {
 
     if (visibility == 'public' || auth != null) {
       this.loadGroupPosts(true);
-      this.loadLeaderBoard();
+      // this.loadLeaderBoard();
 
       if (auth != null) {
         if (auth.rank <= 2) {
@@ -51,13 +46,6 @@ class Group extends React.Component {
     }
 
     Keyboard.dismiss();
-  }
-
-  componentWillUnmount() {
-    const {route} = this.props
-    console.log(route)
-    this.props.cleanGroup();
-    this.loadGroups(true);
   }
 
   getGroupJoinRequestCount = () => {
@@ -78,26 +66,6 @@ class Group extends React.Component {
     getGroupJoinRequestCountFunc(data);
   };
 
-  loadGroups = async init => {
-    const {
-      findUserGroupsByUserId,
-      navigation,
-      userLogout,
-      auth,
-      group,
-    } = this.props;
-    const groupsData = await findUserGroupsByUserId({
-      token: auth.token,
-      count: init ? 0 : group.groups.count,
-    });
-
-    invalidAuthentication({
-      queryResult: groupsData,
-      userLogout: userLogout,
-      navigation: navigation,
-    });
-  };
-
   loadLeaderBoard = () => {
     const {
       userLogout,
@@ -107,11 +75,11 @@ class Group extends React.Component {
       group,
     } = this.props;
     const data = {
-      userLogout: userLogout,
-      auth: auth,
-      getGroupPointLeaderBoard: getGroupPointLeaderBoard,
-      navigation: navigation,
-      group: group,
+      userLogout,
+      auth,
+      getGroupPointLeaderBoard,
+      navigation,
+      group,
       count: 0,
       limit: 3,
       period: 'month',
@@ -224,8 +192,6 @@ const mapDispatchToProps = dispatch => {
   return {
     getGroupPosts: data => dispatch(getGroupPosts(data)),
     userLogout: () => dispatch(userLogout()),
-    cleanGroup: () => dispatch(cleanGroup()),
-    findUserGroupsByUserId: data => dispatch(findUserGroupsByUserId(data)),
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
     getGroupPointLeaderBoard: data => dispatch(getGroupPointLeaderBoard(data)),
     getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data)),

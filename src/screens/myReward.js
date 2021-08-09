@@ -6,7 +6,7 @@ import RewardHistoryList from '../components/reward/rewardHistoryList';
 
 class MyReward extends React.Component {
   componentDidUpdate(prevProps) {
-    const {currentScreen} = this.props;
+    const {currentScreen, route, navigation} = this.props;
     const prevScreen = prevProps.currentScreen;
     if (
       currentScreen.currentScreen == 'MyRewards' &&
@@ -14,14 +14,24 @@ class MyReward extends React.Component {
     ) {
       this.loadUserRewardHistory(true);
     }
+
+    if (route.params) {
+      const {refresh, groupId} = route.params;
+      if (refresh) {
+        setTimeout(() => {
+          this.loadUserRewardHistory(true, groupId);
+        }, 100);
+        navigation.setParams({refresh: false, groupId: null});
+      }
+    }
   }
 
-  loadUserRewardHistory = async init => {
+  loadUserRewardHistory = async (init, groupId) => {
     const {group, getUserRewardHistory, auth, reward} = this.props;
 
     const request = {
       token: auth.token,
-      groupId: group.group.id,
+      groupId: groupId ? groupId : group.group.id,
       count: init ? 0 : reward.userRewardHistoryCount,
       init,
     };
@@ -50,11 +60,9 @@ class MyReward extends React.Component {
           <RewardHistoryList
             rewardHistory={reward.userRewardHistory || []}
             groupId={group.group.id}
-            isPrivate={true}
             onEndReached={this.onEndReached}
-            type={'user'}
             navigation={navigation}
-            prevRoute={'history'}
+            prevRoute={group.group.id ? 'MyGroupRewards' : 'MyRewards'}
           />
         )}
       </View>

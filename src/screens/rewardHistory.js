@@ -15,12 +15,25 @@ class RewardHistory extends React.Component {
     this.loadGroupRewardHistory(true);
   }
 
-  loadGroupRewardHistory = async init => {
+  componentDidUpdate() {
+    const {route, navigation} = this.props;
+    if (route.params) {
+      const {refresh, groupId} = route.params;
+      if (refresh) {
+        setTimeout(() => {
+          this.loadGroupRewardHistory(true, groupId);
+        }, 100);
+        navigation.setParams({refresh: false, groupId: null});
+      }
+    }
+  }
+
+  loadGroupRewardHistory = async (init, groupId) => {
     const {group, getGroupRewardHistory, auth, reward} = this.props;
 
     const request = {
       token: auth.token,
-      groupId: group.group.id,
+      groupId: groupId ? groupId : group.group.id,
       count: init ? 0 : reward.groupRewardHistoryCount,
       init,
     };
@@ -50,12 +63,10 @@ class RewardHistory extends React.Component {
         ) : (
           <RewardHistoryList
             rewardHistory={reward.groupRewardHistory || []}
-            isPrivate={false}
             groupId={group.group.id}
             onEndReached={this.onEndReached}
-            type={'group'}
             navigation={navigation}
-            prevRoute={'history'}
+            prevRoute={'RewardHistory'}
           />
         )}
       </View>
