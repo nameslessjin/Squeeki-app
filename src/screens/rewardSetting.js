@@ -23,7 +23,6 @@ import {
 } from '../actions/reward';
 import RewardModal from '../components/reward/rewardModal';
 import validator from 'validator';
-import {v4 as uuidv4} from 'uuid';
 import InputImage from '../components/postSetting/inputImage';
 
 class RewardSetting extends React.Component {
@@ -40,7 +39,7 @@ class RewardSetting extends React.Component {
     listId: '1',
     listName: this.props.reward.rewardList[0].listName,
     modalType: 'listId',
-    contentList: [{id: uuidv4(), content: ''}],
+    contentList: [{id: '1', content: ''}],
     image: null,
     redeemable: false,
     pointCost: '0',
@@ -220,6 +219,19 @@ class RewardSetting extends React.Component {
     return true;
   };
 
+  randomIdGenerator = () => {
+    const options =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSwXYZ1234567890-';
+    let id = '';
+
+    for (let i = 0; i < 10; i++) {
+      const random = Math.floor(Math.random() * options.length);
+      id = id + options[random];
+    }
+
+    return id
+  };
+
   componentDidUpdate(prevProps, prevState) {
     const {navigation, route} = this.props;
     const {count, contentList} = this.state;
@@ -257,7 +269,7 @@ class RewardSetting extends React.Component {
           let updatedContentList = [...contentList];
           if (contentList.length < parseInt(count)) {
             for (let i = 0; i < parseInt(count) - contentList.length; i++) {
-              updatedContentList.push({id: uuidv4(), content: ''});
+              updatedContentList.push({id: this.randomIdGenerator(), content: ''});
             }
           } else if (contentList.length > parseInt(count)) {
             // set timer, don't delete immediate
@@ -411,7 +423,7 @@ class RewardSetting extends React.Component {
       }
       return;
     }
-    navigation.navigate('Rewards');
+    navigation.navigate('RewardList');
   };
 
   onInputChange = (value, type) => {
@@ -555,7 +567,7 @@ class RewardSetting extends React.Component {
       alert('Cannot delete reward at this time, please try again later');
       return;
     }
-    navigation.navigate('Rewards');
+    navigation.navigate('RewardList');
   };
 
   onPress = type => {
@@ -615,7 +627,7 @@ class RewardSetting extends React.Component {
       isGift,
       systemRewardSetting,
     } = this.state;
-    console.log(this.state);
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView style={styles.container} bounces={false}>

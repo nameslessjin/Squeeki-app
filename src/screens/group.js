@@ -26,27 +26,28 @@ class Group extends React.Component {
   };
 
   componentDidMount() {
-    const {display_name, visibility, auth, id} = this.props.group.group;
-    const {navigation, group} = this.props;
+    const {navigation} = this.props;
 
     navigation.setOptions({
-      headerTitle: display_name,
       headerBackTitleVisible: false,
     });
 
-    if (visibility == 'public' || auth != null) {
-      this.loadGroupPosts(true);
-      // this.loadLeaderBoard();
-
-      if (auth != null) {
-        if (auth.rank <= 2) {
-          this.getGroupJoinRequestCount();
-        }
-      }
-    }
-
     Keyboard.dismiss();
   }
+
+  getUserGroupPoint = async () => {
+    const {auth, group, getUserGroupPoint} = this.props;
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+    };
+
+    const req = await getUserGroupPoint(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      return;
+    }
+  };
 
   getGroupJoinRequestCount = () => {
     const {
@@ -110,6 +111,8 @@ class Group extends React.Component {
       this.setState({refreshing: true});
       this.loadLeaderBoard();
       this.loadGroupPosts(true);
+      this.getUserGroupPoint()
+      this.getGroupJoinRequestCount();
       this.setState({refreshing: false});
     }
   };
@@ -127,12 +130,12 @@ class Group extends React.Component {
     const data = {
       token: auth.token,
       groupId: group.group.id,
-      getGroupPosts: getGroupPosts,
-      navigation: navigation,
-      userLogout: userLogout,
-      getUserGroupPoint: getUserGroupPoint,
+      getGroupPosts,
+      navigation,
+      userLogout,
+      getUserGroupPoint,
       count: init ? 0 : post.groupPosts.count,
-      init: init,
+      init,
     };
 
     this.setState({loading: true});

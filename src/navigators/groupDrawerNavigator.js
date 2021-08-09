@@ -16,10 +16,13 @@ import {
   cleanGroup,
   findUserGroupsByUserId,
   getSingleGroupById,
+  getGroupJoinRequestCount,
 } from '../actions/group';
 import {userLogout} from '../actions/auth';
 import {invalidAuthentication} from '../functions/auth';
-import {getGroupRewardHistory, getUserRewardHistory} from '../actions/reward';
+import {getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point';
+import {loadLeaderBoardFunc} from '../functions/point';
+import {getGroupJoinRequestCountFunc} from '../functions/group';
 
 class GroupDrawerNavigator extends React.Component {
   onToggleHeaderRightButton = () => {
@@ -29,7 +32,7 @@ class GroupDrawerNavigator extends React.Component {
 
   componentDidMount() {
     const {navigation, group} = this.props;
-    const {auth} = group.group;
+    const {auth, display_name, visibility, rank_setting} = group.group;
     navigation.setOptions({
       headerRight: () =>
         auth == null ? null : (
@@ -38,6 +41,17 @@ class GroupDrawerNavigator extends React.Component {
       headerTitle: group.group.display_name,
       headerBackTitleVisible: false,
     });
+
+    if (visibility == 'public' || auth != null) {
+      this.loadLeaderBoard();
+
+      if (auth != null) {
+        this.getUserGroupPoint()
+        if (auth.rank <= rank_setting.manage_member_rank_required) {
+          this.getGroupJoinRequestCount();
+        }
+      }
+    }
   }
 
   componentDidUpdate() {
@@ -53,29 +67,30 @@ class GroupDrawerNavigator extends React.Component {
 
   componentWillUnmount() {
     const {route, navigation, cleanGroup} = this.props;
-    const {prevRoute, groupId} = route.params;
-    console.log(prevRoute);
-    cleanGroup();
+    if (route.params) {
+      const {prevRoute, groupId} = route.params;
+      cleanGroup();
 
-    if (
-      prevRoute == 'RewardHistory' ||
-      prevRoute == 'MyGroupRewards' ||
-      prevRoute == 'MyRewards' ||
-      prevRoute == 'RewardList' ||
-      prevRoute == 'RewardDetail'
-    ) {
-      // MyRewads have no previous group page
-      // if has previous group page thus reload group and reward
-      if (groupId) {
-        this.getGroup(groupId);
+      if (
+        prevRoute == 'RewardHistory' ||
+        prevRoute == 'MyGroupRewards' ||
+        prevRoute == 'MyRewards' ||
+        prevRoute == 'RewardList' ||
+        prevRoute == 'RewardDetail'
+      ) {
+        // MyRewads have no previous group page
+        // if has previous group page thus reload group and reward
+        if (groupId) {
+          this.getGroup(groupId);
+        }
+        navigation.navigate(prevRoute, {
+          refresh: true,
+          groupId,
+        });
+      } else {
+        // if the current route is general group page then load groups
+        this.loadGroups(true);
       }
-      navigation.navigate(prevRoute, {
-        refresh: true,
-        groupId,
-      });
-    } else {
-      // if the current route is general group page then load groups
-      this.loadGroups(true);
     }
   }
 
@@ -93,6 +108,60 @@ class GroupDrawerNavigator extends React.Component {
       alert('Cannot load group at this time, please try again later');
       return;
     }
+  };
+
+  getUserGroupPoint = async () => {
+    const {auth, group, getUserGroupPoint} = this.props;
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+    };
+
+    const req = await getUserGroupPoint(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
+      return;
+    }
+  };
+
+  loadLeaderBoard = () => {
+    const {
+      userLogout,
+      auth,
+      getGroupPointLeaderBoard,
+      navigation,
+      group,
+    } = this.props;
+    const data = {
+      userLogout,
+      auth,
+      getGroupPointLeaderBoard,
+      navigation,
+      group,
+      count: 0,
+      limit: 3,
+      period: 'month',
+    };
+
+    loadLeaderBoardFunc(data);
+  };
+
+  getGroupJoinRequestCount = () => {
+    const {
+      getGroupJoinRequestCount,
+      auth,
+      group,
+      navigation,
+      userLogout,
+    } = this.props;
+    const data = {
+      func: getGroupJoinRequestCount,
+      auth,
+      group,
+      navigation,
+      userLogout,
+    };
+    getGroupJoinRequestCountFunc(data);
   };
 
   loadGroups = async init => {
@@ -250,8 +319,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group, auth} = state;
-  return {group, auth};
+  const {group, auth, post} = state;
+  return {group, auth, post};
 };
 
 const mapDispatchToProps = dispatch => {
@@ -260,6 +329,9 @@ const mapDispatchToProps = dispatch => {
     cleanGroup: () => dispatch(cleanGroup()),
     userLogout: () => dispatch(userLogout()),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
+    getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
+    getGroupPointLeaderBoard: data => dispatch(getGroupPointLeaderBoard(data)),
+    getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data)),
   };
 };
 

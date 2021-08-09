@@ -16,7 +16,6 @@ export const getUserGroupPoint = request => {
     };
 
     const result = await httpCall(token, graphql);
-
     if (result.errors) {
       return result;
     }

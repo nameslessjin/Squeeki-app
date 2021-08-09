@@ -21,9 +21,7 @@ export const getGroupPostsFunc = async data => {
     navigation,
     userLogout,
     groupId,
-    getUserGroupPoint,
     count,
-    init,
   } = data;
 
   const inputData = {
@@ -45,23 +43,4 @@ export const getGroupPostsFunc = async data => {
     return;
   }
 
-  if (init) {
-    const request = {
-      token: token,
-      groupId: groupId,
-    };
-
-    const req = await getUserGroupPoint(request);
-    if (req.errors) {
-      alert(req.errors[0].message);
-      if (req.errors[0].message == 'Not Authenticated') {
-        userLogout();
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'SignIn'}],
-        });
-      }
-      return;
-    }
-  }
 };

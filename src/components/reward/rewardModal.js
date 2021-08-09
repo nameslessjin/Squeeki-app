@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   },
   view: {
     backgroundColor: 'white',
-    width: '50%',
+    width: '60%',
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
   options: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: width * 0.45,
+    width: width * 0.55,
     height: 45,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'grey',
