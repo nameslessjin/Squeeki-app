@@ -223,12 +223,12 @@ class RewardHistoryList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    maxHeight: 150,
+    maxHeight: 200,
     padding: 10,
   },
   card: {
     width: '100%',
-    maxHeight: 130,
+    maxHeight: 180,
     shadowColor: '#000',
     backgroundColor: 'white',
     flexDirection: 'row',
@@ -247,11 +247,11 @@ const styles = StyleSheet.create({
   },
   rewardInfoContainer: {
     width: '70%',
-    maxHeight: 130,
+    maxHeight: 180,
   },
   rightContainer: {
     width: '30%',
-    maxHeight: 130,
+    maxHeight: 180,
     alignItems: 'center',
   },
   userIconStyle: {

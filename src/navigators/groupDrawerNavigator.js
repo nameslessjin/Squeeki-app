@@ -188,7 +188,7 @@ class GroupDrawerNavigator extends React.Component {
           )}
           labelStyle={styles.labelStyle}
           onPress={() => {
-            props.navigation.navigate('RewardNavigator');
+            props.navigation.push('RewardNavigator');
           }}
         />
         <DrawerItem
