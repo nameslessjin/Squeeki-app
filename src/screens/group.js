@@ -145,8 +145,7 @@ class Group extends React.Component {
 
   render() {
     const {group, post, navigation, point} = this.props;
-    const {visibility, auth} = group.group;
-    const {loading, refreshing} = this.state;
+    const {refreshing} = this.state;
 
     return (
       <KeyboardAvoidingView style={styles.container}>

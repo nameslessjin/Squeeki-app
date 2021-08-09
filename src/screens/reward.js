@@ -90,7 +90,6 @@ class Reward extends React.Component {
 
   lootRedeemReward = async request => {
     const {lootRedeemReward} = this.props;
-
     const req = await lootRedeemReward(request);
 
     if (req.errors) {
@@ -101,11 +100,8 @@ class Reward extends React.Component {
 
     if (req.errorMessage) {
       alert(req.errorMessage);
-      console.log(req);
       return;
     } else {
-      console.log('Everything is good');
-      console.log(req);
       this.setState({modalVisible: true, result: req});
     }
 

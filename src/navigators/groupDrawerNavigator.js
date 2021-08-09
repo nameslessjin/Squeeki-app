@@ -46,7 +46,7 @@ class GroupDrawerNavigator extends React.Component {
       this.loadLeaderBoard();
 
       if (auth != null) {
-        this.getUserGroupPoint()
+        this.getUserGroupPoint();
         if (auth.rank <= rank_setting.manage_member_rank_required) {
           this.getGroupJoinRequestCount();
         }
@@ -101,20 +101,22 @@ class GroupDrawerNavigator extends React.Component {
       token: auth.token,
     };
 
-    console.log(request);
     const req = await getSingleGroupById(request);
     if (req.errors) {
       console.log(req.errors);
       alert('Cannot load group at this time, please try again later');
       return;
     }
+
+    this.loadLeaderBoard(groupId);
+    this.getUserGroupPoint(groupId);
   };
 
-  getUserGroupPoint = async () => {
+  getUserGroupPoint = async groupId => {
     const {auth, group, getUserGroupPoint} = this.props;
     const request = {
       token: auth.token,
-      groupId: group.group.id,
+      groupId: groupId ? groupId : group.group.id,
     };
 
     const req = await getUserGroupPoint(request);
@@ -124,7 +126,7 @@ class GroupDrawerNavigator extends React.Component {
     }
   };
 
-  loadLeaderBoard = () => {
+  loadLeaderBoard = groupId => {
     const {
       userLogout,
       auth,
@@ -137,7 +139,7 @@ class GroupDrawerNavigator extends React.Component {
       auth,
       getGroupPointLeaderBoard,
       navigation,
-      group,
+      group: groupId ? {group: {id: groupId}} : group,
       count: 0,
       limit: 3,
       period: 'month',
