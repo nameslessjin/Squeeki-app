@@ -252,7 +252,6 @@ class Member extends React.Component {
     const updateMember = await this.props.updateMember({updateData, origin});
 
     if (updateMember.errors) {
-      // alert(updateMember.errors[0].message);
       console.log(updateMember.errors[0].message);
       alert('Cannot modify member status at this time, please try again later');
       if (updateMember.errors[0].message == 'Not authenticated') {
