@@ -9,18 +9,9 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
-import RankSettingModal from './rankSettingModal';
+import RankSettingModal from '../../rankSetting/rankSettingModal';
 
 export default class InputRankTitle extends React.Component {
-  rankOptions = [
-    {id: '1', value: 1},
-    {id: '2', value: 2},
-    {id: '3', value: 3},
-    {id: '4', value: 4},
-    {id: '5', value: 5},
-    {id: '6', value: 6},
-    {id: '7', value: 7},
-  ];
 
   render() {
     const {
@@ -31,9 +22,26 @@ export default class InputRankTitle extends React.Component {
       modifyInput,
       allowToModifyMember,
       userAuth,
+      rankName
     } = this.props;
 
-    const rankOptions = this.rankOptions.filter(op => op.value > userAuth.rank)
+
+    let rankTitle = rankName.rank1Name;
+    if (rank == 1) {
+      rankTitle = rankName.rank1Name;
+    } else if (rank == 2) {
+      rankTitle = rankName.rank2Name;
+    } else if (rank == 3) {
+      rankTitle = rankName.rank3Name;
+    } else if (rank == 4) {
+      rankTitle = rankName.rank4Name;
+    } else if (rank == 5) {
+      rankTitle = rankName.rank5Name;
+    } else if (rank == 6) {
+      rankTitle = rankName.rank6Name;
+    } else if (rank == 7) {
+      rankTitle = rankName.rank7Name;
+    } 
 
     return (
       <View style={styles.container}>
@@ -43,43 +51,20 @@ export default class InputRankTitle extends React.Component {
           onPress={onFocus}
           disabled={!allowToModifyMember || userAuth.rank == rank}>
           <View style={styles.textInputContainer}>
-            <Text>{rank}</Text>
+            <Text>{rankTitle}</Text>
           </View>
         </TouchableWithoutFeedback>
 
         <RankSettingModal
           modalVisible={toggled && allowToModifyMember}
           onBackdropPress={onBackdropPress}
-          rankOptions={rankOptions}
           onRankChange={modifyInput}
+          rankName={rankName}
           type={'rank'}
+          prevRoute={'member'}
+          userRank={userAuth.rank}
         />
 
-        {/* <Modal
-          isVisible={toggled && allowToChangeRank}
-          style={Platform.OS == 'ios' ? styles.Modal : null}
-          onBackdropPress={onBackdropPress}
-          animationIn={'slideInUp'}
-          animationOut={'slideOutDown'}>
-          <Picker
-            style={
-              Platform.OS == 'ios' ? styles.Picker : {backgroundColor: 'white'}
-            }
-            selectedValue={Platform.OS == 'ios' ? rank : rank - 1}
-            onValueChange={v => modifyInput('rank', v)}>
-            {this.rankOptions.map(option => {
-              if (option.value > userAuth.rank) {
-                return (
-                  <Picker.Item
-                    key={option.key}
-                    label={option.label}
-                    value={option.value}
-                  />
-                );
-              }
-            })}
-          </Picker>
-        </Modal> */}
       </View>
     );
   }

@@ -9,7 +9,7 @@ export default class addButton extends React.Component {
         style={styles.headerRightButton}
         onPress={onPress}
         disabled={disabled}>
-        <Text style={[styles.text, disabled ? {color: '#95a5a6'} : null]}>
+        <Text style={[styles.text, {color: disabled ? '#95a5a6' : 'black'}]}>
           Done
         </Text>
       </TouchableOpacity>

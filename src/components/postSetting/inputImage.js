@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  Platform,
 } from 'react-native';
 
 const {width} = Dimensions.get('window');
@@ -38,7 +39,7 @@ export default class InputImage extends React.Component {
   render() {
     const {image, contentKeyboard, onPress, disabled} = this.props;
     const imageSelected = image != null;
-
+    // console.log(image.uri)
     return (
       <TouchableOpacity
         style={[
@@ -47,19 +48,23 @@ export default class InputImage extends React.Component {
           imageSelected && contentKeyboard ? {maxHeight: 250} : null,
         ]}
         disabled={disabled}
-        onPress={() => onPress ? onPress() : null}>
+        onPress={() => (onPress ? onPress() : null)}>
         {!imageSelected ? null : (
           <Image
             source={{uri: image.uri}}
             style={[
               styles.imageStyle,
-              {aspectRatio: this.state.width / this.state.height},
-              imageSelected && contentKeyboard ? {maxHeight: 250} : null,
+              {
+                aspectRatio: this.state.width / this.state.height,
+                maxHeight: imageSelected && contentKeyboard ? 250 : 400,
+              },
             ]}
           />
         )}
         {!imageSelected ? (
-          <Text style={{color: 'white'}}>{!disabled ? 'Add Image' : 'No Image'}</Text>
+          <Text style={{color: 'white'}}>
+            {!disabled ? 'Add Image' : 'No Image'}
+          </Text>
         ) : null}
       </TouchableOpacity>
     );

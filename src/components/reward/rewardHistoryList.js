@@ -14,12 +14,13 @@ import {singleDefaultIcon} from '../../utils/defaultIcon';
 import {getSingleGroupById} from '../../actions/group';
 import {getReward} from '../../actions/reward';
 import {connect} from 'react-redux';
+import {logUserEvent} from '../../actions/userEvent';
 
 const extractKey = ({id}) => id;
 
 class RewardHistoryList extends React.Component {
   getGroup = async reward => {
-    const {from, fromId} = reward;
+    const {from, fromId, id} = reward;
     const {auth, getSingleGroupById, navigation, prevRoute, group} = this.props;
 
     if (from == 'group' && fromId) {
@@ -35,11 +36,40 @@ class RewardHistoryList extends React.Component {
         return;
       }
 
+      // log the redirection event on certain route
+      // route: RewardHistory, MyGroupRewards, MyRewards
+      if (
+        prevRoute == 'RewardHistory' ||
+        prevRoute == 'MyGroupRewards' ||
+        prevRoute == 'MyRewards'
+      ) {
+        const log = {
+          effectId: fromId,
+          effectIdType: 'group',
+          causeId: id,
+          causeIdType: 'reward',
+          event: 'redirection_reward_to_group',
+        };
+
+        this.logUserEvent(log);
+      }
+
+      // redirect to group
       navigation.push('GroupNavigator', {
         prevRoute,
-        groupId: group.group.id
-      })
+        groupId: group.group.id,
+      });
     }
+  };
+
+  logUserEvent = async log => {
+    const {auth, logUserEvent} = this.props;
+    const request = {
+      token: auth.token,
+      log,
+    };
+
+    const req = await logUserEvent(request);
   };
 
   getReward = async id => {
@@ -291,6 +321,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
     getReward: data => dispatch(getReward(data)),
+    logUserEvent: data => dispatch(logUserEvent(data)),
   };
 };
 

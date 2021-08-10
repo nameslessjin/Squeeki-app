@@ -12,7 +12,8 @@ export default class InputRankTitle extends React.Component {
       toggled,
       modifyInput,
       allowToModifyMember,
-      userAuth
+      userAuth,
+      rankName
     } = this.props;
     const {rank, title} = auth;
     return (
@@ -25,6 +26,7 @@ export default class InputRankTitle extends React.Component {
           modifyInput={modifyInput}
           allowToModifyMember={allowToModifyMember}
           userAuth={userAuth}
+          rankName={rankName}
         />
 
         <View style={styles.inputContainer}>

@@ -201,10 +201,8 @@ export default class RewardModal extends React.Component {
         );
       }
       if (process == 3) {
-        onInputChange(this.state.time, modalType);
-        this.setState({time: new Date()});
         onBackdropPress();
-        return null;
+        onInputChange(this.state.time, modalType);
       }
     }
 

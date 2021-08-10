@@ -14,7 +14,6 @@ import {
   searchAtUserQuery,
 } from './query/userQuery';
 import {getGroup} from './group';
-import {http} from '../../server_config';
 import {httpCall} from './utils/httpCall';
 
 export const getGroupMembers = data => {
@@ -379,5 +378,11 @@ export const searchAtUser = data => {
     }
 
     return result.data.searchAtUser;
+  };
+};
+
+export const cleanMembers = () => {
+  return {
+    type: 'cleanMembers',
   };
 };

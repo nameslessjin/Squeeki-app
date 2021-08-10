@@ -31,7 +31,7 @@ export const getGroupMembersFunc = async data => {
   }
 };
 
-export const extractMembersWithRank = (members, groupAuth) => {
+export const extractMembersWithRank = (members, groupAuth, rankName) => {
   const rank0 = members.filter(member => member.auth.rank == 0);
   const rank1 = members.filter(member => member.auth.rank == 1);
   const rank2 = members.filter(member => member.auth.rank == 2);
@@ -48,42 +48,42 @@ export const extractMembersWithRank = (members, groupAuth) => {
       data: ['search']
     },
     {
-      title: 'Rank 0',
+      title: 'Root',
       id: 'rank0',
       data: groupAuth == 0 ? [rank0] : [[]],
     },
     {
-      title: 'Rank 1',
+      title: rankName.rank1Name,
       id: 'rank1',
       data: [rank1],
     },
     {
-      title: 'Rank 2',
+      title: rankName.rank2Name,
       id: 'rank2',
       data: [rank2],
     },
     {
-      title: 'Rank 3',
+      title: rankName.rank3Name,
       id: 'rank3',
       data: [rank3],
     },
     {
-      title: 'Rank 4',
+      title: rankName.rank4Name,
       id: 'rank4',
       data: [rank4],
     },
     {
-      title: 'Rank 5',
+      title: rankName.rank5Name,
       id: 'rank5',
       data: [rank5],
     },
     {
-      title: 'Rank 6',
+      title: rankName.rank6Name,
       id: 'rank6',
       data: [rank6],
     },
     {
-      title: 'Rank 7',
+      title: rankName.rank7Name,
       id: 'rank7',
       data: [rank7],
     },

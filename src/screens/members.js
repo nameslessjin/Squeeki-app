@@ -5,10 +5,10 @@ import {userLogout} from '../actions/auth';
 import {getGroupMembers} from '../actions/user';
 import {getGroupMembersFunc} from '../functions/user';
 import {getGroupJoinRequestCountFunc} from '../functions/group';
-import {getGroupJoinRequestCount} from '../actions/group';
+import {getGroupJoinRequestCount, getGroupRankName} from '../actions/group';
 import MemberList from '../components/users/members/memberList';
 import AddButton from '../components/users/members/addButton';
-import {searchGroupMembers} from '../actions/user';
+import {searchGroupMembers, cleanMembers} from '../actions/user';
 
 class Users extends React.Component {
   state = {
@@ -87,7 +87,8 @@ class Users extends React.Component {
     const {navigation, group} = this.props;
     const {group_join_request_count} = group;
     const button =
-      group.group.auth.rank <= 2 ? (
+      group.group.auth.rank <=
+      group.group.rank_setting.manage_member_rank_required ? (
         <AddButton
           onPress={this.onPress}
           onJoinRequestPress={this.onJoinRequestPress}
@@ -99,8 +100,28 @@ class Users extends React.Component {
       headerBackTitleVisible: false,
     });
     this.loadGroupMembers(true);
-    this.getGroupJoinRequestCount()
+    this.getGroupJoinRequestCount();
+    this.getGroupRankName();
   }
+
+  componentWillUnmount() {
+    this.props.cleanMembers();
+  }
+
+  getGroupRankName = async () => {
+    const {getGroupRankName, auth, group} = this.props;
+    const request = {
+      groupId: group.group.id,
+      token: auth.token,
+    };
+
+    const req = await getGroupRankName(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot get rank names at this time, please try again later');
+      return;
+    }
+  };
 
   getGroupJoinRequestCount = () => {
     const {
@@ -124,7 +145,8 @@ class Users extends React.Component {
     const {navigation, group} = this.props;
     const {group_join_request_count} = group;
     const button =
-      group.group.auth.rank <= 2 ? (
+      group.group.auth.rank <=
+      group.group.rank_setting.manage_member_rank_required ? (
         <AddButton
           onPress={this.onPress}
           onJoinRequestPress={this.onJoinRequestPress}
@@ -186,6 +208,7 @@ class Users extends React.Component {
           group={group.group}
           onSearchChange={this.onSearchChange}
           search_term={search_term}
+          rankName={group.rankName}
         />
       </View>
     );
@@ -203,6 +226,8 @@ const mapDispatchToProps = dispatch => {
     userLogout: () => dispatch(userLogout()),
     searchGroupMembers: data => dispatch(searchGroupMembers(data)),
     getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data)),
+    getGroupRankName: data => dispatch(getGroupRankName(data)),
+    cleanMembers: () => dispatch(cleanMembers()),
   };
 };
 

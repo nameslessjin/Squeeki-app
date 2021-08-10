@@ -74,6 +74,7 @@ import RewardContentList from './src/screens/rewardContentList';
 import RewardListSetting from './src/screens/rewardListSetting';
 import RewardDetail from './src/screens/rewardDetail';
 import GiftedRewardList from './src/screens/reward';
+import GroupRankNameSetting from './src/screens/groupRankNameSetting';
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -239,6 +240,10 @@ export default (App = () => {
             <Stack.Screen
               name="GiftedRewardList"
               component={GiftedRewardList}
+            />
+            <Stack.Screen
+              name="GroupRankNameSetting"
+              component={GroupRankNameSetting}
             />
           </Stack.Navigator>
         </NavigationContainer>

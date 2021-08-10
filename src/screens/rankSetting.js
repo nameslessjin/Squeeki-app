@@ -177,6 +177,7 @@ class RankSetting extends React.Component {
       modalVisible,
       type,
     } = this.state;
+    const {rankName} = this.props.group
     return (
       <TouchableWithoutFeedback>
         <ScrollView
@@ -188,66 +189,79 @@ class RankSetting extends React.Component {
             type={'group'}
             value={group_setting_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'post'}
             value={post_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'priority1'}
             value={priority_1_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'priority2'}
             value={priority_2_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'priority3'}
             value={priority_3_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'manage_post'}
             value={manage_post_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'manage_reward'}
             value={manage_reward_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'manage_check_in'}
             value={manage_check_in_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'manage_task'}
             value={manage_task_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'manage_comment'}
             value={manage_comment_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'manage_chat'}
             value={manage_chat_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'member'}
             value={manage_member_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
           <RankFunction
             type={'nominate'}
             value={nominate_rank_required}
             onPress={this.onPress}
+            rankName={rankName}
           />
 
           <RankSettingModal
@@ -255,6 +269,8 @@ class RankSetting extends React.Component {
             onBackdropPress={this.onBackdropPress}
             onRankChange={this.onRankChange}
             type={type}
+            rankName={rankName}
+            prevRoute={'rankSetting'}
           />
         </ScrollView>
       </TouchableWithoutFeedback>

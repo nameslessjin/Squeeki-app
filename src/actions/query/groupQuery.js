@@ -239,7 +239,7 @@ mutation joinGroup($groupId: ID!){
         }
     }
 }
-`
+`;
 
 export const leaveGroupMutation = `
 mutation leaveGroup($groupId: ID!){
@@ -258,19 +258,19 @@ mutation leaveGroup($groupId: ID!){
         count
     }
 }
-`
+`;
 
 export const setGroupVisibilityMutation = `
 mutation setGroupVisibility($groupId: ID!){
     setGroupVisibility(groupId: $groupId)
 }
-`
+`;
 
 export const setGroupRequestToJoinMutation = `
 mutation setGroupRequestToJoin($groupId: ID!){
     setGroupRequestToJoin(groupId: $groupId)
 }
-`
+`;
 
 export const getGroupJoinRequestQuery = `
 query getGroupJoinRequest($input: joinRequestInput!){
@@ -287,35 +287,55 @@ query getGroupJoinRequest($input: joinRequestInput!){
         count
     }
 }
-`
+`;
 
 export const onRespondJoinRequestMutation = `
 mutation onRespondJoinRequest($input: RespondJoinRequestInput!){
     onRespondJoinRequest(input: $input)
 }
-`
+`;
 
 export const onGroupRulesUpdateMutation = `
 mutation onGroupRulesUpdate($input: GroupRulesInput!){
     onGroupRulesUpdate(input: $input)
 }
-`
+`;
 
 export const getGroupRulesQuery = `
 query getGroupRules($groupId: ID!){
     getGroupRules(groupId: $groupId)
 }
 
-`
+`;
 
 export const getGroupJoinRequestCountQuery = `
 query getGroupJoinRequestCount($groupId: ID!){
     getGroupJoinRequestCount(groupId: $groupId)
 }
-`
+`;
 
 export const updateRankFeaturesMutation = `
 mutation updateRankFeatures($input: GroupInput!){
     updateRankFeatures(input: $input)
 }
-`
+`;
+
+export const getGroupRankNameQuery = `
+query getGroupRankName($groupId: ID!){
+    getGroupRankName(groupId: $groupId){
+        rank1Name
+        rank2Name
+        rank3Name
+        rank4Name
+        rank5Name
+        rank6Name
+        rank7Name
+    }
+}
+`;
+
+export const updateRankNamesMutation = `
+mutation updateRankNames($input: GroupRankNameInput!){
+    updateRankNames(input: $input)
+}
+`;

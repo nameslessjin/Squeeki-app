@@ -8,12 +8,10 @@ const extractKey = ({id}) => id;
 
 export default class MemberList extends React.Component {
   renderFlatList = ({item}) => {
-    
     if (item == 'search') {
-      const {onSearchChange, search_term} = this.props
+      const {onSearchChange, search_term} = this.props;
       return (
-        <View
-          style={styles.searchBar}>
+        <View style={styles.searchBar}>
           <SearchBar onChange={onSearchChange} value={search_term} />
         </View>
       );
@@ -46,8 +44,8 @@ export default class MemberList extends React.Component {
   };
 
   render() {
-    const {onEndReached, navigation, group, members} = this.props;
-    const sections = extractMembersWithRank(members, group.auth.rank);
+    const {onEndReached, navigation, group, members, rankName} = this.props;
+    const sections = extractMembersWithRank(members, group.auth.rank, rankName);
 
     return (
       <SectionList
@@ -82,5 +80,5 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });

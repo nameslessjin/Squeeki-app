@@ -192,6 +192,8 @@ class Member extends React.Component {
       group_username = null;
     }
 
+
+
     if (rank != null || title != null || group_username != null) {
       const updateData = {
         userId: id,
@@ -385,7 +387,7 @@ class Member extends React.Component {
     } = this.state;
 
     // auth here is auth of group member
-    const {group} = this.props.group;
+    const {group, rankName} = this.props.group;
     const {manage_member_rank_required} = group.rank_setting;
 
     const {user} = this.props.auth;
@@ -421,6 +423,7 @@ class Member extends React.Component {
             allowToModifyMember={allowToModifyMember}
             userAuth={group.auth}
             isSelf={isSelf}
+            rankName={rankName}
           />
           <InputText
             modifyInput={this.modifyInput}

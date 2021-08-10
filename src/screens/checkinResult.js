@@ -22,7 +22,9 @@ class CheckInResult extends React.Component {
 
     navigation.setOptions({
       headerRight: () =>
-        auth.user.id == userId || group.group.auth.rank <= 2 ? (
+        auth.user.id == userId ||
+        group.group.auth.rank <=
+          group.group.rank_setting.manage_check_in_rank_required ? (
           <HeaderRightButton
             onPress={this.onHeaderRightButtonPress}
             type={'create'}
@@ -70,7 +72,7 @@ class CheckInResult extends React.Component {
     const req = await getGroupCheckInResult(request);
     if (req.errors) {
       console.log(req.errors[0].message);
-      alert('Cannot load users at this time, please try again later')
+      alert('Cannot load users at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -93,7 +95,7 @@ class CheckInResult extends React.Component {
     const req = await getGroupCheckIn(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load check in at this time, please try again later')
+      alert('Cannot load check in at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({

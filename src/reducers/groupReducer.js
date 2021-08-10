@@ -1,7 +1,16 @@
 const INITIAL_STATE = {
   groups: {groups: [], count: 0},
   group: {},
-  group_join_request_count: 0
+  group_join_request_count: 0,
+  rankName: {
+    rank1Name: 'Grand',
+    rank2Name: 'Pride',
+    rank3Name: 'Virtue',
+    rank4Name: 'Star',
+    rank5Name: 'Phantom',
+    rank6Name: 'Kin',
+    rank7Name: 'Brave',
+  },
 };
 
 export default (groupReducer = (state = INITIAL_STATE, action) => {
@@ -23,8 +32,8 @@ export default (groupReducer = (state = INITIAL_STATE, action) => {
     case 'getGroupJoinRequestCount':
       return {
         ...state,
-        group_join_request_count: action.data
-      }
+        group_join_request_count: action.data,
+      };
 
     case 'group':
       return {
@@ -72,6 +81,8 @@ export default (groupReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         group: {},
+        group_join_request_count: 0,
+        rankName: INITIAL_STATE.rankName,
       };
     case 'logout':
       return {
@@ -103,7 +114,6 @@ export default (groupReducer = (state = INITIAL_STATE, action) => {
           }),
         },
       };
-
     case 'addTagToGroup':
       return {
         ...state,
@@ -127,9 +137,15 @@ export default (groupReducer = (state = INITIAL_STATE, action) => {
         ...state,
         group: {
           ...state.group,
-          rank_setting: action.i
-        }
-      }
+          rank_setting: action.i,
+        },
+      };
+
+    case 'getGroupRankName':
+      return {
+        ...state,
+        rankName: action.i,
+      };
 
     default:
       return state;

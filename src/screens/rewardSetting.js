@@ -766,19 +766,20 @@ class RewardSetting extends React.Component {
             color={'grey'}
             style={{marginTop: 30}}
           />
-
-          <RewardModal
-            modalVisible={modalVisible}
-            onBackdropPress={this.onBackdropPress}
-            onInputChange={this.onInputChange}
-            modalType={modalType}
-            rewardList={this.props.reward.rewardList}
-            listId={listId}
-            expiration={expiration}
-            redeemable={redeemable}
-            isGift={isGift}
-            systemRewardSetting={systemRewardSetting}
-          />
+          {modalVisible ? (
+            <RewardModal
+              modalVisible={modalVisible}
+              onBackdropPress={this.onBackdropPress}
+              onInputChange={this.onInputChange}
+              modalType={modalType}
+              rewardList={this.props.reward.rewardList}
+              listId={listId}
+              expiration={expiration}
+              redeemable={redeemable}
+              isGift={isGift}
+              systemRewardSetting={systemRewardSetting}
+            />
+          ) : null}
           <View style={styles.empty} />
         </ScrollView>
       </TouchableWithoutFeedback>

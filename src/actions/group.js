@@ -14,9 +14,11 @@ import {
   getGroupRulesQuery,
   getGroupJoinRequestCountQuery,
   updateRankFeaturesMutation,
+  getGroupRankNameQuery,
+  updateRankNamesMutation,
 } from './query/groupQuery';
 import {http_upload} from '../../server_config';
-import {httpCall} from './utils/httpCall'
+import {httpCall} from './utils/httpCall';
 
 export const findUserGroupsByUserId = data => {
   const {token, count} = data;
@@ -27,8 +29,8 @@ export const findUserGroupsByUserId = data => {
         count: count,
       },
     };
-    
-    const result = await httpCall(token, graphql)
+
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -56,7 +58,7 @@ export const getSingleGroupById = data => {
         groupId: id,
       },
     };
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     dispatch(cleanGroup());
     if (result.errors) {
       return result;
@@ -90,7 +92,7 @@ export const searchGroup = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -201,7 +203,7 @@ export const createGroup = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -310,7 +312,7 @@ export const updateGroup = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -333,7 +335,7 @@ export const joinGroup = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return groupData;
@@ -363,7 +365,7 @@ export const leaveGroup = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -385,7 +387,7 @@ export const setGroupVisibility = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return groupData;
@@ -406,7 +408,7 @@ export const setGroupRequestToJoin = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -431,7 +433,7 @@ export const getGroupJoinRequest = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -489,7 +491,7 @@ export const onRespondJoinRequest = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -515,7 +517,7 @@ export const onGroupRulesUpdate = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -535,7 +537,7 @@ export const getGroupRules = data => {
         groupId: groupId,
       },
     };
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -554,7 +556,7 @@ export const getGroupJoinRequestCount = data => {
       },
     };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
@@ -588,7 +590,7 @@ export const updateRankFeatures = data => {
         input: input,
       },
     };
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
 
     if (result.errors) {
       return result;
@@ -603,5 +605,54 @@ const updateRankFeaturesReducer = data => {
   return {
     type: 'updateRankFeatures',
     i: data,
+  };
+};
+
+export const getGroupRankName = data => {
+  const {token, groupId} = data;
+  return async function(dispatch) {
+    const graphql = {
+      query: getGroupRankNameQuery,
+      variables: {
+        groupId,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(getGroupRankNameReducer(result.data.getGroupRankName));
+
+    return 0;
+  };
+};
+
+const getGroupRankNameReducer = data => {
+  return {
+    type: 'getGroupRankName',
+    i: data,
+  };
+};
+
+export const updateRankNames = data => {
+  const {token, GroupRankNameInput} = data;
+  return async function(dispatch) {
+    const graphql = {
+      query: updateRankNamesMutation,
+      variables: {
+        input: GroupRankNameInput,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(getGroupRankNameReducer(GroupRankNameInput));
+
+    return 0;
   };
 };

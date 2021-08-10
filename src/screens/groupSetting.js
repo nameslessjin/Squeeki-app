@@ -15,18 +15,20 @@ import {
 import {connect} from 'react-redux';
 import GroupHeader from '../components/groupSetting/groupHeader';
 import UpdateButton from '../components/groupSetting/updateButton';
-import validator from 'validator';
 import {
   updateGroup,
   setGroupVisibility,
   setGroupRequestToJoin,
   getSingleGroupById,
   leaveGroup,
+  getGroupRankName,
 } from '../actions/group';
 import {getStatusInGroup} from '../actions/user';
 import {userLogout} from '../actions/auth';
 import ToggleSetting from '../components/groupSetting/toggleSetting';
 import SettingEdition from '../components/groupSetting/settingEdition';
+import {loadLeaderBoardFunc} from '../functions/point';
+import {getGroupPointLeaderBoard, getUserGroupPoint} from '../actions/point';
 
 class GroupSetting extends React.Component {
   state = {
@@ -38,12 +40,12 @@ class GroupSetting extends React.Component {
   };
 
   componentDidMount() {
-    const {auth} = this.props.group.group;
+    const {auth, rank_setting} = this.props.group.group;
     const {navigation} = this.props;
     navigation.setOptions({
       headerTitle: 'Group Settings',
       headerRight: () =>
-        auth.rank <= 2 ? (
+        auth.rank <= rank_setting.group_setting_rank_required ? (
           <UpdateButton
             update={false}
             onPress={this.updateGroupSettings}
@@ -52,7 +54,23 @@ class GroupSetting extends React.Component {
         ) : null,
       headerBackTitleVisible: false,
     });
+    this.getGroupRankName();
   }
+
+  getGroupRankName = async () => {
+    const {getGroupRankName, auth, group} = this.props;
+    const request = {
+      groupId: group.group.id,
+      token: auth.token,
+    };
+
+    const req = await getGroupRankName(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot get rank names at this time, please try again later');
+      return;
+    }
+  };
 
   validation = () => {
     const {display_name, shortDescription} = this.state;
@@ -136,10 +154,10 @@ class GroupSetting extends React.Component {
 
       update = this.extractData().update;
       const {navigation} = this.props;
-      const {auth} = this.props.group.group;
+      const {auth, rank_setting} = this.props.group.group;
       navigation.setOptions({
         headerRight: () =>
-          auth.rank <= 2 ? (
+          auth.rank <= rank_setting.group_setting_rank_required ? (
             <UpdateButton
               update={update}
               onPress={this.updateGroupSettings}
@@ -189,6 +207,44 @@ class GroupSetting extends React.Component {
           routes: [{name: 'SignIn'}],
         });
       }
+      return;
+    }
+    this.loadLeaderBoard();
+    this.getUserGroupPoint();
+  };
+
+  loadLeaderBoard = () => {
+    const {
+      userLogout,
+      auth,
+      getGroupPointLeaderBoard,
+      navigation,
+      group,
+    } = this.props;
+    const data = {
+      userLogout,
+      auth,
+      getGroupPointLeaderBoard,
+      navigation,
+      group,
+      count: 0,
+      limit: 3,
+      period: 'month',
+    };
+
+    loadLeaderBoardFunc(data);
+  };
+
+  getUserGroupPoint = async () => {
+    const {auth, group, getUserGroupPoint} = this.props;
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+    };
+
+    const req = await getUserGroupPoint(request);
+    if (req.errors) {
+      alert(req.errors[0].message);
       return;
     }
   };
@@ -288,26 +344,13 @@ class GroupSetting extends React.Component {
     });
   };
 
-  onNominationCreationPress = () => {
+  onPress = type => {
     const {navigation} = this.props;
     const {id} = this.state;
-    navigation.navigate('Nomination', {
+
+    navigation.navigate(type, {
       prev_route: 'GroupSetting',
       groupId: id,
-    });
-  };
-
-  onEditTagPress = () => {
-    const {navigation} = this.props;
-    navigation.navigate('Tags', {
-      prev_route: 'GroupSetting',
-    });
-  };
-
-  onEditRankPress = () => {
-    const {navigation} = this.props;
-    navigation.navigate('RankSetting', {
-      prev_route: 'GroupSetting',
     });
   };
 
@@ -421,20 +464,26 @@ class GroupSetting extends React.Component {
             />
 
             <SettingEdition
-              onPress={this.onNominationCreationPress}
+              onPress={() => this.onPress('Nomination')}
               name={'Edit nominations'}
               disabled={false}
             />
 
             <SettingEdition
-              onPress={this.onEditTagPress}
+              onPress={() => this.onPress('Tags')}
               name={'Edit tags'}
               disabled={rank > required_rank}
             />
             <SettingEdition
-              onPress={this.onEditRankPress}
+              onPress={() => this.onPress('RankSetting')}
               name={'Edit ranks'}
               disabled={false}
+            />
+
+            <SettingEdition
+              onPress={() => this.onPress('GroupRankNameSetting')}
+              name={'Edit rank names'}
+              disabled={rank > required_rank}
             />
 
             <View
@@ -493,6 +542,9 @@ const mapDispatchToProps = dispatch => {
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
     getStatusInGroup: data => dispatch(getStatusInGroup(data)),
     leaveGroup: data => dispatch(leaveGroup(data)),
+    getGroupPointLeaderBoard: data => dispatch(getGroupPointLeaderBoard(data)),
+    getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
+    getGroupRankName: data => dispatch(getGroupRankName(data)),
   };
 };
 

@@ -78,7 +78,7 @@ class PostCard extends React.Component {
     }
 
     navigation.navigate('GroupNavigator', {
-      prevRoute: 'Home'
+      prevRoute: 'Home',
     });
   };
 
@@ -140,7 +140,6 @@ class PostCard extends React.Component {
     this.setState(prevState => {
       return {notification: !prevState.notification};
     });
-
   };
 
   componentDidMount() {
@@ -159,18 +158,22 @@ class PostCard extends React.Component {
   }
 
   deletePost = async () => {
-    const {item, navigation} = this.props;
+    const {item, navigation, group} = this.props;
     const {id, auth, groupAuth} = item;
     const data = {
       postId: id,
       token: this.props.auth.token,
     };
 
-    // exam this logic
-    const currentUserAuth = this.props.group.group.auth;
+    // rank verification
+    const currentUserAuth = group.group.auth;
     let currentUserAuthQualified = false;
     if (currentUserAuth && groupAuth) {
-      if (currentUserAuth.rank < groupAuth.rank && currentUserAuth.rank <= 2) {
+      if (
+        currentUserAuth.rank < groupAuth.rank &&
+        currentUserAuth.rank <=
+          group.group.rank_setting.manage_post_rank_required
+      ) {
         currentUserAuthQualified = true;
       }
     }
@@ -201,7 +204,11 @@ class PostCard extends React.Component {
     let currentUserAuthQualified = false;
     if (currentUserAuth && groupAuth) {
       // group owner can set post change restriction
-      if (currentUserAuth.rank < groupAuth.rank && currentUserAuth.rank <= 2) {
+      if (
+        currentUserAuth.rank < groupAuth.rank &&
+        currentUserAuth.rank <=
+          this.props.group.group.rank_setting.manage_post_rank_required
+      ) {
         currentUserAuthQualified = true;
       }
     }
@@ -210,7 +217,7 @@ class PostCard extends React.Component {
       const postData = {
         ...this.props.item,
       };
- 
+
       navigation.navigate('PostSetting', {
         postData: postData,
         create: false,
@@ -231,10 +238,12 @@ class PostCard extends React.Component {
       type,
     };
 
-    if (parseInt(taskExpiration) <= Date.now()){
-      alert('Task expired')
-      this.setState(prevState => {return prevState})
-      return
+    if (parseInt(taskExpiration) <= Date.now()) {
+      alert('Task expired');
+      this.setState(prevState => {
+        return prevState;
+      });
+      return;
     }
 
     if (type == 'verify') {
@@ -252,7 +261,7 @@ class PostCard extends React.Component {
         ...req,
         respondentId: auth.user.id,
         taskResponse,
-        prevRoute: 'PostCard'
+        prevRoute: 'PostCard',
       });
       return;
     }

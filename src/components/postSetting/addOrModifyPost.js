@@ -2,18 +2,18 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 export default class addOrModifyPost extends React.Component {
-
   render() {
-      const {onPress, update, loading} = this.props
-      const disabled = !(update && !loading)
+    const {onPress, update, loading} = this.props;
+    const disabled = !(update && !loading);
 
     return (
       <TouchableOpacity
         style={styles.headerRightButton}
         onPress={onPress}
-        disabled={disabled}
-        >
-        <Text style={[styles.button, disabled ? {color: '#95a5a6'} : 'black' ]}>Done</Text>
+        disabled={disabled}>
+        <Text style={[styles.button, {color: disabled ? '#95a5a6' : 'black'}]}>
+          Done
+        </Text>
         {/* <MaterialIcons name="plus" size={30} /> */}
       </TouchableOpacity>
     );
@@ -21,14 +21,14 @@ export default class addOrModifyPost extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    headerRightButton: {
-      width: 50,
-      height: 50,
-      marginRight: 5,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    button:{
-      fontSize: 16
-    }
-})
+  headerRightButton: {
+    width: 50,
+    height: 50,
+    marginRight: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+    fontSize: 16,
+  },
+});

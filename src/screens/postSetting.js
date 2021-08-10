@@ -330,6 +330,7 @@ class PostSetting extends React.Component {
           endAt: next_sunday,
         },
       };
+
       return {
         updateData: updateData,
         update: this.validation(),
@@ -562,6 +563,7 @@ class PostSetting extends React.Component {
         },
       });
     } else if (type == 'taskExpiration') {
+
       this.setState({
         postData: {
           ...this.state.postData,

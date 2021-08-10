@@ -189,7 +189,7 @@ class GroupDrawerNavigator extends React.Component {
 
   CustomDrawerContent = props => {
     const {group, group_join_request_count} = this.props.group;
-    const {auth} = group;
+    const {auth, rank_setting} = group;
 
     return auth == null ? null : (
       <DrawerContentScrollView {...props}>
@@ -208,7 +208,8 @@ class GroupDrawerNavigator extends React.Component {
           label={({focused, color}) => (
             <Text style={styles.labelStyle}>
               Members{' '}
-              {auth.rank <= 2 && group_join_request_count > 0 ? (
+              {auth.rank <= rank_setting.manage_member_rank_required &&
+              group_join_request_count > 0 ? (
                 <View style={styles.notification}>
                   <Text style={styles.notificationText}>
                     {group_join_request_count}

@@ -30,6 +30,8 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
         const picked = {
           path: path,
           type: resp.type,
+          height: resp.height,
+          width: resp.width,
         };
 
         RNFS.exists(path)
@@ -65,6 +67,8 @@ export const backgroundImagePicker = (setImage, from, cancel) => {
         const picked = {
           path: path,
           type: resp.type,
+          height: resp.height,
+          width: resp.width,
         };
 
         RNFS.exists(path)
@@ -111,6 +115,8 @@ export const iconImagePicker = (setImage, from, cancel) => {
         const picked = {
           path: path,
           type: resp.type,
+          height: resp.height,
+          width: resp.width,
         };
 
         RNFS.exists(path)
@@ -146,6 +152,8 @@ export const iconImagePicker = (setImage, from, cancel) => {
         const picked = {
           path: path,
           type: resp.type,
+          height: resp.height,
+          width: resp.width,
         };
 
         RNFS.exists(path)
@@ -193,6 +201,8 @@ export const PostImagePicker = (setImage, from, cancel) => {
         const picked = {
           path: path,
           type: resp.type,
+          height: resp.height,
+          width: resp.width,
         };
 
         RNFS.exists(path)
@@ -228,6 +238,8 @@ export const PostImagePicker = (setImage, from, cancel) => {
         const picked = {
           path: path,
           type: resp.type,
+          height: resp.height,
+          width: resp.width,
         };
 
         RNFS.exists(path)
@@ -331,6 +343,8 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
         const picked = {
           path: path,
           type: resp.type,
+          height: resp.height,
+          width: resp.width,
         };
 
         RNFS.exists(path)
@@ -366,6 +380,8 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
         const picked = {
           path: path,
           type: resp.type,
+          height: resp.height,
+          width: resp.width,
         };
 
         RNFS.exists(path)
@@ -389,7 +405,7 @@ export const MessageImagePicker = (onMediaUpload, from, cancel) => {
 };
 
 export const editPhoto = (image, func, input_type) => {
-  let {path, type} = image;
+  let {path, type, height, width} = image;
 
   if (Platform.OS == 'android') {
     if (path.search('file://') == 0) {
@@ -406,7 +422,9 @@ export const editPhoto = (image, func, input_type) => {
           const upload = {
             data: res,
             type: type,
-            uri: imagePath,
+            uri: Platform.OS == 'android' ? `file://${imagePath}` : imagePath,
+            height,
+            width,
           };
           func(upload, input_type);
           if (input_type == null) {

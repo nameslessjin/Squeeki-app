@@ -16,17 +16,29 @@ const {width} = Dimensions.get('window');
 
 const extractKey = ({id}) => id;
 export default class RankSettingModal extends React.Component {
-  state = {};
+  state = {
+    ranks: [
+      {id: '1', value: 1, name: this.props.rankName.rank1Name},
+      {id: '2', value: 2, name: this.props.rankName.rank2Name},
+      {id: '3', value: 3, name: this.props.rankName.rank3Name},
+      {id: '4', value: 4, name: this.props.rankName.rank4Name},
+      {id: '5', value: 5, name: this.props.rankName.rank5Name},
+      {id: '6', value: 6, name: this.props.rankName.rank6Name},
+      {id: '7', value: 7, name: this.props.rankName.rank7Name},
+    ],
+  };
 
-  ranks = [
-    {id: '1', name: 1},
-    {id: '2', name: 2},
-    {id: '3', name: 3},
-    {id: '4', name: 4},
-    {id: '5', name: 5},
-    {id: '6', name: 6},
-    {id: '7', name: 7},
-  ];
+  componentDidMount() {
+    const {prevRoute, userRank} = this.props;
+
+    if (prevRoute == 'member') {
+      this.setState(prevState => {
+        return {
+          ranks: prevState.ranks.filter(r => r.value > userRank),
+        };
+      });
+    }
+  }
 
   onBackdropPress = () => {
     const {onBackdropPress} = this.props;
@@ -40,24 +52,24 @@ export default class RankSettingModal extends React.Component {
   };
 
   renderItem = i => {
-    const {index, item} =i
-    const {name} = item;
-
+    const {index, item} = i;
+    const {name, value} = item;
+    const {ranks} = this.state;
     return (
-      <View>
-        <TouchableOpacity onPress={() => this.onRankChange(name)}>
+      <View style={styles.rank}>
+        <TouchableOpacity onPress={() => this.onRankChange(value)}>
           <View style={[styles.rank]}>
             <Text style={{color: '#3498db'}}>{name}</Text>
           </View>
         </TouchableOpacity>
-        {index != this.ranks.length - 1 ? <View style={styles.underline} /> : null}
+        {index != ranks.length - 1 ? <View style={styles.underline} /> : null}
       </View>
     );
   };
 
   render() {
     const {modalVisible, onBackdropPress} = this.props;
-
+    const {ranks} = this.state;
     return (
       <View style={styles.centeredView}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -70,7 +82,7 @@ export default class RankSettingModal extends React.Component {
                       <Text>Minimum rank required</Text>
                     </View>
                     <FlatList
-                      data={this.ranks}
+                      data={ranks}
                       renderItem={this.renderItem}
                       alwaysBounceVertical={false}
                       alwaysBounceHorizontal={false}
@@ -97,7 +109,7 @@ const styles = StyleSheet.create({
   },
   view: {
     backgroundColor: 'white',
-    width: '70%',
+    width: '75%',
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -114,7 +126,7 @@ const styles = StyleSheet.create({
   rank: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: width * 0.7,
+    width: width * 0.75,
     height: 45,
   },
   rank_display: {

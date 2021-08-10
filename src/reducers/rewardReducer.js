@@ -2,37 +2,87 @@ const INITIAL_STATE = {
   rewardList: [
     {
       id: '1',
-      listName: 'List 1',
-      chance1: 5,
-      chance2: 10,
-      chance3: 15,
+      type: 'loot',
+      listName: 'Daily Luck',
+      chance1: 1,
+      chance2: 5,
+      chance3: 14,
       chance4: 30,
-      chance5: 40,
+      chance5: 50,
+      pointCost: 100,
+      rewardEntryList: [],
     },
     {
       id: '2',
-      listName: 'List 2',
-      chance1: 5,
-      chance2: 10,
-      chance3: 15,
+      type: 'loot',
+      listName: 'Big Or Nothing',
+      chance1: 1,
+      chance2: 5,
+      chance3: 14,
       chance4: 30,
-      chance5: 40,
+      chance5: 50,
+      pointCost: 1000,
+      rewardEntryList: [],
+    },
+    // {
+    //   id: '3',
+    //   type: 'loot',
+    //   listName: 'Reserve',
+    //   chance1: 1,
+    //   chance2: 5,
+    //   chance3: 14,
+    //   chance4: 30,
+    //   chance5: 50,
+    //   pointCost: 100,
+    //   rewardEntryList: [],
+    // },
+    {
+      id: '0',
+      type: 'redeem',
+      listName: 'Fair Trade',
+      redeemRewardEntryList: []
     },
     {
-      id: '3',
-      listName: 'List 3',
-      chance1: 5,
-      chance2: 10,
-      chance3: 15,
+      id: '4',
+      type: 'loot',
+      listName: 'Gifted Reward List (100pts)',
+      chance1: 1,
+      chance2: 5,
+      chance3: 14,
       chance4: 30,
-      chance5: 40,
+      chance5: 50,
+      pointCost: 100,
+      rewardEntryList: [],
+    },
+    {
+      id: '5',
+      type: 'loot',
+      listName: 'Gifted Reward List (200pts)',
+      chance1: 1,
+      chance2: 5,
+      chance3: 14,
+      chance4: 30,
+      chance5: 50,
+      pointCost: 200,
+      rewardEntryList: [],
+    },
+    {
+      id: '6',
+      type: 'loot',
+      listName: 'Gifted Reward List (1000pts)',
+      chance1: 1,
+      chance2: 5,
+      chance3: 14,
+      chance4: 30,
+      chance5: 50,
+      pointCost: 1000,
+      rewardEntryList: [],
     },
   ],
   groupRewardHistory: [],
   groupRewardHistoryCount: 0,
   userRewardHistory: [],
-  userRewardHistoryCount: 0
-  
+  userRewardHistoryCount: 0,
 };
 
 export default (pointReducer = (state = INITIAL_STATE, action) => {
@@ -49,17 +99,17 @@ export default (pointReducer = (state = INITIAL_STATE, action) => {
         groupRewardHistory: action.data.init
           ? action.data.reward
           : state.groupRewardHistory.concat(action.data.reward),
-          groupRewardHistoryCount: action.data.count,
+        groupRewardHistoryCount: action.data.count,
       };
 
     case 'getUserRewardHistory':
-      console.log(action)
+      console.log(action);
       return {
         ...state,
         userRewardHistory: action.data.init
           ? action.data.reward
           : state.userRewardHistory.concat(action.data.reward),
-          userRewardHistoryCount: action.data.count,
+        userRewardHistoryCount: action.data.count,
       };
 
     case 'logout':
