@@ -142,7 +142,7 @@ class RewardEntryList extends React.Component {
             </View>
           ) : null}
           {type == 'redeem' ? (
-            <Text style={styles.infoText}>{pointCost} pts</Text>
+            <Text style={styles.infoText}>{pointCost}pts</Text>
           ) : null}
           <Text style={styles.infoText}>{count} Remaining</Text>
           {expiration ? (

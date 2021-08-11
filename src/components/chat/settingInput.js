@@ -11,15 +11,30 @@ import {
 import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 export default class RewardSettingInput extends React.Component {
-
   render() {
-    const {type, value, onInputChange, disabled} = this.props;
+    const {type, value, onInputChange, disabled, rankName} = this.props;
 
     let title = 'Name';
+    let rankTitle = 'Brave';
     if (type == 'type') {
       title = 'Type';
     } else if (type == 'rank') {
       title = 'Rank Required';
+      if (value == 1) {
+        rankTitle = rankName.rank1Name;
+      } else if (value == 2) {
+        rankTitle = rankName.rank2Name;
+      } else if (value == 3) {
+        rankTitle = rankName.rank3Name;
+      } else if (value == 4) {
+        rankTitle = rankName.rank4Name;
+      } else if (value == 5) {
+        rankTitle = rankName.rank5Name;
+      } else if (value == 6) {
+        rankTitle = rankName.rank6Name;
+      } else if (value == 7) {
+        rankTitle = rankName.rank7Name;
+      }
     } else if (type == 'delete') {
       title = 'Delete';
     } else if (type == 'leave') {
@@ -55,14 +70,14 @@ export default class RewardSettingInput extends React.Component {
     ) : (
       <View style={styles.container}>
         <Text style={{color: 'grey'}}>{title}</Text>
-        {type == 'type' ? (
-          <TouchableOpacity
+        {type == 'rank' ? (
+          <TouchableWithoutFeedback
             onPress={() => onInputChange(type)}
             disabled={disabled}>
-            <View style={{marginLeft: 20}}>
-              <Text style={{color: 'grey'}}>{value}</Text>
+            <View style={{marginLeft: 20, width: '100%', height: 45, justifyContent: 'center'}}>
+              <Text>{rankTitle}</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableWithoutFeedback>
         ) : (
           <TextInput
             style={styles.textInputStyle}

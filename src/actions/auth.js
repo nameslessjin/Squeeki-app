@@ -147,6 +147,7 @@ export const updateProfile = data => {
       return result;
     }
 
+    console.log(result.data.updateProfile)
     dispatch(userSignIn(result.data.updateProfile));
     return 0;
   };

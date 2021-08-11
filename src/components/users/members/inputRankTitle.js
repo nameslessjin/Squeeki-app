@@ -8,8 +8,6 @@ export default class InputRankTitle extends React.Component {
       auth,
       onRankInputFocus,
       onTitleInputFocus,
-      onBackdropPress,
-      toggled,
       modifyInput,
       allowToModifyMember,
       userAuth,
@@ -21,9 +19,6 @@ export default class InputRankTitle extends React.Component {
         <InputPicker
           rank={rank}
           onFocus={onRankInputFocus}
-          onBackdropPress={onBackdropPress}
-          toggled={toggled}
-          modifyInput={modifyInput}
           allowToModifyMember={allowToModifyMember}
           userAuth={userAuth}
           rankName={rankName}
@@ -39,7 +34,9 @@ export default class InputRankTitle extends React.Component {
             maxLength={30}
             editable={allowToModifyMember}
           />
+          <View style={styles.titleContainerPadding}/>
         </View>
+
       </View>
     );
   }
@@ -50,7 +47,6 @@ const styles = StyleSheet.create({
     width: '90%',
     marginTop: 15,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
   },
   inputContainer: {
@@ -71,6 +67,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: 'black',
     maxHeight: 60,
-    minHeight: 25
+  },
+  titleContainerPadding: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 0,
   },
 });

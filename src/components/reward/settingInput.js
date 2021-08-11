@@ -165,6 +165,7 @@ export default class RewardSettingInput extends React.Component {
                 styles.textInputStyle,
                 {
                   height: type == 'description' ? null : 45,
+                  color: listId == '1' ? 'grey' : 'black'
                 },
               ]}
               value={value.toString()}

@@ -43,7 +43,6 @@ export default class PostFooter extends React.Component {
     const likeCount_text = countFormat(likeCount);
     const commentCount_text = countFormat(commentCount);
 
-
     return (
       <View style={styles.footerContainer}>
         <View style={styles.rowContainer}>

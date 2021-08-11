@@ -22,6 +22,7 @@ import OptionButtons from '../components/users/members/optionButtons';
 import InputText from '../components/users/members/inputText';
 import {getSingleChat} from '../actions/chat';
 import {singleDefaultIcon} from '../utils/defaultIcon';
+import RankSettingModal from '../components/rankSetting/rankSettingModal';
 
 class Member extends React.Component {
   state = {
@@ -191,8 +192,6 @@ class Member extends React.Component {
     if (group_username == origin.group_username) {
       group_username = null;
     }
-
-
 
     if (rank != null || title != null || group_username != null) {
       const updateData = {
@@ -401,6 +400,7 @@ class Member extends React.Component {
       group.auth.rank <= manage_member_rank_required &&
       group.auth.rank <= auth.rank;
 
+    const modalVisible = toggled && allowToModifyMember;
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
         <KeyboardAvoidingView style={styles.container}>
@@ -416,8 +416,6 @@ class Member extends React.Component {
             auth={auth}
             onRankInputFocus={this.onRankInputFocus}
             onTitleInputFocus={this.onTitleInputFocus}
-            onBackdropPress={this.onBackdropPress}
-            toggled={toggled}
             modifyInput={this.modifyInput}
             allowToModifyMember={allowToModifyMember}
             userAuth={group.auth}
@@ -447,6 +445,17 @@ class Member extends React.Component {
               />
             </View>
           )}
+          {modalVisible ? (
+            <RankSettingModal
+              type={'rank'}
+              prevRoute={'member'}
+              userRank={group.auth.rank}
+              rankName={rankName}
+              onRankChange={this.modifyInput}
+              onBackdropPress={this.onBackdropPress}
+              modalVisible={modalVisible}
+            />
+          ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

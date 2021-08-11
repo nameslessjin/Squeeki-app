@@ -1,6 +1,4 @@
 import React from 'react';
-import Modal from 'react-native-modal';
-import {Picker} from '@react-native-community/picker';
 import {
   StyleSheet,
   TextInput,
@@ -9,22 +7,10 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
-import RankSettingModal from '../../rankSetting/rankSettingModal';
 
 export default class InputRankTitle extends React.Component {
-
   render() {
-    const {
-      rank,
-      onFocus,
-      toggled,
-      onBackdropPress,
-      modifyInput,
-      allowToModifyMember,
-      userAuth,
-      rankName
-    } = this.props;
-
+    const {rank, onFocus, allowToModifyMember, userAuth, rankName} = this.props;
 
     let rankTitle = rankName.rank1Name;
     if (rank == 1) {
@@ -41,8 +27,7 @@ export default class InputRankTitle extends React.Component {
       rankTitle = rankName.rank6Name;
     } else if (rank == 7) {
       rankTitle = rankName.rank7Name;
-    } 
-
+    }
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Rank</Text>
@@ -54,17 +39,6 @@ export default class InputRankTitle extends React.Component {
             <Text>{rankTitle}</Text>
           </View>
         </TouchableWithoutFeedback>
-
-        <RankSettingModal
-          modalVisible={toggled && allowToModifyMember}
-          onBackdropPress={onBackdropPress}
-          onRankChange={modifyInput}
-          rankName={rankName}
-          type={'rank'}
-          prevRoute={'member'}
-          userRank={userAuth.rank}
-        />
-
       </View>
     );
   }
@@ -84,20 +58,11 @@ const styles = StyleSheet.create({
   },
   textInputContainer: {
     width: '100%',
-    height: 25,
+    backgroundColor: 'white',
     padding: 5,
+    paddingVertical: Platform.OS == 'android' ? 9 : 5,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: 'black',
-    color: 'black',
-  },
-  Modal: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  Picker: {
-    width: 1000,
-    height: 250,
-    backgroundColor: 'white',
+    maxHeight: 60,
   },
 });

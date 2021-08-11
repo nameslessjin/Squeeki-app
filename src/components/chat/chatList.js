@@ -85,7 +85,24 @@ export default class ChatList extends React.Component {
     let allow_to_join = true;
     if (rank_req != null) {
       if (!available) {
-        message_preview = `This chat requires rank ${rank_req} or above`;
+        const {rankName} = this.props
+        let rankTitle = rankName.rank1Name;
+        if (rank_req == 1) {
+          rankTitle = rankName.rank1Name;
+        } else if (rank_req == 2) {
+          rankTitle = rankName.rank2Name;
+        } else if (rank_req == 3) {
+          rankTitle = rankName.rank3Name;
+        } else if (rank_req == 4) {
+          rankTitle = rankName.rank4Name;
+        } else if (rank_req == 5) {
+          rankTitle = rankName.rank5Name;
+        } else if (rank_req == 6) {
+          rankTitle = rankName.rank6Name;
+        } else if (rank_req == 7) {
+          rankTitle = rankName.rank7Name;
+        }
+        message_preview = `This chat requires rank ${rankTitle} or above`;
         allow_to_join = false;
       }
     }

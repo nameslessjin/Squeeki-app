@@ -38,6 +38,13 @@ export default class RankSettingModal extends React.Component {
         };
       });
     }
+    if (prevRoute == 'chatSetting'){
+      this.setState(prevState => {
+        return {
+          ranks: prevState.ranks.filter(r => r.value >= userRank),
+        };
+      });
+    }
   }
 
   onBackdropPress = () => {

@@ -17,18 +17,20 @@ import {
   updateChat,
   deleteLeaveChat,
   updateChatInfo,
-  getUserChat
+  getUserChat,
 } from '../actions/chat';
 import {
   createUpdateChatFunc,
   getChatFunc,
   deleteLeaveChatFunc,
-  subSocket
+  subSocket,
 } from '../functions/chat';
 import Input from '../components/chat/settingInput';
 import ChatIconModal from '../components/chat/chatIconModal';
 import ToggleSetting from '../components/chat/toggleSetting';
-import { StackActions } from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
+import {getGroupRankName} from '../actions/group';
+import RankSettingModal from '../components/rankSetting/rankSettingModal';
 
 class ChatSetting extends React.Component {
   state = {
@@ -42,11 +44,12 @@ class ChatSetting extends React.Component {
     deleted: false,
     allow_invite: false,
     allow_modify: false,
+    modalType: 'icon',
     status: {},
   };
 
   componentDidMount() {
-    const {navigation, route} = this.props;
+    const {navigation, route, group} = this.props;
 
     if (route.params) {
       const {
@@ -66,7 +69,7 @@ class ChatSetting extends React.Component {
         allow_invite,
         allow_modify,
       });
-      this.getUserChat(chatId)
+      this.getUserChat(chatId);
     } else {
       navigation.setOptions({
         headerRight: () => (
@@ -85,21 +88,34 @@ class ChatSetting extends React.Component {
     });
   }
 
+  getGroupRankName = async () => {
+    const {getGroupRankName, auth, group} = this.props;
+    const request = {
+      groupId: group.group.id,
+      token: auth.token,
+    };
+
+    const req = await getGroupRankName(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot get rank names at this time, please try again later');
+      return;
+    }
+  };
+
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
       const {navigation} = this.props;
       const {chatId} = this.state;
-      if (!chatId) {
-        navigation.setOptions({
-          headerRight: () => (
-            <HeaderRightButton
-              type={'done'}
-              disabled={!this.validation()}
-              onPress={this.onCreateUpdateChat}
-            />
-          ),
-        });
-      }
+      navigation.setOptions({
+        headerRight: () => (
+          <HeaderRightButton
+            type={'done'}
+            disabled={!this.validation()}
+            onPress={this.onCreateUpdateChat}
+          />
+        ),
+      });
     }
   }
 
@@ -133,12 +149,6 @@ class ChatSetting extends React.Component {
             update = false;
           }
         }
-
-        update = this.validation();
-
-        if (update) {
-          this.onCreateUpdateChat();
-        }
       } else {
         // if delete or leave current chat then reload chats
         this.loadChat(true);
@@ -146,7 +156,7 @@ class ChatSetting extends React.Component {
     }
   }
 
-  getUserChat = async (chatId) => {
+  getUserChat = async chatId => {
     const {auth, getUserChat} = this.props;
 
     const request = {
@@ -264,10 +274,10 @@ class ChatSetting extends React.Component {
     }
 
     if (chatId) {
-      // navigation.navigate('Chat');
+      navigation.goBack();
     } else {
       this.loadChat(true);
-      navigation.dispatch(StackActions.pop(1))
+      navigation.dispatch(StackActions.pop(1));
     }
   };
 
@@ -302,16 +312,22 @@ class ChatSetting extends React.Component {
     }
     socket_chat_id = socket_chat_id.map(c => c.id);
 
-    subSocket(socket_chat_id, updateChatInfo)
+    subSocket(socket_chat_id, updateChatInfo);
   };
 
   onInputChange = (type, value) => {
     if (type == 'name') {
       this.setState({name: value});
+    } else if (type == 'rankPress') {
+      this.setState({modalVisible: true, modalType: 'rank'});
     } else if (type == 'rank') {
-      this.setState({rank_req: value ? parseInt(value) : ''});
+      if (!this.state.modalVisible || this.state.modalType != 'rank') {
+        this.setState({modalVisible: true, modalType: 'rank'});
+      } else {
+        this.setState({rank_req: value, modalVisible: false});
+      }
     } else if (type == 'icon') {
-      this.setState({modalVisible: true});
+      this.setState({modalVisible: true, modalType: 'icon'});
     } else if (type == 'delete' || type == 'leave') {
       Alert.alert(
         type == 'delete' ? 'Delete the chat' : 'Leave the chat',
@@ -337,7 +353,7 @@ class ChatSetting extends React.Component {
     this.setState({loading: true, deleted: true});
     const request = await deleteLeaveChatFunc({...this.props, chatId});
     this.setState({loading: false});
-    navigation.dispatch(StackActions.pop(2))
+    navigation.dispatch(StackActions.pop(2));
   };
 
   setIcon = (data, type) => {
@@ -371,10 +387,11 @@ class ChatSetting extends React.Component {
       allow_invite,
       allow_modify,
       status,
+      modalType,
     } = this.state;
 
     // if in group
-    const {group} = this.props.group;
+    const {group, rankName} = this.props.group;
 
     let deleteButton = (
       <Input type={'delete'} onInputChange={this.onInputChange} />
@@ -391,16 +408,16 @@ class ChatSetting extends React.Component {
           disabled = true;
         }
       } else {
-
         if (!status.is_owner) {
-          deleteButton = <Input type={'leave'} onInputChange={this.onInputChange} />;
+          deleteButton = (
+            <Input type={'leave'} onInputChange={this.onInputChange} />
+          );
         }
         if (!status.is_owner && !allow_modify) {
           disabled = true;
         }
       }
     }
-
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -422,9 +439,10 @@ class ChatSetting extends React.Component {
           {group.id ? (
             <Input
               type={'rank'}
-              value={rank_req.toString()}
+              value={rank_req}
               onInputChange={this.onInputChange}
               disabled={disabled}
+              rankName={rankName}
             />
           ) : null}
 
@@ -448,13 +466,30 @@ class ChatSetting extends React.Component {
           {deleteButton}
 
           {loading ? (
-            <ActivityIndicator animating={loading} style={{marginTop: 20}} color={'grey'} />
+            <ActivityIndicator
+              animating={loading}
+              style={{marginTop: 20}}
+              color={'grey'}
+            />
           ) : null}
-          <ChatIconModal
-            modalVisible={modalVisible}
-            onBackdropPress={this.onBackdropPress}
-            onChangeMedia={this.setIcon}
-          />
+          {modalVisible && modalType == 'icon' ? (
+            <ChatIconModal
+              modalVisible={modalVisible}
+              onBackdropPress={this.onBackdropPress}
+              onChangeMedia={this.setIcon}
+            />
+          ) : null}
+          {modalVisible && modalType == 'rank' ? (
+            <RankSettingModal
+              type={'rank'}
+              prevRoute={'chatSetting'}
+              modalVisible={modalVisible}
+              userRank={group.auth.rank}
+              rankName={rankName}
+              onBackdropPress={this.onBackdropPress}
+              onRankChange={this.onInputChange}
+            />
+          ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );
@@ -484,6 +519,7 @@ const mapDispatchToProps = dispatch => {
     deleteLeaveChat: data => dispatch(deleteLeaveChat(data)),
     updateChatInfo: data => dispatch(updateChatInfo(data)),
     getUserChat: data => dispatch(getUserChat(data)),
+    getGroupRankName: data => dispatch(getGroupRankName(data)),
   };
 };
 

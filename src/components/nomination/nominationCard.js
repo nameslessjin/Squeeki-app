@@ -83,8 +83,9 @@ class NominationCard extends React.Component {
         <View style={[styles.container, {backgroundColor: selected ? '#c7ecee' : 'white'}]}>
           <View style={styles.textContainer}>
             <Text style={styles.name}>{name}</Text>
-            <Text style={styles.period}>{type_display + ': ' + points} points</Text>
-            <Text style={styles.period}>Multiplier: 3x</Text>
+            <Text style={styles.period}>{'For nomination: ' + points} points</Text>
+            <Text style={styles.period}>For winner: 200 points</Text>
+            {/* <Text style={styles.period}>Multiplier: 3x</Text> */}
             <Text style={styles.period}>{value}</Text>
           </View>
 

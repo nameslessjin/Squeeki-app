@@ -19,6 +19,7 @@ import {
   updatePinChat,
 } from '../actions/chat';
 import {userLogout} from '../actions/auth';
+import {getGroupRankName} from '../actions/group';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import {getChatFunc, unsubSocket, subSocket} from '../functions/chat';
 import List from '../components/chat/chatList';
@@ -40,6 +41,7 @@ class Chats extends React.Component {
     });
 
     if (group.group.auth) {
+      this.getGroupRankName();
       const {auth, rank_setting} = group.group;
       navigation.setOptions({
         headerRight: () =>
@@ -71,6 +73,21 @@ class Chats extends React.Component {
       this.loadChat(true);
     }
   }
+
+  getGroupRankName = async () => {
+    const {getGroupRankName, auth, group} = this.props;
+    const request = {
+      groupId: group.group.id,
+      token: auth.token,
+    };
+
+    const req = await getGroupRankName(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot get rank names at this time, please try again later');
+      return;
+    }
+  };
 
   navigateToOptions = type => {
     const {navigation} = this.props;
@@ -143,7 +160,7 @@ class Chats extends React.Component {
 
     this.setState({loading: true});
     const req = await getChatFunc(request);
-
+    console.log(req);
     // if not in group all chats in chat.chats
     let socket_chat_id = req.chat;
 
@@ -269,6 +286,7 @@ class Chats extends React.Component {
               userGroupAuthRank={
                 group.group.auth ? group.group.auth.rank : null
               }
+              rankName={group.rankName}
               changeUserChatNotification={this.changeUserChatNotification}
               updatePinChat={this.updatePinChat}
             />
@@ -313,6 +331,7 @@ const mapDispatchToProps = dispatch => {
     changeUserChatNotification: data =>
       dispatch(changeUserChatNotification(data)),
     updatePinChat: data => dispatch(updatePinChat(data)),
+    getGroupRankName: data => dispatch(getGroupRankName(data)),
   };
 };
 
