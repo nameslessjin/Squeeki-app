@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'flex-start',
-    // backgroundColor: 'silver',
     justifyContent: 'space-around',
   },
   imgHolder: {
@@ -150,7 +149,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   informationContainer: {
-    // backgroundColor: 'grey',
     minHeight: 100,
     maxHeight: 110,
     width: '70%',
@@ -161,7 +159,6 @@ const styles = StyleSheet.create({
     width: '100%',
     // minHeight: 40,
     maxHeight: 40,
-    // backgroundColor: '#74b9ff',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -179,6 +176,8 @@ const styles = StyleSheet.create({
   memberCountStyle: {
     flexDirection: 'row',
     height: 25,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   peopleIconStyle: {
     marginRight: 1,

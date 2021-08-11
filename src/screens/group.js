@@ -33,6 +33,14 @@ class Group extends React.Component {
     });
 
     Keyboard.dismiss();
+
+    // set this just in case of redirect from an old group to a new group but group is not yet load
+    setTimeout(() => {
+      const {group} = this.props.group;
+      if (group.id) {
+        this.loadGroupPosts(true);
+      }
+    }, 100);
   }
 
   getUserGroupPoint = async () => {
@@ -111,7 +119,7 @@ class Group extends React.Component {
       this.setState({refreshing: true});
       this.loadLeaderBoard();
       this.loadGroupPosts(true);
-      this.getUserGroupPoint()
+      this.getUserGroupPoint();
       this.getGroupJoinRequestCount();
       this.setState({refreshing: false});
     }
@@ -139,14 +147,17 @@ class Group extends React.Component {
     };
 
     this.setState({loading: true});
-    await getGroupPostsFunc(data);
+    // if it is not init load and count is 0, not loading, else load
+    if (!(!init && post.groupPosts.count == 0)) {
+      await getGroupPostsFunc(data);
+    }
     this.setState({loading: false});
   };
 
   render() {
     const {group, post, navigation, point} = this.props;
     const {refreshing} = this.state;
-    
+
     return (
       <KeyboardAvoidingView style={styles.container}>
         <StatusBar barStyle={'dark-content'} />
