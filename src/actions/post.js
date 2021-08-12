@@ -550,7 +550,7 @@ export const manageUserTaskResponse = request => {
     const input = {
       respondentId, postId, type
     }
-    console.log(input)
+
     const graphql = {
       query: manageUserTaskResponseMutation,
       variables: {input}

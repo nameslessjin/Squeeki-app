@@ -223,8 +223,6 @@ export const getReplies = request => {
       reply: result.data.getReplies
     }
 
-    console.log(data)
-
     dispatch(getRepliesReducer(data))
 
     return result.data.getReplies

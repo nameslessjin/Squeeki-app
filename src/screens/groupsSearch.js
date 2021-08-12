@@ -105,7 +105,7 @@ class GroupsSearch extends React.Component {
 
   render() {
     const {searchTerm, groupsData, prevRoute} = this.state;
-    console.log(this.state);
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>

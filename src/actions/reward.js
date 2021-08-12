@@ -67,7 +67,6 @@ export const createUpdateGroupReward = request => {
       expiration: expiration ? new Date(expiration) : null,
     };
 
-    console.log(input);
     const graphql = {
       query: createUpdateGroupRewardMutation,
       variables: {

@@ -28,7 +28,7 @@ class ChatDrawerkNavigator extends React.Component {
     let headerTitleSize = 18;
     if (chat) {
       name = chat.name.trim();
-      this.getUserChat(chat.id);
+      // this.getUserChat(chat.id);
 
       if (name.length >= 15) {
         headerTitleSize = 16;

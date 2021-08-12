@@ -29,7 +29,7 @@ import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 const {width} = Dimensions.get('screen');
 
-const extractKey = ({userId}) => userId;
+const extractKey = ({userId, groupId}) => (userId ? userId : groupId);
 
 export const RenderSend = props => {
   const {text, onSend} = props;
@@ -114,7 +114,6 @@ export const onUrlPress = url => {
 };
 
 export const onPhonePress = props => {
-  console.log(props);
   const {phone, getContext} = props;
 
   const options = ['Call', 'Text', 'Cancel'];
@@ -257,16 +256,17 @@ export const RenderTicks = props => {
   ) : null;
 };
 
-const renderAtUserItem = ({item, onAtUserPress}) => {
-  const {userId, displayName, username, icon} = item;
-  
-  const user = {
-    userId,
-    username,
+const renderAtUserItem = ({item, onAtUserNGroupPress}) => {
+  const {userId, displayName, username, icon, groupname, groupId} = item;
+
+  const input = {
+    id: userId ? userId : groupId,
+    name: username ? username : groupname,
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => onAtUserPress(user)}>
+    <TouchableWithoutFeedback
+      onPress={() => onAtUserNGroupPress(input, userId ? 'user' : 'group')}>
       <View
         style={{
           minHeight: 50,
@@ -296,7 +296,9 @@ const renderAtUserItem = ({item, onAtUserPress}) => {
             width: width - 150,
           }}>
           <Text style={{color: 'black', fontSize: 15}}>{displayName}</Text>
-          <Text style={{color: 'grey', fontSize: 13}}>@{username}</Text>
+          <Text style={{color: 'grey', fontSize: 13}}>
+            {username ? `@${username}` : `g@${groupname}`}
+          </Text>
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -304,8 +306,7 @@ const renderAtUserItem = ({item, onAtUserPress}) => {
 };
 
 export const renderComposer = props => {
-  const {atSearchResult, composerHeight, onAtUserPress} = props;
-
+  const {atSearchResult, composerHeight, onAtUserNGroupPress} = props;
   return (
     <React.Fragment>
       {atSearchResult.length > 0 ? (
@@ -323,7 +324,9 @@ export const renderComposer = props => {
           <FlatList
             style={{maxHeight: 150, width: width - 85}}
             data={atSearchResult}
-            renderItem={props => renderAtUserItem({...props, onAtUserPress})}
+            renderItem={props =>
+              renderAtUserItem({...props, onAtUserNGroupPress})
+            }
             keyExtractor={extractKey}
             alwaysBounceHorizontal={false}
             alwaysBounceVertical={false}

@@ -66,7 +66,7 @@ query getGroup($groupId: ID!){
 `;
 
 export const searchGroupQuery = `
-query searchGroup($input: searchGroupInput!){
+query searchGroup($input: SearchGroupInput!){
     searchGroup(input: $input){
         groups{
             id
@@ -338,4 +338,16 @@ export const updateRankNamesMutation = `
 mutation updateRankNames($input: GroupRankNameInput!){
     updateRankNames(input: $input)
 }
+`;
+
+export const searchAtGroupQuery = `
+query searchAtGroup($input: SearchGroupInput!){
+    searchAtGroup(input: $input){
+        groupId
+        groupname
+        displayName
+        icon
+    }
+}
+
 `;

@@ -48,7 +48,7 @@ export default class rewardList extends React.Component {
         }
       });
     }
-    // console.log(rewardList);
+
     return (
       <FlatList
         data={authorizedList}

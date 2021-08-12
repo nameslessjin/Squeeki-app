@@ -330,7 +330,7 @@ class ChatMembers extends React.Component {
     const count =
       search_term != text ? 0 : init || init == null ? 0 : this.state.count;
     const {searchUserChat, auth, group} = this.props;
-    console.log(group);
+
     const groupId = group.group ? group.group.id : null;
 
     const request = {

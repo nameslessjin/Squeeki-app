@@ -185,8 +185,7 @@ class TaskVerify extends React.Component {
     } = this.state;
     const isSelf = respondentId == this.props.auth.user.id;
     const disabled = taskResponse == 'completed' || !isSelf;
-    console.log(image)
-
+    
     return (
       <TouchableWithoutFeedback onPress={this.onBackdropPress}>
         <ScrollView style={styles.scroll} bounces={false}>

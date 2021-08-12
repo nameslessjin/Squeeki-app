@@ -188,9 +188,6 @@ class Comment extends React.Component {
   // action on reply button on the left side of input bar pressed
   onCommentReplyPress = (replyId, type, replyTo) => {
     this.inputRef.focus();
-    console.log(replyId);
-    console.log(type);
-    console.log(replyTo);
     this.setState({replyId, replyType: type, replyTo});
 
     if (type == 'reply' && this.props.auth.user.username != replyTo) {
@@ -345,7 +342,7 @@ class Comment extends React.Component {
     updatedComment = updatedComment.join(' ') + ' ';
     this.setState({
       atSearchResult: [],
-      newComment: updatedComment.substr(0, 255),
+      newComment: updatedComment.substr(0, 1000),
     });
   };
 
@@ -363,7 +360,7 @@ class Comment extends React.Component {
       replyType,
       replyTo,
     } = this.state;
-    const disabled = newComment.trim().length == 0 || newComment.length > 255;
+    const disabled = newComment.trim().length == 0 || newComment.length > 1000;
     const {navigation, group, comment} = this.props;
     const isReply = replyId ? true : false;
     return (
@@ -419,7 +416,7 @@ class Comment extends React.Component {
                     }
                     placeholderTextColor={'#7f8fa6'}
                     multiline={true}
-                    maxLength={255}
+                    maxLength={1000}
                     onContentSizeChange={e =>
                       this.setState({
                         inputHeight: e.nativeEvent.contentSize.height + 15,

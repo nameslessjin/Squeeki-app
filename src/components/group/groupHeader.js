@@ -209,7 +209,7 @@ class GroupHeader extends React.Component {
                   </Text>
                 </View>
                 <Text style={{color: '#95a5a6'}} numberOfLines={2}>
-                  @{groupname}
+                  g@{groupname}
                 </Text>
                 <View style={[component, {marginTop: 1}]}>
                   <Text style={{color: '#95a5a6'}}>Since {date}</Text>

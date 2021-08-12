@@ -48,7 +48,7 @@ import {
   renderText,
   renderMessageContainer,
   renderMessageText,
-  renderTime
+  renderTime,
 } from '../components/chat/render';
 import {timeDifferentInMandS} from '../utils/time';
 import HeaderRightButton from '../components/chat/headerRightButton';
@@ -59,6 +59,7 @@ import {
   detectAtUserNGroupInCurrentText,
 } from '../utils/detect';
 import {editPhoto} from '../utils/imagePicker';
+import {searchAtGroup} from '../actions/group';
 
 const {width} = Dimensions.get('screen');
 
@@ -304,7 +305,6 @@ class Chat extends React.Component {
               },
             };
           });
-          console.log(updatedMessages);
         }
       }
       return {
@@ -609,6 +609,11 @@ class Chat extends React.Component {
     // @user
     if (!this.state.is_dm && searchTerm[0] == '@') {
       this.setState({searchTerm, searchIndex});
+    } else if (
+      (searchTerm[0] == 'g' || searchTerm[0] == 'G') &&
+      searchTerm[1] == '@'
+    ) {
+      this.setState({searchTerm, searchIndex});
     } else {
       this.setState({searchTerm: '', searchIndex: -1, atSearchResult: []});
     }
@@ -700,8 +705,12 @@ class Chat extends React.Component {
     const {id} = auth.user;
     const {second_userId, is_dm} = this.state;
 
-    // if user press on self or if user press second user in DM, do nothing
-    if (_id == id || _id == second_userId || is_dm) {
+    // if user press on self, do nothing
+    if (_id == id){
+      return
+    }
+    // if user press second user in DM,
+    if (_id == second_userId || is_dm) {
       this.setState({chatDMModalVisible: true});
       return;
     }
@@ -710,16 +719,28 @@ class Chat extends React.Component {
 
   onAtSearch = async () => {
     const {searchTerm, id} = this.state;
-    const {group, auth, navigation, searchAtUserChat} = this.props;
+    const {
+      group,
+      auth,
+      navigation,
+      searchAtUserChat,
+      searchAtGroup,
+    } = this.props;
 
     const request = {
       groupId: group.group.id,
-      search_term: searchTerm.substr(1, searchTerm.length),
+      search_term:
+        searchTerm[0] == '@'
+          ? searchTerm.substr(1, searchTerm.length)
+          : searchTerm.substr(2, searchTerm.length),
       chatId: id,
       token: auth.token,
     };
 
-    const result = await searchAtUserChat(request);
+    const result =
+      searchTerm[0] == '@'
+        ? await searchAtUserChat(request)
+        : await searchAtGroup(request);
 
     if (result.errors) {
       console.log(result.errors);
@@ -729,15 +750,36 @@ class Chat extends React.Component {
     this.setState({atSearchResult: result});
   };
 
-  onAtUserPress = user => {
-    const {username, userId} = user;
+  onAtUserNGroupPress = (input, type) => {
+    const {name, id} = input;
     const {searchTerm, searchIndex, content} = this.state;
 
     let updatedContent = content.split(' ');
-    updatedContent[searchIndex] = `@${username}`;
+    if (type == 'user') {
+      updatedContent[searchIndex] = `@${name}`;
+    } else {
+      updatedContent[searchIndex] = `g@${name}`;
+    }
     updatedContent = updatedContent.join(' ') + ' ';
 
     this.setState({content: updatedContent, atSearchResult: []});
+  };
+
+  onAtUserNGroupHightlightPress = message => {
+
+    const components = message.substr(1, message.length - 2).split(':');
+
+
+    const atText = components[0];
+    const displayName = components[1];
+    const id = components[2];
+
+    // @username check
+    if (atText[0] == '@') {
+      this.onPressAvatar({_id: id});
+    } else if (atText[0] == 'g' && atText[1] == '@') {
+      // g@groupname check
+    }
   };
 
   render() {
@@ -802,6 +844,13 @@ class Chat extends React.Component {
                   pattern: /\[(@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
                   style: styles.atUser,
                   renderText: renderText,
+                  onPress: m => this.onAtUserNGroupHightlightPress(m),
+                },
+                {
+                  pattern: /\[(g@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
+                  style: styles.atUser,
+                  renderText: renderText,
+                  onPress: m => this.onAtUserNGroupHightlightPress(m),
                 },
               ];
             }}
@@ -833,7 +882,11 @@ class Chat extends React.Component {
             scrollToBottom={true}
             onPressAvatar={this.onPressAvatar}
             renderTicks={message => (
-              <RenderTicks message={message} is_dm={is_dm} isSelf={this.props.auth.user.id == message.user._id} />
+              <RenderTicks
+                message={message}
+                is_dm={is_dm}
+                isSelf={this.props.auth.user.id == message.user._id}
+              />
             )}
             renderMessageImage={giftchat => (
               <RenderMessageImage
@@ -848,7 +901,7 @@ class Chat extends React.Component {
               renderComposer({
                 ...props,
                 atSearchResult,
-                onAtUserPress: this.onAtUserPress,
+                onAtUserNGroupPress: this.onAtUserNGroupPress,
               })
             }
             renderBubble={props => renderBubble({...props})}
@@ -884,13 +937,11 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'white',
   },
-  url: {
-
-  },
+  url: {},
   atUser: {
     color: '#1e90ff',
     // fontWeight: 'bold',
-  }
+  },
 });
 
 const mapStateToProps = state => {
@@ -914,6 +965,7 @@ const mapDispatchToProps = dispatch => {
     updateUserRelation: data => dispatch(updateUserRelation(data)),
     getSingleChat: data => dispatch(getSingleChat(data)),
     searchAtUserChat: data => dispatch(searchAtUserChat(data)),
+    searchAtGroup: data => dispatch(searchAtGroup(data)),
   };
 };
 

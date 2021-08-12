@@ -103,7 +103,6 @@ export default (pointReducer = (state = INITIAL_STATE, action) => {
       };
 
     case 'getUserRewardHistory':
-      console.log(action);
       return {
         ...state,
         userRewardHistory: action.data.init

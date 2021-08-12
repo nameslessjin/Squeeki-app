@@ -18,7 +18,7 @@ export const detectAtPeopleNGroup = prop => {
   const prevTextArray = prevText.split(' ');
   const currentTextArray = currentText.split(' ');
 
-  // find the term and index that is current midifying
+  // find the term and index that is currently midifying
   let currentModifyingTermIndex = currentTextArray.length - 1;
   let currentModifyingTerm = currentTextArray[currentModifyingTermIndex];
   let isNewEmptySpaceAfterExistingTag = false;
@@ -59,7 +59,10 @@ export const detectAtPeopleNGroup = prop => {
     }
 
     // if g@groupname
-    if (currentModifyingTerm[0] == 'g' && currentModifyingTerm[1] == '@') {
+    if (
+      (currentModifyingTerm[0] == 'g' || currentModifyingTerm[0] == 'G') &&
+      currentModifyingTerm[1] == '@'
+    ) {
       // this is used to check putting an empty space between g@ and groupname, ex. from 'g@groupname' to 'g@ groupname'
       if (
         currentModifyingTerm.length == 2 &&
@@ -67,7 +70,7 @@ export const detectAtPeopleNGroup = prop => {
       ) {
         const prevChar = prevTextArray[currentModifyingTermIndex];
         if (
-          prevChar[0] == 'g' &&
+          (prevChar[0] == 'g' || prevChar[0] == 'G') &&
           prevChar[1] == '@' &&
           prevChar.substr(2, prevChar.length) ==
             currentTextArray[currentModifyingTermIndex + 1]

@@ -160,7 +160,7 @@ class Chats extends React.Component {
 
     this.setState({loading: true});
     const req = await getChatFunc(request);
-    console.log(req);
+
     // if not in group all chats in chat.chats
     let socket_chat_id = req.chat;
 

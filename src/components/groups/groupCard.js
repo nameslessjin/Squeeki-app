@@ -103,7 +103,7 @@ class GroupCard extends React.Component {
                 <Text
                   numberOfLines={2}
                   style={[nameStyle, {color: 'grey', fontSize: 13}]}>
-                  @{groupname}
+                  g@{groupname}
                 </Text>
               ) : null}
             </View>

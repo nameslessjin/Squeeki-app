@@ -147,7 +147,7 @@ class GroupSettingsHeader extends React.Component {
           </View>
 
           <View style={[component, {marginTop: 1}]}>
-            <Text style={{color: '#95a5a6'}}>@{groupId ? groupname : ''}</Text>
+            <Text style={{color: '#95a5a6'}}>g@{groupId ? groupname : ''}</Text>
             {groupId ? null : (
               <TextInput
                 style={{width: '100%', marginLeft: 1, padding: 0}}

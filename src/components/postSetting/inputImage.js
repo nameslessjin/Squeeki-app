@@ -39,7 +39,7 @@ export default class InputImage extends React.Component {
   render() {
     const {image, contentKeyboard, onPress, disabled} = this.props;
     const imageSelected = image != null;
-    // console.log(image.uri)
+
     return (
       <TouchableOpacity
         style={[

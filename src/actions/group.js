@@ -16,6 +16,7 @@ import {
   updateRankFeaturesMutation,
   getGroupRankNameQuery,
   updateRankNamesMutation,
+  searchAtGroupQuery,
 } from './query/groupQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
@@ -654,5 +655,28 @@ export const updateRankNames = data => {
     dispatch(getGroupRankNameReducer(GroupRankNameInput));
 
     return 0;
+  };
+};
+
+export const searchAtGroup = data => {
+  const {search_term} = data;
+
+  return async function(dispatch) {
+    const input = {searchTerm: search_term};
+
+    console.log(input);
+    const graphql = {
+      query: searchAtGroupQuery,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(null, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.searchAtGroup;
   };
 };

@@ -250,7 +250,7 @@ class RewardDetail extends React.Component {
       giftedGroupDisplayName,
     } = this.state;
     const {group} = this.props.group;
-    console.log(this.state);
+
     return (
       <TouchableWithoutFeedback>
         <ScrollView style={styles.container}>
