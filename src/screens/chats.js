@@ -37,7 +37,7 @@ class Chats extends React.Component {
     const {navigation, group} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
-      headerTitle: 'Chats',
+      headerTitle: group.group.id ? `${group.group.display_name} Chats` : 'My Chats',
     });
 
     if (group.group.auth) {

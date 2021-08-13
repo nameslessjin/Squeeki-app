@@ -17,6 +17,7 @@ import DeviceInfo from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
 import {requestNotificationPermission} from '../functions/permission';
 import {registerDeviceForNotification} from '../actions/user';
+import {DrawerActions} from '@react-navigation/native';
 
 class Home extends React.Component {
   state = {
@@ -25,9 +26,8 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
-    this.setState({loading: true});
+
     this.loadFeed(true);
-    this.setState({loading: false});
     this.getNotificationToken();
   }
 

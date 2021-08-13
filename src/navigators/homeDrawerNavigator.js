@@ -60,7 +60,13 @@ class HomeDrawerNavigator extends React.Component {
       ),
       // headerRight: () => <HomeHeaderRightButton onPress={this.onToggleHomeRightButton} />,
       headerBackTitleVisible: false,
+      headerTitle: 'Squeeki',
     });
+
+    // delete this once the recommendation page is done
+    setTimeout(() => {
+      this.props.navigation.dispatch(DrawerActions.openDrawer());
+    }, 100);
 
     socket.init();
   }
@@ -94,18 +100,15 @@ class HomeDrawerNavigator extends React.Component {
       this.props.changeScreen(name);
     }
     if (name == 'Home') {
-      // navigation.setOptions({
-      //   headerRight: () => <HomeHeaderRightButton onPress={this.onToggleHomeRightButton} />,
-      // });
       navigation.setOptions({
         headerRight: null,
-        headerTitle: 'Home',
+        headerTitle: 'Squeeki',
       });
       this.unsubSocket();
     } else if (name == 'Profile') {
       navigation.setOptions({
         headerRight: null,
-        headerTitle: 'Profile',
+        headerTitle: 'My Profile',
       });
       this.unsubSocket();
     } else if (name == 'Groups') {
@@ -113,7 +116,7 @@ class HomeDrawerNavigator extends React.Component {
         headerRight: () => (
           <GroupRightButton onPress={this.onToggleGroupsRightButton} />
         ),
-        headerTitle: 'Groups',
+        headerTitle: 'My Groups',
       });
 
       this.unsubSocket();
@@ -137,14 +140,10 @@ class HomeDrawerNavigator extends React.Component {
             type={'create'}
           />
         ),
-        headerTitle: 'Chats',
+        headerTitle: 'My Chats',
       });
     }
   }
-
-  updateProlfeButton = () => {
-    this.setState({update: true});
-  };
 
   render() {
     const {logout, auth} = this.props;
@@ -164,7 +163,6 @@ class HomeDrawerNavigator extends React.Component {
           component={MyReward}
           options={() => ({
             drawerLabel: 'My Rewards',
-            headerTitle: 'My Rewards',
           })}
         />
       </Drawer.Navigator>

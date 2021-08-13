@@ -60,6 +60,7 @@ import {
 } from '../utils/detect';
 import {editPhoto} from '../utils/imagePicker';
 import {searchAtGroup} from '../actions/group';
+import {singleDefaultIcon} from '../utils/defaultIcon';
 
 const {width} = Dimensions.get('screen');
 
@@ -337,7 +338,14 @@ class Chat extends React.Component {
           pointer: pointer,
           messages: (init ? [] : prevState.messages).concat(
             messages.map(m => {
-              return {...m, createdAt: new Date(parseInt(m.createdAt))};
+              return {
+                ...m,
+                user: {
+                  ...m.user,
+                  avatar: m.user.avatar ? m.user.avatar : singleDefaultIcon(),
+                },
+                createdAt: new Date(parseInt(m.createdAt)),
+              };
             }),
           ),
         };
@@ -706,8 +714,8 @@ class Chat extends React.Component {
     const {second_userId, is_dm} = this.state;
 
     // if user press on self, do nothing
-    if (_id == id){
-      return
+    if (_id == id) {
+      return;
     }
     // if user press second user in DM,
     if (_id == second_userId || is_dm) {
@@ -766,9 +774,7 @@ class Chat extends React.Component {
   };
 
   onAtUserNGroupHightlightPress = message => {
-
     const components = message.substr(1, message.length - 2).split(':');
-
 
     const atText = components[0];
     const displayName = components[1];
@@ -803,6 +809,7 @@ class Chat extends React.Component {
       _id: auth.user.id,
     };
 
+    console.log(messages);
     return (
       <View>
         <KeyboardAvoidingView style={styles.container}>

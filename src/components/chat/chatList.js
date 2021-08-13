@@ -155,7 +155,7 @@ export default class ChatList extends React.Component {
                     </Text>
                   </View>
                   <View style={styles.unread_message_container}>
-                    {unread_message_count == 0 ? null : (
+                    {unread_message_count == 0 || !allow_to_join ? null : (
                       <View style={styles.unread_message}>
                         <Text style={{color: 'white', fontSize: width * 0.034}}>
                           {unread_message_count_text}

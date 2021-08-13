@@ -12,7 +12,6 @@ import {
 import {dateConversion} from '../../utils/time';
 import {connect} from 'react-redux';
 import {getSingleGroupById} from '../../actions/group';
-import {logUserEvent} from '../../actions/userEvent';
 
 const {width, height} = Dimensions.get('window');
 
@@ -42,33 +41,24 @@ class RewardEntryList extends React.Component {
 
       // log the redirection event on certain route
       // route: RewardList
+      let log = null;
       if (prevRoute == 'RewardList') {
-        const log = {
+        log = {
           effectId: fromId ? fromId : toId,
           effectIdType: 'group',
           causeId: id,
           causeIdType: 'rewardEntry',
           event: 'redirection_rewardEntry_to_group',
         };
-        this.logUserEvent(log);
       }
 
       // redirect to group
       navigation.push('GroupNavigator', {
         prevRoute,
         groupId: group.group.id,
+        log,
       });
     }
-  };
-
-  logUserEvent = async log => {
-    const {auth, logUserEvent} = this.props;
-    const request = {
-      token: auth.token,
-      log,
-    };
-
-    const req = await logUserEvent(request);
   };
 
   onRedeemPress = item => {
@@ -306,7 +296,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
-    logUserEvent: data => dispatch(logUserEvent(data)),
   };
 };
 

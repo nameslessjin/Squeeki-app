@@ -379,7 +379,7 @@ class ChatMembers extends React.Component {
       }
 
       can_remove_user = !func_disabled;
-      if (group.group.auth) {
+      if (group.group.auth && user) {
         const {auth, rank_setting} = group.group;
 
         // if you have the chat management rank and the selected user rank is greater than yours
@@ -387,6 +387,7 @@ class ChatMembers extends React.Component {
           auth.rank <= rank_setting.manage_chat_rank_required &&
           user.rank >= auth.rank
         );
+
         // if func is not disabled and if user is within the rank requirement
         can_remove_user = user.rank <= rank_req ? false : !func_disabled;
       }

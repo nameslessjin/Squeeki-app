@@ -14,7 +14,6 @@ import InputContent from '../components/postSetting/inputContent';
 import TopRightButton from '../components/reward/topRightButton';
 import {dateConversion} from '../utils/time';
 import {getSingleGroupById} from '../actions/group';
-import {logUserEvent} from '../actions/userEvent';
 
 class RewardDetail extends React.Component {
   state = {
@@ -189,13 +188,14 @@ class RewardDetail extends React.Component {
 
       // log the redirection event on certain route
       // route: RewardHistory, MyGroupRewards, MyRewards, RewardList
+      let log = null;
       if (
         prevRoute == 'RewardHistory' ||
         prevRoute == 'MyGroupRewards' ||
         prevRoute == 'MyRewards' ||
         prevRoute == 'RewardList'
       ) {
-        const log = {
+        log = {
           effectId: fromId,
           effectIdType: 'group',
           causeId: id,
@@ -205,26 +205,15 @@ class RewardDetail extends React.Component {
               ? 'redirection_rewardEntry_to_group'
               : 'redirection_reward_to_group',
         };
-
-        this.logUserEvent(log);
       }
 
       // redirect to group
       navigation.push('GroupNavigator', {
         prevRoute: 'RewardDetail',
         groupId,
+        log,
       });
     }
-  };
-
-  logUserEvent = async log => {
-    const {auth, logUserEvent} = this.props;
-    const request = {
-      token: auth.token,
-      log,
-    };
-
-    const req = await logUserEvent(request);
   };
 
   render() {
@@ -417,7 +406,6 @@ const mapDispatchToProps = dispatch => {
   return {
     getRewardEntry: data => dispatch(getRewardEntry(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
-    logUserEvent: data => dispatch(logUserEvent(data)),
   };
 };
 

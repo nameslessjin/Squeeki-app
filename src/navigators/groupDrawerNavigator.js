@@ -23,6 +23,7 @@ import {invalidAuthentication} from '../functions/auth';
 import {getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point';
 import {loadLeaderBoardFunc} from '../functions/point';
 import {getGroupJoinRequestCountFunc} from '../functions/group';
+import {logUserEvent} from '../actions/userEvent';
 
 class GroupDrawerNavigator extends React.Component {
   onToggleHeaderRightButton = () => {
@@ -31,7 +32,7 @@ class GroupDrawerNavigator extends React.Component {
   };
 
   componentDidMount() {
-    const {navigation, group} = this.props;
+    const {navigation, group, route} = this.props;
     const {auth, display_name, visibility, rank_setting} = group.group;
     navigation.setOptions({
       headerRight: () =>
@@ -50,6 +51,12 @@ class GroupDrawerNavigator extends React.Component {
         if (auth.rank <= rank_setting.manage_member_rank_required) {
           this.getGroupJoinRequestCount();
         }
+      }
+    }
+
+    if (route.params) {
+      if (route.params.log) {
+        this.logUserEvent(route.params.log);
       }
     }
   }
@@ -94,6 +101,16 @@ class GroupDrawerNavigator extends React.Component {
       }
     }
   }
+
+  logUserEvent = async log => {
+    const {auth, logUserEvent} = this.props;
+    const request = {
+      token: auth.token,
+      log,
+    };
+
+    const req = await logUserEvent(request);
+  };
 
   getGroup = async groupId => {
     const {auth, getSingleGroupById} = this.props;
@@ -227,7 +244,7 @@ class GroupDrawerNavigator extends React.Component {
           }}
         />
         <DrawerItem
-          label="Chats"
+          label="Group Chats"
           icon={() => <MaterialIcons name="chat" color={'grey'} size={25} />}
           labelStyle={styles.labelStyle}
           onPress={() => {
@@ -336,6 +353,7 @@ const mapDispatchToProps = dispatch => {
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
     getGroupPointLeaderBoard: data => dispatch(getGroupPointLeaderBoard(data)),
     getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data)),
+    logUserEvent: data => dispatch(logUserEvent(data)),
   };
 };
 
