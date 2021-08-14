@@ -137,7 +137,7 @@ class GroupSettingsHeader extends React.Component {
               }}
               maxLength={50}
               multiline={true}
-              placeholder={'Group name'}
+              placeholder={'Group Display Name'}
               placeholderTextColor={'#7f8fa6'}
               onChangeText={text => this.updateGroupName('display_name', text)}
               value={display_name}
@@ -152,7 +152,7 @@ class GroupSettingsHeader extends React.Component {
               <TextInput
                 style={{width: '100%', marginLeft: 1, padding: 0}}
                 onChangeText={text => this.updateGroupName('groupname', text.trim())}
-                placeholder={'group_id'}
+                placeholder={'Pick an unique groupname'}
                 placeholderTextColor={'#7f8fa6'}
                 value={groupname.replace(/ /g, '')}
                 maxLength={30}

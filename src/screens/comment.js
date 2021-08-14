@@ -35,6 +35,7 @@ import SendButton from '../components/comment/sendButton';
 import {searchAtUser} from '../actions/user';
 import AtList from '../components/comment/AtList';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
+import {searchAtGroup} from '../actions/group';
 
 const {height, width} = Dimensions.get('screen');
 
@@ -307,6 +308,12 @@ class Comment extends React.Component {
     // @user
     if (searchTerm[0] == '@') {
       this.setState({searchTerm, searchIndex});
+    } else if (
+      (searchTerm[0] == 'g' || searchTerm[0] == 'G') &&
+      searchTerm[1] == '@'
+    ) {
+      // g@groupname
+      this.setState({searchTerm, searchIndex});
     } else {
       this.setState({searchTerm: '', searchIndex: -1, atSearchResult: []});
     }
@@ -316,15 +323,21 @@ class Comment extends React.Component {
 
   onAtSearch = async () => {
     const {searchTerm} = this.state;
-    const {group, searchAtUser, auth} = this.props;
+    const {group, searchAtUser, auth, searchAtGroup} = this.props;
 
     const request = {
       groupId: group.group.id,
-      searchTerm: searchTerm.trim().substr(1, searchTerm.length),
+      searchTerm:
+        searchTerm[0] == '@'
+          ? searchTerm.substr(1, searchTerm.length)
+          : searchTerm.substr(2, searchTerm.length),
       token: auth.token,
     };
 
-    const result = await searchAtUser(request);
+    const result =
+      searchTerm[0] == '@'
+        ? await searchAtUser(request)
+        : await searchAtGroup(request);
     if (result.errors) {
       console.log(result.errors);
       return;
@@ -333,18 +346,19 @@ class Comment extends React.Component {
     this.setState({atSearchResult: result});
   };
 
-  onAtPress = user => {
-    const {username, id} = user;
+  onAtPress = item => {
+    const {username, id, groupname} = item;
     const {searchIndex, newComment} = this.state;
 
     let updatedComment = newComment.split(' ');
-    updatedComment[searchIndex] = `@${username}`;
+    updatedComment[searchIndex] = username ? `@${username}` : `g@${groupname}`;
     updatedComment = updatedComment.join(' ') + ' ';
     this.setState({
       atSearchResult: [],
       newComment: updatedComment.substr(0, 1000),
     });
   };
+
 
   render() {
     const {container} = styles;
@@ -504,6 +518,7 @@ const mapDispatchToProps = dispatch => {
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
     replyComment: data => dispatch(replyComment(data)),
     searchAtUser: data => dispatch(searchAtUser(data)),
+    searchAtGroup: data => dispatch(searchAtGroup(data)),
   };
 };
 

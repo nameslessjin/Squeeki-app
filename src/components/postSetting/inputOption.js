@@ -80,9 +80,9 @@ export default class InputOption extends React.Component {
       header = 'Confirm Button';
     } else if (type == 'deny') {
       header = 'Deny Button';
-    } else if (type == 'taskExpiration'){
-      header = 'Task Expiration'
-      isTouchable = true
+    } else if (type == 'taskExpiration') {
+      header = 'Task Expiration';
+      isTouchable = true;
     }
 
     // the current toggled type.  This is used to correctly show the selections
@@ -143,10 +143,14 @@ export default class InputOption extends React.Component {
       } else {
         display_text = 'No';
       }
-    } else if (type == 'priorityExpiration'){
-      display_text = dateConversion(textInputValue, 'priority')
-    } else if (type == 'taskExpiration'){
-      display_text = dateConversion(textInputValue, 'task')
+    } else if (type == 'priorityExpiration') {
+      if (priority == 0) {
+        display_text = 'Not Required';
+      } else {
+        display_text = dateConversion(textInputValue, 'priority');
+      }
+    } else if (type == 'taskExpiration') {
+      display_text = dateConversion(textInputValue, 'task');
     }
 
     const toggled = onToggle && toggleTyple == type;

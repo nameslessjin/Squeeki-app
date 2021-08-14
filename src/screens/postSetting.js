@@ -476,7 +476,7 @@ class PostSetting extends React.Component {
           : searchTerm.substr(2, searchTerm.length),
       token: auth.token,
     };
-    console.log(request);
+
     const result =
       searchTerm[0] == '@'
         ? await searchAtUser(request)
@@ -485,7 +485,7 @@ class PostSetting extends React.Component {
       console.log(result.errors);
       return;
     }
-    console.log(result);
+
     this.setState({atSearchResult: result});
   };
 

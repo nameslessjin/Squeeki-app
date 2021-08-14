@@ -65,7 +65,7 @@ class PostCard extends React.Component {
   };
 
   getGroup = async id => {
-    console.log(id);
+
     const {item, getSingleGroupById, auth, navigation, group} = this.props;
     const request = {
       id: id ? id : item.groupId,
@@ -78,7 +78,6 @@ class PostCard extends React.Component {
       return;
     }
 
-    console.log(group.group.id)
     navigation.push('GroupNavigator', {
       prevRoute: 'PostCard',
       groupId: group.group.id,

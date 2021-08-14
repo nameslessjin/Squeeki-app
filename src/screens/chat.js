@@ -803,8 +803,9 @@ class Chat extends React.Component {
       return;
     }
 
+    console.log(group.group.id)
     navigation.push('GroupNavigator', {
-      prevProps: 'Chat',
+      prevRoute: 'Chat',
       groupId: group.group.id,
     });
   };
@@ -875,7 +876,7 @@ class Chat extends React.Component {
                 },
                 {
                   pattern: /\[(g@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
-                  style: styles.atUser,
+                  style: {color: '#1e90ff', fontWeight: '500'},
                   renderText: renderText,
                   onPress: m => this.onAtUserNGroupHightlightPress(m),
                 },

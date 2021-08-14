@@ -12,12 +12,11 @@ import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 const {width} = Dimensions.get('screen');
 
-const extractKey = ({userId}) => userId;
+const extractKey = ({id}) => id;
 
 export default class AtList extends React.Component {
-
   renderItem = ({item}) => {
-    const {displayName, username, iconUrl} = item;
+    const {displayName, username, iconUrl, groupname} = item;
     const {onAtPress} = this.props;
 
     return (
@@ -31,7 +30,9 @@ export default class AtList extends React.Component {
           </View>
           <View style={styles.name}>
             <Text style={styles.displayName}>{displayName}</Text>
-            <Text style={styles.username}>@{username}</Text>
+            <Text style={styles.username}>
+              {username ? `@${username}` : `g@${groupname}`}
+            </Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -41,11 +42,23 @@ export default class AtList extends React.Component {
   render() {
     const {atSearchResult} = this.props;
 
+    const searchResult = atSearchResult.map(r => {
+      if (r.groupId) {
+        return {
+          groupname: r.groupname,
+          iconUrl: r.icon,
+          displayName: r.displayName,
+          id: r.groupId,
+        };
+      }
+      return r;
+    });
+
     return atSearchResult.length > 0 ? (
       <View style={styles.container}>
         <FlatList
           style={styles.list}
-          data={atSearchResult}
+          data={searchResult}
           keyExtractor={extractKey}
           alwaysBounceVertical={false}
           alwaysBounceHorizontal={false}

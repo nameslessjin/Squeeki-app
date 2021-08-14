@@ -36,6 +36,7 @@ export default class CommentList extends React.Component {
           onCommentReplyPress={onCommentReplyPress}
           replyId={replyId}
           _actionSheetRef={_actionSheetRef}
+          navigation={navigation}
         />
       );
     }

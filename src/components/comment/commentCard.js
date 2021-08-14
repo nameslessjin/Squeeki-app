@@ -21,6 +21,7 @@ import {
   onPhonePress,
   onEmailPress,
 } from '../chat/render';
+import {getSingleGroupById} from '../../actions/group';
 
 class CommentCard extends React.Component {
   state = {
@@ -91,6 +92,41 @@ class CommentCard extends React.Component {
     onOptionToggle({commentId: id, userId: user.id});
   };
 
+  getGroup = async id => {
+    const {auth, getSingleGroupById, navigation, group} = this.props;
+    const request = {
+      id,
+      token: auth.token,
+    };
+
+    const req = await getSingleGroupById(request);
+    if (req.errors) {
+      alert('Cannot load group at this time, please try again later');
+      return;
+    }
+
+    navigation.push('GroupNavigator', {
+      prevRoute: 'Comment',
+      groupId: group.group.id,
+    });
+  };
+
+  onAtUserNGroupHightlightPress = content => {
+    const components = content.substr(1, content.length - 2).split(':');
+
+    const atText = components[0];
+    const displayName = components[1];
+    const id = components[2];
+
+    // @username check
+    if (atText[0] == '@') {
+      // this.onPressAvatar({_id: id});
+    } else if (atText[0] == 'g' && atText[1] == '@') {
+      // g@groupname check
+      this.getGroup(id);
+    }
+  };
+
   render() {
     const {
       loading,
@@ -114,7 +150,6 @@ class CommentCard extends React.Component {
     } = this.props;
     let replies = [];
     if (num_of_replies > 0 && reply) {
-
       replies = reply.replies;
     }
     const {icon} = user;
@@ -157,6 +192,12 @@ class CommentCard extends React.Component {
                     style: {color: '#1e90ff'},
                     renderText: renderText,
                   },
+                  {
+                    pattern: /\[(g@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
+                    style: {color: '#1e90ff', fontWeight: '500'},
+                    renderText: renderText,
+                    onPress: m => this.onAtUserNGroupHightlightPress(m),
+                  },
                 ]}
                 childrenProps={{allowFontScaling: false}}>
                 {content}
@@ -181,6 +222,7 @@ class CommentCard extends React.Component {
               onReplyPress={onCommentReplyPress}
               commentId={id}
               _actionSheetRef={_actionSheetRef}
+              onAtUserNGroupHightlightPress={this.onAtUserNGroupHightlightPress}
             />
 
             {/* //reply list */}
@@ -207,13 +249,14 @@ class CommentCard extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const {comment, auth} = state;
-  return {postId: comment.postId, auth};
+  const {comment, auth, group} = state;
+  return {postId: comment.postId, auth, group};
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     getReplies: data => dispatch(getReplies(data)),
+    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
   };
 };
 

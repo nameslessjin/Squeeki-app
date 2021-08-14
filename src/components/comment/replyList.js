@@ -13,6 +13,7 @@ export default class ReplyList extends React.Component {
       onReplyPress,
       commentId,
       _actionSheetRef,
+      onAtUserNGroupHightlightPress,
     } = this.props;
 
     // return with item
@@ -25,6 +26,7 @@ export default class ReplyList extends React.Component {
         onReplyPress={onReplyPress}
         commentId={commentId}
         _actionSheetRef={_actionSheetRef}
+        onAtUserNGroupHightlightPress={onAtUserNGroupHightlightPress}
       />
     );
   };

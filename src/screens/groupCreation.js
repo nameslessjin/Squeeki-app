@@ -167,7 +167,7 @@ class GroupCreation extends React.Component {
     const {groupname, shortDescription, display_name} = this.state;
 
 
-    // groupname must only include characters besides a-z, A-Z, 0-9 and _
+    // groupname must only include characters a-z, A-Z, 0-9 and _
     // groupname must include at least one character
     // groupname must not include keyboard admin and squeeki
     // groupname length must be at least 4 and no greater than 30
