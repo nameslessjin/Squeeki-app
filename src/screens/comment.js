@@ -122,7 +122,7 @@ class Comment extends React.Component {
     };
     const postData = await getPost(data);
     if (postData.errors) {
-      // alert(postData.errors[0].message);
+      console.log(postData.errors[0].message);
       alert('Cannot load comments at this time, please try again later');
       if (postData.errors[0].message == 'Not Authenticated') {
         userLogout();

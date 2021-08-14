@@ -14,9 +14,9 @@ const {width, height} = Dimensions.get('screen');
 
 const extractKey = ({id}) => id;
 
-export default class AtUserList extends React.Component {
+export default class AtUserNGroupList extends React.Component {
   renderItem = ({item}) => {
-    const {id, displayName, username, iconUrl} = item;
+    const {id, displayName, username, iconUrl, groupname} = item;
     const {onAtPress} = this.props;
     return (
       <TouchableWithoutFeedback onPress={() => onAtPress(item)}>
@@ -29,7 +29,7 @@ export default class AtUserList extends React.Component {
           </View>
           <View style={styles.nameHolder}>
             <Text style={styles.displayName}>{displayName}</Text>
-            <Text style={styles.username}>@{username}</Text>
+            <Text style={styles.username}>{username ? `@${username}` : `g@${groupname}`}</Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -39,6 +39,17 @@ export default class AtUserList extends React.Component {
   render() {
     const {atSearchResult, isPicSet} = this.props;
 
+    const searchResult = atSearchResult.map(r => {
+      if (r.groupId) {
+        return {
+          groupname: r.groupname,
+          iconUrl: r.icon,
+          displayName: r.displayName,
+          id: r.groupId,
+        };
+      }
+      return r;
+    });
     return (
       <View
         style={[
@@ -46,7 +57,7 @@ export default class AtUserList extends React.Component {
           {height: isPicSet ? height - 680 : height - 400},
         ]}>
         <FlatList
-          data={atSearchResult}
+          data={searchResult}
           renderItem={this.renderItem}
           keyExtractor={extractKey}
           style={styles.list}

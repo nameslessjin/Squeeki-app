@@ -84,17 +84,23 @@ class GroupDrawerNavigator extends React.Component {
         prevRoute == 'MyRewards' ||
         prevRoute == 'RewardList' ||
         prevRoute == 'RewardDetail' ||
-        prevRoute == 'GiftedRewardList'
+        prevRoute == 'GiftedRewardList' ||
+        prevRoute == 'Chat' ||
+        prevRoute == 'PostCard'
       ) {
         // MyRewads have no previous group page
         // if has previous group page thus reload group and reward
+        console.log(groupId);
         if (groupId) {
           this.getGroup(groupId);
         }
-        navigation.navigate(prevRoute, {
-          refresh: true,
-          groupId,
-        });
+
+        if (prevRoute != 'PostCard') {
+          navigation.navigate(prevRoute, {
+            refresh: true,
+            groupId,
+          });
+        }
       } else {
         // if the current route is general group page then load groups
         this.loadGroups(true);

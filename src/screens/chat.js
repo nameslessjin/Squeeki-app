@@ -59,7 +59,7 @@ import {
   detectAtUserNGroupInCurrentText,
 } from '../utils/detect';
 import {editPhoto} from '../utils/imagePicker';
-import {searchAtGroup} from '../actions/group';
+import {searchAtGroup, getSingleGroupById} from '../actions/group';
 import {singleDefaultIcon} from '../utils/defaultIcon';
 
 const {width} = Dimensions.get('screen');
@@ -621,6 +621,7 @@ class Chat extends React.Component {
       (searchTerm[0] == 'g' || searchTerm[0] == 'G') &&
       searchTerm[1] == '@'
     ) {
+      // g@groupname
       this.setState({searchTerm, searchIndex});
     } else {
       this.setState({searchTerm: '', searchIndex: -1, atSearchResult: []});
@@ -730,7 +731,6 @@ class Chat extends React.Component {
     const {
       group,
       auth,
-      navigation,
       searchAtUserChat,
       searchAtGroup,
     } = this.props;
@@ -785,7 +785,28 @@ class Chat extends React.Component {
       this.onPressAvatar({_id: id});
     } else if (atText[0] == 'g' && atText[1] == '@') {
       // g@groupname check
+      this.getGroup(id);
     }
+  };
+
+  getGroup = async id => {
+    const {auth, getSingleGroupById, group, navigation} = this.props;
+    const request = {
+      id,
+      token: auth.token,
+    };
+
+    const req = await getSingleGroupById(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot load group at this time, please try again later');
+      return;
+    }
+
+    navigation.push('GroupNavigator', {
+      prevProps: 'Chat',
+      groupId: group.group.id,
+    });
   };
 
   render() {
@@ -809,7 +830,6 @@ class Chat extends React.Component {
       _id: auth.user.id,
     };
 
-    console.log(messages);
     return (
       <View>
         <KeyboardAvoidingView style={styles.container}>
@@ -973,6 +993,7 @@ const mapDispatchToProps = dispatch => {
     getSingleChat: data => dispatch(getSingleChat(data)),
     searchAtUserChat: data => dispatch(searchAtUserChat(data)),
     searchAtGroup: data => dispatch(searchAtGroup(data)),
+    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
   };
 };
 

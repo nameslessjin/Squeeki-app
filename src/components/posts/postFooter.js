@@ -98,7 +98,7 @@ export default class PostFooter extends React.Component {
                 styles.rowContainer,
                 {backgroundColor: '#2ed573', height: 40},
               ]}>
-              <TouchableOpacity onPress={onViewButtonPress}>
+              <TouchableOpacity onPress={() => onViewButtonPress()}>
                 <View style={styles.viewButton}>
                   <Text style={styles.textStyle}>View</Text>
                 </View>

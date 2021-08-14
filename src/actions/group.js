@@ -659,10 +659,10 @@ export const updateRankNames = data => {
 };
 
 export const searchAtGroup = data => {
-  const {search_term} = data;
+  const {search_term, searchTerm} = data;
 
   return async function(dispatch) {
-    const input = {searchTerm: search_term};
+    const input = {searchTerm: searchTerm ? searchTerm : search_term};
 
     console.log(input);
     const graphql = {

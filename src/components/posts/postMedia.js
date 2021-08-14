@@ -34,6 +34,23 @@ export default class PostMedia extends React.Component {
     }
   }
 
+  onAtUserNGroupHightlightPress = content => {
+    const {getGroup} = this.props;
+    const components = content.substr(1, content.length - 2).split(':');
+
+    const atText = components[0];
+    const displayName = components[1];
+    const id = components[2];
+
+    // @username check
+    if (atText[0] == '@') {
+      // this.onPressAvatar({_id: id});
+    } else if (atText[0] == 'g' && atText[1] == '@') {
+      // g@groupname check
+      getGroup(id);
+    }
+  };
+
   render() {
     const {image, content, _actionSheetRef} = this.props;
 
@@ -67,6 +84,13 @@ export default class PostMedia extends React.Component {
               pattern: /\[(@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
               style: {color: '#1e90ff'},
               renderText: renderText,
+              onPress: m => this.onAtUserNGroupHightlightPress(m),
+            },
+            {
+              pattern: /\[(g@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
+              style: {color: '#1e90ff'},
+              renderText: renderText,
+              onPress: m => this.onAtUserNGroupHightlightPress(m),
             },
           ]}
           childrenProps={{allowFontScaling: false}}>

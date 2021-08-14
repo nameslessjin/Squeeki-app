@@ -21,9 +21,9 @@ import NominationButton from '../components/postSetting/nominationButton';
 import {getSundays} from '../utils/time';
 import PostSettingModal from '../components/postSetting/postSettingModal';
 import {getUserGroupPoint} from '../actions/point';
-import {getSingleGroupById} from '../actions/group';
+import {getSingleGroupById, searchAtGroup} from '../actions/group';
 import {detectAtPeopleNGroup} from '../utils/detect';
-import AtUserList from '../components/postSetting/atUserList';
+import AtUserNGroupList from '../components/postSetting/atUserNGroupList';
 import InputOption from '../components/postSetting/inputOption';
 
 class PostSetting extends React.Component {
@@ -319,9 +319,9 @@ class PostSetting extends React.Component {
         allowComment,
         type,
         visibility,
-        confirmButton,
-        denyButton,
-        taskExpiration,
+        confirmButton: type == 'task' ? confirmButton : null,
+        denyButton: type == 'task' ? denyButton : null,
+        taskExpiration: type == 'task' ? taskExpiration : null,
         token: token,
         nomination: {
           nominationId: nomination.id || null,
@@ -350,30 +350,35 @@ class PostSetting extends React.Component {
       denyButton,
       initTime,
       taskExpiration,
+      type,
     } = this.state.postData;
     if (content.trim().length == 0) {
       return false;
     }
 
     if (priority > 0 && priorityExpiration <= Date.now()) {
+      console.log('here1');
       return false;
     }
 
     if (priority == 0 && priorityExpiration > initTime) {
+      console.log('here2');
       return false;
     }
 
-    if (confirmButton.length > 10) {
-      return false;
-    }
-
-    if (denyButton.length > 10) {
-      return false;
-    }
-
-    if (taskExpiration) {
-      if (taskExpiration <= Date.now()) {
+    if (type == 'task') {
+      if (confirmButton.length > 10) {
         return false;
+      }
+
+      if (denyButton.length > 10) {
+        return false;
+      }
+
+      if (taskExpiration) {
+        if (taskExpiration <= Date.now()) {
+          return false;
+        }
       }
     }
 
@@ -461,20 +466,26 @@ class PostSetting extends React.Component {
 
   onAtSearch = async () => {
     const {searchTerm} = this.state;
-    const {group, searchAtUser, auth} = this.props;
+    const {group, searchAtUser, auth, searchAtGroup} = this.props;
 
     const request = {
       groupId: group.group.id,
-      searchTerm: searchTerm.trim().substr(1, searchTerm.length),
+      searchTerm:
+        searchTerm[0] == '@'
+          ? searchTerm.substr(1, searchTerm.length)
+          : searchTerm.substr(2, searchTerm.length),
       token: auth.token,
     };
-
-    const result = await searchAtUser(request);
+    console.log(request);
+    const result =
+      searchTerm[0] == '@'
+        ? await searchAtUser(request)
+        : await searchAtGroup(request);
     if (result.errors) {
       console.log(result.errors);
       return;
     }
-
+    console.log(result);
     this.setState({atSearchResult: result});
   };
 
@@ -487,6 +498,12 @@ class PostSetting extends React.Component {
 
       // @user
       if (searchTerm[0] == '@') {
+        this.setState({searchTerm, searchIndex});
+      } else if (
+        (searchTerm[0] == 'g' || searchTerm[0] == 'G') &&
+        searchTerm[1] == '@'
+      ) {
+        // g@groupname
         this.setState({searchTerm, searchIndex});
       } else {
         this.setState({searchTerm: '', searchIndex: -1, atSearchResult: []});
@@ -563,7 +580,6 @@ class PostSetting extends React.Component {
         },
       });
     } else if (type == 'taskExpiration') {
-
       this.setState({
         postData: {
           ...this.state.postData,
@@ -599,12 +615,12 @@ class PostSetting extends React.Component {
     Keyboard.dismiss();
   };
 
-  onAtPress = user => {
-    const {username, id} = user;
+  onAtPress = item => {
+    const {username, id, groupname} = item;
     const {searchIndex, postData} = this.state;
 
     let updatedContent = postData.content.split(' ');
-    updatedContent[searchIndex] = `@${username}`;
+    updatedContent[searchIndex] = username ? `@${username}` : `g@${groupname}`;
     updatedContent = updatedContent.join(' ') + ' ';
     this.setState({
       atSearchResult: [],
@@ -673,8 +689,8 @@ class PostSetting extends React.Component {
             />
 
             {atSearchResult.length == 0 ? null : (
-              <AtUserList
-                atSearchResult={atSearchResult}
+              <AtUserNGroupList
+                atSearchResult={atSearchResult || []}
                 isPicSet={image != null}
                 onAtPress={this.onAtPress}
               />
@@ -879,6 +895,7 @@ const mapDispatchToProps = dispatch => {
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
     searchAtUser: data => dispatch(searchAtUser(data)),
+    searchAtGroup: data => dispatch(searchAtGroup(data)),
   };
 };
 

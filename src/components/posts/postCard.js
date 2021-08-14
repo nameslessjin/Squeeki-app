@@ -64,10 +64,11 @@ class PostCard extends React.Component {
     this.onBackDropPress();
   };
 
-  onViewButtonPress = async () => {
-    const {item, getSingleGroupById, auth, navigation} = this.props;
+  getGroup = async id => {
+    console.log(id);
+    const {item, getSingleGroupById, auth, navigation, group} = this.props;
     const request = {
-      id: item.groupId,
+      id: id ? id : item.groupId,
       token: auth.token,
     };
 
@@ -77,8 +78,10 @@ class PostCard extends React.Component {
       return;
     }
 
-    navigation.navigate('GroupNavigator', {
-      prevRoute: 'Home',
+    console.log(group.group.id)
+    navigation.push('GroupNavigator', {
+      prevRoute: 'PostCard',
+      groupId: group.group.id,
     });
   };
 
@@ -404,6 +407,7 @@ class PostCard extends React.Component {
             <PostMedia
               {...this.state}
               navigation={navigation}
+              getGroup={this.getGroup}
               _actionSheetRef={
                 this.props._actionSheetRef
                   ? this.props._actionSheetRef
@@ -424,7 +428,7 @@ class PostCard extends React.Component {
                 postId={id}
                 commentTouchable={commentTouchable}
                 onRespondPost={this.onRespondPost}
-                onViewButtonPress={this.onViewButtonPress}
+                onViewButtonPress={this.getGroup}
                 {...this.state}
               />
             )}
