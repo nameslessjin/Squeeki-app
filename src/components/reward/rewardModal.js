@@ -160,7 +160,11 @@ export default class RewardModal extends React.Component {
 
     // create an reward with expiration up to 1 year
     let maxDate = new Date();
-    maxDate.setFullYear(maxDate.getFullYear() + 1);
+    if (isGift){
+      maxDate.setDate(maxDate.getDate() + 7)
+    } else {
+      maxDate.setFullYear(maxDate.getFullYear() + 1);
+    }
 
     if (Platform.OS == 'ios') {
       timeModal = (

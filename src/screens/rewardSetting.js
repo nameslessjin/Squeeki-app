@@ -508,8 +508,10 @@ class RewardSetting extends React.Component {
       this.setState(prevState => {
         return {
           ...prevState,
-          hasExpiration: !prevState.hasExpiration,
-          expiration: prevState.hasExpiration
+          hasExpiration: prevState.isGift ? true : !prevState.hasExpiration,
+          expiration: prevState.isGift
+            ? prevState.expiration
+            : prevState.hasExpiration
             ? null
             : origin
             ? origin.expiration
@@ -519,6 +521,8 @@ class RewardSetting extends React.Component {
         };
       });
     } else if (type == 'isGift') {
+      // if reward is a gift reward, it must have expiration date
+      // switch to preset values
       this.setState(prevState => {
         return {
           isGift: !prevState.isGift,
@@ -537,6 +541,8 @@ class RewardSetting extends React.Component {
             : systemRewardSetting
             ? systemRewardSetting.chance.filter(c => c.listId == '4')[0].label
             : 'Chance Not Found, please reload reward page',
+          hasExpiration: !prevState.isGift ? true : false,
+          expiration: !prevState.isGift ? Date.now() : null,
         };
       });
     }
