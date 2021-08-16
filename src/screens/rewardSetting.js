@@ -43,8 +43,8 @@ class RewardSetting extends React.Component {
     image: null,
     redeemable: false,
     pointCost: '0',
-    expiration: null,
-    hasExpiration: false,
+    expiration: Date.now(),
+    hasExpiration: true,
     giftTo: null,
     isGift: false,
     systemRewardSetting: null,
@@ -717,12 +717,12 @@ class RewardSetting extends React.Component {
             />
           ) : null}
 
-          <Input
+          {/* <Input
             type={'hasExpiration'}
             value={hasExpiration}
             onInputChange={this.onInputChange}
             disabled={false}
-          />
+          /> */}
 
           {hasExpiration ? (
             <Input

@@ -163,7 +163,7 @@ export default class RewardModal extends React.Component {
     if (isGift) {
       maxDate.setDate(maxDate.getDate() + 7);
     } else {
-      maxDate.setFullYear(maxDate.getFullYear() + 1);
+      maxDate.setMonth(maxDate.getMonth() + 1)
     }
 
     if (Platform.OS == 'ios') {
