@@ -12,7 +12,7 @@ export default class HomeHeaderLeft extends React.Component {
       <TouchableOpacity
         style={styles.headerLeftButton}
         onPress={onPress}>
-        <MaterialIcons name="menu" size={30} />
+        <MaterialIcons name="menu" size={30} color={'white'} />
       </TouchableOpacity>
     );
   }
@@ -23,5 +23,8 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         width: 30,
         height: 30
+    },
+    darkMode:{
+      backgroundColor: 'white'
     }
 })

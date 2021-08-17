@@ -6,32 +6,38 @@ import {
   FlatList,
   StatusBar,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {getTheme} from '../utils/theme';
+import {connect} from 'react-redux';
 
 const extractKey = ({id}) => id;
-export default class Terms extends React.Component {
+class Terms extends React.Component {
   state = {
     terms: [{id: '1', name: 'Privacy Policy'}, {id: '2', name: 'EULA'}],
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
   renderItem = i => {
     const {item} = i;
     const {id, name} = item;
-
+    const {theme} = this.state;
     return (
       <TouchableOpacity onPress={() => this.loadTerm(name)}>
-        <View style={styles.card}>
-          <Text style={styles.text}>{name}</Text>
-          <MaterialIcons name={'chevron-right'} size={30} />
+        <View style={[styles.card, theme.backgroundColor]}>
+          <Text style={[styles.text, theme.textColor]}>{name}</Text>
+          <MaterialIcons name={'chevron-right'} size={30} color={'silver'} />
         </View>
       </TouchableOpacity>
     );
@@ -45,10 +51,10 @@ export default class Terms extends React.Component {
   };
 
   render() {
-    const {terms} = this.state;
+    const {terms, theme} = this.state;
     return (
       <TouchableWithoutFeedback>
-        <View style={styles.container}>
+        <View style={[styles.container, theme.greyArea]}>
           <StatusBar barStyle={'dark-content'} />
           <FlatList
             data={terms}
@@ -85,3 +91,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
+
+const mapStateToProps = state => {
+  const {auth} = state;
+  return {auth};
+};
+
+export default connect(mapStateToProps)(Terms);

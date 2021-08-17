@@ -11,36 +11,62 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
+import {getTheme} from '../utils/theme';
 
 const extractKey = ({id}) => id;
 class UserSettings extends React.Component {
   state = {
     options: [
-      // {id: 'Theme'},
+      {id: 'Theme'},
       {id: 'Visibility'},
       {id: 'Notifications'},
       {id: 'Terms'},
       {id: 'Logout'},
     ],
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Settings',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    const {auth, navigation} = this.props;
+    if (prevProps.auth != auth) {
+      const theme = getTheme(auth.user.theme);
+      this.setState({theme});
+      navigation.setOptions({
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
+      });
+    }
   }
 
   renderItem = i => {
     const {item} = i;
     const {id} = item;
+    const {theme} = this.state;
 
     return (
       <TouchableOpacity onPress={() => this.loadTerm(id)}>
-        <View style={[styles.card, {marginTop: id == 'Logout' ? 30 : 0}]}>
+        <View
+          style={[
+            styles.card,
+            {marginTop: id == 'Logout' ? 30 : 0},
+            theme.backgroundColor,
+          ]}>
           <Text
-            style={[styles.text, {color: id == 'Logout' ? 'red' : 'black'}]}>
+            style={[
+              styles.text,
+              {color: id == 'Logout' ? 'red' : theme.textColor.color},
+            ]}>
             {id}
           </Text>
           {id == 'Logout' ? null : (
@@ -68,10 +94,10 @@ class UserSettings extends React.Component {
   };
 
   render() {
-    const {options} = this.state;
+    const {options, theme} = this.state;
     return (
       <TouchableWithoutFeedback>
-        <View style={styles.container}>
+        <View style={[styles.container, theme.greyArea]}>
           <StatusBar barStyle={'dark-content'} />
           <FlatList
             data={options}
@@ -79,6 +105,7 @@ class UserSettings extends React.Component {
             showsVerticalScrollIndicator={false}
             keyExtractor={extractKey}
             renderItem={this.renderItem}
+            extraData={theme}
           />
         </View>
       </TouchableWithoutFeedback>
@@ -109,6 +136,11 @@ const styles = StyleSheet.create({
   },
 });
 
+const mapStateToProps = state => {
+  const {auth} = state;
+  return {auth};
+};
+
 const mapDispatchToProps = dispatch => {
   return {
     logout: () => dispatch(userLogout()),
@@ -116,6 +148,6 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(UserSettings);

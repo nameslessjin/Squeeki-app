@@ -9,6 +9,7 @@ import {
 import ToggleSetting from '../components/userSetting/toggleSetting';
 import {connect} from 'react-redux';
 import {updateNotifications} from '../actions/auth';
+import {getTheme} from '../utils/theme';
 
 class NotificationSettings extends React.Component {
   state = {
@@ -23,13 +24,17 @@ class NotificationSettings extends React.Component {
     notification_chat: true,
     notification_chat_message: true,
     notification_chat_mention: true,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation, auth} = this.props;
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Notifications',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     this.setState({
       ...auth.user.notifications,
@@ -174,6 +179,7 @@ class NotificationSettings extends React.Component {
       notification_chat,
       notification_chat_message,
       notification_chat_mention,
+      theme
     } = this.state;
 
     return (
@@ -182,48 +188,55 @@ class NotificationSettings extends React.Component {
           alwaysBounceHorizontal={false}
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
-          style={styles.container}>
+          style={[styles.container, theme.greyArea]}>
           <ToggleSetting
             on={notification_all}
             disabled={false}
             onToggle={this.onToggle}
             type={'notification_all'}
+            theme={theme}
           />
           <ToggleSetting
             on={notification_group}
             disabled={!notification_all}
             onToggle={this.onToggle}
             type={'notification_group'}
+            theme={theme}
           />
           <ToggleSetting
             on={notification_post_like}
             disabled={!notification_all}
             onToggle={this.onToggle}
             type={'notification_post_like'}
+            theme={theme}
           />
           <ToggleSetting
             on={notification_post_comment}
             disabled={!notification_all}
             onToggle={this.onToggle}
             type={'notification_post_comment'}
+            theme={theme}
           />
           <ToggleSetting
             on={notification_post_mention}
             disabled={!notification_all}
             onToggle={this.onToggle}
             type={'notification_post_mention'}
+            theme={theme}
           />
           <ToggleSetting
             on={notification_comment_like}
             disabled={!notification_all}
             onToggle={this.onToggle}
             type={'notification_comment_like'}
+            theme={theme}
           />
           <ToggleSetting
             on={notification_comment_reply}
             disabled={!notification_all}
             onToggle={this.onToggle}
             type={'notification_comment_reply'}
+            theme={theme}
           />
           {/* <ToggleSetting
             on={notification_comment_mention}
@@ -236,18 +249,21 @@ class NotificationSettings extends React.Component {
             disabled={!notification_all}
             onToggle={this.onToggle}
             type={'notification_chat'}
+            theme={theme}
           />
           <ToggleSetting
             on={notification_chat_message}
             disabled={!notification_all}
             onToggle={this.onToggle}
             type={'notification_chat_message'}
+            theme={theme}
           />
           <ToggleSetting
             on={notification_chat_mention}
             disabled={!notification_all}
             onToggle={this.onToggle}
             type={'notification_chat_mention'}
+            theme={theme}
           />
           <View style={styles.textViewContainer}>
             <Text style={styles.text}>

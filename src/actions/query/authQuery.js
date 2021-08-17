@@ -30,6 +30,7 @@ query login($email: String, $password: String, $token: String){
                 visibility_post_at
                 visibility_chat_at
             }
+            theme
         }
     }
 }
@@ -67,6 +68,7 @@ mutation signup($userInput: AuthInput!){
                 visibility_post_at
                 visibility_chat_at
             }
+            theme
         }
     }
 }
@@ -104,6 +106,7 @@ mutation updateProfile($userInput: AuthInput!){
                 visibility_post_at
                 visibility_chat_at
             }
+            theme
         } 
     }
 }
@@ -160,5 +163,10 @@ query getLastVersion {
         IOSVersion
         AndroidVersion
     }
+}
+`
+export const updateThemeMutation = `
+mutation updateTheme($input: ThemeInput!){
+    updateTheme(input: $input)
 }
 `

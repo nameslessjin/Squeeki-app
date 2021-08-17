@@ -10,6 +10,7 @@ import {
   updateVisibilitiesMutation,
   getDefaultIconQuery,
   getLastVersionQuery,
+  updateThemeMutation,
 } from '../actions/query/authQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
@@ -381,5 +382,36 @@ export const getLastVersion = () => {
     }
 
     return result.data.getLastVersion;
+  };
+};
+
+export const updateTheme = data => {
+  const {theme, token} = data;
+
+  return async function(dispatch) {
+    const input = {
+      theme,
+    };
+    const graphql = {
+      query: updateThemeMutation,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(updateThemeReducer(theme));
+    return 0;
+  };
+};
+
+const updateThemeReducer = data => {
+  return {
+    type: 'updateTheme',
+    i: data,
   };
 };

@@ -9,6 +9,7 @@ import {
 import {connect} from 'react-redux';
 import ToggleSetting from '../components/userSetting/toggleSetting';
 import {updateVisibilities} from '../actions/auth';
+import {getTheme} from '../utils/theme';
 
 class VisibilitySettings extends React.Component {
   state = {
@@ -17,18 +18,23 @@ class VisibilitySettings extends React.Component {
     visibility_chat_search: false,
     visibility_post_at: false,
     visibility_chat_at: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation, auth} = this.props;
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Visibility',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     this.setState({
       ...auth.user.visibilities,
     });
   }
+
 
   componentWillUnmount() {
     if (this.checkUpdates()) {
@@ -109,6 +115,7 @@ class VisibilitySettings extends React.Component {
       visibility_group_search,
       visibility_post_at,
       visibility_chat_at,
+      theme,
     } = this.state;
 
     return (
@@ -117,24 +124,27 @@ class VisibilitySettings extends React.Component {
           alwaysBounceHorizontal={false}
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
-          style={styles.container}>
+          style={[styles.container, theme.greyArea]}>
           <ToggleSetting
             on={visibility_all}
             disabled={false}
             onToggle={this.onToggle}
             type={'visibility_all'}
+            theme={theme}
           />
           <ToggleSetting
             on={visibility_chat_search}
             disabled={!visibility_all}
             onToggle={this.onToggle}
             type={'visibility_chat_search'}
+            theme={theme}
           />
           <ToggleSetting
             on={visibility_group_search}
             disabled={!visibility_all}
             onToggle={this.onToggle}
             type={'visibility_group_search'}
+            theme={theme}
           />
           {/* <ToggleSetting
             on={visibility_chat_at}

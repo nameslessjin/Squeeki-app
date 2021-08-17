@@ -1,35 +1,42 @@
 import React from 'react';
 import {View, Text, StyleSheet, ScrollView, Dimensions} from 'react-native';
-import HTML from "react-native-render-html"
-import { EULA, privacy_policy } from '../components/terms/terms'
+import HTML from 'react-native-render-html';
+import {EULA, privacy_policy} from '../components/terms/terms';
+import {connect} from 'react-redux';
+import {getTheme} from '../utils/theme';
 
-const { width } = Dimensions.get('window')
+const {width} = Dimensions.get('window');
 
-export default class TermDisplay extends React.Component {
-
+class TermDisplay extends React.Component {
   state = {
-      content: EULA
-  }
+    content: EULA,
+    theme: getTheme(this.props.auth.user.theme),
+  };
 
   componentDidMount() {
-      const {navigation, route} = this.props
-      const {name} = route.params
-      if (name == 'EULA'){
-          this.setState({content: EULA})
-      } else if (name == 'Privacy Policy'){
-          this.setState({content: privacy_policy})
-      }
-      navigation.setOptions({
-          headerBackTitleVisible: false,
-          headerTitle: name
-      })
+    const {navigation, route} = this.props;
+    const {theme} = this.state;
+    const {name} = route.params;
+    if (name == 'EULA') {
+      this.setState({content: EULA});
+    } else if (name == 'Privacy Policy') {
+      this.setState({content: privacy_policy});
+    }
+    navigation.setOptions({
+      headerBackTitleVisible: false,
+      headerTitle: name,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
+    });
   }
 
   render() {
-      const {content} = this.state
-    return <ScrollView style={styles.container}>
-        <HTML source={{ html: content }} contentWidth={width}/>
-    </ScrollView>;
+    const {content, theme} = this.state;
+    return (
+      <ScrollView style={[styles.container, theme.greyArea]}>
+        <HTML source={{html: content}} contentWidth={width}  baseFontStyle={theme.textColor} />
+      </ScrollView>
+    );
   }
 }
 
@@ -40,3 +47,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
+
+const mapStateToProps = state => {
+  const {auth} = state;
+  return {auth};
+};
+
+export default connect(mapStateToProps)(TermDisplay);

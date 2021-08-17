@@ -30,10 +30,15 @@ import {socket} from '../../server_config';
 import {unsubSocket} from '../functions/chat';
 import {singleDefaultIcon} from '../utils/defaultIcon';
 import MyReward from '../screens/myReward';
+import {getTheme} from '../utils/theme';
 
 const {height} = Dimensions.get('screen');
 
 class HomeDrawerNavigator extends React.Component {
+  state = {
+    theme: getTheme(this.props.auth.user.theme),
+  };
+
   onToggleHeaderLeftButton = () => {
     const {navigation} = this.props;
     navigation.dispatch(DrawerActions.openDrawer());
@@ -54,6 +59,7 @@ class HomeDrawerNavigator extends React.Component {
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {theme} = this.state;
     navigation.setOptions({
       headerLeft: () => (
         <HeaderLeftButton onPress={this.onToggleHeaderLeftButton} />
@@ -61,6 +67,10 @@ class HomeDrawerNavigator extends React.Component {
       // headerRight: () => <HomeHeaderRightButton onPress={this.onToggleHomeRightButton} />,
       headerBackTitleVisible: false,
       headerTitle: 'Squeeki',
+
+      // dark mode
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
 
     // delete this once the recommendation page is done
@@ -147,12 +157,18 @@ class HomeDrawerNavigator extends React.Component {
 
   render() {
     const {logout, auth} = this.props;
+    const {theme} = this.state;
     return (
       <Drawer.Navigator
         screenOptions={{headerShown: false, drawerStyle: {width: 200}}}
         initialRouteName="Home"
         drawerContent={props => (
-          <CustomDrawerContent {...props} logout={logout} auth={auth} />
+          <CustomDrawerContent
+            {...props}
+            logout={logout}
+            auth={auth}
+            theme={theme}
+          />
         )}
         drawerStyle={styles.drawerStyle}>
         <Drawer.Screen name="Home" component={Home} />
@@ -171,12 +187,15 @@ class HomeDrawerNavigator extends React.Component {
 }
 
 function CustomDrawerContent(props) {
-  const {logout, navigation, auth} = props;
+  const {logout, navigation, auth, theme} = props;
   const {displayName, icon} = auth.user;
   return (
     <DrawerContentScrollView
       {...props}
-      style={{bottom: Platform.OS == 'android' ? 0 : height * 0.05}}>
+      style={[
+        theme.backgroundColor,
+        {bottom: Platform.OS == 'android' ? 0 : height * 0.05},
+      ]}>
       {displayName ? (
         <DrawerItem
           label={displayName}
@@ -187,7 +206,7 @@ function CustomDrawerContent(props) {
                 source={icon ? {uri: icon.uri} : singleDefaultIcon()}
                 style={styles.imageStyle}
               />
-              <Text style={styles.displayName}>{displayName}</Text>
+              <Text style={[styles.displayName, theme.textColor]}>{displayName}</Text>
             </View>
           )}
           onPress={() => navigation.navigate('Profile')}
@@ -254,6 +273,9 @@ const styles = StyleSheet.create({
   displayName: {
     marginTop: 5,
     fontSize: 18,
+  },
+  darkModeColorHeader: {
+    backgroundColor: '#1d2027',
   },
 });
 

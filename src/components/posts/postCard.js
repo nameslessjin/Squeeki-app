@@ -356,7 +356,12 @@ class PostCard extends React.Component {
 
     const date = dateConversion(createdAt, 'timeDisplay');
 
+    // default
     let backgroundColor = 'white';
+
+    // darkmode
+    // let backgroundColor = '#1d2027';
+
     if (priority == 3) {
       backgroundColor = '#fab1a0';
     } else if (priority == 2) {
