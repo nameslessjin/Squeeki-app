@@ -105,7 +105,14 @@ class Users extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.cleanMembers();
+    const {group, navigation, cleanMembers} = this.props;
+    cleanMembers();
+    if (group.group.id) {
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'GroupMembers',
+      });
+    }
   }
 
   getGroupRankName = async () => {

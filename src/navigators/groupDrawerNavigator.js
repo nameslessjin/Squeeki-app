@@ -33,7 +33,7 @@ class GroupDrawerNavigator extends React.Component {
 
   componentDidMount() {
     const {navigation, group, route} = this.props;
-    const {auth, display_name, visibility, rank_setting} = group.group;
+    const {auth} = group.group;
     navigation.setOptions({
       headerRight: () =>
         auth == null ? null : (
@@ -43,16 +43,7 @@ class GroupDrawerNavigator extends React.Component {
       headerBackTitleVisible: false,
     });
 
-    if (visibility == 'public' || auth != null) {
-      this.loadLeaderBoard();
-
-      if (auth != null) {
-        this.getUserGroupPoint();
-        if (auth.rank <= rank_setting.manage_member_rank_required) {
-          this.getGroupJoinRequestCount();
-        }
-      }
-    }
+    this.reloadGroup({groupId: null, isFullRefresh: false});
 
     if (route.params) {
       if (route.params.log) {
@@ -62,7 +53,7 @@ class GroupDrawerNavigator extends React.Component {
   }
 
   componentDidUpdate() {
-    const {navigation, group} = this.props;
+    const {navigation, group, route} = this.props;
     const {auth} = group.group;
     navigation.setOptions({
       headerRight: () =>
@@ -70,6 +61,32 @@ class GroupDrawerNavigator extends React.Component {
           <HeaderRightButton onPress={this.onToggleHeaderRightButton} />
         ),
     });
+
+    if (route.params) {
+      const {refresh, prevRoute} = route.params;
+      if (refresh) {
+        if (
+          prevRoute == 'GroupSetting'
+        ) {
+          this.reloadGroup({groupId: null, isFullRefresh: true});
+        } else if (
+          prevRoute == 'PostSetting' ||
+          prevRoute == 'Comment' ||
+          prevRoute == 'NominationResult' ||
+          prevRoute == 'CheckIn' ||
+          prevRoute == 'GroupChats' ||
+          prevRoute == 'GroupRules' ||
+          prevRoute == 'GroupRewards' ||
+          prevRoute == 'GroupMembers' ||
+          prevRoute == 'Leaderboard' ||
+          prevRoute == 'TaskManagement'
+        ) {
+          this.reloadGroup({groupId: null, isFullRefresh: false});
+        }
+
+        navigation.setParams({refresh: false});
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -90,9 +107,8 @@ class GroupDrawerNavigator extends React.Component {
       ) {
         // MyRewads have no previous group page
         // if has previous group page thus reload group and reward
-        console.log(groupId);
         if (groupId) {
-          this.getGroup(groupId);
+          this.reloadGroup({groupId, isFullRefresh: true});
         }
 
         // if the prevRoute is not PostCard or Comment or Chat, pass params back
@@ -125,6 +141,34 @@ class GroupDrawerNavigator extends React.Component {
     const req = await logUserEvent(request);
   };
 
+  reloadGroup = async ({groupId, isFullRefresh}) => {
+    //reload previous group
+    if (groupId) {
+      await this.getGroup(groupId);
+      this.loadLeaderBoard(groupId);
+      this.getUserGroupPoint(groupId);
+      return;
+    }
+
+    // reload current group
+    const {visibility, auth, rank_setting, id} = this.props.group.group;
+
+    if (isFullRefresh) {
+      await this.getGroup(id);
+    }
+
+    if (visibility == 'public' || auth != null) {
+      this.loadLeaderBoard();
+
+      if (auth != null) {
+        this.getUserGroupPoint();
+        if (auth.rank <= rank_setting.manage_member_rank_required) {
+          this.getGroupJoinRequestCount();
+        }
+      }
+    }
+  };
+
   getGroup = async groupId => {
     const {auth, getSingleGroupById} = this.props;
     const request = {
@@ -138,9 +182,6 @@ class GroupDrawerNavigator extends React.Component {
       alert('Cannot load group at this time, please try again later');
       return;
     }
-
-    this.loadLeaderBoard(groupId);
-    this.getUserGroupPoint(groupId);
   };
 
   getUserGroupPoint = async groupId => {
@@ -217,6 +258,18 @@ class GroupDrawerNavigator extends React.Component {
     });
   };
 
+  navigateToTabs = destination => {
+    const {navigation} = this.props;
+
+    if (destination == 'RewardNavigator') {
+      navigation.push(destination);
+    } else {
+      navigation.navigate(destination);
+    }
+
+    navigation.dispatch(DrawerActions.closeDrawer());
+  };
+
   CustomDrawerContent = props => {
     const {group, group_join_request_count} = this.props.group;
     const {auth, rank_setting} = group;
@@ -231,7 +284,7 @@ class GroupDrawerNavigator extends React.Component {
           )}
           labelStyle={styles.labelStyle}
           onPress={() => {
-            props.navigation.navigate('GroupRules');
+            this.navigateToTabs('GroupRules');
           }}
         />
         <DrawerItem
@@ -253,7 +306,7 @@ class GroupDrawerNavigator extends React.Component {
           )}
           labelStyle={styles.labelStyle}
           onPress={() => {
-            props.navigation.navigate('Members');
+            this.navigateToTabs('Members');
           }}
         />
         <DrawerItem
@@ -261,7 +314,7 @@ class GroupDrawerNavigator extends React.Component {
           icon={() => <MaterialIcons name="chat" color={'grey'} size={25} />}
           labelStyle={styles.labelStyle}
           onPress={() => {
-            props.navigation.navigate('Chats');
+            this.navigateToTabs('Chats');
           }}
         />
         <DrawerItem
@@ -271,7 +324,7 @@ class GroupDrawerNavigator extends React.Component {
           )}
           labelStyle={styles.labelStyle}
           onPress={() => {
-            props.navigation.navigate('NominationResults');
+            this.navigateToTabs('NominationResults');
           }}
         />
         <DrawerItem
@@ -281,7 +334,7 @@ class GroupDrawerNavigator extends React.Component {
           )}
           labelStyle={styles.labelStyle}
           onPress={() => {
-            props.navigation.navigate('CheckIn');
+            this.navigateToTabs('CheckIn');
           }}
         />
         <DrawerItem
@@ -291,7 +344,7 @@ class GroupDrawerNavigator extends React.Component {
           )}
           labelStyle={styles.labelStyle}
           onPress={() => {
-            props.navigation.push('RewardNavigator');
+            this.navigateToTabs('RewardNavigator');
           }}
         />
         <DrawerItem
@@ -299,7 +352,7 @@ class GroupDrawerNavigator extends React.Component {
           icon={() => <MaterialIcons name="cog" color={'grey'} size={25} />}
           labelStyle={styles.labelStyle}
           onPress={() => {
-            props.navigation.navigate('GroupSetting');
+            this.navigateToTabs('GroupSetting');
           }}
         />
       </DrawerContentScrollView>

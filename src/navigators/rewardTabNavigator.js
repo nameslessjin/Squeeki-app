@@ -66,6 +66,16 @@ class RewardTabNavigator extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    const {group, navigation} = this.props;
+    if (group.group.id) {
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'GroupRewards',
+      });
+    }
+  }
+
   getGroupRewardList = async () => {
     const {auth, group, getGroupRewardList, navigation} = this.props;
 

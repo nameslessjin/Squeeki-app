@@ -87,7 +87,7 @@ export default class PostHeader extends React.Component {
             </Text>
           </TouchableOpacity>
         ) : null}
-        {auth || currentUserAuthTaskManagementQualified ? (
+        {(auth || currentUserAuthTaskManagementQualified) && type == 'task' ? (
           <TouchableOpacity
             style={styles.option}
             onPress={onTaskManagementPress}>

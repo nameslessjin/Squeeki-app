@@ -16,7 +16,7 @@ export const loadLeaderBoardFunc = async data => {
     count,
     limit,
     period,
-    init
+    init: init != null ? init : limit == 3
   };
 
   const req = await getGroupPointLeaderBoard(request);

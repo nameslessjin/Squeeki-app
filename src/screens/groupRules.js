@@ -49,6 +49,16 @@ class GroupRules extends React.Component {
     }
   }
 
+  componentWillUnmount(){
+    const {group, navigation} = this.props;
+    if (group.group.id) {
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'GroupRules'
+      });
+    }
+  }
+
   validation = () => {
     const {rules, rules_duplicate} = this.state;
     const {auth, rank_setting} = this.props.group.group;

@@ -52,9 +52,12 @@ class Comment extends React.Component {
   }
 
   componentWillUnmount() {
-    const {group} = this.props.group;
-    if (group.id != null) {
-      this.getUserGroupPoint();
+    const {group, navigation} = this.props;
+    if (group.group.id != null) {
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'Comment',
+      });
     }
     this.props.cleanComment();
 
@@ -358,7 +361,6 @@ class Comment extends React.Component {
       newComment: updatedComment.substr(0, 1000),
     });
   };
-
 
   render() {
     const {container} = styles;

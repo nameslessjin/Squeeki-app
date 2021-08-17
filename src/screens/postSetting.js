@@ -176,11 +176,12 @@ class PostSetting extends React.Component {
   }
 
   componentWillUnmount() {
-    if (this.state.create) {
-      const {group} = this.props.group;
-      if (group.id != null) {
-        this.getUserGroupPoint();
-      }
+    const {group, navigation} = this.props;
+    if (group.group.id) {
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'PostSetting',
+      });
     }
   }
 

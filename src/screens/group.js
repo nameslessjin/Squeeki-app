@@ -16,7 +16,7 @@ import {getGroupPostsFunc} from '../functions/post';
 import {loadLeaderBoardFunc} from '../functions/point';
 import {getGroupJoinRequestCountFunc} from '../functions/group';
 import {userLogout} from '../actions/auth';
-import {getGroupJoinRequestCount} from '../actions/group';
+import {getGroupJoinRequestCount, getSingleGroupById} from '../actions/group';
 import {getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point';
 
 class Group extends React.Component {
@@ -97,6 +97,21 @@ class Group extends React.Component {
     loadLeaderBoardFunc(data);
   };
 
+  getGroup = async groupId => {
+    const {auth, getSingleGroupById, group} = this.props;
+    const request = {
+      id: group.group.id,
+      token: auth.token,
+    };
+
+    const req = await getSingleGroupById(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot load group at this time, please try again later');
+      return;
+    }
+  };
+
   onAddPost = () => {
     const {navigation} = this.props;
     const {id} = this.props.group.group;
@@ -113,16 +128,17 @@ class Group extends React.Component {
     }
   };
 
-  onRefresh = () => {
+  onRefresh = async () => {
+    this.setState({refreshing: true});
     const {visibility, auth} = this.props.group.group;
+    await this.getGroup();
     if (visibility == 'public' || auth != null) {
-      this.setState({refreshing: true});
       this.loadLeaderBoard();
       this.loadGroupPosts(true);
       this.getUserGroupPoint();
       this.getGroupJoinRequestCount();
-      this.setState({refreshing: false});
     }
+    this.setState({refreshing: false});
   };
 
   loadGroupPosts = async init => {
@@ -208,6 +224,7 @@ const mapDispatchToProps = dispatch => {
     getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
     getGroupPointLeaderBoard: data => dispatch(getGroupPointLeaderBoard(data)),
     getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data)),
+    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
   };
 };
 

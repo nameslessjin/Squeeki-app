@@ -42,7 +42,7 @@ class RewardSetting extends React.Component {
     contentList: [{id: '1', content: ''}],
     image: null,
     redeemable: false,
-    pointCost: '0',
+    pointCost: '100',
     expiration: Date.now(),
     hasExpiration: true,
     giftTo: null,
@@ -137,7 +137,8 @@ class RewardSetting extends React.Component {
     }
 
     if (redeemable) {
-      if (parseInt(pointCost) < 1 || parseInt(pointCost) > 999999) {
+      // min pointCost is 100 max is 999999
+      if (parseInt(pointCost) < 100 || parseInt(pointCost) > 999999) {
         return false;
       }
     } else {
@@ -489,7 +490,7 @@ class RewardSetting extends React.Component {
         return {
           ...prevState,
           redeemable: !prevState.redeemable,
-          pointCost: '0',
+          pointCost: '100',
           chance: prevState.redeemable ? '1' : '0',
           chanceDisplay: prevState.redeemable
             ? `${this.props.reward.rewardList[0].chance1}`

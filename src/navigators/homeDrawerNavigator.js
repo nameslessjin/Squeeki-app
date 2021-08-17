@@ -64,9 +64,9 @@ class HomeDrawerNavigator extends React.Component {
     });
 
     // delete this once the recommendation page is done
-    setTimeout(() => {
-      this.props.navigation.dispatch(DrawerActions.openDrawer());
-    }, 100);
+    // setTimeout(() => {
+    //   this.props.navigation.dispatch(DrawerActions.openDrawer());
+    // }, 100);
 
     socket.init();
   }

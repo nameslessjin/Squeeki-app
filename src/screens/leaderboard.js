@@ -26,7 +26,13 @@ class Leaderboard extends React.Component {
   }
 
   componentWillUnmount() {
-    this.loadLeaderBoard(true, 'month', 3);
+    const {navigation, group} = this.props;
+    if (group.group.id) {
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'Leaderboard',
+      });
+    }
   }
 
   loadLeaderBoard = (init, period, limit) => {

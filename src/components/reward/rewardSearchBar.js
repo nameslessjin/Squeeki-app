@@ -9,7 +9,7 @@ export default class RewardSearchBar extends React.Component {
       <View style={styles.searchBar}>
         <TextInput
           style={styles.textInput}
-          placeholder={'search reward'}
+          placeholder={'search reward or username'}
           placeholderTextColor={'#95a5a6'}
           onChangeText={text => onChange(text)}
           value={value}

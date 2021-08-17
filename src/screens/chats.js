@@ -37,7 +37,9 @@ class Chats extends React.Component {
     const {navigation, group} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
-      headerTitle: group.group.id ? `${group.group.display_name} Chats` : 'My Chats',
+      headerTitle: group.group.id
+        ? `${group.group.display_name} Chats`
+        : 'My Chats',
     });
 
     if (group.group.auth) {
@@ -106,9 +108,16 @@ class Chats extends React.Component {
   };
 
   componentWillUnmount() {
+    const {group, navigation, resetChatReducer} = this.props;
     this.unsubSocket();
-    this.props.resetChatReducer();
     AppState.removeEventListener('change', this._handleAppStateChange);
+    resetChatReducer();
+    if (group.group.id) {
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'GroupChats',
+      });
+    }
   }
 
   _handleAppStateChange = nextAppState => {

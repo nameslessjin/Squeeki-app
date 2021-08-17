@@ -152,3 +152,13 @@ query getDefaultIcon {
     }
 }
 `
+
+export const getLastVersionQuery = `
+query getLastVersion {
+    getLastVersion {
+        serverVersion
+        IOSVersion
+        AndroidVersion
+    }
+}
+`

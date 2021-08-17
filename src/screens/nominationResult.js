@@ -9,8 +9,8 @@ import {userLogout} from '../actions/auth';
 import {getSundays} from '../utils/time';
 import {invalidAuthentication} from '../functions/auth';
 import NominationResultList from '../components/nominationResults/nominationResultList';
-import {GroupNominationResultsFormatting} from '../functions/nomination'
-import {getNominationPost} from '../actions/post'
+import {GroupNominationResultsFormatting} from '../functions/nomination';
+import {getNominationPost} from '../actions/post';
 
 class NominationResult extends React.Component {
   state = {
@@ -28,6 +28,16 @@ class NominationResult extends React.Component {
     });
 
     this.loadNominationResult(true);
+  }
+
+  componentWillUnmount() {
+    const {group, navigation} = this.props;
+    if (group.group.id) {
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'NominationResult',
+      });
+    }
   }
 
   onRefresh = () => {
@@ -91,32 +101,36 @@ class NominationResult extends React.Component {
       this.setState({nominationResults: new_nomination_result});
     } else {
       // if currently, there is no nomination results or the newly retrieved one is empty
-      if (nominationResults.oldResultList && new_nomination_result.oldResultList.length != 0) {
-        const new_nominationResults = GroupNominationResultsFormatting({nominationResults: nominationResults, new_nomination_result: new_nomination_result})
-        this.setState({nominationResults: new_nominationResults})
+      if (
+        nominationResults.oldResultList &&
+        new_nomination_result.oldResultList.length != 0
+      ) {
+        const new_nominationResults = GroupNominationResultsFormatting({
+          nominationResults: nominationResults,
+          new_nomination_result: new_nomination_result,
+        });
+        this.setState({nominationResults: new_nominationResults});
       }
     }
   };
 
-  onNomineePress = async(props) => {
-    let {nomineeId, time, nominationId} = props
-    const {navigation} = this.props
+  onNomineePress = async props => {
+    let {nomineeId, time, nominationId} = props;
+    const {navigation} = this.props;
 
     navigation.navigate('NominationPost', {
       nomineeId: nomineeId,
       time: time,
-      nominationId: nominationId
-    })
-
-  }
+      nominationId: nominationId,
+    });
+  };
 
   render() {
-
     const {
       mostRecentNominationResults,
       nominationResults,
       refreshing,
-      loading
+      loading,
     } = this.state;
 
     return (
@@ -129,7 +143,7 @@ class NominationResult extends React.Component {
           onEndReached={this.onEndReached}
           onNomineePress={this.onNomineePress}
         />
-        {loading ? <ActivityIndicator  animating={true} color={'grey'} /> : null}
+        {loading ? <ActivityIndicator animating={true} color={'grey'} /> : null}
       </View>
     );
   }
@@ -154,7 +168,7 @@ const mapDispatchToProps = dispatch => {
     getGroupNominationResults: data =>
       dispatch(getGroupNominationResults(data)),
     userLogout: () => dispatch(userLogout()),
-    getNominationPost: data => dispatch(getNominationPost(data))
+    getNominationPost: data => dispatch(getNominationPost(data)),
   };
 };
 

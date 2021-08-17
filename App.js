@@ -24,6 +24,7 @@ import checkinReducer from './src/reducers/checkinReducer';
 import pointReducer from './src/reducers/pointReducer';
 import rewardReducer from './src/reducers/rewardReducer';
 import chatReducer from './src/reducers/chatReducer';
+import metadataReducer from './src/reducers/metadataReducer'
 
 // screens import
 import SignIn from './src/screens/signin';
@@ -79,6 +80,7 @@ import GroupRankNameSetting from './src/screens/groupRankNameSetting';
 import messaging from '@react-native-firebase/messaging';
 
 const rootReducer = combineReducers({
+  metadata: metadataReducer,
   auth: authReducer,
   currentScreen: currentScreenReducer,
   group: groupReducer,

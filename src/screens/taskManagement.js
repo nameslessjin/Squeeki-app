@@ -6,7 +6,6 @@ import {
   getUserTaskVerification,
   manageUserTaskResponse,
 } from '../actions/post';
-import {getSingleGroupById} from '../actions/group';
 import TaskResponseList from '../components/taskManagement/taskResponseList';
 
 class TaskManagement extends React.Component {
@@ -30,32 +29,21 @@ class TaskManagement extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps != this.props) {
-      if (this.props.route.params.change){
-        this.loadParticipants(true, this.state.type)
+      if (this.props.route.params.change) {
+        this.loadParticipants(true, this.state.type);
       }
     }
   }
 
   componentWillUnmount() {
-    const {group} = this.props;
+    const {group, navigation} = this.props;
     if (group.group.id) {
-      this.getGroup();
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'TaskManagement'
+      });
     }
   }
-
-  getGroup = async () => {
-    const {group, auth, getSingleGroupById} = this.props;
-    const request = {
-      token: auth.token,
-      id: group.group.id,
-    };
-
-    const req = await getSingleGroupById(request);
-    if (req.errors) {
-      console.log(req.errors);
-      return;
-    }
-  };
 
   onPress = async (respondentId, type) => {
     const {postId, taskResponse} = this.state;
@@ -87,7 +75,7 @@ class TaskManagement extends React.Component {
         respondentId: respondentId,
         taskResponse: taskResponse.filter(u => u.userId == respondentId)[0]
           .taskResponse,
-        prevRoute: 'TaskManagement'
+        prevRoute: 'TaskManagement',
       });
     } else if (type == 'completed' || type == 'deny') {
       const req = await manageUserTaskResponse(request);
@@ -182,7 +170,6 @@ const mapDispatchToProps = dispatch => {
     getPostTaskResponse: data => dispatch(getPostTaskResponse(data)),
     getUserTaskVerification: data => dispatch(getUserTaskVerification(data)),
     manageUserTaskResponse: data => dispatch(manageUserTaskResponse(data)),
-    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
   };
 };
 

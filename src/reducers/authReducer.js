@@ -1,8 +1,6 @@
 const INITIAL_STATE = {
     token: '',
-    user:{
-
-    }
+    user:{},
 }
 
 export default authReducer = (state = INITIAL_STATE, action) => {

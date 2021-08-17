@@ -19,7 +19,6 @@ import {
   updateGroup,
   setGroupVisibility,
   setGroupRequestToJoin,
-  getSingleGroupById,
   leaveGroup,
   getGroupRankName,
 } from '../actions/group';
@@ -27,8 +26,6 @@ import {getStatusInGroup} from '../actions/user';
 import {userLogout} from '../actions/auth';
 import ToggleSetting from '../components/groupSetting/toggleSetting';
 import SettingEdition from '../components/groupSetting/settingEdition';
-import {loadLeaderBoardFunc} from '../functions/point';
-import {getGroupPointLeaderBoard, getUserGroupPoint} from '../actions/point';
 
 class GroupSetting extends React.Component {
   state = {
@@ -171,83 +168,22 @@ class GroupSetting extends React.Component {
       if (prevProps.group.group != this.props.group.group) {
         this.setState({
           ...this.props.group.group,
+          visibility: prevState.visibility,
+          request_to_join: prevState.request_to_join,
         });
       }
     }
   }
 
   componentWillUnmount() {
-    const {group} = this.props;
+    const {group, navigation} = this.props;
     if (group.group.id) {
-      this.getGroup();
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'GroupSetting',
+      });
     }
   }
-
-  getGroup = async () => {
-    const {
-      group,
-      auth,
-      userLogout,
-      navigation,
-      getSingleGroupById,
-    } = this.props;
-    const request = {
-      token: auth.token,
-      id: group.group.id,
-    };
-
-    const req = await getSingleGroupById(request);
-    if (req.errors) {
-      // alert(req.errors[0].message);
-      alert('Cannot load group at this time, please try again later');
-      if (req.errors[0].message == 'Not Authenticated') {
-        userLogout();
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'SignIn'}],
-        });
-      }
-      return;
-    }
-    this.loadLeaderBoard();
-    this.getUserGroupPoint();
-  };
-
-  loadLeaderBoard = () => {
-    const {
-      userLogout,
-      auth,
-      getGroupPointLeaderBoard,
-      navigation,
-      group,
-    } = this.props;
-    const data = {
-      userLogout,
-      auth,
-      getGroupPointLeaderBoard,
-      navigation,
-      group,
-      count: 0,
-      limit: 3,
-      period: 'month',
-    };
-
-    loadLeaderBoardFunc(data);
-  };
-
-  getUserGroupPoint = async () => {
-    const {auth, group, getUserGroupPoint} = this.props;
-    const request = {
-      token: auth.token,
-      groupId: group.group.id,
-    };
-
-    const req = await getUserGroupPoint(request);
-    if (req.errors) {
-      alert(req.errors[0].message);
-      return;
-    }
-  };
 
   updateGroupSettings = async () => {
     const {updateData, origin} = this.extractData();
@@ -336,9 +272,7 @@ class GroupSetting extends React.Component {
             : prevState.visibility,
         request_to_join:
           type == 'request_to_join'
-            ? prevState.request_to_join
-              ? false
-              : true
+            ? !prevState.request_to_join
             : prevState.request_to_join,
       };
     });
@@ -423,6 +357,7 @@ class GroupSetting extends React.Component {
     const required_rank = rank_setting
       ? rank_setting.group_setting_rank_required
       : 1;
+
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -539,11 +474,8 @@ const mapDispatchToProps = dispatch => {
     userLogout: () => dispatch(userLogout()),
     setGroupVisibility: data => dispatch(setGroupVisibility(data)),
     setGroupRequestToJoin: data => dispatch(setGroupRequestToJoin(data)),
-    getSingleGroupById: data => dispatch(getSingleGroupById(data)),
     getStatusInGroup: data => dispatch(getStatusInGroup(data)),
     leaveGroup: data => dispatch(leaveGroup(data)),
-    getGroupPointLeaderBoard: data => dispatch(getGroupPointLeaderBoard(data)),
-    getUserGroupPoint: data => dispatch(getUserGroupPoint(data)),
     getGroupRankName: data => dispatch(getGroupRankName(data)),
   };
 };

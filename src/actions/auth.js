@@ -9,6 +9,7 @@ import {
   updateNotificationsMutation,
   updateVisibilitiesMutation,
   getDefaultIconQuery,
+  getLastVersionQuery,
 } from '../actions/query/authQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
@@ -17,7 +18,6 @@ import {httpCall} from './utils/httpCall';
 export const signup = data => {
   const {email, password, username, icon, refer_code} = data;
   return async function(dispatch) {
-
     const userInput = {
       email: email,
       password: password,
@@ -147,7 +147,7 @@ export const updateProfile = data => {
       return result;
     }
 
-    console.log(result.data.updateProfile)
+    console.log(result.data.updateProfile);
     dispatch(userSignIn(result.data.updateProfile));
     return 0;
   };
@@ -366,5 +366,20 @@ export const getDefaultIcon = data => {
     }
 
     return result.data.getDefaultIcon;
+  };
+};
+
+export const getLastVersion = () => {
+  return async function(dispatch) {
+    const graphql = {
+      query: getLastVersionQuery,
+    };
+
+    const result = await httpCall(null, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.getLastVersion;
   };
 };
