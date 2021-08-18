@@ -150,12 +150,22 @@ class PostCard extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.item != this.props.item) {
+    const {auth, navigation, item} = this.props;
+    if (prevProps.item != item) {
       this.setState(prevState => {
         return {
           ...prevState,
-          ...this.props.item,
+          ...item,
         };
+      });
+    }
+
+    if (prevProps.auth.user.theme != auth.user.theme) {
+      const theme = getTheme(auth.user.theme);
+      this.setState({theme});
+      navigation.setOptions({
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
       });
     }
   }

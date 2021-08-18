@@ -97,23 +97,29 @@ class Home extends React.Component {
 
   _handleAppStateChange = nextAppState => {
     const {appState} = this.state;
-    if (
-      appState.match(/(inactive|background)/) &&
-      nextAppState === 'active'
-    ) {
+    if (appState.match(/(inactive|background)/) && nextAppState === 'active') {
       this.getLastVersion();
     }
     this.setState({appState: nextAppState});
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const {currentScreen} = this.props;
+    const {currentScreen, auth, navigation} = this.props;
     const prevScreen = prevProps.currentScreen;
     if (
       currentScreen.currentScreen == 'Home' &&
       prevScreen.currentScreen != 'Home'
     ) {
       this.loadFeed(true);
+    }
+
+    if (prevProps.auth.user.theme != auth.user.theme) {
+      const theme = getTheme(auth.user.theme);
+      this.setState({theme});
+      navigation.setOptions({
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
+      });
     }
   }
 
@@ -160,7 +166,11 @@ class Home extends React.Component {
             <ActivityIndicator animating={true} color={'grey'} />
           ) : null}
           {modalVisible ? (
-            <HomeModal type={'update'} modalVisible={modalVisible} theme={theme}/>
+            <HomeModal
+              type={'update'}
+              modalVisible={modalVisible}
+              theme={theme}
+            />
           ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

@@ -12,32 +12,37 @@ import {backgroundImagePicker, iconImagePicker} from '../../utils/imagePicker';
 export default class GroupSettingModal extends React.Component {
   onPress = type => {
     const {onBackdropPress, onChangeMedia, isBackground} = this.props;
-    if (isBackground){
-        backgroundImagePicker(onChangeMedia, type, onBackdropPress)
+    if (isBackground) {
+      backgroundImagePicker(onChangeMedia, type, onBackdropPress);
     } else {
-        iconImagePicker(onChangeMedia, type, onBackdropPress)
+      iconImagePicker(onChangeMedia, type, onBackdropPress);
     }
   };
 
-
-
   render() {
-    const {modalVisible, onBackdropPress} = this.props;
+    const {modalVisible, onBackdropPress, theme} = this.props;
     return (
       <View style={[styles.centeredView]}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <TouchableWithoutFeedback onPress={() => onBackdropPress()}>
             <View style={[styles.centeredView]}>
-              <View style={[styles.modalView]}>
+              <View
+                style={[
+                  styles.modalView,
+                  theme.backgroundColor,
+                  theme.shadowColor,
+                ]}>
                 <TouchableOpacity onPress={() => this.onPress('camera')}>
                   <View style={styles.button}>
-                    <Text>Take Photo</Text>
+                    <Text style={theme.textColor}>Take Photo</Text>
                   </View>
                 </TouchableOpacity>
                 <View style={styles.underline} />
                 <TouchableOpacity onPress={() => this.onPress('library')}>
                   <View style={styles.button}>
-                    <Text>Select From Image Library</Text>
+                    <Text style={theme.textColor}>
+                      Select From Image Library
+                    </Text>
                   </View>
                 </TouchableOpacity>
                 <View style={styles.underline} />

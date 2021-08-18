@@ -56,7 +56,7 @@ export default class newChatModal extends React.Component {
           <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={[styles.centeredView]}>
               <TouchableWithoutFeedback>
-                <View style={[styles.modalView, theme.greyArea, theme.shadowColor]}>
+                <View style={[styles.modalView, theme.backgroundColor, theme.shadowColor]}>
                   <View style={[styles.modalHeader, styles.underline, theme.underLineColor]}>
                     <Text style={[{fontWeight: 'bold', fontSize: 16}, theme.textColor]}>
                       Start

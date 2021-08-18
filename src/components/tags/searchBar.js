@@ -3,13 +3,13 @@ import {StyleSheet, Text, View, TextInput} from 'react-native';
 
 export default class TagSearchBar extends React.Component {
   render() {
-    const {onChange, value, prev_route} = this.props;
+    const {onChange, value, PrevRoute, theme} = this.props;
 
     return (
-      <View style={styles.searchBar}>
+      <View style={[styles.searchBar, theme.backgroundColor, theme.shadowColor]}>
         <TextInput
-          style={styles.textInput}
-          placeholder={prev_route == 'GroupSetting' ? 'search tags or create new tag with #' : 'search tags'}
+          style={[styles.textInput, theme.textColor]}
+          placeholder={PrevRoute == 'GroupSetting' ? 'search tags or create new tag with #' : 'search tags'}
           placeholderTextColor={'#95a5a6'}
           onChangeText={text => onChange(text)}
           value={value}

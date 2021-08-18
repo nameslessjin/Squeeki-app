@@ -12,8 +12,26 @@ import {connect} from 'react-redux';
 import {getSingleGroupById} from '../../actions/group';
 import {userLogout} from '../../actions/auth';
 import {singleDefaultIcon} from '../../utils/defaultIcon';
+import {getTheme} from '../../utils/theme';
 
 class GroupCard extends React.Component {
+  state = {
+    theme: getTheme(this.props.auth.user.theme),
+  };
+
+  componentDidUpdate(prevProps) {
+    const {auth, navigation} = this.props;
+
+    if (prevProps.auth.user.theme != auth.user.theme) {
+      const theme = getTheme(auth.user.theme);
+      this.setState({theme});
+      navigation.setOptions({
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
+      });
+    }
+  }
+
   onPress = async () => {
     const {
       prevRoute,
@@ -31,7 +49,7 @@ class GroupCard extends React.Component {
         giftTo: {
           id,
           groupname,
-          display_name
+          display_name,
         },
       });
 
@@ -58,13 +76,14 @@ class GroupCard extends React.Component {
       Keyboard.dismiss();
       // direct to group page after search
       navigation.navigate('GroupNavigator', {
-        prevRoute: 'GroupGeneral'
+        prevRoute: 'GroupGeneral',
       });
     }
   };
 
   render() {
     const {route, item} = this.props;
+    const {theme} = this.state;
     const {
       id,
       groupname,
@@ -96,7 +115,7 @@ class GroupCard extends React.Component {
         <View style={informationContainer}>
           <View style={nameMemberCountContainer}>
             <View style={{width: '85%'}}>
-              <Text numberOfLines={2} style={nameStyle}>
+              <Text numberOfLines={2} style={[nameStyle, theme.textColor]}>
                 {display_name}
               </Text>
               {route == 'search' ? (
@@ -109,11 +128,11 @@ class GroupCard extends React.Component {
             </View>
             <View style={memberCountStyle}>
               <MaterialIcons
-                style={peopleIconStyle}
+                style={[peopleIconStyle, theme.secondaryIconColor]}
                 name="account-multiple"
                 size={17}
               />
-              <Text>{memberCount}</Text>
+              <Text style={theme.secondaryTextColor}>{memberCount}</Text>
             </View>
           </View>
 
@@ -177,7 +196,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 25,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   peopleIconStyle: {
     marginRight: 1,

@@ -8,7 +8,7 @@ import {
 
 export default class GroupHeaderRight extends React.Component {
   render() {
-    const {onPress, update, loading} = this.props;
+    const {onPress, update, loading, theme} = this.props;
     const disabled = !(update && !loading);
     return loading ? (
       <ActivityIndicator
@@ -21,7 +21,7 @@ export default class GroupHeaderRight extends React.Component {
         style={styles.headerRightButton}
         onPress={onPress}
         disabled={disabled}>
-        <Text style={[styles.text, {color: disabled ? '#95a5a6' : 'black'}]}>
+        <Text style={[styles.text, {color: disabled ? '#95a5a6' : theme.textColor.color}]}>
           Done
         </Text>
       </TouchableOpacity>

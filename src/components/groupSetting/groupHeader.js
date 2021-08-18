@@ -1,12 +1,20 @@
 import React from 'react';
-import {StyleSheet, View, Text, TextInput, Platform, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Platform,
+  Dimensions,
+} from 'react-native';
 import {dateConversion} from '../../utils/time';
 import HeaderImageBackground from './ImageBackground';
 import {connect} from 'react-redux';
 import {userLogout} from '../../actions/auth';
 import GroupSettingModal from './groupSettingModal';
+import {getTheme} from '../../utils/theme';
 
-const { height } = Dimensions.get('screen');
+const {height} = Dimensions.get('screen');
 
 class GroupSettingsHeader extends React.Component {
   state = {
@@ -20,6 +28,7 @@ class GroupSettingsHeader extends React.Component {
     modalVisible: false,
     isBackground: true,
     groupId: null,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
@@ -98,6 +107,7 @@ class GroupSettingsHeader extends React.Component {
       modalVisible,
       isBackground,
       groupId,
+      theme,
     } = this.state;
 
     const {auth_rank, required_rank} = this.props;
@@ -123,18 +133,12 @@ class GroupSettingsHeader extends React.Component {
           auth_rank={auth_rank}
           onMediaPress={this.onMediaPress}
           required_rank={required_rank}
+          theme={theme}
         />
         <View style={underImageStyle}>
           <View style={component}>
             <TextInput
-              style={{
-                fontWeight: 'bold',
-                fontSize: 20,
-                width: '100%',
-                paddingVertical: 0,
-                paddingLeft: -1,
-                justifyContent: 'center'
-              }}
+              style={[styles.displayName, theme.textColor]}
               maxLength={50}
               multiline={true}
               placeholder={'Group Display Name'}
@@ -150,8 +154,10 @@ class GroupSettingsHeader extends React.Component {
             <Text style={{color: '#95a5a6'}}>g@{groupId ? groupname : ''}</Text>
             {groupId ? null : (
               <TextInput
-                style={{width: '100%', marginLeft: 1, padding: 0}}
-                onChangeText={text => this.updateGroupName('groupname', text.trim())}
+                style={[styles.groupname, theme.textColor]}
+                onChangeText={text =>
+                  this.updateGroupName('groupname', text.trim())
+                }
                 placeholder={'Pick an unique groupname'}
                 placeholderTextColor={'#7f8fa6'}
                 value={groupname.replace(/ /g, '')}
@@ -175,7 +181,7 @@ class GroupSettingsHeader extends React.Component {
               placeholderTextColor={'#7f8fa6'}
               onChangeText={text => this.updateShortDescription(text)}
               value={shortDescription}
-              style={{width: '100%', paddingLeft: -1, padding: 0, maxHeight: height * 0.185}}
+              style={[styles.description, theme.textColor]}
               editable={auth_rank <= required_rank}
               scrollEnabled={false}
             />
@@ -187,6 +193,7 @@ class GroupSettingsHeader extends React.Component {
           onBackdropPress={this.onBackdropPress}
           onChangeMedia={this.setImage}
           isBackground={isBackground}
+          theme={theme}
         />
       </View>
     );
@@ -215,6 +222,27 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  displayName: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    width: '100%',
+    paddingVertical: 0,
+    paddingLeft: -1,
+    justifyContent: 'center',
+  },
+  description: {
+    width: '100%',
+    paddingLeft: -1,
+    padding: 0,
+    maxHeight: height * 0.185,
+    color: '#95a5a6'
+  },
+  groupname: {
+    width: '100%',
+    marginLeft: 1,
+    padding: 0,
+    color: '#95a5a6',
+  }
 });
 
 const mapStateToProps = state => {

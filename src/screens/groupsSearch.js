@@ -16,6 +16,7 @@ import {searchGroup} from '../actions/group';
 import GroupList from '../components/groups/groupList';
 import {userLogout} from '../actions/auth';
 import {searchGroupFunc} from '../functions/group';
+import {getTheme} from '../utils/theme';
 
 class GroupsSearch extends React.Component {
   state = {
@@ -24,13 +25,16 @@ class GroupsSearch extends React.Component {
     count: 0,
     prevRoute: 'groups',
     ...this.props.route.params,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
-
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -104,16 +108,17 @@ class GroupsSearch extends React.Component {
   };
 
   render() {
-    const {searchTerm, groupsData, prevRoute} = this.state;
+    const {searchTerm, groupsData, prevRoute, theme} = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
           <StatusBar barStyle={'dark-content'} />
           <View style={styles.optionArea}>
             <GroupsSearchBar
               onChange={this.onSearchChange}
               value={searchTerm}
+              theme={theme}
             />
             {prevRoute == 'groups' ? (
               <CreateGroupButton onPress={this.onCreateGroupButtonPress} />

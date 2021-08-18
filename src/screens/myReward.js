@@ -9,10 +9,8 @@ class MyReward extends React.Component {
     theme: getTheme(this.props.auth.user.theme),
   };
 
-
-
   componentDidUpdate(prevProps) {
-    const {currentScreen, route, navigation} = this.props;
+    const {currentScreen, route, navigation, auth} = this.props;
     const prevScreen = prevProps.currentScreen;
     if (
       currentScreen.currentScreen == 'MyRewards' &&
@@ -29,6 +27,15 @@ class MyReward extends React.Component {
         }, 100);
         navigation.setParams({refresh: false, groupId: null});
       }
+    }
+
+    if (prevProps.auth.user.theme != auth.user.theme) {
+      const theme = getTheme(auth.user.theme);
+      this.setState({theme});
+      navigation.setOptions({
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
+      });
     }
   }
 
@@ -56,7 +63,7 @@ class MyReward extends React.Component {
 
   render() {
     const {reward, group, navigation} = this.props;
-    const {theme} = this.state
+    const {theme} = this.state;
     return (
       <View style={theme.greyArea}>
         {reward.userRewardHistory.length == 0 ? (

@@ -17,7 +17,7 @@ const extractKey = ({id}) => id;
 export default class AtList extends React.Component {
   renderItem = ({item}) => {
     const {displayName, username, iconUrl, groupname} = item;
-    const {onAtPress} = this.props;
+    const {onAtPress, theme} = this.props;
 
     return (
       <TouchableWithoutFeedback onPress={() => onAtPress(item)}>
@@ -29,7 +29,7 @@ export default class AtList extends React.Component {
             />
           </View>
           <View style={styles.name}>
-            <Text style={styles.displayName}>{displayName}</Text>
+            <Text style={[styles.displayName, theme.textColor]}>{displayName}</Text>
             <Text style={styles.username}>
               {username ? `@${username}` : `g@${groupname}`}
             </Text>
@@ -40,7 +40,7 @@ export default class AtList extends React.Component {
   };
 
   render() {
-    const {atSearchResult} = this.props;
+    const {atSearchResult, theme} = this.props;
 
     const searchResult = atSearchResult.map(r => {
       if (r.groupId) {
@@ -55,7 +55,8 @@ export default class AtList extends React.Component {
     });
 
     return atSearchResult.length > 0 ? (
-      <View style={styles.container}>
+      <View
+        style={[styles.container, theme.backgroundColor, theme.underLineColor]}>
         <FlatList
           style={styles.list}
           data={searchResult}
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
   list: {
     maxHeight: 150,
     width: '100%',
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
   },
   card: {
     minHeight: 50,

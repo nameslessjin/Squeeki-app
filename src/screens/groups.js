@@ -15,15 +15,17 @@ import {connect} from 'react-redux';
 import GroupList from '../components/groups/groupList';
 import {findUserGroupsByUserId} from '../actions/group';
 import {userLogout} from '../actions/auth';
+import {getTheme} from '../utils/theme';
 
 class Groups extends React.Component {
   state = {
     loading: false,
     refreshing: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const {currentScreen} = this.props;
+    const {currentScreen, auth, navigation} = this.props;
     const prevScreen = prevProps.currentScreen;
     if (
       currentScreen.currentScreen == 'Groups' &&
@@ -31,6 +33,16 @@ class Groups extends React.Component {
     ) {
       this.loadGroups(true);
     }
+
+    if (prevProps.auth.user.theme != auth.user.theme) {
+      const theme = getTheme(auth.user.theme);
+      this.setState({theme});
+      navigation.setOptions({
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
+      });
+    }
+
     Keyboard.dismiss();
   }
 
@@ -75,10 +87,10 @@ class Groups extends React.Component {
   render() {
     const {groups, count} = this.props.group.groups;
     const {navigation} = this.props;
-    const {loading} = this.state;
+    const {theme} = this.state;
 
     return (
-      <KeyboardAvoidingView style={styles.container}>
+      <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
         <StatusBar barStyle={'dark-content'} />
         {groups.length == 0 ? (
           <Text style={styles.noGroupStyle}>

@@ -18,6 +18,7 @@ import ToggleSetting from '../components/groupSetting/toggleSetting';
 import SettingEdition from '../components/groupSetting/settingEdition';
 import validator from 'validator';
 import CreateButton from '../components/groupSetting/updateButton';
+import {getTheme} from '../utils/theme';
 
 class GroupCreation extends React.Component {
   state = {
@@ -31,12 +32,13 @@ class GroupCreation extends React.Component {
     visibility: 'public',
     request_to_join: false,
     tags: [],
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     Keyboard.dismiss();
     const {navigation} = this.props;
-
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Create Group',
@@ -45,12 +47,16 @@ class GroupCreation extends React.Component {
           update={false}
           loading={false}
           onPress={this.onCreateGroup}
+          theme={theme}
         />
       ),
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const{theme} = this.state
     if (prevProps !== this.props) {
       const {params} = this.props.route;
       if (params) {
@@ -67,6 +73,7 @@ class GroupCreation extends React.Component {
             update={update}
             loading={this.state.loading}
             onPress={this.onCreateGroup}
+            theme={theme}
           />
         ),
       });
@@ -166,7 +173,6 @@ class GroupCreation extends React.Component {
   validate = () => {
     const {groupname, shortDescription, display_name} = this.state;
 
-
     // groupname must only include characters a-z, A-Z, 0-9 and _
     // groupname must include at least one character
     // groupname must not include keyboard admin and squeeki
@@ -179,9 +185,8 @@ class GroupCreation extends React.Component {
       groupname.length < 4 ||
       groupname.length > 30
     ) {
-      return false
+      return false;
     }
-
 
     // group display name must not contain admin and squeeki
     // group display name must have length greater than 1 and no greather than 50
@@ -195,9 +200,7 @@ class GroupCreation extends React.Component {
     }
 
     // short description must have length greater than 20
-    if (
-      shortDescription.length < 20
-    ) {
+    if (shortDescription.length < 20) {
       return false;
     }
 
@@ -205,7 +208,7 @@ class GroupCreation extends React.Component {
   };
 
   render() {
-    const {visibility, loading, request_to_join} = this.state;
+    const {visibility, loading, request_to_join, theme} = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -213,10 +216,10 @@ class GroupCreation extends React.Component {
           alwaysBounceHorizontal={false}
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
-          style={{height: '100%', width: '100%', backgroundColor: 'white'}}>
+          style={[{height: '100%', width: '100%'}, theme.backgroundColor]}>
           <KeyboardAvoidingView
             behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-            style={styles.container}>
+            style={[styles.container, theme.backgroundColor]}>
             <StatusBar barStyle={'dark-content'} />
             <GroupHeader
               setGroupHeader={this.setGroupHeader}
@@ -229,6 +232,7 @@ class GroupCreation extends React.Component {
               onToggle={this.onSwitchToggle}
               disabled={false}
               type={'visibility'}
+              theme={theme}
             />
 
             <ToggleSetting
@@ -236,12 +240,14 @@ class GroupCreation extends React.Component {
               onToggle={this.onSwitchToggle}
               disabled={false}
               type={'request_to_join'}
+              theme={theme}
             />
 
             <SettingEdition
               onPress={this.onEditTagPress}
               name={'Edit tags'}
               disabled={false}
+              theme={theme}
             />
 
             {loading == true ? (

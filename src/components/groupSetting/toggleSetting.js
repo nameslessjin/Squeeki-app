@@ -10,7 +10,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class ToggleSetting extends React.Component {
   render() {
-    const {on, onToggle, disabled, loading, type} = this.props;
+    const {on, onToggle, disabled, loading, type, theme} = this.props;
 
     const title = type == 'visibility' ? 'Private Group' : 'Request to join';
 
@@ -35,8 +35,8 @@ export default class ToggleSetting extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
-        <Text style={{color: disabled ? 'grey' : 'black'}}>{title}</Text>
+      <View style={[styles.container, theme.underLineColor]}>
+        <Text style={{color: disabled ? 'grey' : theme.textColor.color}}>{title}</Text>
         {loading ? (
           <ActivityIndicator loading={loading} color={'grey'}/>
         ) : (

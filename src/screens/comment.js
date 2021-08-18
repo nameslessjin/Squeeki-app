@@ -433,6 +433,7 @@ class Comment extends React.Component {
                   <AtList
                     atSearchResult={atSearchResult}
                     onAtPress={this.onAtPress}
+                    theme={theme}
                   />
                   <TextInput
                     style={[styles.textInput, theme.textColor]}

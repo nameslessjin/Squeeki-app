@@ -20,6 +20,7 @@ export default class HeaderImageBackground extends React.Component {
       auth_rank,
       onMediaPress,
       required_rank,
+      theme
     } = this.props;
 
     const iconImage = (
@@ -51,7 +52,7 @@ export default class HeaderImageBackground extends React.Component {
               style={{width: '100%', height: '100%'}}
             />
           ) : (
-            <Text style={styles.noBackgroundImageTextStyle}>
+            <Text style={[styles.noBackgroundImageTextStyle, theme.textColor]}>
               {SetBackgroundImgText}
             </Text>
           )}

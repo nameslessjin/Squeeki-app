@@ -18,7 +18,6 @@ export const themeStyle = StyleSheet.create({
   },
   darkModeBorderColor: {
     borderColor: 'black',
-    // borderColor: 'silver',
   },
   darkModeUnderLineColor: {
     borderColor: 'silver',
@@ -48,10 +47,10 @@ export const themeStyle = StyleSheet.create({
     color: '#666667',
   },
   defaultShadowColor: {
-    shadowColor: 'white',
+    shadowColor: 'black',
   },
   defaultBorderColor: {
-    borderColor: 'black',
+    borderColor: 'silver',
   },
   defaultUnderLineColor: {
     borderColor: 'silver',

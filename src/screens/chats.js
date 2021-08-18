@@ -47,7 +47,7 @@ class Chats extends React.Component {
     if (group.group.auth) {
       this.getGroupRankName();
       const {auth, rank_setting} = group.group;
-      const {theme} = this.state
+      const {theme} = this.state;
       navigation.setOptions({
         headerRight: () =>
           auth.rank > rank_setting.manage_chat_rank_required ? null : (
@@ -70,13 +70,22 @@ class Chats extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {currentScreen} = this.props;
+    const {currentScreen, auth, navigation} = this.props;
     const prevScreen = prevProps.currentScreen;
     if (
       currentScreen.currentScreen == 'Chats' &&
       prevScreen.currentScreen != 'Chats'
     ) {
       this.loadChat(true);
+    }
+
+    if (prevProps.auth.user.theme != auth.user.theme) {
+      const theme = getTheme(auth.user.theme)
+      this.setState({theme})
+      navigation.setOptions({
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
+      });
     }
   }
 

@@ -20,6 +20,7 @@ import {
 } from '../actions/tag';
 import {userLogout} from '../actions/auth';
 import TagList from '../components/tags/tagList';
+import { getTheme } from '../utils/theme'
 
 class EditTag extends React.Component {
   state = {
@@ -30,15 +31,18 @@ class EditTag extends React.Component {
     search_count: 0,
     prev_route: 'GroupSetting',
     addedTags: [],
+    theme: getTheme(this.props.auth.user.theme)
   };
 
   componentDidMount() {
     const {navigation, route} = this.props;
     const {prev_route} = route.params;
     this.setState({prev_route: prev_route});
-
+    const {theme} = this.state
     navigation.setOptions({
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     this.onloadMoreTags(true)
   }
@@ -290,7 +294,7 @@ class EditTag extends React.Component {
   };
 
   render() {
-    const {searchTerm, warning, create, tags, addedTags} = this.state;
+    const {searchTerm, warning, create, tags, addedTags, theme} = this.state;
     let tagList = [];
     const {group, route} = this.props;
     const {prev_route} = route.params;
@@ -302,7 +306,7 @@ class EditTag extends React.Component {
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
           <StatusBar barStyle={'dark-content'} />
           {warning.length > 0 ? (
             <Text style={{marginTop: 5, color: 'red'}}>{warning}</Text>
@@ -311,7 +315,8 @@ class EditTag extends React.Component {
             <TagSearchBar
               onChange={this.onSearchChange}
               value={searchTerm}
-              prev_route={prev_route}
+              PrevRoute={prev_route}
+              theme={theme}
             />
             {prev_route == 'GroupSetting' ? (
               <CreateTagButton onPress={this.onTagCreate} create={create} />

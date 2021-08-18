@@ -4,17 +4,17 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class SettingEdition extends React.Component {
   render() {
-    const {onPress, name, disabled} = this.props;
+    const {onPress, name, disabled, theme} = this.props;
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, theme.underLineColor]}>
         <TouchableOpacity onPress={onPress} disabled={disabled}>
           <View style={styles.subContainer}>
-            <Text style={{color: disabled ? 'grey' : 'black'}}>{name}</Text>
+            <Text style={{color: disabled ? 'grey' : theme.textColor.color}}>{name}</Text>
             <MaterialIcons
               name={'chevron-right'}
               size={25}
-              color={disabled ? 'silver' : 'black'}
+              color={disabled ? 'silver' : theme.iconColor.color}
             />
           </View>
         </TouchableOpacity>
