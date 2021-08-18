@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#576889',
+    borderColor: '#576889',
   },
   footer: {
     marginBottom: 5,

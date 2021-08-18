@@ -97,7 +97,7 @@ class RewardHistoryList extends React.Component {
       status,
     } = item;
 
-    const {groupId, onRedeemPress, prevRoute} = this.props;
+    const {groupId, onRedeemPress, prevRoute, theme} = this.props;
     let displayName = null;
     let icon = null;
     let userId = null;
@@ -121,7 +121,7 @@ class RewardHistoryList extends React.Component {
         icon = winner.icon;
         userId = winner.userId;
       }
-
+      console.log(theme)
       return (
         <View style={styles.container}>
           <TouchableWithoutFeedback onPress={() => this.getReward(id)}>
@@ -132,16 +132,24 @@ class RewardHistoryList extends React.Component {
                   backgroundColor: chance
                     ? parseInt(chance) <= 10
                       ? '#fab1a0'
-                      : 'white'
-                    : 'white',
+                      : theme.backgroundColor.backgroundColor
+                    : theme.backgroundColor.backgroundColor,
                 },
+                theme.shadowColor
               ]}>
               <View style={styles.rewardInfoContainer}>
-                <Text style={{fontSize: 16, fontWeight: '500'}}>{name}</Text>
+                <Text
+                  style={[{fontSize: 16, fontWeight: '500'}, theme.textColor]}>
+                  {name}
+                </Text>
                 {chance ? (
-                  <Text style={styles.text}>Chance To Win: {chance}%</Text>
+                  <Text style={[styles.text, theme.textColor]}>
+                    Chance To Win: {chance}%
+                  </Text>
                 ) : (
-                  <Text style={styles.text}>Point Cost: {pointCost}pts</Text>
+                  <Text style={[styles.text, theme.textColor]}>
+                    Point Cost: {pointCost}pts
+                  </Text>
                 )}
 
                 {prevRoute == 'RewardManagement' ? null : fromId ==
@@ -150,8 +158,9 @@ class RewardHistoryList extends React.Component {
                     style={[
                       styles.text,
                       {flexDirection: 'row', alignItems: 'center'},
+                      theme.textColor,
                     ]}>
-                    <Text>From: </Text>
+                    <Text style={theme.textColor}>From: </Text>
                     <TouchableOpacity onPress={() => this.getGroup(item)}>
                       <View style={styles.groupNameTag}>
                         <Text style={{color: 'white'}}>{groupDisplayName}</Text>
@@ -160,7 +169,7 @@ class RewardHistoryList extends React.Component {
                   </View>
                 )}
 
-                <Text style={styles.text}>
+                <Text style={[styles.text, theme.textColor]}>
                   On: {dateConversion(createdAt, 'reward')}
                 </Text>
               </View>
@@ -170,7 +179,9 @@ class RewardHistoryList extends React.Component {
                     source={icon ? {uri: icon} : singleDefaultIcon()}
                     style={styles.userIconStyle}
                   />
-                  <Text style={styles.text}>{displayName}</Text>
+                  <Text style={[styles.text, theme.textColor]}>
+                    {displayName}
+                  </Text>
                 </View>
               ) : prevRoute == 'RewardManagement' ? (
                 <View style={[styles.rightContainer]}>
@@ -181,7 +192,9 @@ class RewardHistoryList extends React.Component {
                       {height: 40, borderRadius: 20},
                     ]}
                   />
-                  <Text style={styles.text}>{displayName}</Text>
+                  <Text style={[styles.text, theme.textColor]}>
+                    {displayName}
+                  </Text>
                   <TouchableOpacity
                     onPress={() => onRedeemPress(id)}
                     disabled={status != 'default'}>
@@ -202,7 +215,7 @@ class RewardHistoryList extends React.Component {
               ) : (
                 <View
                   style={[styles.rightContainer, {justifyContent: 'center'}]}>
-                  <Text style={{color: status == 'default' ? 'black' : 'grey'}}>
+                  <Text style={{color: status == 'default' ? theme.textColor.color : 'grey'}}>
                     {status == 'default' ? 'Available' : 'Redeemed'}
                   </Text>
                 </View>

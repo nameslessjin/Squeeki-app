@@ -18,7 +18,7 @@ export default class OptionButton extends React.Component {
           styles.button,
           {
             borderBottomWidth: option == type ? StyleSheet.hairlineWidth : 0,
-            borderBottomColor: option == type ? '#EA2027' : null,
+            borderColor: option == type ? '#EA2027' : null,
           },
         ]}
         disabled={option == type}

@@ -3,12 +3,12 @@ import {StyleSheet, TextInput, View} from 'react-native';
 
 export default class UserSearchBar extends React.Component {
   render() {
-    const {onChange, value} = this.props;
+    const {onChange, value, theme} = this.props;
 
     return (
-      <View style={styles.searchBar}>
+      <View style={[styles.searchBar, theme.backgroundColor, theme.shadowColor]}>
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, theme.textColor]}
           placeholder={'search users'}
           placeholderTextColor={'#95a5a6'}
           onChangeText={text => onChange(text)}

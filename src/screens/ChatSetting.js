@@ -31,6 +31,7 @@ import ToggleSetting from '../components/chat/toggleSetting';
 import {StackActions} from '@react-navigation/native';
 import {getGroupRankName} from '../actions/group';
 import RankSettingModal from '../components/rankSetting/rankSettingModal';
+import {getTheme} from '../utils/theme';
 
 class ChatSetting extends React.Component {
   state = {
@@ -46,11 +47,12 @@ class ChatSetting extends React.Component {
     allow_modify: false,
     modalType: 'icon',
     status: {},
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation, route, group} = this.props;
-
+    const {theme} = this.state;
     if (route.params) {
       const {
         name,
@@ -77,14 +79,19 @@ class ChatSetting extends React.Component {
             type={'done'}
             disabled={true}
             onPress={this.onCreateUpdateChat}
+            theme={theme}
           />
         ),
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
       });
     }
 
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Settings',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -106,13 +113,14 @@ class ChatSetting extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
       const {navigation} = this.props;
-      const {chatId} = this.state;
+      const {chatId, theme} = this.state;
       navigation.setOptions({
         headerRight: () => (
           <HeaderRightButton
             type={'done'}
             disabled={!this.validation()}
             onPress={this.onCreateUpdateChat}
+            theme={theme}
           />
         ),
       });
@@ -388,13 +396,14 @@ class ChatSetting extends React.Component {
       allow_modify,
       status,
       modalType,
+      theme,
     } = this.state;
 
     // if in group
     const {group, rankName} = this.props.group;
 
     let deleteButton = (
-      <Input type={'delete'} onInputChange={this.onInputChange} />
+      <Input type={'delete'} onInputChange={this.onInputChange} theme={theme} />
     );
 
     let disabled = false;
@@ -410,7 +419,7 @@ class ChatSetting extends React.Component {
       } else {
         if (!status.is_owner) {
           deleteButton = (
-            <Input type={'leave'} onInputChange={this.onInputChange} />
+            <Input type={'leave'} onInputChange={this.onInputChange} theme={theme} />
           );
         }
         if (!status.is_owner && !allow_modify) {
@@ -418,22 +427,23 @@ class ChatSetting extends React.Component {
         }
       }
     }
-
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
           <StatusBar barStyle={'dark-content'} />
           <Input
             type={'icon'}
             value={icon}
             onInputChange={this.onInputChange}
             disabled={disabled}
+            theme={theme}
           />
           <Input
             type={'name'}
             value={name}
             onInputChange={this.onInputChange}
             disabled={disabled}
+            theme={theme}
           />
 
           {group.id ? (
@@ -443,6 +453,7 @@ class ChatSetting extends React.Component {
               onInputChange={this.onInputChange}
               disabled={disabled}
               rankName={rankName}
+              theme={theme}
             />
           ) : null}
 
@@ -452,6 +463,7 @@ class ChatSetting extends React.Component {
               on={allow_invite}
               onToggle={this.onToggle}
               disabled={disabled}
+              theme={theme}
             />
           )}
           {group.id ? null : (
@@ -460,6 +472,7 @@ class ChatSetting extends React.Component {
               on={allow_modify}
               onToggle={this.onToggle}
               disabled={disabled}
+              theme={theme}
             />
           )}
 
@@ -477,6 +490,7 @@ class ChatSetting extends React.Component {
               modalVisible={modalVisible}
               onBackdropPress={this.onBackdropPress}
               onChangeMedia={this.setIcon}
+              theme={theme}
             />
           ) : null}
           {modalVisible && modalType == 'rank' ? (
@@ -488,6 +502,7 @@ class ChatSetting extends React.Component {
               rankName={rankName}
               onBackdropPress={this.onBackdropPress}
               onRankChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
         </KeyboardAvoidingView>

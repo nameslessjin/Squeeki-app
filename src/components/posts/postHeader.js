@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
   option: {
     height: 50,
     width: '100%',
-    borderBottomColor: 'black',
+    borderColor: 'black',
     borderBottomWidth: StyleSheet.hairlineWidth,
     justifyContent: 'center',
     alignItems: 'center',

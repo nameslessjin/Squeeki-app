@@ -10,6 +10,25 @@ export const themeStyle = StyleSheet.create({
   darkModeGreyArea: {
     backgroundColor: '#252931',
   },
+  darkModeDrawerTextColor: {
+    color: 'white',
+  },
+  darkModeShadowColor: {
+    shadowColor: 'grey',
+  },
+  darkModeBorderColor: {
+    borderColor: 'black',
+    // borderColor: 'silver',
+  },
+  darkModeUnderLineColor: {
+    borderColor: 'silver',
+  },
+  darkModeTitleColor: {
+    color: '#0097e6'
+  },
+  darkModeIconColor: {
+    color: 'white'
+  },
   defaultBackgroundColor: {
     backgroundColor: 'white',
   },
@@ -19,4 +38,22 @@ export const themeStyle = StyleSheet.create({
   defaultGreyArea: {
     backgroundColor: '#f2f2f2',
   },
+  defaultDrawerTextColor: {
+    color: '#666667',
+  },
+  defaultShadowColor: {
+    shadowColor: 'white',
+  },
+  defaultBorderColor: {
+    borderColor: 'black',
+  },
+  defaultUnderLineColor: {
+    borderColor: 'silver',
+  },
+  defaultTitleColor: {
+    color: '#273c75'
+  },
+  defaultIconColor: {
+    color: 'black'
+  }
 });

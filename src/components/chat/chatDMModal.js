@@ -23,6 +23,7 @@ export default class ChatDMModal extends React.Component {
   renderOptions = i => {
     const {item} = i;
     const {name, icon, type, on, id, icon_2} = item;
+    const {theme} = this.props
 
     return (
       <View style={[styles.options]}>
@@ -38,7 +39,7 @@ export default class ChatDMModal extends React.Component {
               size={35}
               color={id == 0 ? (on ? 'grey' : 'red') : on ? 'red' : 'grey'}
             />
-            <View style={[styles.underline, styles.modalTextView]}>
+            <View style={[styles.underline, styles.modalTextView, theme.underline]}>
               <Text
                 style={[
                   styles.modalText,
@@ -70,6 +71,7 @@ export default class ChatDMModal extends React.Component {
       icon_url,
       status,
       user_relation,
+      theme
     } = this.props;
     const random = Math.floor(Math.random() * 5);
     const icon_options = [
@@ -118,11 +120,11 @@ export default class ChatDMModal extends React.Component {
           <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={[styles.centeredView]}>
               <TouchableWithoutFeedback>
-                <View style={styles.modalView}>
-                  <View style={[styles.modalHeader, styles.underline]}>
+                <View style={[styles.modalView, theme.greyArea, theme.shadowColor]}>
+                  <View style={[styles.modalHeader, styles.underline, theme.underLineColor]}>
                     {icon}
                     <Text
-                      style={{fontWeight: 'bold', fontSize: 16, marginLeft: 5}}>
+                      style={[{fontWeight: 'bold', fontSize: 16, marginLeft: 5}, theme.textColor]}>
                       {name}
                     </Text>
                   </View>
@@ -185,8 +187,8 @@ const styles = StyleSheet.create({
   },
   underline: {
     width: '100%',
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'silver',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: 'silver',
   },
   button: {
     width: 300,

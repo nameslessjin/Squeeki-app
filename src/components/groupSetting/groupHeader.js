@@ -199,8 +199,8 @@ const styles = StyleSheet.create({
     maxHeight: 600,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#576889',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: '#576889',
   },
   underImageStyle: {
     width: '100%',

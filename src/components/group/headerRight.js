@@ -7,21 +7,21 @@ export default class HomeHeaderLeft extends React.Component {
 
 
   render() {
-      const {onPress} = this.props
+      const {onPress, theme} = this.props
     return (
       <TouchableOpacity
-        style={styles.headerLeftButton}
+        style={[styles.headerButton]}
         onPress={onPress}>
-        <MaterialIcons name="menu" size={30} />
+        <MaterialIcons name="menu" size={30} color={theme.textColor.color}/>
       </TouchableOpacity>
     );
   }
 }
 
 const styles = StyleSheet.create({
-    headerLeftButton: {
-        marginRight: 20,
-        width: 30,
-        height: 30
+    headerButton: {
+        marginRight: 5,
+        width: 35,
+        height: 35
     }
 })

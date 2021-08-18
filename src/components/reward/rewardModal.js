@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
     width: width * 0.55,
     height: 45,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey',
+    borderColor: 'grey',
   },
   display: {
     width: '100%',

@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  FlatList,
   StyleSheet,
   View,
   TouchableWithoutFeedback,
@@ -8,8 +7,6 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-  Platform,
-  TouchableHighlight,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {chatTimeFormat} from '../../utils/time';
@@ -54,16 +51,16 @@ export default class ChatList extends React.Component {
       is_pinned,
       notification,
     } = item;
-
+    const {theme} = this.props
     if (id == 'empty') {
       if (this._ref) {
         return (
           <TouchableWithoutFeedback onPress={this.onCloseAllRows}>
             <View
-              style={{
+              style={[{
                 width: '100%',
                 height: this._ref.props.extraData.heightDifference,
-              }}
+              }, theme.greyArea]}
             />
           </TouchableWithoutFeedback>
         );
@@ -107,7 +104,7 @@ export default class ChatList extends React.Component {
       }
     }
 
-    let backgroundColor = 'white';
+    let backgroundColor = theme.backgroundColor.backgroundColor;
     if (allow_to_join) {
       if (is_pinned) {
         backgroundColor = '#fab1a0';
@@ -117,7 +114,7 @@ export default class ChatList extends React.Component {
     }
 
     return (
-      <View style={[styles.chat_container, {backgroundColor: backgroundColor}]}>
+      <View style={[styles.chat_container, {backgroundColor: backgroundColor}, theme.borderColor]}>
         <TouchableOpacity
           onPress={() => this.onChatPress(item)}
           disabled={!allow_to_join}>
@@ -134,7 +131,7 @@ export default class ChatList extends React.Component {
               <View style={styles.rightStyle}>
                 <View style={styles.chat_right_up_container}>
                   <View style={styles.chat_name_container}>
-                    <Text style={styles.chat_name_style} numberOfLines={2}>
+                    <Text style={[styles.chat_name_style, theme.textColor]} numberOfLines={2}>
                       {name}
                       {/* ince iwahdoai since nobody will have like it anyway */}
                     </Text>
@@ -186,7 +183,7 @@ export default class ChatList extends React.Component {
 
   renderHiddenItem = (data, rowMap) => {
     const {rank_req, id, available, is_pinned, notification} = data.item;
-
+    const {theme} = this.props
     if (id == 'empty') {
       return null;
     }
@@ -202,7 +199,7 @@ export default class ChatList extends React.Component {
     const notification_disabled = allow_to_join ? false : !notification;
 
     return (
-      <View style={styles.rowBack}>
+      <View style={[styles.rowBack, theme.greyArea]}>
         {/* <TouchableOpacity onPress={() => this.onHiddenItemPress(id, 'hide')}>
           <View style={[styles.hiddenItem, {backgroundColor: '#a7ecee'}]}>
             <MaterialIcons name={'eye-off'} size={30} color={'white'} />
@@ -215,7 +212,7 @@ export default class ChatList extends React.Component {
           <View
             style={[
               styles.hiddenItem,
-              {backgroundColor: notification ? 'white' : 'red'},
+              {backgroundColor: notification ? theme.greyArea.backgroundColor : 'red'},
             ]}>
             <MaterialIcons
               name={'bell'}
@@ -233,7 +230,7 @@ export default class ChatList extends React.Component {
           <View
             style={[
               styles.hiddenItem,
-              {backgroundColor: is_pinned ? 'white' : 'purple'},
+              {backgroundColor: is_pinned ? theme.greyArea.backgroundColor : 'purple'},
             ]}>
             <MaterialIcons
               name={'pin'}
@@ -252,7 +249,7 @@ export default class ChatList extends React.Component {
   extractKey = ({id}) => id;
 
   render() {
-    const {onRefresh, refreshing, onEndReached, chat} = this.props;
+    const {onRefresh, refreshing, onEndReached, chat, theme} = this.props;
     const occupiedHeight = 85 * chat.length;
     const heightDifference = height - occupiedHeight;
     let chatData = chat;
@@ -263,7 +260,7 @@ export default class ChatList extends React.Component {
     return (
       <SwipeListView
         ref={ref => (this._ref = ref)}
-        style={styles.container}
+        style={[styles.container, theme.greyArea]}
         data={chatData}
         keyExtractor={this.extractKey}
         alwaysBounceHorizontal={false}
@@ -297,7 +294,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'silver',
+    borderColor: 'silver',
     paddingLeft: 8,
   },
   chat_sub_container: {

@@ -32,6 +32,7 @@ export default class UserCard extends React.Component {
       checked,
       group_username,
       in_chat,
+      theme
     } = this.props;
 
     let disable = false;
@@ -79,7 +80,7 @@ export default class UserCard extends React.Component {
         <View
           style={[
             styles.container,
-            chosen ? {backgroundColor: '#c7ecee'} : null,
+            chosen ? {backgroundColor: '#c7ecee'} : theme.backgroundColor, theme.borderColor
           ]}>
           <View style={{width: '80%', flexDirection: 'row'}}>
             <View style={styles.imgHolder}>
@@ -90,12 +91,12 @@ export default class UserCard extends React.Component {
             </View>
             <View style={styles.nameStyle}>
               <Text
-                style={{
+                style={[{
                   fontSize:
                     group_username != null
                       ? group_username_size
                       : displayNameSize,
-                }}>
+                }, theme.textColor]}>
                 {group_username != null ? group_username : displayName}
               </Text>
               <Text style={[styles.usernameStyle, {fontSize: userNameSize}]}>
@@ -120,8 +121,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'silver',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: 'silver',
   },
   imageStyle: {
     height: 70,

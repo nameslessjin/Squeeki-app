@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 5,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey',
+    borderColor: 'grey',
   },
   textInputStyle: {
     width: '70%',

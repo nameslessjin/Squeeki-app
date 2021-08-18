@@ -7,12 +7,12 @@ export default class HomeHeaderLeft extends React.Component {
 
 
   render() {
-      const {onPress} = this.props
+      const {onPress, theme} = this.props
     return (
       <TouchableOpacity
         style={styles.headerLeftButton}
         onPress={onPress}>
-        <MaterialIcons name="menu" size={30} color={'white'} />
+        <MaterialIcons name="menu" size={30} color={theme.textColor.color} />
       </TouchableOpacity>
     );
   }

@@ -61,6 +61,7 @@ import {
 import {editPhoto} from '../utils/imagePicker';
 import {searchAtGroup, getSingleGroupById} from '../actions/group';
 import {singleDefaultIcon} from '../utils/defaultIcon';
+import {getTheme} from '../utils/theme';
 
 const {width} = Dimensions.get('screen');
 
@@ -97,12 +98,13 @@ class Chat extends React.Component {
     searchTerm: '',
     searchIndex: -1,
     atSearchResult: [],
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     this._giftedChatRef = undefined;
     const {navigation, route, group} = this.props;
-    const {name, id, icon, is_dm, second_userId} = this.state;
+    const {name, id, icon, is_dm, second_userId, theme} = this.state;
     let headerTitleSize = 18;
     if (name.trim().length >= 15) {
       headerTitleSize = 16;
@@ -145,8 +147,11 @@ class Chat extends React.Component {
             disabled={false}
             icon_url={icon == null ? null : icon.uri}
             onPress={() => this.setState({chatDMModalVisible: true})}
+            theme={theme}
           />
         ),
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
       });
       //Load person to person status/create if doesn't exist (process)(probable do this in the next page)
       if (second_userId) {
@@ -728,12 +733,7 @@ class Chat extends React.Component {
 
   onAtSearch = async () => {
     const {searchTerm, id} = this.state;
-    const {
-      group,
-      auth,
-      searchAtUserChat,
-      searchAtGroup,
-    } = this.props;
+    const {group, auth, searchAtUserChat, searchAtGroup} = this.props;
 
     const request = {
       groupId: group.group.id,
@@ -803,7 +803,7 @@ class Chat extends React.Component {
       return;
     }
 
-    console.log(group.group.id)
+    console.log(group.group.id);
     navigation.push('GroupNavigator', {
       prevRoute: 'Chat',
       groupId: group.group.id,
@@ -826,6 +826,7 @@ class Chat extends React.Component {
       is_dm,
       id,
       atSearchResult,
+      theme,
     } = this.state;
     const user = {
       _id: auth.user.id,
@@ -833,7 +834,7 @@ class Chat extends React.Component {
 
     return (
       <View>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
           <StatusBar barStyle={'dark-content'} />
           <GiftedChat
             ref={component => (this._giftedChatRef = component)}
@@ -884,7 +885,7 @@ class Chat extends React.Component {
             }}
             onInputTextChanged={this.onInputChange}
             onSend={this.onSend}
-            primaryStyle={{backgroundColor: 'white'}}
+            primaryStyle={theme.backgroundColor}
             keyboardShouldPersistTaps={'never'}
             alwaysShowSend={true}
             bottomOffset={33}
@@ -900,6 +901,7 @@ class Chat extends React.Component {
               <RenderActions
                 bottomOffset={p.bottomOffset}
                 onActionPress={this.onActionPress}
+                theme={theme}
               />
             )}
             maxComposerHeight={80}
@@ -930,6 +932,7 @@ class Chat extends React.Component {
                 ...props,
                 atSearchResult,
                 onAtUserNGroupPress: this.onAtUserNGroupPress,
+                theme,
               })
             }
             renderBubble={props => renderBubble({...props})}
@@ -943,6 +946,7 @@ class Chat extends React.Component {
           modalVisible={modalVisible}
           onBackdropPress={this.onBackdropPress}
           onMediaUpload={this.onMediaUpload}
+          theme={theme}
         />
         <ChatDMModal
           modalVisible={chatDMModalVisible}
@@ -952,6 +956,7 @@ class Chat extends React.Component {
           status={status}
           user_relation={user_relation}
           onPress={this.onUserPress}
+          theme={theme}
         />
       </View>
     );

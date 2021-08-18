@@ -12,7 +12,7 @@ import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 export default class RewardSettingInput extends React.Component {
   render() {
-    const {type, value, onInputChange, disabled, rankName} = this.props;
+    const {type, value, onInputChange, disabled, rankName, theme} = this.props;
 
     let title = 'Name';
     let rankTitle = 'Brave';
@@ -43,7 +43,7 @@ export default class RewardSettingInput extends React.Component {
 
     const icon = (
       <TouchableOpacity
-        style={styles.imageStyle}
+        style={[styles.imageStyle, theme.greyArea]}
         disabled={disabled}
         onPress={() => onInputChange('icon')}>
         <Image
@@ -68,19 +68,19 @@ export default class RewardSettingInput extends React.Component {
     ) : type == 'leave' || type == 'delete' ? (
       button
     ) : (
-      <View style={styles.container}>
+      <View style={[styles.container, theme.backgroundColor, theme.borderColor]}>
         <Text style={{color: 'grey'}}>{title}</Text>
         {type == 'rank' ? (
           <TouchableWithoutFeedback
             onPress={() => onInputChange(type)}
             disabled={disabled}>
             <View style={{marginLeft: 20, width: '100%', height: 45, justifyContent: 'center'}}>
-              <Text>{rankTitle}</Text>
+              <Text style={theme.textColor}>{rankTitle}</Text>
             </View>
           </TouchableWithoutFeedback>
         ) : (
           <TextInput
-            style={styles.textInputStyle}
+            style={[styles.textInputStyle, theme.textColor]}
             value={value ? value : ''}
             onChangeText={v => onInputChange(type, v)}
             keyboardType={type == 'rank' ? 'number-pad' : 'default'}
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingHorizontal: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey',
+    borderColor: 'grey',
   },
   textInputStyle: {
     width: '100%',

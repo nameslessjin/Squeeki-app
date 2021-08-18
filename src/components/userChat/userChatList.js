@@ -30,7 +30,7 @@ export default class UserChatList extends React.Component {
       id,
     } = item;
 
-    const {onMemberCardPress, user_id} = this.props;
+    const {onMemberCardPress, user_id, theme} = this.props;
     const time_out = new Date(parseInt(timeout));
     const different = time_out - Date.now();
 
@@ -59,7 +59,7 @@ export default class UserChatList extends React.Component {
       <TouchableOpacity
         onPress={() => onMemberCardPress(userId)}
         disabled={user_id == userId}>
-        <View style={styles.user_container}>
+        <View style={[styles.user_container, theme.backgroundColor, theme.shadowColor]}>
           <View style={styles.imageContainer}>
             <Image
               source={icon ? {uri: icon} : singleDefaultIcon()}
@@ -67,7 +67,7 @@ export default class UserChatList extends React.Component {
             />
           </View>
           <View style={styles.name}>
-            <Text style={{fontSize: displayNameSize, textAlign: 'center'}}>
+            <Text style={[{fontSize: displayNameSize, textAlign: 'center'}, theme.textColor]}>
               {displayName}
               {is_owner ? (
                 <MaterialIcons

@@ -14,6 +14,7 @@ import InputContent from '../components/postSetting/inputContent';
 import TopRightButton from '../components/reward/topRightButton';
 import {dateConversion} from '../utils/time';
 import {getSingleGroupById} from '../actions/group';
+import {getTheme} from '../utils/theme';
 
 class RewardDetail extends React.Component {
   state = {
@@ -28,14 +29,17 @@ class RewardDetail extends React.Component {
     groupId: this.props.group.group.id,
     directToGroup: false,
     ...this.props.route.params,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
-    const {prevRoute} = this.state;
+    const {prevRoute, theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Details',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     if (prevRoute == 'RewardList' || prevRoute == 'GiftedRewardList') {
       this.getRewardEntry();
@@ -237,35 +241,40 @@ class RewardDetail extends React.Component {
       winner,
       toId,
       giftedGroupDisplayName,
+      theme,
     } = this.state;
     const {group} = this.props.group;
 
     return (
       <TouchableWithoutFeedback>
-        <ScrollView style={styles.container}>
+        <ScrollView style={[styles.container, theme.backgroundColor]}>
           <InputImage image={image} contentKeyboard={false} disabled={true} />
           <View style={[styles.infoContaier]}>
             <View style={styles.infoSubContainer}>
-              <Text style={{fontWeight: '500', fontSize: 17}}>{name}</Text>
+              <Text
+                style={[{fontWeight: '500', fontSize: 17}, theme.textColor]}>
+                {name}
+              </Text>
             </View>
           </View>
-          <InputContent content={description} disabled={true} />
+          <InputContent content={description} disabled={true} theme={theme} />
           <View style={styles.infoContaier}>
             <View style={styles.infoSubContainer}>
               {prevRoute == 'RewardList' || prevRoute == 'GiftedRewardList' ? (
-                <Text>{count} remaining</Text>
+                <Text style={theme.textColor}>{count} remaining</Text>
               ) : null}
               {content &&
               (prevRoute == 'MyRewards' || prevRoute == 'MyGroupRewards') ? (
-                <Text>{`Hidden Content: ${content}`}</Text>
+                <Text
+                  style={theme.textColor}>{`Hidden Content: ${content}`}</Text>
               ) : null}
-              <Text style={styles.text}>
+              <Text style={[styles.text, theme.textColor]}>
                 {pointCost
                   ? `Point Cost: ${pointCost} pts`
                   : `Chance To Win: ${chanceDisplay}%`}
               </Text>
               {expiration ? (
-                <Text style={styles.text}>
+                <Text style={[styles.text, theme.textColor]}>
                   Listing Expiration:{' '}
                   {dateConversion(expiration, 'expirationDisplay')}
                 </Text>
@@ -276,7 +285,7 @@ class RewardDetail extends React.Component {
                     styles.text,
                     {flexDirection: 'row', alignItems: 'center'},
                   ]}>
-                  <Text>From: </Text>
+                  <Text style={theme.textColor}>From: </Text>
                   <TouchableOpacity onPress={this.getGroup}>
                     <View style={styles.groupNameTag}>
                       <Text style={{color: 'white'}}>{groupDisplayName}</Text>
@@ -290,7 +299,7 @@ class RewardDetail extends React.Component {
                     styles.text,
                     {flexDirection: 'row', alignItems: 'center'},
                   ]}>
-                  <Text>To: </Text>
+                  <Text style={theme.textColor}>To: </Text>
                   <TouchableOpacity onPress={this.getGroup}>
                     <View style={styles.groupNameTag}>
                       <Text style={{color: 'white'}}>
@@ -304,7 +313,7 @@ class RewardDetail extends React.Component {
               {prevRoute == 'MyRewards' ||
               prevRoute == 'MyGroupRewards' ||
               prevRoute == 'RewardManagement' ? (
-                <Text style={[styles.text]}>Reward ID: {id}</Text>
+                <Text style={[styles.text, theme.textColor]}>Reward ID: {id}</Text>
               ) : null}
               {winner &&
               (prevRoute == 'MyRewards' ||
@@ -325,7 +334,7 @@ class RewardDetail extends React.Component {
                   style={[
                     styles.text,
                     {
-                      color: status == 'default' ? 'black' : 'grey',
+                      color: status == 'default' ? theme.textColor.color : 'grey',
                     },
                   ]}>
                   {status == 'default'

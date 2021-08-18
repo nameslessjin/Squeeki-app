@@ -43,14 +43,13 @@ export default class ProfileModal extends React.Component {
   };
 
   render() {
-    const {modalVisible, onBackdropPress, defaultIcons} = this.props;
-
+    const {modalVisible, onBackdropPress, defaultIcons, theme} = this.props;
     return (
       <View style={[styles.centeredView]}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <TouchableWithoutFeedback onPress={() => onBackdropPress()}>
             <View style={[styles.centeredView]}>
-              <View style={[styles.modalView]}>
+              <View style={[styles.modalView, theme.backgroundColor, theme.shadowColor]}>
                 {defaultIcons.length == 0 ? null : (
                   <View
                     style={[
@@ -61,20 +60,20 @@ export default class ProfileModal extends React.Component {
                   </View>
                 )}
                 {defaultIcons.length == 0 ? null : (
-                  <View style={styles.underline} />
+                  <View style={[styles.underline, theme.underLineColor]} />
                 )}
                 <TouchableOpacity onPress={() => this.onPress('camera')}>
                   <View style={styles.button}>
-                    <Text>Take Photo</Text>
+                    <Text style={theme.textColor}>Take Photo</Text>
                   </View>
                 </TouchableOpacity>
-                <View style={styles.underline} />
+                <View style={[styles.underline, theme.borderColor]} />
                 <TouchableOpacity onPress={() => this.onPress('library')}>
                   <View style={styles.button}>
-                    <Text>Select From Image Library</Text>
+                    <Text style={theme.textColor}>Select From Image Library</Text>
                   </View>
                 </TouchableOpacity>
-                <View style={styles.underline} />
+                <View style={[styles.underline, theme.borderColor]} />
                 <TouchableOpacity onPress={() => onBackdropPress()}>
                   <View style={styles.button}>
                     <Text style={{color: 'red'}}>Cancel</Text>

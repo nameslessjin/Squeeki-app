@@ -21,6 +21,7 @@ import UserList from '../components/users/userList';
 import DisplayNameList from '../components/users/userSearch/displayNameList';
 import {StackActions} from '@react-navigation/native';
 import {unsubSocket} from '../functions/chat';
+import {getTheme} from '../utils/theme';
 
 class UserSearch extends React.Component {
   state = {
@@ -30,11 +31,12 @@ class UserSearch extends React.Component {
     chosenUser: [],
     group: null,
     chatId: null,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
-    const {chosenUser} = this.state;
+    const {chosenUser, theme} = this.state;
     const {params} = this.props.route;
     if (params) {
       // group and pre_route is passed in every instance
@@ -64,6 +66,8 @@ class UserSearch extends React.Component {
         params.prev_route == 'PostSetting' ? 'Pick nominee' : 'Search User',
       headerRight: () => button,
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -392,15 +396,15 @@ class UserSearch extends React.Component {
   };
 
   render() {
-    const {searchTerm, usersData, chosenUser, prev_route, group} = this.state;
+    const {searchTerm, usersData, chosenUser, prev_route, group, theme} = this.state;
     const {navigation, user, auth} = this.props;
 
     return (
-      <KeyboardAvoidingView style={styles.container}>
+      <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
         <StatusBar barStyle={'dark-content'} />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.optionArea}>
-            <UserSearchBar onChange={this.onSearchChange} value={searchTerm} />
+            <UserSearchBar onChange={this.onSearchChange} value={searchTerm} theme={theme}/>
           </View>
         </TouchableWithoutFeedback>
         {chosenUser.length == 0 ||
@@ -424,6 +428,7 @@ class UserSearch extends React.Component {
           prev_route={prev_route}
           chosenUser={chosenUser}
           currentUserId={auth.user.id}
+          theme={theme}
         />
 
       </KeyboardAvoidingView>

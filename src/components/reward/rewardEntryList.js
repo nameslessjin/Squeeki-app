@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'silver',
+    borderColor: 'silver',
   },
   name: {
     fontSize: 17,

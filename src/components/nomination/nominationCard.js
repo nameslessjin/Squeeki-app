@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#bdc3c7',
+    borderColor: '#bdc3c7',
   },
   name: {
     fontWeight: 'bold',

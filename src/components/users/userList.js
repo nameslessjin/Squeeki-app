@@ -10,9 +10,9 @@ export default class UserList extends React.Component {
   };
 
   renderItem = ({item}) => {
-    const {navigation, onChooseUser, prev_route} = this.props;
+    const {navigation, onChooseUser, prev_route, theme} = this.props;
     if (item.id == 'empty'){
-      return <View style={{width: '100%', height: 50, backgroundColor: 'white'}}/>
+      return <View style={[{width: '100%', height: 50}, theme.greyArea]}/>
     }
     return (
       <UserCard
@@ -20,6 +20,7 @@ export default class UserList extends React.Component {
         onPress={onChooseUser}
         navigation={navigation}
         prev_route={prev_route}
+        theme={theme}
       />
     );
   };

@@ -9,11 +9,12 @@ export default class InputContent extends React.Component {
       onKeyboardInputFocus,
       type,
       disabled,
+      theme
     } = this.props;
     return (
       <View style={styles.container}>
         {content.length == 0 ? null : (
-          <Text style={styles.contentPlaceHolderStyle}>
+          <Text style={[styles.contentPlaceHolderStyle, theme.titleColor]}>
             {type == 'post'
               ? "What's in your mind..."
               : type == 'verify'
@@ -25,6 +26,8 @@ export default class InputContent extends React.Component {
           style={[
             styles.contentStyle,
             content.length == 0 ? {marginTop: 15} : null,
+            theme.textColor,
+            theme.underLineColor
           ]}
           multiline={true}
           maxLength={255}

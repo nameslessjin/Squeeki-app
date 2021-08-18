@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   underline: {
     width: 300,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'silver',
+    borderColor: 'silver',
   },
   button: {
     width: 300,

@@ -18,6 +18,7 @@ import UserTextInput from '../components/profile/textinput';
 import validator from 'validator';
 import ProfileModal from '../components/profile/profileModal';
 import {singleDefaultIcon} from '../utils/defaultIcon';
+import {getTheme} from '../utils/theme';
 
 class Profile extends React.Component {
   state = {
@@ -25,12 +26,16 @@ class Profile extends React.Component {
     loading: false,
     modalVisible: false,
     defaultIcons: [],
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {theme} = this.state
     navigation.setOptions({
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     this.getDefaultIcon();
   }
@@ -210,14 +215,14 @@ class Profile extends React.Component {
       displayName,
       modalVisible,
       defaultIcons,
+      theme
     } = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
           <StatusBar barStyle={'dark-content'} />
           <TouchableOpacity
-            style={styles.imageStyle}
             onPress={() => this.setState({modalVisible: true})}>
             <Image
               source={icon ? {uri: icon.uri} : singleDefaultIcon()}
@@ -232,6 +237,7 @@ class Profile extends React.Component {
             type={'DisplayName'}
             onChangeText={this.onChangeText}
             value={displayName}
+            theme={theme}
           />
 
           {/* <UserTextInput
@@ -244,12 +250,13 @@ class Profile extends React.Component {
             type={'Email'}
             onChangeText={this.onChangeText}
             value={email}
+            theme={theme}
           />
 
           <TouchableOpacity
             style={styles.changePasswordButton}
             onPress={this.onChangePasswordPress}>
-            <Text style={{color: '#487eb0'}}>Change password</Text>
+            <Text style={theme.titleColor}>Change password</Text>
           </TouchableOpacity>
 
           <Text style={{color: 'red'}}>{errorText}</Text>
@@ -260,6 +267,7 @@ class Profile extends React.Component {
             onChangeMedia={this.setIcon}
             defaultIcons={defaultIcons}
             onDefaultIconPress={this.onDefaultIconPress}
+            theme={theme}
           />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -285,6 +293,7 @@ const styles = StyleSheet.create({
     borderColor: '#718093',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 5
   },
   changePasswordButton: {
     width: '100%',

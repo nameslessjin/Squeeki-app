@@ -62,31 +62,33 @@ export default class RankSettingModal extends React.Component {
     const {index, item} = i;
     const {name, value} = item;
     const {ranks} = this.state;
+    const {theme} = this.props
+    // {color: '#3498db'}
     return (
       <View style={styles.rank}>
         <TouchableOpacity onPress={() => this.onRankChange(value)}>
           <View style={[styles.rank]}>
-            <Text style={{color: '#3498db'}}>{name}</Text>
+            <Text style={theme.textColor}>{name}</Text>
           </View>
         </TouchableOpacity>
-        {index != ranks.length - 1 ? <View style={styles.underline} /> : null}
+        {index != ranks.length - 1 ? <View style={[styles.underline, theme.underLineColor]} /> : null}
       </View>
     );
   };
 
   render() {
     const {modalVisible, onBackdropPress} = this.props;
-    const {ranks} = this.state;
+    const {ranks, theme} = this.state;
     return (
       <View style={styles.centeredView}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={styles.centeredView}>
               <TouchableWithoutFeedback>
-                <KeyboardAvoidingView style={styles.view}>
+                <KeyboardAvoidingView style={[styles.view, theme.backgroundColor, theme.shadowColor]}>
                   <View style={styles.rank_display}>
                     <View style={styles.header}>
-                      <Text>Minimum rank required</Text>
+                      <Text style={theme.textColor}>Minimum rank required</Text>
                     </View>
                     <FlatList
                       data={ranks}
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
   },
   underline: {
     width: width * 0.7,
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'grey',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: 'grey',
   },
 });

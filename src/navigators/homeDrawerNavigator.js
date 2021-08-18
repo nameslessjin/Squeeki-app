@@ -7,7 +7,6 @@ import {
 import Home from '../screens/home';
 import React from 'react';
 import {
-  TouchableOpacity,
   StyleSheet,
   Text,
   Image,
@@ -18,7 +17,6 @@ import {
 import {DrawerActions} from '@react-navigation/native';
 import HeaderLeftButton from '../components/home/headerLeft';
 import Groups from '../screens/groups';
-import UserSettings from '../screens/userSettings';
 import Chats from '../screens/chats';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {connect} from 'react-redux';
@@ -62,13 +60,15 @@ class HomeDrawerNavigator extends React.Component {
     const {theme} = this.state;
     navigation.setOptions({
       headerLeft: () => (
-        <HeaderLeftButton onPress={this.onToggleHeaderLeftButton} />
+        <HeaderLeftButton
+          onPress={this.onToggleHeaderLeftButton}
+          theme={theme}
+        />
       ),
       // headerRight: () => <HomeHeaderRightButton onPress={this.onToggleHomeRightButton} />,
       headerBackTitleVisible: false,
       headerTitle: 'Squeeki',
 
-      // dark mode
       headerStyle: theme.backgroundColor,
       headerTintColor: theme.textColor.color,
     });
@@ -104,8 +104,8 @@ class HomeDrawerNavigator extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const name = this.getHeaderTitle(this.props.route);
-    const {navigation} = this.props;
-    const {currentScreen} = this.props;
+    const {navigation, currentScreen, auth} = this.props;
+    const {theme} = this.state
     if (name != currentScreen.currentScreen) {
       this.props.changeScreen(name);
     }
@@ -124,7 +124,7 @@ class HomeDrawerNavigator extends React.Component {
     } else if (name == 'Groups') {
       navigation.setOptions({
         headerRight: () => (
-          <GroupRightButton onPress={this.onToggleGroupsRightButton} />
+          <GroupRightButton onPress={this.onToggleGroupsRightButton} theme={theme}/>
         ),
         headerTitle: 'My Groups',
       });
@@ -148,9 +148,27 @@ class HomeDrawerNavigator extends React.Component {
               })
             }
             type={'create'}
+            theme={theme}
           />
         ),
         headerTitle: 'My Chats',
+      });
+    }
+
+    // update theme
+    if (prevProps.auth.user.theme != auth.user.theme) {
+      const theme = getTheme(auth.user.theme);
+      this.setState({theme});
+      console.log(theme);
+      navigation.setOptions({
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
+        headerLeft: () => (
+          <HeaderLeftButton
+            onPress={this.onToggleHeaderLeftButton}
+            theme={theme}
+          />
+        ),
       });
     }
   }
@@ -160,7 +178,11 @@ class HomeDrawerNavigator extends React.Component {
     const {theme} = this.state;
     return (
       <Drawer.Navigator
-        screenOptions={{headerShown: false, drawerStyle: {width: 200}}}
+        screenOptions={{
+          headerShown: false,
+          drawerStyle: [{width: 200}, theme.backgroundColor],
+          drawerLabelStyle: theme.drawerTextColor,
+        }}
         initialRouteName="Home"
         drawerContent={props => (
           <CustomDrawerContent
@@ -169,8 +191,7 @@ class HomeDrawerNavigator extends React.Component {
             auth={auth}
             theme={theme}
           />
-        )}
-        drawerStyle={styles.drawerStyle}>
+        )}>
         <Drawer.Screen name="Home" component={Home} />
         <Drawer.Screen name="Groups" component={Groups} />
         <Drawer.Screen name="Chats" component={Chats} />
@@ -193,8 +214,8 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView
       {...props}
       style={[
-        theme.backgroundColor,
         {bottom: Platform.OS == 'android' ? 0 : height * 0.05},
+        theme.backgroundColor,
       ]}>
       {displayName ? (
         <DrawerItem
@@ -206,7 +227,9 @@ function CustomDrawerContent(props) {
                 source={icon ? {uri: icon.uri} : singleDefaultIcon()}
                 style={styles.imageStyle}
               />
-              <Text style={[styles.displayName, theme.textColor]}>{displayName}</Text>
+              <Text style={[styles.displayName, theme.textColor]}>
+                {displayName}
+              </Text>
             </View>
           )}
           onPress={() => navigation.navigate('Profile')}
@@ -222,7 +245,7 @@ function CustomDrawerContent(props) {
         <View
           style={{
             borderBottomWidth: StyleSheet.hairlineWidth,
-            borderBottomColor: 'grey',
+            borderColor: 'grey',
             width: '85%',
           }}
         />
@@ -231,7 +254,7 @@ function CustomDrawerContent(props) {
 
       <DrawerItem
         label="Settings"
-        labelStyle={{color: '#666667'}}
+        labelStyle={theme.drawerTextColor}
         onPress={() => {
           navigation.navigate('UserSettings');
         }}
@@ -266,8 +289,6 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: 'grey',
     padding: 5,
   },
   displayName: {

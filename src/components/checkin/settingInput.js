@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 5,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey',
+    borderColor: 'grey',
   },
   textInputStyle: {
     width: '100%',

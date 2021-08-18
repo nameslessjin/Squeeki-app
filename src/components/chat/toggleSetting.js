@@ -9,7 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class ToggleSetting extends React.Component {
   render() {
-    const {on, onToggle, disabled, type} = this.props;
+    const {on, onToggle, disabled, type, theme} = this.props;
 
     const title =
       type == 'invite'
@@ -25,8 +25,8 @@ export default class ToggleSetting extends React.Component {
     );
 
     return (
-      <View style={styles.container}>
-        <Text style={{color: disabled ? 'grey' : 'black'}}>{title}</Text>
+      <View style={[styles.container, theme.backgroundColor]}>
+        <Text style={{color: disabled ? 'grey' : theme.textColor.color}}>{title}</Text>
 
         <TouchableWithoutFeedback
           disabled={disabled}

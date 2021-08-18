@@ -27,6 +27,7 @@ export default class newChatModal extends React.Component {
   renderOptions = i => {
     const {index, item} = i;
     const {name, icon, onPress, type} = item;
+    const {theme} = this.props
     return (
       <View style={[styles.options]}>
         <TouchableOpacity onPress={() => this.onPress(type)}>
@@ -36,9 +37,9 @@ export default class newChatModal extends React.Component {
               width: '100%',
               flexDirection: 'row',
             }}>
-            <MaterialIcons name={icon} size={35} />
-            <View style={[styles.underline, styles.modalTextView]}>
-              <Text style={styles.modalText}>{name}</Text>
+            <MaterialIcons name={icon} size={35} color={theme.iconColor.color} />
+            <View style={[styles.underline, styles.modalTextView, theme.underLineColor]}>
+              <Text style={[styles.modalText, theme.textColor]}>{name}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -47,7 +48,7 @@ export default class newChatModal extends React.Component {
   };
 
   render() {
-    const {modalVisible, onBackdropPress} = this.props;
+    const {modalVisible, onBackdropPress, theme} = this.props;
 
     return (
       <View style={[styles.centeredView]}>
@@ -55,9 +56,9 @@ export default class newChatModal extends React.Component {
           <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={[styles.centeredView]}>
               <TouchableWithoutFeedback>
-                <View style={styles.modalView}>
-                  <View style={[styles.modalHeader, styles.underline]}>
-                    <Text style={{fontWeight: 'bold', fontSize: 16}}>
+                <View style={[styles.modalView, theme.greyArea, theme.shadowColor]}>
+                  <View style={[styles.modalHeader, styles.underline, theme.underLineColor]}>
+                    <Text style={[{fontWeight: 'bold', fontSize: 16}, theme.textColor]}>
                       Start
                     </Text>
                   </View>
@@ -119,8 +120,8 @@ const styles = StyleSheet.create({
   },
   underline: {
     width: '100%',
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'silver',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: 'silver',
   },
   button: {
     width: 300,
@@ -136,20 +137,5 @@ const styles = StyleSheet.create({
     padding: 8,
     // backgroundColor: 'grey'
   },
-  view: {
-    backgroundColor: 'white',
-    width: 300,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 10,
-    marginBottom: 100,
-  },
+
 });

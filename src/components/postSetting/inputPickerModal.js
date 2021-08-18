@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     width: width * 0.45,
     height: 45,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey'
+    borderColor: 'grey'
   },
   display: {
     width: '100%',

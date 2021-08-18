@@ -61,6 +61,7 @@ class UserSettings extends React.Component {
             styles.card,
             {marginTop: id == 'Logout' ? 30 : 0},
             theme.backgroundColor,
+            theme.borderColor
           ]}>
           <Text
             style={[
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 50,
     alignItems: 'center',
-    borderBottomColor: 'silver',
+    borderColor: 'silver',
   },
   text: {
     fontSize: 15,

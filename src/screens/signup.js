@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   },
   termButton: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#b2bec3',
+    borderColor: '#b2bec3',
   },
   empty: {
     width: '100%',

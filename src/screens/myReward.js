@@ -3,8 +3,14 @@ import {View, StyleSheet, Text} from 'react-native';
 import {connect} from 'react-redux';
 import {getUserRewardHistory} from '../actions/reward';
 import RewardHistoryList from '../components/reward/rewardHistoryList';
-
+import {getTheme} from '../utils/theme';
 class MyReward extends React.Component {
+  state = {
+    theme: getTheme(this.props.auth.user.theme),
+  };
+
+
+
   componentDidUpdate(prevProps) {
     const {currentScreen, route, navigation} = this.props;
     const prevScreen = prevProps.currentScreen;
@@ -50,8 +56,9 @@ class MyReward extends React.Component {
 
   render() {
     const {reward, group, navigation} = this.props;
+    const {theme} = this.state
     return (
-      <View style={{backgroundColor: 'white'}}>
+      <View style={theme.greyArea}>
         {reward.userRewardHistory.length == 0 ? (
           <View style={styles.container}>
             <Text style={styles.text}>You have not won any reward yet</Text>
@@ -63,6 +70,7 @@ class MyReward extends React.Component {
             onEndReached={this.onEndReached}
             navigation={navigation}
             prevRoute={group.group.id ? 'MyGroupRewards' : 'MyRewards'}
+            theme={theme}
           />
         )}
       </View>

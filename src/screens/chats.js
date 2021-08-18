@@ -24,6 +24,7 @@ import HeaderRightButton from '../components/chat/headerRightButton';
 import {getChatFunc, unsubSocket, subSocket} from '../functions/chat';
 import List from '../components/chat/chatList';
 import NewChatModal from '../components/chat/newChatModal';
+import {getTheme} from '../utils/theme';
 
 class Chats extends React.Component {
   state = {
@@ -31,6 +32,7 @@ class Chats extends React.Component {
     refreshing: false,
     modalVisible: false,
     appState: AppState.currentState,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
@@ -45,6 +47,7 @@ class Chats extends React.Component {
     if (group.group.auth) {
       this.getGroupRankName();
       const {auth, rank_setting} = group.group;
+      const {theme} = this.state
       navigation.setOptions({
         headerRight: () =>
           auth.rank > rank_setting.manage_chat_rank_required ? null : (
@@ -52,6 +55,7 @@ class Chats extends React.Component {
               onPress={() => navigation.navigate('ChatSetting')}
               type={'create'}
               disabled={false}
+              theme={theme}
             />
           ),
       });
@@ -274,11 +278,11 @@ class Chats extends React.Component {
 
   render() {
     const {chat, group, route} = this.props;
-    const {refreshing} = this.state;
+    const {refreshing, theme} = this.state;
     const modalVisible = route.params ? route.params.modalVisible : false;
 
     return (
-      <View>
+      <View style={theme.greyArea}>
         <StatusBar barStyle={'dark-content'} />
         {chat.chats.length == 0 ? (
           <View style={styles.container}>
@@ -298,6 +302,7 @@ class Chats extends React.Component {
               rankName={group.rankName}
               changeUserChatNotification={this.changeUserChatNotification}
               updatePinChat={this.updatePinChat}
+              theme={theme}
             />
           </TouchableWithoutFeedback>
         )}
@@ -305,6 +310,7 @@ class Chats extends React.Component {
           onBackdropPress={this.onBackdropPress}
           modalVisible={modalVisible}
           navigateToOptions={this.navigateToOptions}
+          theme={theme}
         />
       </View>
     );

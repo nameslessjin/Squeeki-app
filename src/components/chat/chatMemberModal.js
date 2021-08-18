@@ -29,15 +29,12 @@ export default class ChatMemberModal extends React.Component {
   renderOptions = i => {
     const {index, item} = i;
     const {name, value} = item;
-    const {onOptionSelect} = this.props;
+    const {onOptionSelect, theme} = this.props;
     const lastId = this.timeout_options.length - 1;
     return (
       <View style={[styles.options]}>
         <TouchableOpacity onPress={() => onOptionSelect('timeout', value)}>
-          <View
-            style={[
-              styles.options,
-            ]}>
+          <View style={[styles.options]}>
             <Text style={{color: '#3498db'}}>{name}</Text>
           </View>
         </TouchableOpacity>
@@ -53,10 +50,10 @@ export default class ChatMemberModal extends React.Component {
       func_disabled,
       onOptionSelect,
       is_owner,
-      can_remove_user
+      can_remove_user,
+      theme,
     } = this.props;
     const {is_timeout} = this.state;
-
 
     return (
       <View style={[styles.centeredView]}>
@@ -64,7 +61,12 @@ export default class ChatMemberModal extends React.Component {
           <TouchableWithoutFeedback onPress={() => onBackdropPress()}>
             <View style={[styles.centeredView]}>
               {is_timeout ? (
-                <View style={styles.view}>
+                <View
+                  style={[
+                    styles.view,
+                    theme.backgroundColor,
+                    theme.shadowColor,
+                  ]}>
                   <FlatList
                     data={this.timeout_options}
                     renderItem={this.renderOptions}
@@ -75,45 +77,51 @@ export default class ChatMemberModal extends React.Component {
                   />
                 </View>
               ) : (
-                <View style={[styles.modalView]}>
+                <View
+                  style={[
+                    styles.modalView,
+                    theme.backgroundColor,
+                    theme.shadowColor,
+                  ]}>
                   <TouchableOpacity onPress={() => onOptionSelect('dm')}>
                     <View style={styles.button}>
-                      <Text>Direct Message</Text>
+                      <Text style={theme.textColor}>Direct Message</Text>
                     </View>
                   </TouchableOpacity>
 
-                  <View style={styles.underline} />
+                  <View style={[styles.underline, theme.borderColor]} />
 
                   {func_disabled ? null : (
                     <TouchableOpacity
                       onPress={() => this.setState({is_timeout: true})}>
                       <View style={styles.button}>
-                        <Text>Timeout</Text>
+                        <Text style={theme.textColor}>Timeout</Text>
                       </View>
                     </TouchableOpacity>
                   )}
 
-                  {func_disabled ? null : <View style={styles.underline} />}
+                  {func_disabled ? null : <View style={[styles.underline, theme.borderColor]} />}
 
                   {is_owner ? (
-                    <TouchableOpacity onPress={() => onOptionSelect('ownership')}>
+                    <TouchableOpacity
+                      onPress={() => onOptionSelect('ownership')}>
                       <View style={styles.button}>
-                        <Text>Make Owner</Text>
+                        <Text style={theme.textColor}>Make Owner</Text>
                       </View>
                     </TouchableOpacity>
                   ) : null}
 
-                  {is_owner ? <View style={styles.underline} /> : null}
+                  {is_owner ? <View style={[styles.underline, theme.borderColor]} /> : null}
 
                   {can_remove_user ? (
                     <TouchableOpacity onPress={() => onOptionSelect('delete')}>
                       <View style={styles.button}>
-                        <Text>Remove</Text>
+                        <Text style={theme.textColor}>Remove</Text>
                       </View>
                     </TouchableOpacity>
-                  ): null}
+                  ) : null}
 
-                  {can_remove_user ? <View style={styles.underline} /> : null}
+                  {can_remove_user ? <View style={[styles.underline, theme.borderColor]} /> : null}
 
                   <TouchableOpacity onPress={() => onBackdropPress()}>
                     <View style={styles.button}>
@@ -160,8 +168,8 @@ const styles = StyleSheet.create({
   },
   underline: {
     width: 300,
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'grey',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: 'grey',
   },
   button: {
     width: 300,

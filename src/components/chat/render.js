@@ -48,7 +48,7 @@ export const RenderSend = props => {
 };
 
 export const RenderActions = props => {
-  const {onActionPress, bottomOffset} = props;
+  const {onActionPress, bottomOffset, theme} = props;
 
   return (
     <TouchableOpacity
@@ -59,7 +59,7 @@ export const RenderActions = props => {
         marginBottom: bottomOffset - 23,
       }}
       onPress={onActionPress}>
-      <MaterialIcons size={30} name={'plus'} />
+      <MaterialIcons size={30} name={'plus'} color={theme.iconColor.color} />
     </TouchableOpacity>
   );
 };
@@ -256,9 +256,9 @@ export const RenderTicks = props => {
   ) : null;
 };
 
-const renderAtUserItem = ({item, onAtUserNGroupPress}) => {
+const renderAtUserItem = ({item, onAtUserNGroupPress, theme}) => {
   const {userId, displayName, username, icon, groupname, groupId} = item;
-
+  console.log(theme)
   const input = {
     id: userId ? userId : groupId,
     name: username ? username : groupname,
@@ -295,7 +295,7 @@ const renderAtUserItem = ({item, onAtUserNGroupPress}) => {
             justifyContent: 'center',
             width: width - 150,
           }}>
-          <Text style={{color: 'black', fontSize: 15}}>{displayName}</Text>
+          <Text style={[{fontSize: 15}, theme.textColor]}>{displayName}</Text>
           <Text style={{color: 'grey', fontSize: 13}}>
             {username ? `@${username}` : `g@${groupname}`}
           </Text>
@@ -306,12 +306,12 @@ const renderAtUserItem = ({item, onAtUserNGroupPress}) => {
 };
 
 export const renderComposer = props => {
-  const {atSearchResult, composerHeight, onAtUserNGroupPress} = props;
+  const {atSearchResult, composerHeight, onAtUserNGroupPress, theme} = props;
   return (
     <React.Fragment>
       {atSearchResult.length > 0 ? (
         <View
-          style={{
+          style={[{
             maxHeight: 150,
             backgroundColor: 'white',
             position: 'absolute',
@@ -320,25 +320,26 @@ export const renderComposer = props => {
             borderWidth: 0.5,
             left: 42.5,
             borderColor: 'silver',
-          }}>
+          }, theme.backgroundColor, theme.borderColor]}>
           <FlatList
             style={{maxHeight: 150, width: width - 85}}
             data={atSearchResult}
             renderItem={props =>
-              renderAtUserItem({...props, onAtUserNGroupPress})
+              renderAtUserItem({...props, onAtUserNGroupPress, theme})
             }
             keyExtractor={extractKey}
             alwaysBounceHorizontal={false}
             alwaysBounceVertical={false}
             keyboardShouldPersistTaps={'handled'}
+            
           />
         </View>
       ) : null}
       <Composer
         {...props}
-        textInputStyle={{
+        textInputStyle={[{
           width: width - 85,
-        }}
+        }, theme.textColor]}
       />
     </React.Fragment>
   );

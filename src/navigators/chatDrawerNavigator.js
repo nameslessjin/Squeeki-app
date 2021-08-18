@@ -13,17 +13,20 @@ import HeaderRightButton from '../components/group/headerRight';
 import {connect} from 'react-redux';
 import {getUserRelation} from '../actions/user';
 import {getUserChat, changeUserChatNotification} from '../actions/chat';
+import {getTheme} from '../utils/theme';
 
 const Drawer = createDrawerNavigator();
 
 class ChatDrawerkNavigator extends React.Component {
   state = {
     status: {},
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
     const {chat} = this.props.chat;
+    const {theme} = this.state;
     let name = 'Chat';
     let headerTitleSize = 18;
     if (chat) {
@@ -57,13 +60,18 @@ class ChatDrawerkNavigator extends React.Component {
 
     navigation.setOptions({
       headerRight: () => (
-        <HeaderRightButton onPress={this.onToggleHeaderRightButton} />
+        <HeaderRightButton
+          onPress={this.onToggleHeaderRightButton}
+          theme={theme}
+        />
       ),
       headerBackTitleVisible: false,
       headerTitle: name,
       headerTitleStyle: {
         fontSize: headerTitleSize,
       },
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -97,6 +105,7 @@ class ChatDrawerkNavigator extends React.Component {
         headerTitle: name,
       });
     }
+    
   }
 
   onToggleHeaderRightButton = () => {
@@ -161,7 +170,8 @@ class ChatDrawerkNavigator extends React.Component {
   };
 
   CustomDrawerContent = props => {
-    const {notification} = this.state.status;
+    const {theme, status} = this.state
+    const {notification} = status;
     const {group} = this.props.group;
     return (
       <DrawerContentScrollView {...props}>
@@ -188,13 +198,13 @@ class ChatDrawerkNavigator extends React.Component {
           icon={() => (
             <MaterialIcons name="account-group" color={'grey'} size={25} />
           )}
-          labelStyle={styles.labelStyle}
+          labelStyle={[styles.labelStyle, theme.drawerTextColor]}
           onPress={this.onMemberPress}
         />
         <DrawerItem
           label="Settings"
           icon={() => <MaterialIcons name="cog" color={'grey'} size={25} />}
-          labelStyle={styles.labelStyle}
+          labelStyle={[styles.labelStyle, theme.drawerTextColor]}
           onPress={this.onSettingPress}
         />
       </DrawerContentScrollView>
@@ -203,6 +213,7 @@ class ChatDrawerkNavigator extends React.Component {
 
   render() {
     const {chat} = this.props.chat;
+    const {theme} = this.state
     let name = 'Chat';
     if (chat) {
       name = chat.name;
@@ -212,7 +223,8 @@ class ChatDrawerkNavigator extends React.Component {
         screenOptions={{
           headerShown: false,
           drawerPosition: 'right',
-          drawerStyle: styles.drawerStyle,
+          drawerStyle: [styles.drawerStyle, theme.backgroundColor],
+          drawerLabelStyle: theme.drawerTextColor,
         }}
         initialRouteName={'Chat'}
         drawerContent={props => this.CustomDrawerContent(props)}>

@@ -93,7 +93,7 @@ class ThemeSettings extends React.Component {
 
     return (
       <TouchableOpacity onPress={() => this.onPress(id)}>
-        <View style={[styles.card, theme.backgroundColor]}>
+        <View style={[styles.card, theme.backgroundColor, theme.borderColor]}>
           <Text style={[styles.text, theme.textColor]}>{name}</Text>
           {selected ? (
             <MaterialIcons name={'check'} size={30} color={'#44bd32'} />
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 50,
     alignItems: 'center',
-    borderBottomColor: 'silver',
+    borderColor: 'silver',
   },
   text: {
     fontSize: 15,

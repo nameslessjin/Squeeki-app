@@ -21,6 +21,7 @@ import UserChatList from '../components/userChat/userChatList';
 import HeaderRight from '../components/chat/headerRightButton';
 import ChatMemberModal from '../components/chat/chatMemberModal';
 import SearchBar from '../components/users/userSearch/searchBar';
+import {getTheme} from '../utils/theme';
 
 class ChatMembers extends React.Component {
   state = {
@@ -31,14 +32,17 @@ class ChatMembers extends React.Component {
     modalVisible: false,
     userId: null,
     search_term: '',
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
-
+    const {theme} = this.state
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Members',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     // this.loadUserChat(true);
     this.onSearchChange('', true);
@@ -47,6 +51,7 @@ class ChatMembers extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const {route, navigation, group} = this.props;
+    const {theme} = this.state
     if (route.params.refresh) {
       navigation.setParams({refresh: false});
       // this.loadUserChat(true);
@@ -66,6 +71,7 @@ class ChatMembers extends React.Component {
               type={'create'}
               disabled={disabled}
               onPress={this.onAddHeaderPress}
+              theme={theme}
             />
           ),
       });
@@ -367,6 +373,7 @@ class ChatMembers extends React.Component {
       status,
       rank_req,
       search_term,
+      theme
     } = this.state;
     const {group, auth} = this.props;
 
@@ -395,9 +402,9 @@ class ChatMembers extends React.Component {
 
     return (
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.container}>
+        <View style={[styles.container, theme.greyArea]}>
           <View style={styles.list}>
-            <SearchBar value={search_term} onChange={this.onSearchChange} />
+            <SearchBar value={search_term} onChange={this.onSearchChange} theme={theme}/>
             <UserChatList
               users={users}
               refreshing={refreshing}
@@ -405,6 +412,7 @@ class ChatMembers extends React.Component {
               onEndReached={this.onEndReached}
               onMemberCardPress={this.onMemberCardPress}
               user_id={auth.user.id}
+              theme={theme}
             />
           </View>
           {modalVisible ? (
@@ -415,6 +423,7 @@ class ChatMembers extends React.Component {
               onOptionSelect={this.onOptionSelect}
               is_owner={status.is_owner}
               can_remove_user={can_remove_user}
+              theme={theme}
             />
           ) : null}
         </View>

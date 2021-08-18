@@ -12,7 +12,7 @@ export default class SignUpTextInput extends React.Component {
   };
 
   render() {
-    const {type, value} = this.props;
+    const {type, value, theme} = this.props;
 
     this.text = 'Email';
     let secureTextEntry = false;
@@ -40,8 +40,8 @@ export default class SignUpTextInput extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
-        <Text style={styles.text}>{this.text}</Text>
+      <View style={[styles.container,]}>
+        <Text style={[styles.text, theme.titleColor]}>{this.text}</Text>
         <TextInput
           style={styles.textInput}
           value={value}

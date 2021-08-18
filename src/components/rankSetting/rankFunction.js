@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     width: '100%',
     minHeight: 45,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'grey',
+    borderColor: 'grey',
     flexDirection: 'row',
     backgroundColor: 'white',
     justifyContent: 'space-between',

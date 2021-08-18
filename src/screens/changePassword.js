@@ -13,6 +13,7 @@ import UserTextInput from '../components/profile/textinput';
 import validator from 'validator';
 import {connect} from 'react-redux';
 import {userLogout, changePassword, resetPassword} from '../actions/auth';
+import {getTheme} from '../utils/theme';
 
 class ChangePassword extends React.Component {
   state = {
@@ -21,15 +22,19 @@ class ChangePassword extends React.Component {
     reNewPassword: '',
     errorText: '',
     loading: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {token} = this.props.route.params;
+    const {theme} = this.state
     this.setState({token: token});
     const {navigation} = this.props
     navigation.setOptions({
         headerBackTitleVisible: false,
-        headerTitle: 'Change Password'
+        headerTitle: 'Change Password',
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
     })
   }
 
@@ -131,6 +136,7 @@ class ChangePassword extends React.Component {
       errorText,
       loading,
       token,
+      theme
     } = this.state;
 
     let buttonActivate = false;
@@ -151,13 +157,14 @@ class ChangePassword extends React.Component {
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
           <StatusBar barStyle={'dark-content'} />
           {token == null ? (
             <UserTextInput
               type={'currentPassword'}
               onChangeText={this.onChangeText}
               value={currentPassword}
+              theme={theme}
             />
           ) : null}
 
@@ -165,12 +172,14 @@ class ChangePassword extends React.Component {
             type={'newPassword'}
             onChangeText={this.onChangeText}
             value={newPassword}
+            theme={theme}
           />
 
           <UserTextInput
             type={'reNewPassword'}
             onChangeText={this.onChangeText}
             value={reNewPassword}
+            theme={theme}
           />
 
           <TouchableOpacity
@@ -180,7 +189,7 @@ class ChangePassword extends React.Component {
             }
             disabled={!buttonActivate}>
             <Text
-              style={buttonActivate ? {color: '#487eb0'} : {color: '#95a5a6'}}>
+              style={buttonActivate ? theme.titleColor : {color: '#95a5a6'}}>
               Done
             </Text>
           </TouchableOpacity>

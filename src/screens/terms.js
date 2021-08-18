@@ -35,7 +35,7 @@ class Terms extends React.Component {
     const {theme} = this.state;
     return (
       <TouchableOpacity onPress={() => this.loadTerm(name)}>
-        <View style={[styles.card, theme.backgroundColor]}>
+        <View style={[styles.card, theme.backgroundColor, theme.borderColor]}>
           <Text style={[styles.text, theme.textColor]}>{name}</Text>
           <MaterialIcons name={'chevron-right'} size={30} color={'silver'} />
         </View>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 50,
     alignItems: 'center',
-    borderBottomColor: 'silver',
+    borderColor: 'silver',
   },
   text: {
     fontSize: 15,

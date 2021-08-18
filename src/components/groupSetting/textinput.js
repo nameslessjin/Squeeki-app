@@ -34,9 +34,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   onFocusTextInputBorderColor: {
-    borderBottomColor: '#74b9ff',
+    borderColor: '#74b9ff',
   },
   defaultTextInputBorderColor: {
-    borderBottomColor: '#dfe6e9',
+    borderColor: '#dfe6e9',
   },
 })

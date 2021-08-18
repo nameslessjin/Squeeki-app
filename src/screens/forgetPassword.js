@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   verificationButton: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#7f8fa6',
+    borderColor: '#7f8fa6',
   },
   verificationButtonText: {
     color: '#7f8fa6',
