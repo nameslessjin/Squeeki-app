@@ -25,6 +25,7 @@ import {getSingleGroupById, searchAtGroup} from '../actions/group';
 import {detectAtPeopleNGroup} from '../utils/detect';
 import AtUserNGroupList from '../components/postSetting/atUserNGroupList';
 import InputOption from '../components/postSetting/inputOption';
+import {getTheme} from '../utils/theme';
 
 class PostSetting extends React.Component {
   state = {
@@ -58,10 +59,12 @@ class PostSetting extends React.Component {
     atSearchResult: [],
     modalType: 'image',
     initTime: Date.now(),
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {theme} = this.state;
     let headerTitle = 'Create Post';
     if (!this.props.route.params.create) {
       const {
@@ -82,6 +85,8 @@ class PostSetting extends React.Component {
         taskExpiration,
         auth,
       } = this.props.route.params.postData;
+      console.log(content)
+      console.log(originContent)
       this.setState({
         postData: {
           postId: id,
@@ -138,9 +143,12 @@ class PostSetting extends React.Component {
           update={false}
           onPress={this.createUpdatePostPress}
           loading={this.state.loading}
+          theme={theme}
         />
       ),
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -149,7 +157,7 @@ class PostSetting extends React.Component {
       const {chosenUser, nomination} = this.props.route.params;
       this.setState({chosenUser: chosenUser, nomination: nomination});
     }
-
+    const {theme} = this.state;
     // general checking
     if (prevState != this.state) {
       let update = false;
@@ -161,6 +169,7 @@ class PostSetting extends React.Component {
             update={update}
             onPress={this.createUpdatePostPress}
             loading={this.state.loading}
+            theme={theme}
           />
         ),
       });
@@ -255,10 +264,11 @@ class PostSetting extends React.Component {
       confirmButton,
       denyButton,
       taskExpiration,
+      originContent
     } = postData;
     content = content.trim();
 
-    if (content.length > 255) {
+    if (content.length > 1000) {
       return {update: false};
     }
 
@@ -269,7 +279,7 @@ class PostSetting extends React.Component {
       if (image == origin.image) {
         image = null;
       }
-      if (content == origin.content) {
+      if (content == originContent) {
         content = null;
       }
       if (priority == origin.priority) {
@@ -343,6 +353,7 @@ class PostSetting extends React.Component {
   };
 
   validation = () => {
+    const {create, postData} = this.state;
     const {
       content,
       priority,
@@ -352,18 +363,23 @@ class PostSetting extends React.Component {
       initTime,
       taskExpiration,
       type,
-    } = this.state.postData;
+      image,
+      allowComment,
+      visibility,
+      originContent
+    } = postData;
+    origin = {
+      ...this.props.route.params.postData,
+    };
     if (content.trim().length == 0) {
       return false;
     }
 
     if (priority > 0 && priorityExpiration <= Date.now()) {
-      console.log('here1');
       return false;
     }
 
     if (priority == 0 && priorityExpiration > initTime) {
-      console.log('here2');
       return false;
     }
 
@@ -380,6 +396,23 @@ class PostSetting extends React.Component {
         if (taskExpiration <= Date.now()) {
           return false;
         }
+      }
+    }
+
+    if (!create) {
+      if (
+        image == origin.image &&
+        content == origin.originContent &&
+        priority == origin.priority &&
+        priorityExpiration == origin.priorityExpiration &&
+        allowComment == origin.allowComment &&
+        type == origin.type &&
+        visibility == origin.visibility &&
+        confirmButton == origin.confirmButton &&
+        denyButton == origin.denyButton &&
+        taskExpiration == origin.taskExpiration
+      ) {
+        return false;
       }
     }
 
@@ -457,7 +490,7 @@ class PostSetting extends React.Component {
       getFeedFunc(data);
     }
 
-    if (this.props.route.params.prev_route == 'comment') {
+    if (this.props.route.params.prevRoute == 'comment') {
       navigation.navigate(group.group.id ? 'GroupNavigator' : 'Home');
       return;
     }
@@ -633,7 +666,7 @@ class PostSetting extends React.Component {
     const {navigation, group} = this.props;
     navigation.navigate('SearchUser', {
       group: group.group,
-      prev_route: 'PostSetting',
+      prevRoute: 'PostSetting',
     });
   };
 
@@ -642,6 +675,20 @@ class PostSetting extends React.Component {
   };
 
   render() {
+    const {
+      onToggle,
+      toggleTyple,
+      contentKeyboard,
+      loading,
+      chosenUser,
+      nomination,
+      create,
+      modalVisible,
+      atSearchResult,
+      modalType,
+      theme,
+      postData,
+    } = this.state;
     const {
       priority,
       content,
@@ -656,23 +703,13 @@ class PostSetting extends React.Component {
       denyButton,
       taskExpiration,
       auth,
-    } = this.state.postData;
-    const {
-      onToggle,
-      toggleTyple,
-      contentKeyboard,
-      loading,
-      chosenUser,
-      nomination,
-      create,
-      modalVisible,
-      atSearchResult,
-      modalType,
-    } = this.state;
+    } = postData;
 
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
-        <ScrollView style={styles.scroll} bounces={false}>
+        <ScrollView
+          style={[styles.scroll, theme.backgroundColor]}
+          bounces={false}>
           <KeyboardAvoidingView style={styles.container}>
             <StatusBar barStyle={'dark-content'} />
             <InputImage
@@ -687,6 +724,7 @@ class PostSetting extends React.Component {
               onKeyboardInputFocus={this.onKeyboardInputFocus}
               type={'post'}
               disabled={!auth}
+              theme={theme}
             />
 
             {atSearchResult.length == 0 ? null : (
@@ -694,6 +732,7 @@ class PostSetting extends React.Component {
                 atSearchResult={atSearchResult || []}
                 isPicSet={image != null}
                 onAtPress={this.onAtPress}
+                theme={theme}
               />
             )}
 
@@ -711,6 +750,7 @@ class PostSetting extends React.Component {
                   toggleTyple={toggleTyple}
                   currentUserAuth={this.props.group.group.auth}
                   rank_setting={this.props.group.group.rank_setting}
+                  theme={theme}
                 />
 
                 <InputOption
@@ -724,6 +764,7 @@ class PostSetting extends React.Component {
                   rank_setting={this.props.group.group.rank_setting}
                   onInputFocus={() => this.onModalTrigger('priorityExpiration')}
                   priority={priority}
+                  theme={theme}
                 />
               </View>
             )}
@@ -741,6 +782,7 @@ class PostSetting extends React.Component {
                   rank_setting={this.props.group.group.rank_setting}
                   disabled={!create}
                   toggleTyple={toggleTyple}
+                  theme={theme}
                 />
                 <InputOption
                   value={allowComment}
@@ -753,6 +795,7 @@ class PostSetting extends React.Component {
                   rank_setting={this.props.group.group.rank_setting}
                   disabled={false}
                   toggleTyple={toggleTyple}
+                  theme={theme}
                 />
               </View>
             )}
@@ -770,6 +813,7 @@ class PostSetting extends React.Component {
                   rank_setting={this.props.group.group.rank_setting}
                   disabled={false}
                   toggleTyple={toggleTyple}
+                  theme={theme}
                 />
               </View>
             )}
@@ -784,6 +828,7 @@ class PostSetting extends React.Component {
                 disabled={!create}
                 group={this.props.group.group}
                 postId={postId}
+                theme={theme}
               />
             )}
 
@@ -800,6 +845,7 @@ class PostSetting extends React.Component {
                   currentUserAuth={this.props.group.group.auth}
                   rank_setting={this.props.group.group.rank_setting}
                   onFocus={this.onKeyboardInputFocus}
+                  theme={theme}
                 />
                 <InputOption
                   value={denyButton}
@@ -812,6 +858,7 @@ class PostSetting extends React.Component {
                   currentUserAuth={this.props.group.group.auth}
                   rank_setting={this.props.group.group.rank_setting}
                   onFocus={this.onKeyboardInputFocus}
+                  theme={theme}
                 />
               </View>
             ) : null}
@@ -829,6 +876,7 @@ class PostSetting extends React.Component {
                   currentUserAuth={this.props.group.group.auth}
                   rank_setting={this.props.group.group.rank_setting}
                   onInputFocus={() => this.onModalTrigger('taskExpiration')}
+                  theme={theme}
                 />
               </View>
             ) : null}
@@ -847,6 +895,7 @@ class PostSetting extends React.Component {
                 priorityExpiration={priorityExpiration}
                 modifyInput={this.modifyInput}
                 taskExpiration={taskExpiration}
+                theme={theme}
               />
             ) : null}
           </KeyboardAvoidingView>
@@ -860,7 +909,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
     flex: 1,
   },
   scroll: {

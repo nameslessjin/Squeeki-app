@@ -29,6 +29,12 @@ export const themeStyle = StyleSheet.create({
   darkModeIconColor: {
     color: 'white'
   },
+  darkModeSecondaryTextColor: {
+    color: 'grey'
+  },
+  darkModeSecondaryIconColor: {
+    color: 'grey'
+  },
   defaultBackgroundColor: {
     backgroundColor: 'white',
   },
@@ -55,5 +61,11 @@ export const themeStyle = StyleSheet.create({
   },
   defaultIconColor: {
     color: 'black'
-  }
+  },
+  defaultSecondaryTextColor: {
+    color: 'grey'
+  },
+  defaultSecondaryIconColor: {
+    color: 'grey'
+  },
 });

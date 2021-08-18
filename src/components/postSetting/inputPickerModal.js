@@ -29,11 +29,13 @@ export default class InputPickerModal extends React.Component {
 
   renderItem = i => {
     const {value, label} = i.item;
+    const {theme} = this.props
     return (
       <TouchableOpacity onPress={() => this.modifyInput(value)}>
         <View
           style={[
             styles.options,
+            theme.borderColor
           ]}>
           <Text style={{color: '#3498db'}}>{label}</Text>
         </View>
@@ -42,7 +44,7 @@ export default class InputPickerModal extends React.Component {
   };
 
   render() {
-    const {modalVisible, onBackdropPress, options, type} = this.props;
+    const {modalVisible, onBackdropPress, options, type, theme} = this.props;
     let name
     if (type == 'priority'){
         name = 'Priority Level'
@@ -60,10 +62,10 @@ export default class InputPickerModal extends React.Component {
           <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={styles.centeredView}>
               <TouchableWithoutFeedback>
-                <KeyboardAvoidingView style={styles.view}>
+                <KeyboardAvoidingView style={[styles.view, theme.backgroundColor, theme.shadowColor]}>
                   <View style={styles.display}>
-                    <View style={styles.header}>
-                      <Text>{name}</Text>
+                    <View style={[styles.header]}>
+                      <Text style={theme.textColor}>{name}</Text>
                     </View>
                     <FlatList
                       data={options}

@@ -57,6 +57,7 @@ export default class ReplyCard extends React.Component {
       commentId,
       _actionSheetRef,
       onAtUserNGroupHightlightPress,
+      theme
     } = this.props;
     const {icon} = user;
 
@@ -66,11 +67,11 @@ export default class ReplyCard extends React.Component {
           <ReplyProfile icon={icon} />
 
           <View style={styles.rightContainer}>
-            <ReplyUsername createdAt={createdAt} user={user} />
+            <ReplyUsername createdAt={createdAt} user={user} theme={theme}/>
 
             <View style={styles.replyContainer}>
               <ParsedText
-                style={styles.replyStyle}
+                style={[styles.replyStyle, theme.textColor]}
                 parse={[
                   {
                     type: 'url',
@@ -119,6 +120,7 @@ export default class ReplyCard extends React.Component {
               onReplyPress={onReplyPress}
               commentId={commentId}
               user={user}
+              theme={theme}
             />
           </View>
         </View>

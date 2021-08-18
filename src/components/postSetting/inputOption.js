@@ -48,6 +48,7 @@ export default class InputOption extends React.Component {
       disabled,
       onFocus,
       priority,
+      theme,
     } = this.props;
 
     let options = [];
@@ -157,7 +158,11 @@ export default class InputOption extends React.Component {
 
     return (
       <View style={styles.inputContainer}>
-        <Text style={[styles.header, {color: disabled ? 'grey' : '#273c75'}]}>
+        <Text
+          style={[
+            styles.header,
+            {color: disabled ? 'grey' : theme.titleColor.color},
+          ]}>
           {header}
         </Text>
 
@@ -165,8 +170,13 @@ export default class InputOption extends React.Component {
           <TouchableWithoutFeedback
             onPress={() => onInputFocus(type)}
             disabled={disabled}>
-            <View style={styles.textInputContainer}>
-              <Text style={{color: disabled ? 'grey' : 'black'}}>
+            <View
+              style={[
+                styles.textInputContainer,
+                theme.backgroundColor,
+                theme.underLineColor,
+              ]}>
+              <Text style={{color: disabled ? 'grey' : theme.textColor.color}}>
                 {display_text}
               </Text>
             </View>
@@ -174,7 +184,12 @@ export default class InputOption extends React.Component {
         ) : (
           <TextInput
             keyboardType={'default'}
-            style={styles.textInputContainer}
+            style={[
+              styles.textInputContainer,
+              theme.backgroundColor,
+              theme.textColor,
+              theme.underLineColor,
+            ]}
             value={textInputValue.toString()}
             onChangeText={v => modifyInput(v, type)}
             onFocus={onFocus}
@@ -187,6 +202,7 @@ export default class InputOption extends React.Component {
           options={options}
           type={toggleTyple}
           modifyInput={modifyInput}
+          theme={theme}
         />
       </View>
     );

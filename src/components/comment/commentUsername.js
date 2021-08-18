@@ -6,7 +6,7 @@ const { width } = Dimensions.get('screen')
 
 export default class CommentUsername extends React.Component {
   render() {
-    const {user, createdAt} = this.props;
+    const {user, createdAt, theme} = this.props;
     const {group_username, displayName, username} = user;
     const date = dateConversion(createdAt, 'timeDisplay');
 
@@ -47,6 +47,7 @@ export default class CommentUsername extends React.Component {
                     ? group_username_size
                     : displayNameSize,
               },
+              theme.textColor
             ]}>
             {group_username != null ? group_username : displayName}
           </Text>

@@ -300,7 +300,7 @@ export const updatePost = data => {
         postInput: postInput,
       },
     };
-
+    console.log
     const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;

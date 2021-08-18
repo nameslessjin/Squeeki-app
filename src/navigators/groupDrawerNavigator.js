@@ -24,8 +24,13 @@ import {getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point';
 import {loadLeaderBoardFunc} from '../functions/point';
 import {getGroupJoinRequestCountFunc} from '../functions/group';
 import {logUserEvent} from '../actions/userEvent';
+import {getTheme} from '../utils/theme';
 
 class GroupDrawerNavigator extends React.Component {
+  state = {
+    theme: getTheme(this.props.auth.user.theme),
+  };
+
   onToggleHeaderRightButton = () => {
     const {navigation} = this.props;
     navigation.dispatch(DrawerActions.openDrawer());
@@ -34,13 +39,19 @@ class GroupDrawerNavigator extends React.Component {
   componentDidMount() {
     const {navigation, group, route} = this.props;
     const {auth} = group.group;
+    const {theme} = this.state;
     navigation.setOptions({
       headerRight: () =>
         auth == null ? null : (
-          <HeaderRightButton onPress={this.onToggleHeaderRightButton} />
+          <HeaderRightButton
+            onPress={this.onToggleHeaderRightButton}
+            theme={theme}
+          />
         ),
       headerTitle: group.group.display_name,
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
 
     this.reloadGroup({groupId: null, isFullRefresh: false});
@@ -55,19 +66,18 @@ class GroupDrawerNavigator extends React.Component {
   componentDidUpdate() {
     const {navigation, group, route} = this.props;
     const {auth} = group.group;
+    const {theme} = this.state
     navigation.setOptions({
       headerRight: () =>
         auth == null ? null : (
-          <HeaderRightButton onPress={this.onToggleHeaderRightButton} />
+          <HeaderRightButton onPress={this.onToggleHeaderRightButton} theme={theme}/>
         ),
     });
 
     if (route.params) {
       const {refresh, prevRoute} = route.params;
       if (refresh) {
-        if (
-          prevRoute == 'GroupSetting'
-        ) {
+        if (prevRoute == 'GroupSetting') {
           this.reloadGroup({groupId: null, isFullRefresh: true});
         } else if (
           prevRoute == 'PostSetting' ||

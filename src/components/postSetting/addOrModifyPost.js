@@ -3,7 +3,7 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 export default class addOrModifyPost extends React.Component {
   render() {
-    const {onPress, update, loading} = this.props;
+    const {onPress, update, loading, theme} = this.props;
     const disabled = !(update && !loading);
 
     return (
@@ -11,7 +11,7 @@ export default class addOrModifyPost extends React.Component {
         style={styles.headerRightButton}
         onPress={onPress}
         disabled={disabled}>
-        <Text style={[styles.button, {color: disabled ? '#95a5a6' : 'black'}]}>
+        <Text style={[styles.button, {color: disabled ? '#95a5a6' : theme.textColor.color}]}>
           Done
         </Text>
         {/* <MaterialIcons name="plus" size={30} /> */}

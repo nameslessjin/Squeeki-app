@@ -10,7 +10,9 @@ export const getTheme = theme => {
     borderColor: themeStyle.defaultBorderColor,
     underLineColor: themeStyle.defaultUnderLineColor,
     titleColor: themeStyle.defaultTitleColor,
-    iconColor: themeStyle.defaultIconColor
+    iconColor: themeStyle.defaultIconColor,
+    secondaryTextColor: themeStyle.defaultSecondaryTextColor,
+    secondaryIconColor: themeStyle.defaultSecondaryIconColor,
   };
 
   if (theme == 'default') {
@@ -23,7 +25,9 @@ export const getTheme = theme => {
       borderColor: themeStyle.defaultBorderColor,
       underLineColor: themeStyle.defaultUnderLineColor,
       titleColor: themeStyle.defaultTitleColor,
-      iconColor: themeStyle.defaultIconColor
+      iconColor: themeStyle.defaultIconColor,
+      secondaryTextColor: themeStyle.defaultSecondaryTextColor,
+      secondaryIconColor: themeStyle.defaultSecondaryIconColor,
     };
   } else if (theme == 'darkMode') {
     output = {
@@ -35,7 +39,9 @@ export const getTheme = theme => {
       borderColor: themeStyle.darkModeBorderColor,
       underLineColor: themeStyle.darkModeUnderLineColor,
       titleColor: themeStyle.darkModeTitleColor,
-      iconColor: themeStyle.darkModeIconColor
+      iconColor: themeStyle.darkModeIconColor,
+      secondaryTextColor: themeStyle.darkModeSecondaryTextColor,
+      secondaryIconColor: themeStyle.darkModeSecondaryIconColor,
     };
   }
 

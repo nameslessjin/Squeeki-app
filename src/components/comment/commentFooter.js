@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {color} from 'react-native-reanimated';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { countFormat } from '../../utils/format'
+import {countFormat} from '../../utils/format';
 
 export default class CommentFooter extends React.Component {
   render() {
@@ -20,27 +20,29 @@ export default class CommentFooter extends React.Component {
       onOptionToggle,
       onCommentReplyPress,
       commentId,
-      user
+      user,
+      theme,
     } = this.props;
 
-    const {username} = user
-    const likeCount_text = countFormat(likeCount)  
+    const {username} = user;
+    const likeCount_text = countFormat(likeCount);
 
     return (
       <View style={styles.container}>
         {loading ? (
-          <ActivityIndicator animating={true} color={'grey'}/>
+          <ActivityIndicator animating={true} color={'grey'} />
         ) : (
           <TouchableOpacity onPress={onCommentLike}>
             <View style={styles.iconContainer}>
               <MaterialIcons
                 name={liked ? 'heart' : 'heart-outline'}
                 size={25}
-                style={{color: liked ? '#e84118' : 'grey'}}
+                style={{
+                  color: liked ? '#e84118' : theme.secondaryIconColor.color,
+                }}
               />
               {likeCount == 0 ? null : (
-                <Text
-                  style={styles.iconText}>
+                <Text style={[styles.iconText, theme.secondaryTextColor]}>
                   {likeCount_text}
                 </Text>
               )}
@@ -50,11 +52,17 @@ export default class CommentFooter extends React.Component {
         <TouchableOpacity
           style={styles.replyButton}
           onPress={() => onCommentReplyPress(commentId, 'comment', username)}>
-          <Text style={styles.replyButtonText}>REPLY</Text>
+          <Text style={[styles.replyButtonText, theme.secondaryTextColor]}>
+            REPLY
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={onOptionToggle}>
           <View style={styles.iconSeparation}>
-            <MaterialIcons name={'dots-horizontal'} size={25} />
+            <MaterialIcons
+              name={'dots-horizontal'}
+              size={25}
+              style={theme.secondaryIconColor}
+            />
           </View>
         </TouchableOpacity>
       </View>

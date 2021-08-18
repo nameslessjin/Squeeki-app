@@ -25,6 +25,7 @@ import {userLogout} from '../../actions/auth';
 import PostMedia from './postMedia';
 import PostNomination from './postNomination';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
+import {getTheme} from '../../utils/theme';
 
 class PostCard extends React.Component {
   state = {
@@ -39,6 +40,7 @@ class PostCard extends React.Component {
     selected: false,
     pressedButton: 'like',
     ...this.props.item,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   onPostDelete = () => {
@@ -65,7 +67,6 @@ class PostCard extends React.Component {
   };
 
   getGroup = async id => {
-
     const {item, getSingleGroupById, auth, navigation, group} = this.props;
     const request = {
       id: id ? id : item.groupId,
@@ -223,7 +224,7 @@ class PostCard extends React.Component {
       navigation.navigate('PostSetting', {
         postData: postData,
         create: false,
-        prev_route: prev_route,
+        prevRoute: prev_route,
       });
       this.onBackDropPress();
     } else {
@@ -345,7 +346,15 @@ class PostCard extends React.Component {
   };
 
   render() {
-    const {id, createdAt, user, priority, nomination, checked} = this.state;
+    const {
+      id,
+      createdAt,
+      user,
+      priority,
+      nomination,
+      checked,
+      theme,
+    } = this.state;
     const {
       commentTouchable,
       selectionMode,
@@ -357,7 +366,7 @@ class PostCard extends React.Component {
     const date = dateConversion(createdAt, 'timeDisplay');
 
     // default
-    let backgroundColor = 'white';
+    let backgroundColor = theme.backgroundColor.backgroundColor;
 
     // darkmode
     // let backgroundColor = '#1d2027';
@@ -406,6 +415,7 @@ class PostCard extends React.Component {
                   ? group.group.rank_setting.manage_task_rank_required
                   : null
               }
+              theme={theme}
             />
 
             <PostMedia
@@ -417,6 +427,7 @@ class PostCard extends React.Component {
                   ? this.props._actionSheetRef
                   : this._actionSheetRef
               }
+              theme={theme}
             />
 
             {selectionMode ? (
@@ -434,10 +445,15 @@ class PostCard extends React.Component {
                 onRespondPost={this.onRespondPost}
                 onViewButtonPress={this.getGroup}
                 {...this.state}
+                theme={theme}
               />
             )}
             {nomination == null || selectionMode ? null : (
-              <PostNomination {...this.state} onPress={this.onVotePress} />
+              <PostNomination
+                {...this.state}
+                onPress={this.onVotePress}
+                theme={theme}
+              />
             )}
           </View>
         </TouchableWithoutFeedback>

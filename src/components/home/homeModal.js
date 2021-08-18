@@ -10,8 +10,6 @@ import {
   Linking,
 } from 'react-native';
 
-const appStoreLink = 'itms-apps://apps.apple.com/us/app/squeeki/id1529519910';
-
 export default class HomeModal extends React.Component {
   state = {};
 
@@ -29,15 +27,20 @@ export default class HomeModal extends React.Component {
   };
 
   render() {
-    const {modalVisible, onBackdropPress, type} = this.props;
+    const {modalVisible, onBackdropPress, type, theme} = this.props;
 
     return (
       <View style={[styles.centeredView]}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={[styles.centeredView]}>
-              <View style={styles.modalView}>
-                <Text style={{fontSize: 18, fontWeight: 'bold', color: 'grey'}}>
+              <View
+                style={[
+                  styles.modalView,
+                  theme.backgroundColor,
+                  theme.shadowColor,
+                ]}>
+                <Text style={[{fontSize: 18, fontWeight: 'bold'}, theme.textColor]}>
                   A New Version is available
                 </Text>
                 <TouchableOpacity onPress={this.directToStore}>

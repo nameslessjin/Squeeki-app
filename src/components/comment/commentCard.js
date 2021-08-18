@@ -22,6 +22,7 @@ import {
   onEmailPress,
 } from '../chat/render';
 import {getSingleGroupById} from '../../actions/group';
+import {getTheme} from '../../utils/theme'
 
 class CommentCard extends React.Component {
   state = {
@@ -29,6 +30,7 @@ class CommentCard extends React.Component {
     loading: false,
     ...this.props.comment,
     reply_loading: false,
+    theme: getTheme(this.props.auth.user.theme)
   };
 
   componentDidMount() {
@@ -139,6 +141,7 @@ class CommentCard extends React.Component {
       content,
       createdAt,
       user,
+      theme
     } = this.state;
 
     const {container, commentContainer, rightContainer, commentStyle} = styles;
@@ -157,14 +160,14 @@ class CommentCard extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <View style={container}>
-          <CommentProfile icon={icon} />
+          <CommentProfile icon={icon}/>
 
           <View style={rightContainer}>
-            <CommentUsername createdAt={createdAt} user={user} />
+            <CommentUsername createdAt={createdAt} user={user} theme={theme}/>
 
             <View style={commentContainer}>
               <ParsedText
-                style={commentStyle}
+                style={[commentStyle, theme.textColor]}
                 parse={[
                   {
                     type: 'url',
@@ -213,6 +216,7 @@ class CommentCard extends React.Component {
               onCommentReplyPress={onCommentReplyPress}
               commentId={id}
               user={user}
+              theme={theme}
             />
 
             <ReplyList
@@ -223,6 +227,7 @@ class CommentCard extends React.Component {
               commentId={id}
               _actionSheetRef={_actionSheetRef}
               onAtUserNGroupHightlightPress={this.onAtUserNGroupHightlightPress}
+              theme={theme}
             />
 
             {/* //reply list */}

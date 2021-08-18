@@ -54,6 +54,7 @@ export default class CommentModal extends React.Component {
       postOwner,
       rank_in_group,
       rank_required,
+      theme
     } = this.props;
     const {is_report_toggled, report_content, onReport} = this.state;
 
@@ -66,15 +67,15 @@ export default class CommentModal extends React.Component {
 
     const report_interface = (
       <TouchableWithoutFeedback>
-        <KeyboardAvoidingView style={styles.reportView}>
+        <KeyboardAvoidingView style={[styles.reportView, theme.backgroundColor]}>
           <View style={styles.reportHeader}>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>Report</Text>
+            <Text style={[{fontSize: 18, fontWeight: 'bold'}, theme.textColor]}>Report</Text>
           </View>
           <View style={styles.reportTextInput}>
             <TextInput
               placeholder={'Reason to report ...'}
               placeholderTextColor={'#7f8fa6'}
-              style={{width: '100%', height: '100%'}}
+              style={[{width: '100%', height: '100%'}, theme.textColor]}
               multiline={true}
               maxLength={100}
               value={report_content}
@@ -94,7 +95,7 @@ export default class CommentModal extends React.Component {
               <Text
                 style={{
                   fontSize: 15,
-                  color: report_content.length == 0 ? '#7f8fa6' : null,
+                  color: report_content.length == 0 ? '#7f8fa6' : theme.textColor.color,
                 }}>
                 Submit
               </Text>
@@ -117,23 +118,23 @@ export default class CommentModal extends React.Component {
               {is_report_toggled ? (
                 report_interface
               ) : (
-                <View style={[styles.modalView]}>
+                <View style={[styles.modalView, theme.backgroundColor, theme.shadowColor]}>
                   {owner ? null : (
                     <TouchableOpacity onPress={() => this.onPress('report')}>
                       <View style={styles.button}>
-                        <Text>Report</Text>
+                        <Text style={theme.textColor}>Report</Text>
                       </View>
                     </TouchableOpacity>
                   )}
-                  {(post_owner || rank_permitted ) && !owner ? <View style={styles.underline} /> : null}
+                  {(post_owner || rank_permitted ) && !owner ? <View style={[styles.underline, theme.borderColor]} /> : null}
                   {owner || post_owner || rank_permitted ? (
                     <TouchableOpacity onPress={() => this.onPress('delete')}>
                       <View style={styles.button}>
-                        <Text>Delete</Text>
+                        <Text style={theme.textColor}>Delete</Text>
                       </View>
                     </TouchableOpacity>
                   ) : null}
-                  <View style={styles.underline} />
+                  <View style={[styles.underline, theme.borderColor]}  />
                   <TouchableOpacity onPress={this.onBackdropPress}>
                     <View style={styles.button}>
                       <Text style={{color: 'red'}}>Cancel</Text>
@@ -215,7 +216,7 @@ const styles = StyleSheet.create({
   reportTextInput: {
     height: 110,
     width: '100%',
-    padding: 5,
+    padding: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   reportFooter: {

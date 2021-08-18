@@ -20,6 +20,7 @@ import messaging from '@react-native-firebase/messaging';
 import {requestNotificationPermission} from '../functions/permission';
 import {registerDeviceForNotification} from '../actions/user';
 import HomeModal from '../components/home/homeModal';
+import {getTheme} from '../utils/theme';
 
 class Home extends React.Component {
   state = {
@@ -27,6 +28,7 @@ class Home extends React.Component {
     refreshing: false,
     appState: AppState.currentState,
     modalVisible: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
@@ -142,10 +144,10 @@ class Home extends React.Component {
 
   render() {
     const {feed} = this.props.post;
-    const {modalVisible} = this.state;
+    const {modalVisible, theme} = this.state;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
           <StatusBar barStyle={'dark-content'} />
           <PostList
             posts={feed}
@@ -158,7 +160,7 @@ class Home extends React.Component {
             <ActivityIndicator animating={true} color={'grey'} />
           ) : null}
           {modalVisible ? (
-            <HomeModal type={'update'} modalVisible={modalVisible} />
+            <HomeModal type={'update'} modalVisible={modalVisible} theme={theme}/>
           ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

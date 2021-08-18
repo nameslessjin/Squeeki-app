@@ -15,8 +15,15 @@ export default class CommentList extends React.Component {
       replyId,
       _actionSheetRef,
     } = this.props;
-
     if (item.id) {
+      if (item.id == 'commentDisabled') {
+        return (
+          <View style={styles.postOnlyContainer}>
+            <Text style={styles.commentDisabled}>Comment Disabled</Text>
+          </View>
+        );
+      }
+
       if (item.type) {
         return (
           <CommentPost
@@ -64,15 +71,17 @@ export default class CommentList extends React.Component {
       if (post.allowComment) {
         data.push(post);
         data = data.concat(comments);
+      } else {
+        data.push(post);
+        data.push({id: 'commentDisabled'});
       }
-    } else {
-      return null;
     }
 
     if (sent && !replyId) {
       this.scrollToTop(this.instance);
     }
-    return post.allowComment ? (
+
+    return (
       <FlatList
         style={styles.container}
         data={data}
@@ -84,16 +93,6 @@ export default class CommentList extends React.Component {
         onEndReached={() => onEndReached()}
         onEndReachedThreshold={0}
       />
-    ) : (
-      <View
-        style={{
-          width: '100%',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-        }}>
-        <CommentPost post={post} option={false} navigation={navigation} />
-        <Text style={styles.commentDisabled}>Comment disabled</Text>
-      </View>
     );
   }
 }

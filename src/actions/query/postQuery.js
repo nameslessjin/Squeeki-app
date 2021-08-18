@@ -119,6 +119,7 @@ query getPost($postId: ID!){
                 uri
             }
             content
+            originContent
             createdAt
             taskResponse
             updatedAt

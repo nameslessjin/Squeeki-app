@@ -51,7 +51,8 @@ export default class PostHeader extends React.Component {
       selectionMode,
       rank_required_manage,
       rank_required_task,
-      onTaskManagementPress
+      onTaskManagementPress,
+      theme,
     } = this.props;
 
     let currentUserAuthPostManagementQualified = false;
@@ -79,7 +80,7 @@ export default class PostHeader extends React.Component {
 
     // post options based on user's authority
     let options = (
-      <View style={styles.modalView}>
+      <View style={[styles.modalView, theme.backgroundColor]}>
         {auth ? (
           <TouchableOpacity style={styles.option} onPress={onPostNotification}>
             <Text style={{color: notification ? 'red' : 'grey'}}>
@@ -91,22 +92,22 @@ export default class PostHeader extends React.Component {
           <TouchableOpacity
             style={styles.option}
             onPress={onTaskManagementPress}>
-            <Text>Task Management</Text>
+            <Text style={theme.textColor}>Task Management</Text>
           </TouchableOpacity>
         ) : null}
         {auth || currentUserAuthPostManagementQualified ? (
           <View style={{width: '100%'}}>
             <TouchableOpacity style={styles.option} onPress={onPostUpdate}>
-              <Text>Edit</Text>
+              <Text style={theme.textColor}>Edit</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.option} onPress={onPostDelete}>
-              <Text>Delete</Text>
+              <Text style={theme.textColor}>Delete</Text>
             </TouchableOpacity>
           </View>
         ) : null}
 
         <TouchableOpacity style={styles.option} onPress={onPostReport}>
-          <Text>Report</Text>
+          <Text style={theme.textColor}>Report</Text>
         </TouchableOpacity>
       </View>
     );
@@ -114,15 +115,18 @@ export default class PostHeader extends React.Component {
     // this is for report input
     if (is_report_toggled) {
       options = (
-        <KeyboardAvoidingView style={styles.reportView}>
+        <KeyboardAvoidingView
+          style={[styles.reportView, theme.backgroundColor]}>
           <View style={styles.reportHeader}>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>Report</Text>
+            <Text style={[{fontSize: 18, fontWeight: 'bold'}, theme.textColor]}>
+              Report
+            </Text>
           </View>
           <View style={styles.reportTextInput}>
             <TextInput
               placeholder={'Reason to report ...'}
               placeholderTextColor={'#7f8fa6'}
-              style={{width: '100%'}}
+              style={[{width: '100%'}, theme.textColor]}
               multiline={true}
               maxLength={100}
               value={report}
@@ -142,7 +146,7 @@ export default class PostHeader extends React.Component {
               <Text
                 style={{
                   fontSize: 15,
-                  color: report.length == 0 ? '#7f8fa6' : null,
+                  color: report.length == 0 ? '#7f8fa6' : theme.textColor.color,
                 }}>
                 Submit
               </Text>
@@ -224,6 +228,7 @@ export default class PostHeader extends React.Component {
                       ? group_username_size
                       : displayNameSize,
                 },
+                theme.textColor,
               ]}
               numberOfLines={2}
               multiline={true}>
@@ -268,7 +273,11 @@ export default class PostHeader extends React.Component {
             <TouchableOpacity
               onPress={toggleModal}
               style={styles.verticalDotStyle}>
-              <MaterialIcons size={25} name={'dots-vertical'} />
+              <MaterialIcons
+                size={25}
+                name={'dots-vertical'}
+                color={theme.textColor.color}
+              />
             </TouchableOpacity>
           ) : null}
         </View>
@@ -365,7 +374,7 @@ const styles = StyleSheet.create({
   reportTextInput: {
     height: 110,
     width: '100%',
-    padding: 5,
+    padding: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   reportFooter: {

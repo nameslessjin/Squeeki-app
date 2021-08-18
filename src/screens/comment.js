@@ -36,33 +36,11 @@ import {searchAtUser} from '../actions/user';
 import AtList from '../components/comment/AtList';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {searchAtGroup} from '../actions/group';
+import {getTheme} from '../utils/theme';
 
 const {height, width} = Dimensions.get('screen');
 
 class Comment extends React.Component {
-  componentDidMount() {
-    this.getPostComment();
-    this.inputHeight = 35;
-    const {navigation} = this.props;
-
-    navigation.setOptions({
-      headerBackTitleVisible: false,
-    });
-    this._actionSheetRef = undefined;
-  }
-
-  componentWillUnmount() {
-    const {group, navigation} = this.props;
-    if (group.group.id != null) {
-      navigation.navigate('GroupNavigator', {
-        refresh: true,
-        prevRoute: 'Comment',
-      });
-    }
-    this.props.cleanComment();
-
-    // get post
-  }
 
   state = {
     newComment: '',
@@ -81,7 +59,36 @@ class Comment extends React.Component {
     atSearchResult: [],
     replyType: 'comment',
     replyTo: '',
+    theme: getTheme(this.props.auth.user.theme),
   };
+
+
+  componentDidMount() {
+    this.getPostComment();
+    this.inputHeight = 35;
+    const {navigation} = this.props;
+    const {theme} = this.state;
+    navigation.setOptions({
+      headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
+    });
+    this._actionSheetRef = undefined;
+  }
+
+  componentWillUnmount() {
+    const {group, navigation} = this.props;
+    if (group.group.id != null) {
+      navigation.navigate('GroupNavigator', {
+        refresh: true,
+        prevRoute: 'Comment',
+      });
+    }
+    this.props.cleanComment();
+
+    // get post
+  }
+
 
   componentDidUpdate(prevProps, prevState) {
     // check for search term
@@ -375,16 +382,18 @@ class Comment extends React.Component {
       atSearchResult,
       replyType,
       replyTo,
+      theme
     } = this.state;
     const disabled = newComment.trim().length == 0 || newComment.length > 1000;
     const {navigation, group, comment} = this.props;
     const isReply = replyId ? true : false;
+
     return (
       <ActionSheetProvider
         ref={component => (this._actionSheetRef = component)}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <KeyboardAvoidingView
-            style={container}
+            style={[container, theme.backgroundColor]}
             behavior={Platform.OS == 'ios' ? 'padding' : 'overflow'}
             keyboardVerticalOffset={35}>
             <StatusBar barStyle={'dark-content'} />
@@ -400,10 +409,11 @@ class Comment extends React.Component {
               onCommentReplyPress={this.onCommentReplyPress}
               replyId={replyId}
               _actionSheetRef={this._actionSheetRef}
+              theme={theme}
             />
 
             {post.allowComment && !modalVisible ? (
-              <View style={styles.inputBarContainer}>
+              <View style={[styles.inputBarContainer, theme.backgroundColor]}>
                 <ReplyIndicator
                   isReply={isReply}
                   inputHeight={inputHeight}
@@ -425,7 +435,7 @@ class Comment extends React.Component {
                     onAtPress={this.onAtPress}
                   />
                   <TextInput
-                    style={[styles.textInput]}
+                    style={[styles.textInput, theme.textColor]}
                     ref={r => (this.inputRef = r)}
                     placeholder={
                       isReply ? 'Reply a comment ...' : 'Add a comment ...'
@@ -465,6 +475,7 @@ class Comment extends React.Component {
                     ? group.group.rank_setting.manage_comment_rank_required
                     : null
                 }
+                theme={theme}
               />
             ) : null}
           </KeyboardAvoidingView>

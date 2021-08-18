@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react
 
 export default class PostNomination extends React.Component {
   render() {
-    const {nomination, onPress, voting} = this.props;
+    const {nomination, onPress, voting, theme} = this.props;
     const now = Date.now();
     const voteButton = nomination.voted ? (
       <View style={{marginVertical: 5}}>
@@ -20,7 +20,7 @@ export default class PostNomination extends React.Component {
     );
     return (
       <View style={styles.container}>
-        <Text style={{paddingHorizontal: 10}}>
+        <Text style={[{paddingHorizontal: 10}, theme.textColor]}>
           <Text style={{fontWeight: 'bold'}}>{nomination.nominee_name}</Text> is
           nominated for{' '}
           <Text style={{fontWeight: 'bold'}}>{nomination.nomination_name}</Text>

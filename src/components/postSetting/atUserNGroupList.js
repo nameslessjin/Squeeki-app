@@ -17,7 +17,8 @@ const extractKey = ({id}) => id;
 export default class AtUserNGroupList extends React.Component {
   renderItem = ({item}) => {
     const {id, displayName, username, iconUrl, groupname} = item;
-    const {onAtPress} = this.props;
+    const {onAtPress, theme} = this.props;
+
     return (
       <TouchableWithoutFeedback onPress={() => onAtPress(item)}>
         <View style={styles.card}>
@@ -28,8 +29,12 @@ export default class AtUserNGroupList extends React.Component {
             />
           </View>
           <View style={styles.nameHolder}>
-            <Text style={styles.displayName}>{displayName}</Text>
-            <Text style={styles.username}>{username ? `@${username}` : `g@${groupname}`}</Text>
+            <Text style={[styles.displayName, theme.textColor]}>
+              {displayName}
+            </Text>
+            <Text style={styles.username}>
+              {username ? `@${username}` : `g@${groupname}`}
+            </Text>
           </View>
         </View>
       </TouchableWithoutFeedback>

@@ -38,6 +38,7 @@ export default class PostFooter extends React.Component {
       currentUserAuth,
       onViewButtonPress,
       taskExpiration,
+      theme
     } = this.props;
 
     const likeCount_text = countFormat(likeCount);
@@ -52,9 +53,9 @@ export default class PostFooter extends React.Component {
               // disabled={!commentTouchable}
             >
               <View style={styles.IconContainer}>
-                <MaterialIcons name="comment-outline" size={25} />
+                <MaterialIcons name="comment-outline" size={25} color={theme.iconColor.color} />
                 {commentCount == 0 ? null : (
-                  <Text style={styles.IconText}>{commentCount_text}</Text>
+                  <Text style={[styles.IconText, theme.textColor]}>{commentCount_text}</Text>
                 )}
               </View>
             </TouchableOpacity>
@@ -69,12 +70,12 @@ export default class PostFooter extends React.Component {
                   <MaterialIcons
                     name={liked ? 'heart' : 'heart-outline'}
                     size={25}
-                    style={liked ? {color: '#e84118'} : null}
+                    style={liked ? {color: '#e84118'} : theme.iconColor}
                   />
                 )}
 
                 {likeCount == 0 ? null : (
-                  <Text style={styles.IconText}>{likeCount_text}</Text>
+                  <Text style={[styles.IconText, theme.textColor]}>{likeCount_text}</Text>
                 )}
               </View>
             </TouchableOpacity>
@@ -184,7 +185,7 @@ export default class PostFooter extends React.Component {
                 </TouchableOpacity>
               </View>
               <View style={[styles.rowContainer, {height: 25,width: '100%'}]}>
-                <Text>{dateConversion(taskExpiration, 'expirationDisplay')}</Text>
+                <Text style={theme.textColor} >{dateConversion(taskExpiration, 'expirationDisplay')}</Text>
               </View>
             </View>
           )

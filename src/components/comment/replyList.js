@@ -14,6 +14,7 @@ export default class ReplyList extends React.Component {
       commentId,
       _actionSheetRef,
       onAtUserNGroupHightlightPress,
+      theme
     } = this.props;
 
     // return with item
@@ -27,6 +28,7 @@ export default class ReplyList extends React.Component {
         commentId={commentId}
         _actionSheetRef={_actionSheetRef}
         onAtUserNGroupHightlightPress={onAtUserNGroupHightlightPress}
+        theme={theme}
       />
     );
   };
