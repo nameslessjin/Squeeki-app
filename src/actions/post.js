@@ -191,6 +191,7 @@ export const updatePost = data => {
     groupId,
     image,
     content,
+    originContent,
     priority,
     priorityExpiration,
     allowComment,
@@ -244,7 +245,7 @@ export const updatePost = data => {
     }
 
     if (content == null) {
-      newContent = origin.content;
+      newContent = originContent;
     }
 
     if (priority == null) {
@@ -300,7 +301,7 @@ export const updatePost = data => {
         postInput: postInput,
       },
     };
-    console.log
+
     const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;

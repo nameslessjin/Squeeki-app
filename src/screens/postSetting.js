@@ -85,8 +85,7 @@ class PostSetting extends React.Component {
         taskExpiration,
         auth,
       } = this.props.route.params.postData;
-      console.log(content)
-      console.log(originContent)
+
       this.setState({
         postData: {
           postId: id,
@@ -264,7 +263,7 @@ class PostSetting extends React.Component {
       confirmButton,
       denyButton,
       taskExpiration,
-      originContent
+      originContent,
     } = postData;
     content = content.trim();
 
@@ -325,6 +324,7 @@ class PostSetting extends React.Component {
         groupId,
         image,
         content,
+        originContent,
         priority,
         priorityExpiration,
         allowComment,
@@ -366,7 +366,7 @@ class PostSetting extends React.Component {
       image,
       allowComment,
       visibility,
-      originContent
+      originContent,
     } = postData;
     origin = {
       ...this.props.route.params.postData,
