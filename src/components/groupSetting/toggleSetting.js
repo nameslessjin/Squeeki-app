@@ -19,9 +19,9 @@ export default class ToggleSetting extends React.Component {
     if (type == 'visibility') {
       icon = (
         <MaterialIcons
-          name={on == 'public' ? 'toggle-switch-off-outline' : 'toggle-switch'}
+          name={on ? 'toggle-switch-off-outline' : 'toggle-switch'}
           size={45}
-          color={on == 'public' ? 'grey' : 'green'}
+          color={on ? 'grey' : 'green'}
         />
       );
     } else if (type == 'request_to_join') {

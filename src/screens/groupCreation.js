@@ -29,7 +29,7 @@ class GroupCreation extends React.Component {
     shortDescription: '',
     initialize: true,
     loading: false,
-    visibility: 'public',
+    visibility: 1,
     request_to_join: false,
     tags: [],
     theme: getTheme(this.props.auth.user.theme),
@@ -149,9 +149,7 @@ class GroupCreation extends React.Component {
         loading: false,
         visibility:
           type == 'visibility'
-            ? prevState.visibility == 'public'
-              ? 'private'
-              : 'public'
+            ? !prevState.visibility
             : prevState.visibility,
         request_to_join:
           type == 'request_to_join'

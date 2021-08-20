@@ -133,7 +133,7 @@ class Group extends React.Component {
 
   onEndReached = () => {
     const {visibility, auth} = this.props.group.group;
-    if (visibility == 'public' || auth != null) {
+    if (visibility || auth != null) {
       this.loadGroupPosts(false);
     }
   };
@@ -142,7 +142,7 @@ class Group extends React.Component {
     this.setState({refreshing: true});
     const {visibility, auth} = this.props.group.group;
     await this.getGroup();
-    if (visibility == 'public' || auth != null) {
+    if (visibility || auth != null) {
       this.loadLeaderBoard();
       this.loadGroupPosts(true);
       this.getUserGroupPoint();

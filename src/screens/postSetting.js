@@ -38,7 +38,7 @@ class PostSetting extends React.Component {
       allowComment: 1,
       type: 'general',
       groupId: null,
-      visibility: 'public',
+      visibility: 1,
       auth: true,
       originContent: '',
       confirmButton: 'Accept',

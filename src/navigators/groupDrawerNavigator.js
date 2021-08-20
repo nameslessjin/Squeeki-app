@@ -174,7 +174,7 @@ class GroupDrawerNavigator extends React.Component {
       await this.getGroup(id);
     }
 
-    if (visibility == 'public' || auth != null) {
+    if (visibility || auth != null) {
       this.loadLeaderBoard();
 
       if (auth != null) {

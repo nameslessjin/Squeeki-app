@@ -159,7 +159,7 @@ export const createPost = data => {
       type: type,
       groupId: groupId,
       image: uploadImage,
-      visibility: visibility,
+      visibility,
       nomination: nomination,
       priorityExpiration: new Date(priorityExpiration),
       confirmButton: confirmButton,
@@ -295,6 +295,7 @@ export const updatePost = data => {
       taskExpiration: newType == 'task' ? new Date(parseInt(newTaskExpiration)) : null
     };
 
+    console.log(postInput)
     const graphql = {
       query: updatePostMutation,
       variables: {

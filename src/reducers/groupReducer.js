@@ -63,7 +63,7 @@ export default (groupReducer = (state = INITIAL_STATE, action) => {
         ...state,
         group: {
           ...state.group,
-          visibility: state.group.visibility == 'public' ? 'private' : 'public',
+          visibility: state.group.visibility,
         },
       };
     case 'changeGroupRequestToJoin':

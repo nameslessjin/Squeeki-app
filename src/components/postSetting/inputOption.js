@@ -30,8 +30,8 @@ export default class InputOption extends React.Component {
   ];
 
   viewOptions = [
-    {id: '0', label: 'Public', value: 'public'},
-    {id: '1', label: 'Private', value: 'private'},
+    {id: '0', label: 'Public', value: 1},
+    {id: '1', label: 'Private', value: 0},
   ];
 
   render() {
@@ -152,6 +152,8 @@ export default class InputOption extends React.Component {
       }
     } else if (type == 'taskExpiration') {
       display_text = dateConversion(textInputValue, 'task');
+    } else if (type == 'visibility') {
+      display_text = value == 1 ? 'public' : 'private'
     }
 
     const toggled = onToggle && toggleTyple == type;

@@ -57,7 +57,7 @@ export default class PostList extends React.Component {
 
       data = [groupHeader];
 
-      if (group.visibility == 'public' || group.auth) {
+      if (group.visibility || group.auth) {
         data = data.concat(posts);
         if (posts.length == 0) {
           data = data.concat({id: 'null'});

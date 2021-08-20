@@ -311,7 +311,7 @@ class GroupHeader extends React.Component {
               </View>
             </Modal>
           </View>
-          {visibility == 'private' && auth == null ? (
+          {!visibility && auth == null ? (
             <View style={styles.privateGroupTextView}>
               <Text style={styles.privateGroupText}>This group is private</Text>
               <Text style={styles.privateGroupSubText}>

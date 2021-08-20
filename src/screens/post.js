@@ -35,7 +35,7 @@ class Post extends React.Component {
       headerTintColor: theme.textColor.color,
     });
 
-    if (visibility == 'public' || auth != null) {
+    if (visibility || auth != null) {
       this.setState({loading: true});
       this.loadPosts(true);
       this.setState({loading: false});
@@ -53,7 +53,7 @@ class Post extends React.Component {
 
   onEndReached = () => {
     const {visibility, auth} = this.props.group.group;
-    if (visibility == 'public' || auth != null) {
+    if (visibility || auth != null) {
       this.setState({loading: true});
       this.loadPosts(false);
       this.setState({loading: false});
@@ -62,7 +62,7 @@ class Post extends React.Component {
 
   onRefresh = () => {
     const {visibility, auth} = this.props.group.group;
-    if (visibility == 'public' || auth != null) {
+    if (visibility || auth != null) {
       this.setState({refreshing: true});
       this.loadPosts(true);
       this.setState({refreshing: false});

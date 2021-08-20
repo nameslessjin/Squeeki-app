@@ -154,7 +154,7 @@ class GroupSetting extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
       let update = false;
-      const {theme} = this.state
+      const {theme} = this.state;
       update = this.extractData().update;
       const {navigation} = this.props;
       const {auth, rank_setting} = this.props.group.group;
@@ -272,11 +272,7 @@ class GroupSetting extends React.Component {
         ...prevState,
         loading: false,
         visibility:
-          type == 'visibility'
-            ? prevState.visibility == 'public'
-              ? 'private'
-              : 'public'
-            : prevState.visibility,
+          type == 'visibility' ? !prevState.visibility : prevState.visibility,
         request_to_join:
           type == 'request_to_join'
             ? !prevState.request_to_join
@@ -372,7 +368,8 @@ class GroupSetting extends React.Component {
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
           style={[{height: '100%', width: '100%'}, theme.backgroundColor]}>
-          <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
+          <KeyboardAvoidingView
+            style={[styles.container, theme.backgroundColor]}>
             <StatusBar barStyle={'dark-content'} />
             <GroupHeader
               setGroupHeader={this.setGroupHeader}
