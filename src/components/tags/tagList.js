@@ -5,7 +5,7 @@ const extractKey = ({id}) => id;
 
 export default class TagList extends React.Component {
   renderItem = ({item}) => {
-    const {isSearch, onPress, isGroupHeader} = this.props;
+    const {isSearch, onPress, isGroupHeader, theme} = this.props;
 
     const style = isSearch
       ? styles.tag
@@ -15,7 +15,7 @@ export default class TagList extends React.Component {
     const textStyle = isGroupHeader ? styles.groupHeaderText : styles.tagText;
     return (
       <TouchableOpacity onPress={() => isGroupHeader ? null : onPress(item)}>
-        <View style={style}>
+        <View style={[style]}>
           <Text style={textStyle}>{item.tag_name}</Text>
           {isGroupHeader ? null : (
             <View style={styles.use_count}>

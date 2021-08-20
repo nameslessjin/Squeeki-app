@@ -10,6 +10,7 @@ import {
 import {connect} from 'react-redux';
 import {turnNomination} from '../../actions/nomination';
 import {userLogout} from '../../actions/auth';
+import {getTheme} from '../../utils/theme';
 
 class NominationCard extends React.Component {
   options = [
@@ -22,6 +23,7 @@ class NominationCard extends React.Component {
   state = {
     item: this.props.item,
     loading: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   onEditPress = () => {
@@ -42,7 +44,7 @@ class NominationCard extends React.Component {
     this.setState({loading: false});
     if (nomination.errors) {
       // alert(nomination.errors[0].message);
-      alert('Cannot turn on nomination at this time, please try again later')
+      alert('Cannot turn on nomination at this time, please try again later');
       if (nomination.errors[0].message == 'Not authenticated') {
         userLogout();
         navigation.reset({
@@ -55,41 +57,53 @@ class NominationCard extends React.Component {
     this.setState({on: !on});
   };
 
-  componentDidUpdate(prevProps, prevState){
-    if (prevProps != this.props){
-        this.setState({item: this.props.item})
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps != this.props) {
+      this.setState({item: this.props.item});
     }
   }
 
   onSelected = () => {
     const {prev_route, onNominationSelect, item} = this.props;
-    if (prev_route != 'PostSetting'){
-        return
-    } 
-    onNominationSelect(item)
-
-  }
+    if (prev_route != 'PostSetting') {
+      return;
+    }
+    onNominationSelect(item);
+  };
 
   render() {
-    let {item, loading} = this.state;
+    let {item, loading, theme} = this.state;
     let {name, period, points, on, selected, type} = item;
     const {prev_route, group} = this.props;
     const value = this.options.filter(i => i.key == period)[0].value;
-    const type_display = type == 'reward' ? "Reward" : 'Penalty'
-    const {auth, rank_setting} = group.group
-    
+    const type_display = type == 'reward' ? 'Reward' : 'Penalty';
+    const {auth, rank_setting} = group.group;
+
     return (
       <TouchableWithoutFeedback onPress={this.onSelected}>
-        <View style={[styles.container, {backgroundColor: selected ? '#c7ecee' : 'white'}]}>
+        <View
+          style={[
+            styles.container,
+            {
+              backgroundColor: selected
+                ? '#c7ecee'
+                : theme.backgroundColor.backgroundColor,
+            },
+          ]}>
           <View style={styles.textContainer}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.period}>{'For nomination: ' + points} points</Text>
-            <Text style={styles.period}>For winner: 200 points</Text>
+            <Text style={[styles.name, theme.textColor]}>{name}</Text>
+            <Text style={[styles.period, theme.textColor]}>
+              {'For nomination: ' + points} points
+            </Text>
+            <Text style={[styles.period, theme.textColor]}>
+              For winner: 200 points
+            </Text>
             {/* <Text style={styles.period}>Multiplier: 3x</Text> */}
-            <Text style={styles.period}>{value}</Text>
+            <Text style={[styles.period, theme.textColor]}>{value}</Text>
           </View>
 
-          {prev_route == 'PostSetting' || auth.rank > rank_setting.group_setting_rank_required ? (
+          {prev_route == 'PostSetting' ||
+          auth.rank > rank_setting.group_setting_rank_required ? (
             <View style={styles.options} />
           ) : (
             <View style={styles.options}>
@@ -119,6 +133,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     margin: 10,
+    borderRadius: 5,
   },
   textContainer: {
     width: '150%',

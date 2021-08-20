@@ -3,11 +3,11 @@ import {TouchableOpacity, Text, StyleSheet} from 'react-native';
 
 export default class NominationButon extends React.Component {
   render() {
-    const {onPress, chosenUser, nomination, disabled, group, postId} = this.props;
+    const {onPress, chosenUser, nomination, disabled, group, postId, theme} = this.props;
 
     const {auth, rank_setting} = group;
 
-    let text = 'Nominate your peer';
+    let text = 'Nominate other members';
 
     const allow_to_nominate = auth.rank <= rank_setting.nominate_rank_required;
 
@@ -20,7 +20,7 @@ export default class NominationButon extends React.Component {
     }
 
     if (postId == null && !allow_to_nominate) {
-        text = 'Nominate your peer (rank ' + rank_setting.nominate_rank_required + ' required)' 
+        text = 'Nominate other members (rank ' + rank_setting.nominate_rank_required + ' required)' 
     }
 
     return (
@@ -28,7 +28,7 @@ export default class NominationButon extends React.Component {
         style={styles.container}
         onPress={onPress}
         disabled={disabled ? disabled : !allow_to_nominate}>
-        <Text style={{color: !allow_to_nominate ? 'grey' : 'black'}}>{text}</Text>
+        <Text style={{color: !allow_to_nominate ? 'grey' : theme.textColor.color}}>{text}</Text>
       </TouchableOpacity>
     );
   }

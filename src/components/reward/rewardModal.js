@@ -62,10 +62,10 @@ export default class RewardModal extends React.Component {
 
   renderItem = i => {
     const {value, label} = i.item;
-    const {modalType} = this.props;
+    const {modalType, theme} = this.props;
     return (
       <TouchableOpacity onPress={() => this.onInputChange({value, label})}>
-        <View style={[styles.options]}>
+        <View style={[styles.options, theme.backgroundColor]}>
           <Text style={{color: '#3498db'}}>
             {label}
             {modalType == 'chance' ? '%' : ''}
@@ -87,6 +87,7 @@ export default class RewardModal extends React.Component {
       result,
       isGift,
       systemRewardSetting,
+      theme,
     } = this.props;
     const {process} = this.state;
 
@@ -163,13 +164,19 @@ export default class RewardModal extends React.Component {
     if (isGift) {
       maxDate.setDate(maxDate.getDate() + 7);
     } else {
-      maxDate.setMonth(maxDate.getMonth() + 1)
+      maxDate.setMonth(maxDate.getMonth() + 1);
     }
 
     if (Platform.OS == 'ios') {
       timeModal = (
-        <View style={[styles.modalView, {width: 210, height: 100}]}>
-          <Text>SELECT DATE</Text>
+        <View
+          style={[
+            styles.modalView,
+            {width: 210, height: 100},
+            theme.backgroundColor,
+            theme.shadowColor,
+          ]}>
+          <Text style={theme.textColor}>SELECT DATE</Text>
           <DateTimePicker
             mode={'datetime'}
             value={new Date(parseInt(expiration))}
@@ -218,19 +225,26 @@ export default class RewardModal extends React.Component {
           <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={styles.centeredView}>
               {modalType == 'image' ? (
-                <View style={[styles.imageModalView]}>
+                <View
+                  style={[
+                    styles.imageModalView,
+                    theme.backgroundColor,
+                    theme.shadowColor,
+                  ]}>
                   <TouchableOpacity onPress={() => this.onPress('camera')}>
                     <View style={styles.button}>
-                      <Text>Take Photo</Text>
+                      <Text style={theme.textColor}>Take Photo</Text>
                     </View>
                   </TouchableOpacity>
-                  <View style={styles.underline} />
+                  <View style={[styles.underline, theme.borderColor]} />
                   <TouchableOpacity onPress={() => this.onPress('library')}>
                     <View style={styles.button}>
-                      <Text>Select From Image Library</Text>
+                      <Text style={theme.textColor}>
+                        Select From Image Library
+                      </Text>
                     </View>
                   </TouchableOpacity>
-                  <View style={styles.underline} />
+                  <View style={[styles.underline, theme.borderColor]} />
                   <TouchableOpacity onPress={() => onBackdropPress()}>
                     <View style={styles.button}>
                       <Text style={{color: 'red'}}>Cancel</Text>
@@ -254,9 +268,15 @@ export default class RewardModal extends React.Component {
                           padding: 5,
                           paddingHorizontal: 8,
                         },
+                        theme.backgroundColor,
+                        theme.shadowColor,
                       ]}>
                       <View style={styles.resultTitle}>
-                        <Text style={{fontSize: 18, fontWeight: '500'}}>
+                        <Text
+                          style={[
+                            {fontSize: 18, fontWeight: '500'},
+                            theme.textColor,
+                          ]}>
                           Your reward
                         </Text>
                       </View>
@@ -293,7 +313,7 @@ export default class RewardModal extends React.Component {
                               />
                             )}
                           </View>
-                          <Text>
+                          <Text style={theme.textColor}>
                             {result.chanceDisplay
                               ? `Chance: ${result.chanceDisplay}%`
                               : result.pointCost
@@ -302,7 +322,7 @@ export default class RewardModal extends React.Component {
                           </Text>
                         </View>
                         <View style={styles.resultContent}>
-                          <Text style={{fontWeight: 'bold'}}>
+                          <Text style={[{fontWeight: 'bold'}, theme.textColor]}>
                             {result.name}
                           </Text>
                           <ScrollView
@@ -310,7 +330,9 @@ export default class RewardModal extends React.Component {
                               height: 10,
                               width: '100%',
                             }}>
-                            <Text>{result.description}</Text>
+                            <Text style={theme.textColor}>
+                              {result.description}
+                            </Text>
                           </ScrollView>
                           <View style={{width: '100%', height: 10}} />
                         </View>
@@ -325,10 +347,15 @@ export default class RewardModal extends React.Component {
                 </TouchableWithoutFeedback>
               ) : (
                 <TouchableWithoutFeedback>
-                  <KeyboardAvoidingView style={styles.view}>
+                  <KeyboardAvoidingView
+                    style={[
+                      styles.view,
+                      theme.backgroundColor,
+                      theme.shadowColor,
+                    ]}>
                     <View style={styles.display}>
                       <View style={styles.header}>
-                        <Text>{name}</Text>
+                        <Text style={theme.textColor}>{name}</Text>
                       </View>
                       <FlatList
                         data={modalType == 'listId' ? listNo : listChance}

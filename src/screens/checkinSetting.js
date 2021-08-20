@@ -15,6 +15,7 @@ import validator from 'validator';
 import {userLogout} from '../actions/auth';
 import {calculateTimeAddition} from '../utils/time';
 import {getGroupCheckIn, cleanCheckIn, createCheckIn} from '../actions/checkin';
+import {getTheme} from '../utils/theme';
 
 class CheckInSetting extends React.Component {
   state = {
@@ -26,22 +27,26 @@ class CheckInSetting extends React.Component {
     point: 100,
     lat: null,
     long: null,
-    loading: false
+    loading: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
-
+    const {theme} = this.state;
     navigation.setOptions({
       headerRight: () => (
         <HeaderRightButton
           onPress={this.onCreateCheckIn}
           type={'done'}
           disabled={true}
+          theme={theme}
         />
       ),
       headerBackTitleVisible: false,
       headerTitle: 'Check-in Setting',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -82,8 +87,8 @@ class CheckInSetting extends React.Component {
   };
 
   componentWillUnmount() {
-    this.props.cleanCheckIn()
-    this.loadCheckIn()
+    this.props.cleanCheckIn();
+    this.loadCheckIn();
   }
 
   loadCheckIn = async () => {
@@ -97,7 +102,7 @@ class CheckInSetting extends React.Component {
     const req = await getGroupCheckIn(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load check in at this time, please try again later')
+      alert('Cannot load check in at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -107,14 +112,12 @@ class CheckInSetting extends React.Component {
       }
       return;
     }
-
   };
-
 
   componentDidUpdate(prevProps, prevState) {
     const {route, navigation} = this.props;
     const prevParams = prevProps.route.params;
-    const {isLocal} = this.state;
+    const {isLocal, theme} = this.state;
     const previsLocal = prevState.isLocal;
     if (route.params != prevParams) {
       this.setState({post: route.params.post});
@@ -128,6 +131,7 @@ class CheckInSetting extends React.Component {
             onPress={this.onCreateCheckIn}
             type={'done'}
             disabled={disable}
+            theme={theme}
           />
         ),
       });
@@ -151,11 +155,11 @@ class CheckInSetting extends React.Component {
       token: auth.token,
     };
 
-    this.setState({loading: true})
+    this.setState({loading: true});
     const req = await createCheckIn(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot create check in at this time, please try again later')
+      alert('Cannot create check in at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -165,7 +169,7 @@ class CheckInSetting extends React.Component {
       }
       return;
     }
-    this.setState({loading: false})
+    this.setState({loading: false});
     navigation.navigate('CheckIn');
   };
 
@@ -190,21 +194,32 @@ class CheckInSetting extends React.Component {
   };
 
   render() {
-    const {name, isLocal, password, duration, point, post, loading} = this.state;
+    const {
+      name,
+      isLocal,
+      password,
+      duration,
+      point,
+      post,
+      loading,
+      theme,
+    } = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
-          <StatusBar barStyle={'dark-content'} />
+        <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
+
           <Input
             type={'name'}
             value={name}
             onInputChange={this.onInputChange}
+            theme={theme}
           />
           <Input
             type={'post'}
             value={post}
             onInputChange={this.onInputChange}
+            theme={theme}
           />
           {/* <Input
             type={'local'}
@@ -215,13 +230,15 @@ class CheckInSetting extends React.Component {
             type={'password'}
             value={password}
             onInputChange={this.onInputChange}
+            theme={theme}
           />
           <Input
             type={'duration'}
             value={duration}
             onInputChange={this.onInputChange}
+            theme={theme}
           />
-          <ActivityIndicator animating={loading} color={'grey'}/>
+          <ActivityIndicator animating={loading} color={'grey'} />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );
@@ -247,7 +264,7 @@ const mapDispatchToProps = dispatch => {
     createCheckIn: data => dispatch(createCheckIn(data)),
     userLogout: () => dispatch(userLogout()),
     getGroupCheckIn: data => dispatch(getGroupCheckIn(data)),
-    cleanCheckIn: () => dispatch(cleanCheckIn())
+    cleanCheckIn: () => dispatch(cleanCheckIn()),
   };
 };
 

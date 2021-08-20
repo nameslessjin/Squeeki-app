@@ -15,6 +15,7 @@ import {lootRedeemReward, getGroupRewardList} from '../actions/reward';
 import {getUserGroupPoint} from '../actions/point';
 import RewardList from '../components/reward/rewardList';
 import RewardModal from '../components/reward/rewardModal';
+import {getTheme} from '../utils/theme';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -33,15 +34,18 @@ class Reward extends React.Component {
       image: null,
     },
     ...this.props.route.params,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
-    const {prevRoute} = this.state;
+    const {prevRoute, theme} = this.state;
     const {navigation} = this.props;
     if (prevRoute == 'RewardManagement') {
       navigation.setOptions({
         headerBackTitleVisible: false,
         headerTitle: 'Gift Management',
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
       });
       this.getGroupRewardList();
     }
@@ -215,23 +219,27 @@ class Reward extends React.Component {
 
   render() {
     const {group, reward, navigation, point, auth} = this.props;
-    const {modalVisible, result, prevRoute} = this.state;
+    const {modalVisible, result, prevRoute, theme} = this.state;
     const {rewardList} = reward;
 
     return (
-      <View style={[styles.container, {opacity: modalVisible ? 0.5 : 1}]}>
-        <StatusBar barStyle={'dark-content'} />
-
+      <View
+        style={[
+          styles.container,
+          {opacity: modalVisible ? 0.5 : 1},
+          theme.backgroundColor,
+        ]}>
         <RewardList
           rewardList={rewardList}
           navigation={navigation}
           group={group.group}
           onLootRedeemPress={this.onLootRedeemPress}
           prevRoute={prevRoute}
+          theme={theme}
         />
         {prevRoute == 'RewardManagement' ? null : (
           <View style={styles.point}>
-            <Text>Points: {point.total_point}</Text>
+            <Text style={theme.groupPointColor}>Points: {point.total_point}</Text>
           </View>
         )}
         <RewardModal
@@ -239,6 +247,7 @@ class Reward extends React.Component {
           modalVisible={modalVisible}
           result={result}
           onBackdropPress={this.onBackdropPress}
+          theme={theme}
         />
       </View>
     );

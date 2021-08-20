@@ -11,6 +11,7 @@ import RankFunction from '../components/rankSetting/rankFunction';
 import RankSettingModal from '../components/rankSetting/rankSettingModal';
 import {updateRankFeatures} from '../actions/group';
 import {userLogout} from '../actions/auth';
+import {getTheme} from '../utils/theme';
 
 class RankSetting extends React.Component {
   state = {
@@ -18,13 +19,17 @@ class RankSetting extends React.Component {
     loading: false,
     modalVisible: false,
     type: 'post',
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {theme} = this.state;
     navigation.setOptions({
       headerTitle: 'Rank Settings',
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -176,11 +181,13 @@ class RankSetting extends React.Component {
       manage_reward_rank_required,
       modalVisible,
       type,
+      theme,
     } = this.state;
-    const {rankName} = this.props.group
+    const {rankName} = this.props.group;
     return (
       <TouchableWithoutFeedback>
         <ScrollView
+          style={theme.backgroundColor}
           alwaysBounceVertical={false}
           alwaysBounceHorizontal={false}
           showsVerticalScrollIndicator={false}>
@@ -190,78 +197,91 @@ class RankSetting extends React.Component {
             value={group_setting_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'post'}
             value={post_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'priority1'}
             value={priority_1_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'priority2'}
             value={priority_2_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'priority3'}
             value={priority_3_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'manage_post'}
             value={manage_post_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'manage_reward'}
             value={manage_reward_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'manage_check_in'}
             value={manage_check_in_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'manage_task'}
             value={manage_task_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'manage_comment'}
             value={manage_comment_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'manage_chat'}
             value={manage_chat_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'member'}
             value={manage_member_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
           <RankFunction
             type={'nominate'}
             value={nominate_rank_required}
             onPress={this.onPress}
             rankName={rankName}
+            theme={theme}
           />
 
           <RankSettingModal
@@ -271,6 +291,7 @@ class RankSetting extends React.Component {
             type={type}
             rankName={rankName}
             prevRoute={'rankSetting'}
+            theme={theme}
           />
         </ScrollView>
       </TouchableWithoutFeedback>

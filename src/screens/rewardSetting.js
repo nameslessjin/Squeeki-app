@@ -24,6 +24,7 @@ import {
 import RewardModal from '../components/reward/rewardModal';
 import validator from 'validator';
 import InputImage from '../components/postSetting/inputImage';
+import {getTheme} from '../utils/theme';
 
 class RewardSetting extends React.Component {
   state = {
@@ -51,10 +52,12 @@ class RewardSetting extends React.Component {
     prevRoute: 'RewardList',
     ...this.props.route.params,
     origin: this.props.route.params,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation, route} = this.props;
+    const {theme} = this.state
     navigation.setOptions({
       headerBackTitle: 'Cancel',
       headerRight: () => (
@@ -62,9 +65,12 @@ class RewardSetting extends React.Component {
           type={'done'}
           onPress={this.onAddReward}
           disabled={true}
+          theme={theme}
         />
       ),
       headerTitle: 'Settings',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
 
     if (route.params) {
@@ -235,7 +241,7 @@ class RewardSetting extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const {navigation, route} = this.props;
-    const {count, contentList} = this.state;
+    const {count, contentList, loading, theme} = this.state;
 
     if (prevProps.route.params != route.params) {
       if (route.params) {
@@ -253,7 +259,8 @@ class RewardSetting extends React.Component {
           <TopRightButton
             type={'done'}
             onPress={this.createUpdateGroupReward}
-            disabled={disabled || this.state.loading}
+            disabled={disabled || loading}
+            theme={theme}
           />
         ),
       });
@@ -542,8 +549,10 @@ class RewardSetting extends React.Component {
             : systemRewardSetting
             ? systemRewardSetting.chance.filter(c => c.listId == '4')[0].label
             : 'Chance Not Found, please reload reward page',
-          hasExpiration: !prevState.isGift ? true : false,
-          expiration: !prevState.isGift ? Date.now() : null,
+          // hasExpiration: !prevState.isGift ? true : false,
+          // expiration: !prevState.isGift ? Date.now() : null,
+          hasExpiration: true,
+          expiration: Date.now()
         };
       });
     }
@@ -643,22 +652,25 @@ class RewardSetting extends React.Component {
       giftTo,
       isGift,
       systemRewardSetting,
+      theme
     } = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView style={styles.container} bounces={false}>
+        <ScrollView style={[styles.container, theme.backgroundColor]} bounces={false}>
           <StatusBar barStyle={'dark-content'} />
           <Input
             type={'name'}
             value={name}
             onInputChange={this.onInputChange}
+            theme={theme}
           />
 
           <Input
             type={'description'}
             value={description}
             onInputChange={this.onInputChange}
+            theme={theme}
           />
 
           {!id && !redeemable ? (
@@ -666,6 +678,7 @@ class RewardSetting extends React.Component {
               type={'isGift'}
               value={isGift}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -674,6 +687,7 @@ class RewardSetting extends React.Component {
               type={'redeemable'}
               value={redeemable}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -684,6 +698,7 @@ class RewardSetting extends React.Component {
               onInputChange={this.onInputChange}
               onPress={this.onPress}
               disabled={id}
+              theme={theme}
             />
           ) : null}
 
@@ -692,6 +707,7 @@ class RewardSetting extends React.Component {
             value={listName}
             onInputChange={this.onInputChange}
             onPress={this.onPress}
+            theme={theme}
           />
 
           {redeemable ? (
@@ -700,6 +716,7 @@ class RewardSetting extends React.Component {
               value={pointCost}
               onInputChange={this.onInputChange}
               onPress={this.onPress}
+              theme={theme}
             />
           ) : (
             <Input
@@ -707,6 +724,7 @@ class RewardSetting extends React.Component {
               value={chanceDisplay}
               onInputChange={this.onInputChange}
               onPress={this.onPress}
+              theme={theme}
             />
           )}
 
@@ -715,6 +733,7 @@ class RewardSetting extends React.Component {
               type={'count'}
               value={count.toString()}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -731,6 +750,7 @@ class RewardSetting extends React.Component {
               value={expiration}
               onInputChange={this.onInputChange}
               onPress={this.onPress}
+              theme={theme}
             />
           ) : null}
 
@@ -740,6 +760,7 @@ class RewardSetting extends React.Component {
               value={separateContent}
               onInputChange={this.onInputChange}
               disabled={false}
+              theme={theme}
             />
           ) : null}
 
@@ -749,6 +770,7 @@ class RewardSetting extends React.Component {
               value={contentList}
               onInputChange={this.onInputChange}
               onPress={this.onPress}
+              theme={theme}
             />
           ) : null}
           <InputImage
@@ -756,6 +778,7 @@ class RewardSetting extends React.Component {
             contentKeyboard={false}
             onPress={() => this.onPress('image')}
             disabled={false}
+            theme={theme}
           />
 
           {id && !loading ? (
@@ -785,6 +808,7 @@ class RewardSetting extends React.Component {
               redeemable={redeemable}
               isGift={isGift}
               systemRewardSetting={systemRewardSetting}
+              theme={theme}
             />
           ) : null}
           <View style={styles.empty} />

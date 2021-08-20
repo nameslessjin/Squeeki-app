@@ -445,7 +445,11 @@ class PostCard extends React.Component {
                 <View style={styles.footer}>
                   <Text style={{color: 'red', marginVertical: 5}}>Checked</Text>
                 </View>
-              ) : null
+              ) : (
+                <View style={styles.footer}>
+                  <Text style={[{marginVertical: 5}, theme.textColor]}>{priority == 3 ? '100 points available' : 'No point available'}</Text>
+                </View>
+              )
             ) : (
               <PostFooter
                 navigation={this.props.navigation}

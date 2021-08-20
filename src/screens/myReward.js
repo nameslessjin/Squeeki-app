@@ -22,9 +22,10 @@ class MyReward extends React.Component {
     if (route.params) {
       const {refresh, groupId} = route.params;
       if (refresh) {
-        setTimeout(() => {
-          this.loadUserRewardHistory(true, groupId);
-        }, 100);
+        // setTimeout(() => {
+        //   this.loadUserRewardHistory(true, groupId);
+        // }, 100);
+        this.loadUserRewardHistory(true, groupId);
         navigation.setParams({refresh: false, groupId: null});
       }
     }

@@ -20,6 +20,7 @@ import {
   deleteNomination,
 } from '../actions/nomination';
 import {getGroupNominationsFunc} from '../functions/nomination';
+import {getTheme} from '../utils/theme';
 
 class NominationSetting extends React.Component {
   state = {
@@ -32,10 +33,12 @@ class NominationSetting extends React.Component {
     create: true,
     loading: false,
     id: null,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {theme} = this.state;
     let headerTitle = 'Create nomination';
     if (!this.props.route.params.create) {
       const {
@@ -68,14 +71,16 @@ class NominationSetting extends React.Component {
             update={false}
             loading={false}
             onPress={this.onCreateUpdateNomination}
+            theme={theme}
           />
         ) : null,
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
   componentWillUnmount() {
-
     if (this.extractData().update && !this.props.route.params.create) {
       this.onCreateUpdateNomination();
     }
@@ -97,7 +102,7 @@ class NominationSetting extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
-      const {id} = this.state;
+      const {id, theme} = this.state;
       let update = false;
       update = this.extractData().update;
       const {navigation} = this.props;
@@ -108,6 +113,7 @@ class NominationSetting extends React.Component {
               update={update}
               loading={this.state.loading}
               onPress={this.onCreateUpdateNomination}
+              theme={theme}
             />
           ) : null,
       });
@@ -120,7 +126,7 @@ class NominationSetting extends React.Component {
     } else if (type == 'point') {
       this.setState({points: parseInt(text) || 0});
     } else if (type == 'period') {
-      this.setState({period: parseInt(text) || 0});
+      // this.setState({period: parseInt(text) || 0});
     } else if (type == 'type') {
       const {type} = this.state;
       let value = 'reward';
@@ -303,16 +309,18 @@ class NominationSetting extends React.Component {
       loading,
       create,
       type,
+      theme,
     } = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
           <StatusBar barStyle={'dark-content'} />
           <Input
             type={'name'}
             value={nomination_name}
             onInputChange={this.onInputChange}
+            theme={theme}
           />
           <Input
             type={'period'}
@@ -321,12 +329,14 @@ class NominationSetting extends React.Component {
             moddleToggled={this.onPeriodPress}
             onBackdropPress={this.onBackdropPress}
             backdrop={backdrop}
+            theme={theme}
           />
-          <Input
+          {/* <Input
             type={'type'}
             value={type}
             onInputChange={this.onInputChange}
-          />
+            theme={theme}
+          /> */}
           {/* <Input type={'point'} value={points.toString()} onInputChange={this.onInputChange}  /> */}
           {!create ? (
             <TouchableOpacity
@@ -336,7 +346,11 @@ class NominationSetting extends React.Component {
             </TouchableOpacity>
           ) : null}
           {loading ? (
-            <ActivityIndicator style={{marginTop: 10}} animating={true} color={'grey'}/>
+            <ActivityIndicator
+              style={{marginTop: 10}}
+              animating={true}
+              color={'grey'}
+            />
           ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

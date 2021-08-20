@@ -7,6 +7,7 @@ import {
   View,
   Platform,
   StatusBar,
+  Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -22,6 +23,8 @@ import DisplayNameList from '../components/users/userSearch/displayNameList';
 import {StackActions} from '@react-navigation/native';
 import {unsubSocket} from '../functions/chat';
 import {getTheme} from '../utils/theme';
+
+const {height} = Dimensions.get('screen');
 
 class UserSearch extends React.Component {
   state = {
@@ -73,7 +76,7 @@ class UserSearch extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const {navigation} = this.props;
-    const {chosenUser, prev_route, searchTerm} = this.state;
+    const {chosenUser, prev_route, searchTerm, theme} = this.state;
     if (prevState.searchTerm != searchTerm) {
       this.setState({usersData: [], count: 0});
     }
@@ -82,6 +85,7 @@ class UserSearch extends React.Component {
         <DoneButton
           disabled={chosenUser.length == 0}
           onPress={this.onAddMembers}
+          theme={theme}
         />
       );
     navigation.setOptions({
@@ -396,7 +400,14 @@ class UserSearch extends React.Component {
   };
 
   render() {
-    const {searchTerm, usersData, chosenUser, prev_route, group, theme} = this.state;
+    const {
+      searchTerm,
+      usersData,
+      chosenUser,
+      prev_route,
+      group,
+      theme,
+    } = this.state;
     const {navigation, user, auth} = this.props;
 
     return (
@@ -404,7 +415,11 @@ class UserSearch extends React.Component {
         <StatusBar barStyle={'dark-content'} />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.optionArea}>
-            <UserSearchBar onChange={this.onSearchChange} value={searchTerm} theme={theme}/>
+            <UserSearchBar
+              onChange={this.onSearchChange}
+              value={searchTerm}
+              theme={theme}
+            />
           </View>
         </TouchableWithoutFeedback>
         {chosenUser.length == 0 ||
@@ -415,6 +430,7 @@ class UserSearch extends React.Component {
               <DisplayNameList
                 chosenUser={chosenUser}
                 onChooseUser={this.onChooseUser}
+                theme={theme}
               />
             </View>
           </TouchableWithoutFeedback>
@@ -430,7 +446,6 @@ class UserSearch extends React.Component {
           currentUserId={auth.user.id}
           theme={theme}
         />
-
       </KeyboardAvoidingView>
     );
   }
@@ -440,7 +455,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    height: '100%',
+    height: height,
     width: '100%',
     backgroundColor: 'white',
   },

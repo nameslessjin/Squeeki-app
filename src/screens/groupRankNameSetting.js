@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {getGroupRankName, updateRankNames} from '../actions/group';
+import {getTheme} from '../utils/theme';
 
 class GroupRankNameSetting extends React.Component {
   state = {
@@ -20,15 +21,19 @@ class GroupRankNameSetting extends React.Component {
     rank5Name: 'Phantom',
     rank6Name: 'Kin',
     rank7Name: 'Brave',
-    ...this.props.group.rankName
+    ...this.props.group.rankName,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     // this.getGroupRankName();
     const {navigation, group} = this.props;
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
-      headerTitle: 'Rank Names Setting',
+      headerTitle: 'Rank Names',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -141,6 +146,7 @@ class GroupRankNameSetting extends React.Component {
       rank5Name,
       rank6Name,
       rank7Name,
+      theme,
     } = this.state;
     let title = 'Rank 1 Name';
     let value = rank1Name;
@@ -168,10 +174,15 @@ class GroupRankNameSetting extends React.Component {
     }
 
     return (
-      <View style={styles.inputContainer}>
+      <View
+        style={[
+          styles.inputContainer,
+          theme.backgroundColor,
+          theme.underLineColor,
+        ]}>
         <Text style={{color: 'grey'}}>{title}</Text>
         <TextInput
-          style={[styles.textInputStyle]}
+          style={[styles.textInputStyle, theme.textColor]}
           value={value}
           maxLength={30}
           onChangeText={t => this.onChange(type, t)}
@@ -181,9 +192,10 @@ class GroupRankNameSetting extends React.Component {
   };
 
   render() {
+    const {theme} = this.state;
     return (
       <TouchableWithoutFeedback>
-        <ScrollView style={styles.container}>
+        <ScrollView style={[styles.container, theme.greyArea]}>
           {this.Input('rank1')}
           {this.Input('rank2')}
           {this.Input('rank3')}

@@ -666,7 +666,7 @@ class PostSetting extends React.Component {
     const {navigation, group} = this.props;
     navigation.navigate('SearchUser', {
       group: group.group,
-      prevRoute: 'PostSetting',
+      prev_route: 'PostSetting',
     });
   };
 

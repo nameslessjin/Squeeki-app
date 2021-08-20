@@ -8,6 +8,7 @@ import {
   StatusBar,
   Platform,
   Text,
+  Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
 import TagSearchBar from '../components/tags/searchBar';
@@ -20,7 +21,9 @@ import {
 } from '../actions/tag';
 import {userLogout} from '../actions/auth';
 import TagList from '../components/tags/tagList';
-import { getTheme } from '../utils/theme'
+import {getTheme} from '../utils/theme';
+
+const {height} = Dimensions.get('screen');
 
 class EditTag extends React.Component {
   state = {
@@ -31,32 +34,31 @@ class EditTag extends React.Component {
     search_count: 0,
     prev_route: 'GroupSetting',
     addedTags: [],
-    theme: getTheme(this.props.auth.user.theme)
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation, route} = this.props;
     const {prev_route} = route.params;
     this.setState({prev_route: prev_route});
-    const {theme} = this.state
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerStyle: theme.backgroundColor,
       headerTintColor: theme.textColor.color,
     });
-    this.onloadMoreTags(true)
+    this.onloadMoreTags(true);
   }
 
   componentWillUnmount() {
-    const {navigation} = this.props
-    const {prev_route, addedTags} = this.state
+    const {navigation} = this.props;
+    const {prev_route, addedTags} = this.state;
 
-    if (prev_route == 'GroupCreation'){
+    if (prev_route == 'GroupCreation') {
       navigation.navigate('GroupCreation', {
-        tags: addedTags
-      })
+        tags: addedTags,
+      });
     }
-
   }
 
   onTagCreate = async () => {
@@ -142,10 +144,10 @@ class EditTag extends React.Component {
     } else {
       if (term.length < 3) {
         this.setState({tags: [], warning: '', create: false, search_count: 0});
-        
+
         // when search term is empty, load most popular tags
-        if (term.length == 0){
-          this.onloadMoreTags(true)
+        if (term.length == 0) {
+          this.onloadMoreTags(true);
         }
         return;
       }
@@ -173,8 +175,8 @@ class EditTag extends React.Component {
     }
   };
 
-  onloadMoreTags = async (init) => {
-    const {searchTerm, tags, search_count, } = this.state;
+  onloadMoreTags = async init => {
+    const {searchTerm, tags, search_count} = this.state;
     const {searchTag, userLogout, navigation} = this.props;
 
     const req = await searchTag({
@@ -204,8 +206,8 @@ class EditTag extends React.Component {
   };
 
   onEndReach = () => {
-    this.onloadMoreTags(false)
-  }
+    this.onloadMoreTags(false);
+  };
 
   addTagToGroup = async tag => {
     const {addTagToGroup, auth, group, userLogout, navigation} = this.props;
@@ -226,7 +228,7 @@ class EditTag extends React.Component {
       const req = await addTagToGroup(request);
       if (req.errors) {
         // alert(req.errors[0].message);
-        alert('Cannot add tag at this time, please try again later')
+        alert('Cannot add tag at this time, please try again later');
         if (req.errors[0].message == 'Not Authenticated') {
           userLogout();
           navigation.reset({
@@ -237,12 +239,10 @@ class EditTag extends React.Component {
         return;
       }
     } else if (prev_route == 'GroupCreation') {
-
       if (addedTags.length >= 5) {
         this.setState({warning: 'Every group can have max 5 tags'});
         return;
       }
-
 
       this.setState(prevState => {
         return {
@@ -273,7 +273,7 @@ class EditTag extends React.Component {
       const req = await removeTagFromGroup(request);
       if (req.errors) {
         // alert(req.errors[0].message);
-        alert('Cannot remove tag at this time, please try again later')
+        alert('Cannot remove tag at this time, please try again later');
         if (req.errors[0].message == 'Not Authenticated') {
           userLogout();
           navigation.reset({
@@ -283,7 +283,7 @@ class EditTag extends React.Component {
         }
         return;
       }
-    } else if (prev_route == 'GroupCreation'){
+    } else if (prev_route == 'GroupCreation') {
       this.setState(prevState => {
         return {
           ...prevState,
@@ -358,9 +358,9 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    height: '100%',
+    height: height,
     width: '100%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   optionArea: {
     width: '90%',

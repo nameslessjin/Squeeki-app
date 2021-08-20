@@ -12,16 +12,21 @@ import {userLogout} from '../actions/auth';
 import {loadLeaderBoardFunc} from '../functions/point';
 import {getGroupPointLeaderBoard} from '../actions/point';
 import LeaderboardList from '../components/leaderboard/leaderboardList';
+import {getTheme} from '../utils/theme'
 
 class Leaderboard extends React.Component {
   state = {
     loading: false,
+    theme: getTheme(this.props.auth.user.theme)
   };
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {theme} = this.state
     navigation.setOptions({
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -66,15 +71,17 @@ class Leaderboard extends React.Component {
 
   render() {
     const {users} = this.props.point.leaderboard;
+    const {theme} = this.state
     return (
       <TouchableWithoutFeedback>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
           <StatusBar barStyle={'dark-content'} />
           <View style={styles.leaderboard}>
             <LeaderboardList
               users={users}
               onEndReached={this.onEndReached}
               loadLeaderBoard={this.loadLeaderBoard}
+              theme={theme}
             />
           </View>
         </KeyboardAvoidingView>

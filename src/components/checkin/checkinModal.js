@@ -36,7 +36,7 @@ export default class CheckinModal extends React.Component {
   };
 
   render() {
-    const {modalVisible, onBackdropPress} = this.props;
+    const {modalVisible, onBackdropPress, theme} = this.props;
     const {onSubmit, password} = this.state;
 
     return (
@@ -45,15 +45,20 @@ export default class CheckinModal extends React.Component {
           <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={styles.centeredView}>
               <TouchableWithoutFeedback>
-                <KeyboardAvoidingView style={styles.view}>
+                <KeyboardAvoidingView
+                  style={[styles.view, theme.backgroundColor]}>
                   <View style={styles.header}>
-                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                    <Text
+                      style={[
+                        {fontSize: 18, fontWeight: 'bold'},
+                        theme.textColor,
+                      ]}>
                       Password
                     </Text>
                   </View>
                   <View style={styles.textInput}>
                     <TextInput
-                      style={{width: '100%', height: '100%'}}
+                      style={[{width: '100%', height: '100%'}, theme.textColor]}
                       maxLength={30}
                       value={password}
                       onChangeText={t => this.onInputChange(t)}
@@ -73,7 +78,8 @@ export default class CheckinModal extends React.Component {
                       <Text
                         style={{
                           fontSize: 15,
-                          color: password.length == 0 ? '#7f8fa6' : null,
+                          color:
+                            password.length == 0 ? '#7f8fa6' : theme.textColor.color,
                         }}>
                         Submit
                       </Text>

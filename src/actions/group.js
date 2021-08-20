@@ -60,7 +60,7 @@ export const getSingleGroupById = data => {
       },
     };
     const result = await httpCall(token, graphql);
-    dispatch(cleanGroup());
+    // dispatch(cleanGroup());
     if (result.errors) {
       return result;
     }
@@ -102,13 +102,6 @@ export const searchGroup = data => {
     return result.data.searchGroup;
   };
 };
-
-// const searchGroups = data => {
-//   return {
-//     type: 'searchGroups',
-//     groups: data,
-//   };
-// };
 
 export const createGroup = data => {
   const {
@@ -342,16 +335,9 @@ export const joinGroup = data => {
       return groupData;
     }
 
-    dispatch(JoinGroup(result.data.joinGroup));
+    dispatch(getGroup(result.data.joinGroup));
 
     return 0;
-  };
-};
-
-const JoinGroup = data => {
-  return {
-    type: 'joinGroup',
-    data: data,
   };
 };
 

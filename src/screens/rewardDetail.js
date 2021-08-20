@@ -73,7 +73,7 @@ class RewardDetail extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const {from, to, toId, fromId, prevRoute} = this.state;
+    const {from, to, toId, fromId, prevRoute, theme} = this.state;
     const {group, navigation} = this.props;
 
     const inGroup = from == to && from == 'group' && fromId == group.group.id;
@@ -89,6 +89,7 @@ class RewardDetail extends React.Component {
             type={'edit'}
             onPress={this.onPress}
             disabled={false}
+            theme={theme}
           />
         ) : null,
     });

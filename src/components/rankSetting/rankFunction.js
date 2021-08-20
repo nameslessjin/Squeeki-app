@@ -1,11 +1,17 @@
 import React from 'react';
-import {View, Text, TouchableWithoutFeedback, StyleSheet, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 
-const {width} = Dimensions.get('screen')
+const {width} = Dimensions.get('screen');
 
 export default class RankFunction extends React.Component {
   render() {
-    const {type, value, onPress, rankName} = this.props;
+    const {type, value, onPress, rankName, theme} = this.props;
     let name;
     if (type == 'post') {
       name = 'Create Post';
@@ -54,10 +60,10 @@ export default class RankFunction extends React.Component {
 
     return (
       <TouchableWithoutFeedback onPress={() => onPress(type)}>
-        <View style={styles.container}>
-          <Text style={styles.text}>{name}</Text>
+        <View style={[styles.container, theme.backgroundColor]}>
+          <Text style={[styles.text]}>{name}</Text>
           <View style={styles.rankContainer}>
-            <Text>{rankTitle}</Text>
+            <Text style={theme.textColor}>{rankTitle}</Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -78,7 +84,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   text: {
-    width: width * 0.4
+    width: width * 0.4,
+    color: 'grey'
   },
   rankContainer: {
     justifyContent: 'center',

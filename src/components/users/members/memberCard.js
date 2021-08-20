@@ -26,7 +26,7 @@ class MemberCard extends React.Component {
 
 
   render() {
-    const {item, navigation} = this.props;
+    const {item, navigation, theme} = this.props;
     const {
       id,
       username,
@@ -62,7 +62,7 @@ class MemberCard extends React.Component {
 
     return (
       <TouchableWithoutFeedback onPress={this.onPress}>
-        <View style={styles.container}>
+        <View style={[styles.container, theme.backgroundColor, theme.shadowColor]}>
           <View style={styles.imageContainer}>
             <Image
               source={icon ? {uri: icon.uri} : singleDefaultIcon()}
@@ -70,7 +70,7 @@ class MemberCard extends React.Component {
             />
           </View>
           <View style={styles.name}>
-            <Text style={{fontSize: group_username_size, textAlign: 'center'}}>
+            <Text style={[{fontSize: group_username_size, textAlign: 'center'}, theme.textColor]}>
               {group_username}
             </Text>
             <Text

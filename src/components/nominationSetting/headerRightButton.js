@@ -5,7 +5,7 @@ export default class HeaderRightButton extends React.Component{
 
     render() {
 
-        const { onPress, update, loading } = this.props
+        const { onPress, update, loading, theme } = this.props
         const disabled = !(update && !loading)
 
         return (
@@ -14,7 +14,7 @@ export default class HeaderRightButton extends React.Component{
                 onPress={onPress}
                 disabled={disabled}
             >
-                <Text style={[styles.text, {color: disabled ? '#95a5a6' : 'black'}]}>Done</Text>
+                <Text style={[styles.text, {color: disabled ? '#95a5a6' : theme.textColor.color}]}>Done</Text>
             </TouchableOpacity>
         )
     }

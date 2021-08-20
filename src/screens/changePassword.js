@@ -158,7 +158,7 @@ class ChangePassword extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-          <StatusBar barStyle={'dark-content'} />
+
           {token == null ? (
             <UserTextInput
               type={'currentPassword'}

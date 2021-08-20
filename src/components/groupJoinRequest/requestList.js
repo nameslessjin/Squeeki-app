@@ -20,8 +20,8 @@ export default class RequestList extends React.Component {
   renderItem = i => {
     const {item} = i;
     const {username, displayName, id, icon, loading} = item;
-    const {onRespond} = this.props;
-
+    const {onRespond, theme} = this.props;
+    
     let displayNameSize = 16;
 
     if (displayName.length > 20) {
@@ -47,7 +47,7 @@ export default class RequestList extends React.Component {
               />
             </View>
             <View style={styles.nameStyle}>
-              <Text style={{fontSize: displayNameSize}}>{displayName}</Text>
+              <Text style={[{fontSize: displayNameSize}, theme.textColor]}>{displayName}</Text>
             </View>
           </View>
           <View style={styles.buttonsContainer}>
@@ -63,7 +63,7 @@ export default class RequestList extends React.Component {
                       borderColor: 'grey',
                     },
                   ]}>
-                  <Text style={styles.buttonText}>Deny</Text>
+                  <Text style={[styles.buttonText, theme.textColor]}>Deny</Text>
                 </View>
               </TouchableOpacity>
             )}

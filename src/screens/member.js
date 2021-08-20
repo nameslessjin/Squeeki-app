@@ -23,6 +23,7 @@ import InputText from '../components/users/members/inputText';
 import {getSingleChat} from '../actions/chat';
 import {singleDefaultIcon} from '../utils/defaultIcon';
 import RankSettingModal from '../components/rankSetting/rankSettingModal';
+import {getTheme} from '../utils/theme';
 
 class Member extends React.Component {
   state = {
@@ -30,9 +31,11 @@ class Member extends React.Component {
     keyboard: false,
     loading: false,
     ...this.props.route.params,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
+    const {theme} = this.state
     this.props.navigation.setOptions({
       // headerRight: () => (
       //   <ModifyButton
@@ -42,6 +45,8 @@ class Member extends React.Component {
       //   />
       // ),
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -382,6 +387,7 @@ class Member extends React.Component {
       toggled,
       loading,
       group_username,
+      theme
     } = this.state;
 
     // auth here is auth of group member
@@ -403,14 +409,14 @@ class Member extends React.Component {
     const modalVisible = toggled && allowToModifyMember;
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
           <StatusBar barStyle={'dark-content'} />
           <Image
             source={icon ? {uri: icon.uri} : singleDefaultIcon()}
             style={styles.imageStyle}
           />
 
-          <Text style={styles.displayName}>{displayName}</Text>
+          <Text style={[styles.displayName, theme.textColor]}>{displayName}</Text>
           <Text style={styles.username}>@{username}</Text>
           <InputRankTitle
             auth={auth}
@@ -421,11 +427,13 @@ class Member extends React.Component {
             userAuth={group.auth}
             isSelf={isSelf}
             rankName={rankName}
+            theme={theme}
           />
           <InputText
             modifyInput={this.modifyInput}
             value={group_username}
             editable={allowToChangeGroupUsername}
+            theme={theme}
           />
           {loading ? (
             <ActivityIndicator
@@ -454,6 +462,7 @@ class Member extends React.Component {
               onRankChange={this.modifyInput}
               onBackdropPress={this.onBackdropPress}
               modalVisible={modalVisible}
+              theme={theme}
             />
           ) : null}
         </KeyboardAvoidingView>

@@ -34,6 +34,18 @@ export const themeStyle = StyleSheet.create({
   darkModeSecondaryIconColor: {
     color: 'grey'
   },
+  darkModeGroupPointColor: {
+    color: 'silver'
+  },
+  darkModeGroupLeaderBoard: {
+    backgroundColor: 'grey'
+  },  
+  darkModeGroupMemberTitle: {
+    color: 'grey'
+  },
+  darkModeGroupDrawerTagIconColor: {
+    color: 'silver'
+  },
   defaultBackgroundColor: {
     backgroundColor: 'white',
   },
@@ -65,6 +77,18 @@ export const themeStyle = StyleSheet.create({
     color: 'grey'
   },
   defaultSecondaryIconColor: {
+    color: 'grey'
+  },
+  defaultGroupPointColor: {
+    color: '#53535f'
+  },
+  defaultGroupLeaderBoard: {
+    backgroundColor: '#ecf0f1'
+  },  
+  defaultGroupMemberTitle: {
+    color: '#222f3e'
+  },
+  defaultGroupDrawerTagIconColor: {
     color: 'grey'
   },
 });

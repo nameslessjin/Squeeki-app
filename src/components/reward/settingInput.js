@@ -31,7 +31,15 @@ export default class RewardSettingInput extends React.Component {
   };
 
   render() {
-    const {type, value, onInputChange, onPress, listId, disabled} = this.props;
+    const {
+      type,
+      value,
+      onInputChange,
+      onPress,
+      listId,
+      disabled,
+      theme,
+    } = this.props;
     let title = 'Name';
     let display = <View />;
     if (type == 'description') {
@@ -105,6 +113,8 @@ export default class RewardSettingInput extends React.Component {
           style={[
             styles.container,
             {justifyContent: 'space-between', alignItems: 'center'},
+            theme.backgroundColor,
+            theme.underLineColor,
           ]}>
           <Text style={{color: 'grey'}}>{title}</Text>
 
@@ -119,10 +129,21 @@ export default class RewardSettingInput extends React.Component {
       );
     } else if (type == 'contentList') {
       display = (
-        <View style={[styles.container, {justifyContent: 'space-between'}]}>
+        <View
+          style={[
+            styles.container,
+            {justifyContent: 'space-between'},
+            theme.backgroundColor,
+            theme.underLineColor,
+          ]}>
           <Text style={{color: 'grey'}}>{title}</Text>
 
-          <MaterialIcons name={'chevron-right'} size={30} color={'black'} />
+          <MaterialIcons
+            name={'chevron-right'}
+            size={30}
+            color={'black'}
+            style={theme.iconColor}
+          />
         </View>
       );
     } else {
@@ -134,7 +155,6 @@ export default class RewardSettingInput extends React.Component {
           textDisplay = 'Permanent';
         }
       } else if (type == 'giftTo') {
-
         textDisplay = value
           ? `${value.display_name} (g@${value.groupname})`
           : 'Not Selected';
@@ -144,7 +164,12 @@ export default class RewardSettingInput extends React.Component {
 
       display = (
         <View
-          style={[styles.container, {height: type == 'description' ? 80 : 45}]}>
+          style={[
+            styles.container,
+            {height: type == 'description' ? 80 : 45},
+            theme.backgroundColor,
+            theme.underLineColor,
+          ]}>
           <Text style={{color: 'grey'}}>{title}</Text>
 
           {type == 'listId' ||
@@ -155,7 +180,7 @@ export default class RewardSettingInput extends React.Component {
               style={{
                 marginLeft: 10,
                 width: type == 'chance' ? '75%' : '100%',
-                color: disabled ? 'grey' : 'black' 
+                color: disabled ? 'grey' : theme.textColor.color,
               }}>
               {textDisplay}
             </Text>
@@ -165,7 +190,7 @@ export default class RewardSettingInput extends React.Component {
                 styles.textInputStyle,
                 {
                   height: type == 'description' ? null : 45,
-                  color: listId == '1' ? 'grey' : 'black'
+                  color: listId == '1' ? 'grey' : theme.textColor.color,
                 },
               ]}
               value={value.toString()}
@@ -201,7 +226,7 @@ export default class RewardSettingInput extends React.Component {
           type == 'chance3' ||
           type == 'chance4' ||
           type == 'chance5' ? (
-            <Text>%</Text>
+            <Text style={theme.textColor}>%</Text>
           ) : null}
         </View>
       );

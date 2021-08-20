@@ -4,14 +4,23 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class HeaderRightButton extends React.Component {
   render() {
-    const {onPress, type, disabled} = this.props;
+    const {onPress, type, disabled, theme} = this.props;
 
     return (
-      <TouchableOpacity style={styles.container} onPress={onPress} disabled={disabled} >
+      <TouchableOpacity
+        style={styles.container}
+        onPress={onPress}
+        disabled={disabled}>
         {type == 'create' ? (
-          <MaterialIcons name={'plus'} size={30} color={ '#EA2027'}/>
+          <MaterialIcons name={'plus'} size={30} color={'#EA2027'} />
         ) : (
-          <Text style={{color: disabled ? '#95a5a6' : null, fontSize: 16}} >Done</Text>
+          <Text
+            style={{
+              color: disabled ? '#95a5a6' : theme.textColor.color,
+              fontSize: 16,
+            }}>
+            Done
+          </Text>
         )}
       </TouchableOpacity>
     );

@@ -11,7 +11,8 @@ export default class InputRankTitle extends React.Component {
       modifyInput,
       allowToModifyMember,
       userAuth,
-      rankName
+      rankName,
+      theme
     } = this.props;
     const {rank, title} = auth;
     return (
@@ -22,19 +23,20 @@ export default class InputRankTitle extends React.Component {
           allowToModifyMember={allowToModifyMember}
           userAuth={userAuth}
           rankName={rankName}
+          theme={theme}
         />
 
         <View style={styles.inputContainer}>
-          <Text style={styles.header}>Title</Text>
+          <Text style={[styles.header, theme.titleColor]}>Title</Text>
           <TextInput
-            style={styles.textInputContainer}
+            style={[styles.textInputContainer, theme.textColor, theme.underLineColor]}
             value={title}
             onChangeText={v => modifyInput('title', v)}
             onFocus={onTitleInputFocus}
             maxLength={30}
             editable={allowToModifyMember}
           />
-          <View style={styles.titleContainerPadding}/>
+          {/* <View style={styles.titleContainerPadding}/> */}
         </View>
 
       </View>
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
   },
   textInputContainer: {
     width: '100%',
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     padding: 5,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: 'black',

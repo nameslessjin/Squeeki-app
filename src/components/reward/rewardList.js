@@ -11,7 +11,7 @@ const extractKey = ({id}) => id;
 
 export default class rewardList extends React.Component {
   renderItem = ({item}) => {
-    const {navigation, group, onLootRedeemPress, prevRoute} = this.props;
+    const {navigation, group, onLootRedeemPress, prevRoute, theme} = this.props;
     return (
       <RewardListCard
         item={item}
@@ -19,6 +19,7 @@ export default class rewardList extends React.Component {
         group={group}
         onLootRedeemPress={onLootRedeemPress}
         prevRoute={prevRoute}
+        theme={theme}
       />
     );
   };

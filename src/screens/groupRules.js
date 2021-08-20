@@ -13,28 +13,39 @@ import {connect} from 'react-redux';
 import {onGroupRulesUpdate, getGroupRules} from '../actions/group';
 import {userLogout} from '../actions/auth';
 import HeaderButton from '../components/groupRules/headerButton';
+import {getTheme} from '../utils/theme';
 
 class GroupRules extends React.Component {
   state = {
     rules: '',
     loading: false,
     rules_duplicate: '',
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     // also if group auth is not there then don't put the button there
     const {navigation} = this.props;
+    const {theme} = this.state;
     navigation.setOptions({
       headerTitle: 'Rules',
       headerBackTitleVisible: false,
       headerRight: () => (
-        <HeaderButton loading={false} onPress={this.onUpdate} update={false} />
+        <HeaderButton
+          loading={false}
+          onPress={this.onUpdate}
+          update={false}
+          theme={theme}
+        />
       ),
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     this.getGroupRule();
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const {theme} = this.state;
     if (prevState != this.state) {
       const update = this.validation();
       this.props.navigation.setOptions({
@@ -43,18 +54,19 @@ class GroupRules extends React.Component {
             loading={false}
             onPress={this.onUpdate}
             update={update}
+            theme={theme}
           />
         ),
       });
     }
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     const {group, navigation} = this.props;
     if (group.group.id) {
       navigation.navigate('GroupNavigator', {
         refresh: true,
-        prevRoute: 'GroupRules'
+        prevRoute: 'GroupRules',
       });
     }
   }
@@ -136,13 +148,13 @@ class GroupRules extends React.Component {
       return;
     }
 
-    Keyboard.dismiss()
+    Keyboard.dismiss();
 
     this.setState({loading: false, rules_duplicate: rules});
   };
 
   render() {
-    const {rules} = this.state;
+    const {rules, theme} = this.state;
     const {auth, rank_setting} = this.props.group.group;
 
     // if there is no rules and user auth in group is greater than group setting rank requirement. Show no rules
@@ -153,10 +165,11 @@ class GroupRules extends React.Component {
 
     return (
       <TouchableWithoutFeedback>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
           <StatusBar barStyle={'dark-content'} />
           <ScrollView style={styles.scrollView}>
             <TextInput
+              style={theme.textColor}
               placeholder={'Write about rules for this group...'}
               placeholderTextColor={'grey'}
               onChangeText={v => this.setState({rules: v})}

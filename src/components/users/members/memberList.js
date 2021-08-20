@@ -9,10 +9,10 @@ const extractKey = ({id}) => id;
 export default class MemberList extends React.Component {
   renderFlatList = ({item}) => {
     if (item == 'search') {
-      const {onSearchChange, search_term} = this.props;
+      const {onSearchChange, search_term, theme} = this.props;
       return (
         <View style={styles.searchBar}>
-          <SearchBar onChange={onSearchChange} value={search_term} />
+          <SearchBar onChange={onSearchChange} value={search_term} theme={theme} />
         </View>
       );
     }
@@ -31,16 +31,17 @@ export default class MemberList extends React.Component {
   };
 
   renderItem = ({item}) => {
-    const {navigation} = this.props;
-    return <MemberCard navigation={navigation} item={item} />;
+    const {navigation, theme} = this.props;
+    return <MemberCard navigation={navigation} item={item} theme={theme}/>;
   };
 
   renderSectionHeader = ({section}) => {
+    const {theme} = this.props
     if (section.title == 'search') {
       return null;
     }
 
-    return <Text style={styles.title}>{section.title}</Text>;
+    return <Text style={[styles.title, theme.textColor]}>{section.title}</Text>;
   };
 
   render() {

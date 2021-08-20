@@ -8,17 +8,22 @@ import {
   TouchableWithoutFeedback,
   Alert,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
 import SearchBar from '../components/reward/rewardSearchBar';
 import {searchReward, redeemUserReward} from '../actions/reward';
 import RewardHistoryList from '../components/reward/rewardHistoryList';
+import {getTheme} from '../utils/theme';
+
+const {height} = Dimensions.get('screen');
 
 class RewardManagement extends React.Component {
   state = {
     searchTerm: '',
     rewardList: [],
     count: 0,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   onChange = async text => {
@@ -118,14 +123,18 @@ class RewardManagement extends React.Component {
   };
 
   render() {
-    const {searchTerm, rewardList} = this.state;
+    const {searchTerm, rewardList, theme} = this.state;
     const {group, navigation} = this.props;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
           <View style={styles.optionArea}>
-            <SearchBar onChange={this.onChange} value={searchTerm} />
+            <SearchBar
+              onChange={this.onChange}
+              value={searchTerm}
+              theme={theme}
+            />
           </View>
           <RewardHistoryList
             rewardHistory={rewardList || []}
@@ -134,6 +143,7 @@ class RewardManagement extends React.Component {
             onEndReached={this.onEndReached}
             onRedeemPress={this.onRedeemPress}
             prevRoute={'RewardManagement'}
+            theme={theme}
           />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -145,7 +155,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    height: '100%',
+    height: height,
     width: '100%',
     backgroundColor: 'white',
   },

@@ -36,7 +36,7 @@ class Chats extends React.Component {
   };
 
   componentDidMount() {
-    const {navigation, group} = this.props;
+    const {navigation, group, theme} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: group.group.id
@@ -58,6 +58,8 @@ class Chats extends React.Component {
               theme={theme}
             />
           ),
+        headerStyle: theme.backgroundColor,
+        headerTintColor: theme.textColor.color,
       });
     }
 
@@ -80,8 +82,8 @@ class Chats extends React.Component {
     }
 
     if (prevProps.auth.user.theme != auth.user.theme) {
-      const theme = getTheme(auth.user.theme)
-      this.setState({theme})
+      const theme = getTheme(auth.user.theme);
+      this.setState({theme});
       navigation.setOptions({
         headerStyle: theme.backgroundColor,
         headerTintColor: theme.textColor.color,
@@ -292,7 +294,7 @@ class Chats extends React.Component {
 
     return (
       <View style={theme.greyArea}>
-        <StatusBar barStyle={'dark-content'} />
+        
         {chat.chats.length == 0 ? (
           <View style={styles.container}>
             <Text style={styles.text}>You are not in any chat yet</Text>

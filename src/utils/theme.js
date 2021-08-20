@@ -13,6 +13,10 @@ export const getTheme = theme => {
     iconColor: themeStyle.defaultIconColor,
     secondaryTextColor: themeStyle.defaultSecondaryTextColor,
     secondaryIconColor: themeStyle.defaultSecondaryIconColor,
+    groupPointColor: themeStyle.defaultGroupPointColor,
+    groupLeaderBoard: themeStyle.defaultGroupLeaderBoard,
+    groupMemberTitle: themeStyle.defaultGroupMemberTitle,
+    groupDrawerTagIconColor: themeStyle.defaultGroupDrawerTagIconColor,
   };
 
   if (theme == 'default') {
@@ -28,6 +32,10 @@ export const getTheme = theme => {
       iconColor: themeStyle.defaultIconColor,
       secondaryTextColor: themeStyle.defaultSecondaryTextColor,
       secondaryIconColor: themeStyle.defaultSecondaryIconColor,
+      groupPointColor: themeStyle.defaultGroupPointColor,
+      groupLeaderBoard: themeStyle.defaultGroupLeaderBoard,
+      groupMemberTitle: themeStyle.defaultGroupMemberTitle,
+      groupDrawerTagIconColor: themeStyle.defaultGroupDrawerTagIconColor,
     };
   } else if (theme == 'darkMode') {
     output = {
@@ -42,6 +50,10 @@ export const getTheme = theme => {
       iconColor: themeStyle.darkModeIconColor,
       secondaryTextColor: themeStyle.darkModeSecondaryTextColor,
       secondaryIconColor: themeStyle.darkModeSecondaryIconColor,
+      groupPointColor: themeStyle.darkModeGroupPointColor,
+      groupLeaderBoard: themeStyle.darkModeGroupLeaderBoard,
+      groupMemberTitle: themeStyle.darkModeGroupMemberTitle,
+      groupDrawerTagIconColor: themeStyle.darkModeGroupDrawerTagIconColor,
     };
   }
 

@@ -62,6 +62,7 @@ export default class HeaderImageBackground extends React.Component {
       visibility,
       join_requested,
       rank_setting,
+      theme
     } = this.props;
 
     const {background_text_sequence} = this.state;
@@ -70,7 +71,7 @@ export default class HeaderImageBackground extends React.Component {
       background_text_sequence == 5 ? (
         <TouchableWithoutFeedback onPress={this.onTextBackgroundPress}>
           <MaterialIcons
-            style={{backgroundColor: 'white'}}
+            style={theme.backgroundColor}
             name={'emoticon-poop'}
             size={100}
           />
@@ -86,17 +87,17 @@ export default class HeaderImageBackground extends React.Component {
     let {setBackgroundImgText} = this.state;
 
     let imageBackground = (
-      <View style={[styles.backgroundImageStyle]}>
+      <View style={[styles.backgroundImageStyle, theme.backgroundColor]}>
         <TouchableWithoutFeedback
           onPress={backgroundImg == null ? this.onTextBackgroundPress : null}>
-          <View style={styles.backgroundImageContainerStyle}>
+          <View style={[styles.backgroundImageContainerStyle, theme.backgroundColor]}>
             {backgroundImg != null ? (
               <Image
                 source={{uri: backgroundImg.uri}}
                 style={{width: '100%', height: '100%'}}
               />
             ) : (
-              <Text style={styles.noBackgroundImageTextStyle}>
+              <Text style={[styles.noBackgroundImageTextStyle, theme.textColor]}>
                 {setBackgroundImgText}
               </Text>
             )}
@@ -115,6 +116,7 @@ export default class HeaderImageBackground extends React.Component {
               onAddPost={onAddPost}
               join_requested={join_requested}
               rank_setting={rank_setting}
+              theme={theme}
             />
           )}
         </View>

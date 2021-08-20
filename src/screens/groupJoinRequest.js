@@ -8,11 +8,16 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
-import {getGroupJoinRequest, onRespondJoinRequest, getGroupJoinRequestCount} from '../actions/group';
-import { getGroupJoinRequestCountFunc } from '../functions/group'
+import {
+  getGroupJoinRequest,
+  onRespondJoinRequest,
+  getGroupJoinRequestCount,
+} from '../actions/group';
+import {getGroupJoinRequestCountFunc} from '../functions/group';
 import {getGroupMembers} from '../actions/user';
 import {getGroupMembersFunc} from '../functions/user';
 import List from '../components/groupJoinRequest/requestList';
+import {getTheme} from '../utils/theme';
 
 class UserGroupJoinRequest extends React.Component {
   state = {
@@ -20,22 +25,26 @@ class UserGroupJoinRequest extends React.Component {
     users: [],
     refreshing: false,
     loading: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     // get request
     this.loadJoinRequest(true);
     const {navigation} = this.props;
+    const {theme} = this.state
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Join Requests',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
   componentWillUnmount() {
     // reload members
     this.loadGroupMembers();
-    this.getGroupJoinRequestCount()
+    this.getGroupJoinRequestCount();
   }
 
   getGroupJoinRequestCount = () => {
@@ -56,7 +65,6 @@ class UserGroupJoinRequest extends React.Component {
     getGroupJoinRequestCountFunc(data);
   };
 
-
   loadJoinRequest = async init => {
     const {
       navigation,
@@ -75,7 +83,7 @@ class UserGroupJoinRequest extends React.Component {
     const req = await getGroupJoinRequest(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load quests at this time, please try again later')
+      alert('Cannot load quests at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -127,7 +135,7 @@ class UserGroupJoinRequest extends React.Component {
     const req = await onRespondJoinRequest(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot response request at this time, please try again later')
+      alert('Cannot response request at this time, please try again later');
       this.setState(prevState => {
         return {
           ...prevState,
@@ -177,10 +185,10 @@ class UserGroupJoinRequest extends React.Component {
   };
 
   render() {
-    const {users, refreshing, loading} = this.state;
+    const {users, refreshing, loading, theme} = this.state;
     return (
       <TouchableWithoutFeedback>
-        <View style={styles.container}>
+        <View style={[styles.container, theme.backgroundColor]}>
           <StatusBar barStyle={'dark-content'} />
           {users.length > 0 ? (
             <List
@@ -189,6 +197,7 @@ class UserGroupJoinRequest extends React.Component {
               refreshing={refreshing}
               onRefresh={this.onRefresh}
               onRespond={this.onRespond}
+              theme={theme}
             />
           ) : (
             <View style={{marginTop: 300}}>
@@ -229,7 +238,7 @@ const mapDispatchToProps = dispatch => {
     getGroupJoinRequest: data => dispatch(getGroupJoinRequest(data)),
     getGroupMembers: data => dispatch(getGroupMembers(data)),
     onRespondJoinRequest: data => dispatch(onRespondJoinRequest(data)),
-    getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data))
+    getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data)),
   };
 };
 

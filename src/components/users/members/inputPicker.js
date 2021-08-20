@@ -10,7 +10,7 @@ import {
 
 export default class InputRankTitle extends React.Component {
   render() {
-    const {rank, onFocus, allowToModifyMember, userAuth, rankName} = this.props;
+    const {rank, onFocus, allowToModifyMember, userAuth, rankName, theme} = this.props;
 
     let rankTitle = rankName.rank1Name;
     if (rank == 1) {
@@ -30,13 +30,13 @@ export default class InputRankTitle extends React.Component {
     }
     return (
       <View style={styles.container}>
-        <Text style={styles.header}>Rank</Text>
+        <Text style={[styles.header, theme.titleColor]}>Rank</Text>
 
         <TouchableWithoutFeedback
           onPress={onFocus}
           disabled={!allowToModifyMember || userAuth.rank == rank}>
-          <View style={styles.textInputContainer}>
-            <Text>{rankTitle}</Text>
+          <View style={[styles.textInputContainer, theme.underLineColor]}>
+            <Text style={theme.textColor}>{rankTitle}</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   textInputContainer: {
     width: '100%',
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     padding: 5,
     paddingVertical: Platform.OS == 'android' ? 9 : 5,
     borderBottomWidth: StyleSheet.hairlineWidth,

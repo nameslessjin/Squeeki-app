@@ -11,6 +11,7 @@ import {invalidAuthentication} from '../functions/auth';
 import NominationResultList from '../components/nominationResults/nominationResultList';
 import {GroupNominationResultsFormatting} from '../functions/nomination';
 import {getNominationPost} from '../actions/post';
+import {getTheme} from '../utils/theme';
 
 class NominationResult extends React.Component {
   state = {
@@ -18,13 +19,17 @@ class NominationResult extends React.Component {
     nominationResults: {},
     refreshing: false,
     loading: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation, group, auth} = this.props;
+    const {theme} = this.state
     navigation.setOptions({
       headerTitle: 'Nomination Results',
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
 
     this.loadNominationResult(true);
@@ -131,10 +136,11 @@ class NominationResult extends React.Component {
       nominationResults,
       refreshing,
       loading,
+      theme
     } = this.state;
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, theme.greyArea]}>
         <NominationResultList
           mostRecentNominationResults={mostRecentNominationResults}
           nominationResults={nominationResults}
@@ -142,6 +148,7 @@ class NominationResult extends React.Component {
           refreshing={refreshing}
           onEndReached={this.onEndReached}
           onNomineePress={this.onNomineePress}
+          theme={theme}
         />
         {loading ? <ActivityIndicator animating={true} color={'grey'} /> : null}
       </View>

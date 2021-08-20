@@ -6,13 +6,14 @@ import {
   StyleSheet,
   ActivityIndicator,
   Text,
-  View
+  View,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Input from '../components/reward/settingInput';
 import validator from 'validator';
 import TopRightButton from '../components/reward/topRightButton';
 import {updateGroupRewardSetting, getGroupRewardList} from '../actions/reward';
+import {getTheme} from '../utils/theme';
 
 class RewardListSetting extends React.Component {
   state = {
@@ -33,10 +34,12 @@ class RewardListSetting extends React.Component {
     loading: false,
     ...this.props.route.params.list,
     origin: this.props.route.params.list,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitle: 'Cancel',
       headerTitle: 'List Settings',
@@ -47,11 +50,14 @@ class RewardListSetting extends React.Component {
           disabled={true}
         />
       ),
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
     const {navigation} = this.props;
+    const {theme} = this.state;
     if (prevState != this.state) {
       const disabled = !this.validation();
       navigation.setOptions({
@@ -60,6 +66,7 @@ class RewardListSetting extends React.Component {
             type={'done'}
             onPress={this.updateGroupRewardSetting}
             disabled={disabled || this.state.loading}
+            theme={theme}
           />
         ),
       });
@@ -327,16 +334,18 @@ class RewardListSetting extends React.Component {
       chance4Name,
       chance5Name,
       pointCost,
-      id
+      id,
+      theme,
     } = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView style={styles.container} bounces={false}>
+        <ScrollView style={[styles.container, theme.greyArea]} bounces={false}>
           <Input
             type={'listName'}
             value={listName}
             onInputChange={this.onInputChange}
+            theme={theme}
           />
 
           {type == 'loot' ? (
@@ -344,7 +353,8 @@ class RewardListSetting extends React.Component {
               type={'pointCost'}
               value={pointCost}
               onInputChange={this.onInputChange}
-              listId = {id}
+              listId={id}
+              theme={theme}
             />
           ) : null}
 
@@ -353,6 +363,7 @@ class RewardListSetting extends React.Component {
               type={'chance1Name'}
               value={chance1Name}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -361,6 +372,7 @@ class RewardListSetting extends React.Component {
               type={'chance1'}
               value={chance1.toString()}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -369,6 +381,7 @@ class RewardListSetting extends React.Component {
               type={'chance2Name'}
               value={chance2Name}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -377,6 +390,7 @@ class RewardListSetting extends React.Component {
               type={'chance2'}
               value={chance2.toString()}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -385,6 +399,7 @@ class RewardListSetting extends React.Component {
               type={'chance3Name'}
               value={chance3Name}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -393,6 +408,7 @@ class RewardListSetting extends React.Component {
               type={'chance3'}
               value={chance3.toString()}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -401,6 +417,7 @@ class RewardListSetting extends React.Component {
               type={'chance4Name'}
               value={chance4Name}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -409,6 +426,7 @@ class RewardListSetting extends React.Component {
               type={'chance4'}
               value={chance4.toString()}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -417,6 +435,7 @@ class RewardListSetting extends React.Component {
               type={'chance5Name'}
               value={chance5Name}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
@@ -425,18 +444,19 @@ class RewardListSetting extends React.Component {
               type={'chance5'}
               value={chance5.toString()}
               onInputChange={this.onInputChange}
+              theme={theme}
             />
           ) : null}
 
           {type == 'loot' ? (
-            <Text style={styles.text}>
+            <Text style={[styles.text, theme.textColor]}>
               The sum of all chances must be not greater than 100% and each
               chance must be unique
             </Text>
           ) : null}
 
           <ActivityIndicator animating={loading} color={'grey'} />
-          <View style={styles.empty}/>
+          <View style={styles.empty} />
         </ScrollView>
       </TouchableWithoutFeedback>
     );

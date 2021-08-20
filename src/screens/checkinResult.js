@@ -10,16 +10,18 @@ import HeaderRightButton from '../components/checkin/headerRightButton';
 import {userLogout} from '../actions/auth';
 import UserList from '../components/users/userList';
 import {getGroupCheckInResult, getGroupCheckIn} from '../actions/checkin';
+import {getTheme} from '../utils/theme'
 
 class CheckInResult extends React.Component {
   state = {
     refreshing: false,
+    theme: getTheme(this.props.auth.user.theme)
   };
 
   componentDidMount() {
     const {navigation, group, route, auth} = this.props;
     const {userId} = route.params;
-
+    const {theme} = this.state
     navigation.setOptions({
       headerRight: () =>
         auth.user.id == userId ||
@@ -33,6 +35,8 @@ class CheckInResult extends React.Component {
         ) : null,
       headerBackTitleVisible: false,
       headerTitle: 'Attendees',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     this.loadCheckInResult(true);
   }
@@ -118,17 +122,18 @@ class CheckInResult extends React.Component {
   };
 
   render() {
-    const {refreshing} = this.state;
+    const {refreshing, theme} = this.state;
     const {attendee} = this.props.checkin;
     return (
       <TouchableWithoutFeedback>
-        <KeyboardAvoidingView>
-          <StatusBar barStyle={'dark-content'} />
+        <KeyboardAvoidingView style={theme.greyArea}>
+
           <UserList
             usersData={attendee}
             onEndReached={this.onEndReached}
             onRefresh={this.onRefresh}
             refreshing={refreshing}
+            theme={theme}
           />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

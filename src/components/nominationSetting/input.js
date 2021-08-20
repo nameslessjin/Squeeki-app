@@ -26,6 +26,7 @@ export default class Input extends React.Component {
       moddleToggled,
       onBackdropPress,
       backdrop,
+      theme
     } = this.props;
 
     let title = 'Name';
@@ -61,20 +62,21 @@ export default class Input extends React.Component {
     const disabled = type == 'period' ? false : true;
 
     return (
-      <View style={styles.container}>
-        <Text style={{color: 'grey'}} >{title}</Text>
+      <View style={[styles.container, theme.backgroundColor, theme.underLineColor]}>
+        <Text style={{color: 'grey', width: 50}} >{title}</Text>
         {type == 'type' ? (
           <TouchableOpacity onPress={() => onInputChange(type)}>
             <View style={{marginLeft: 20}}>
-              <Text style={{color: 'grey'}}>{value}</Text>
+              <Text style={theme.textColor}>{value}</Text>
             </View>
           </TouchableOpacity>
         ) : (
           <TextInput
-            style={styles.textInputStyle}
+            style={[styles.textInputStyle, theme.textColor]}
             value={value}
             placeholder={placeholder}
-            placeholderTextColor={'#7f8fa6'}
+            placeholderTextColor={'grey'}
+            maxLength={30}
             onChangeText={t => onInputChange(type, t)}
             onFocus={!disabled ? moddleToggled : null}
           />

@@ -26,6 +26,7 @@ import {getStatusInGroup} from '../actions/user';
 import {userLogout} from '../actions/auth';
 import ToggleSetting from '../components/groupSetting/toggleSetting';
 import SettingEdition from '../components/groupSetting/settingEdition';
+import {getTheme} from '../utils/theme';
 
 class GroupSetting extends React.Component {
   state = {
@@ -34,11 +35,13 @@ class GroupSetting extends React.Component {
     updateData: {},
     loading: false,
     type: 'visibility',
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {auth, rank_setting} = this.props.group.group;
     const {navigation} = this.props;
+    const {theme} = this.state;
     navigation.setOptions({
       headerTitle: 'Group Settings',
       headerRight: () =>
@@ -47,9 +50,12 @@ class GroupSetting extends React.Component {
             update={false}
             onPress={this.updateGroupSettings}
             loading={this.state.loading}
+            theme={theme}
           />
         ) : null,
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     this.getGroupRankName();
   }
@@ -148,7 +154,7 @@ class GroupSetting extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
       let update = false;
-
+      const {theme} = this.state
       update = this.extractData().update;
       const {navigation} = this.props;
       const {auth, rank_setting} = this.props.group.group;
@@ -159,6 +165,7 @@ class GroupSetting extends React.Component {
               update={update}
               onPress={this.updateGroupSettings}
               loading={this.state.loading}
+              theme={theme}
             />
           ) : null,
       });
@@ -351,13 +358,12 @@ class GroupSetting extends React.Component {
   };
 
   render() {
-    const {visibility, loading, request_to_join, type} = this.state;
+    const {visibility, loading, request_to_join, type, theme} = this.state;
     const {auth, rank_setting} = this.props.group.group;
     const rank = auth ? auth.rank : 7;
     const required_rank = rank_setting
       ? rank_setting.group_setting_rank_required
       : 1;
-
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -365,8 +371,8 @@ class GroupSetting extends React.Component {
           alwaysBounceHorizontal={false}
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
-          style={{height: '100%', width: '100%', backgroundColor: 'white'}}>
-          <KeyboardAvoidingView style={styles.container}>
+          style={[{height: '100%', width: '100%'}, theme.backgroundColor]}>
+          <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
             <StatusBar barStyle={'dark-content'} />
             <GroupHeader
               setGroupHeader={this.setGroupHeader}
@@ -382,6 +388,7 @@ class GroupSetting extends React.Component {
               loading={type == 'visibility' ? loading : false}
               onToggle={this.onSwitchToggle}
               type={'visibility'}
+              theme={theme}
             />
 
             <ToggleSetting
@@ -390,35 +397,41 @@ class GroupSetting extends React.Component {
               loading={type == 'request_to_join' ? loading : false}
               onToggle={this.onSwitchToggle}
               type={'request_to_join'}
+              theme={theme}
             />
 
             <SettingEdition
               onPress={this.onEditProfilePress}
               name={'Edit my profile'}
               disabled={false}
+              theme={theme}
             />
 
             <SettingEdition
               onPress={() => this.onPress('Nomination')}
               name={'Edit nominations'}
               disabled={false}
+              theme={theme}
             />
 
             <SettingEdition
               onPress={() => this.onPress('Tags')}
               name={'Edit tags'}
               disabled={rank > required_rank}
+              theme={theme}
             />
             <SettingEdition
               onPress={() => this.onPress('RankSetting')}
               name={'Edit ranks'}
               disabled={false}
+              theme={theme}
             />
 
             <SettingEdition
               onPress={() => this.onPress('GroupRankNameSetting')}
               name={'Edit rank names'}
               disabled={rank > required_rank}
+              theme={theme}
             />
 
             <View

@@ -57,9 +57,6 @@ export default (groupReducer = (state = INITIAL_STATE, action) => {
         group: {
           ...action.data.joinedGroup,
         },
-        groups: {
-          ...action.data.groups,
-        },
       };
     case 'changeGroupVisibility':
       return {

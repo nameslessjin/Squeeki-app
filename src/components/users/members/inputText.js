@@ -3,14 +3,14 @@ import {StyleSheet, TextInput, Text, View} from 'react-native';
 
 export default class InputText extends React.Component {
   render() {
-    const {modifyInput, value, editable} = this.props;
+    const {modifyInput, value, editable, theme} = this.props;
 
     
     return (
       <View style={styles.container}>
-        <Text style={styles.header}>Group Username</Text>
+        <Text style={[styles.header, theme.titleColor]}>Group Username</Text>
         <TextInput
-          style={styles.textInputContainer}
+          style={[styles.textInputContainer, theme.textColor, theme.underLineColor]}
           value={value}
           onChangeText={v => modifyInput('group_username', v)}
           maxLength={50}
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
   textInputContainer: {
     width: '100%',
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     padding: 5,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: 'black',

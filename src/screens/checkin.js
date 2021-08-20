@@ -17,6 +17,7 @@ import {
 import {userLogout} from '../actions/auth';
 import CheckinList from '../components/checkin/checkinList';
 import CheckinModal from '../components/checkin/checkinModal';
+import {getTheme} from '../utils/theme';
 
 class CheckIn extends React.Component {
   state = {
@@ -26,11 +27,13 @@ class CheckIn extends React.Component {
     forceLoad: false,
     checkin_id: null,
     refresh: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation, group} = this.props;
     const {rank_setting, auth} = group.group;
+    const {theme} = this.state;
     navigation.setOptions({
       headerRight: () =>
         auth.rank <= rank_setting.manage_check_in_rank_required ? (
@@ -38,10 +41,13 @@ class CheckIn extends React.Component {
             onPress={this.onHeaderRightButtonPress}
             type={'create'}
             disabled={false}
+            theme={theme}
           />
         ) : null,
       headerBackTitleVisible: false,
       headerTitle: 'Check Ins',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
 
     this.loadCheckIn(true);
@@ -49,7 +55,7 @@ class CheckIn extends React.Component {
 
   componentWillUnmount() {
     const {group, navigation, cleanCheckIn} = this.props;
-    cleanCheckIn()
+    cleanCheckIn();
     if (group.group.id) {
       navigation.navigate('GroupNavigator', {
         refresh: true,
@@ -57,7 +63,6 @@ class CheckIn extends React.Component {
       });
     }
   }
-
 
   onHeaderRightButtonPress = () => {
     const {navigation} = this.props;
@@ -137,13 +142,16 @@ class CheckIn extends React.Component {
     const req = await userCheckIn(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot check in at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
           index: 0,
           routes: [{name: 'SignIn'}],
         });
+      } else if (req.errors[0].message == 'Wrong password'){
+        alert('Wrong password')
+      } else {
+        alert('Cannot check in at this time, please try again later');
       }
       this.setState(prevState => {
         return {
@@ -189,11 +197,11 @@ class CheckIn extends React.Component {
   };
 
   render() {
-    const {checkin, modalVisible, refresh, checkin_id} = this.state;
+    const {checkin, modalVisible, refresh, checkin_id, theme} = this.state;
     const {auth, group} = this.props;
     return (
-      <View>
-        <StatusBar barStyle={'dark-content'} />
+      <View style={theme.greyArea}>
+
         <CheckinList
           checkin={checkin}
           onCheckInPress={this.onCheckInPress}
@@ -205,12 +213,14 @@ class CheckIn extends React.Component {
           refresh={refresh}
           onDeleteCheckIn={this.onDeleteCheckIn}
           onResultPress={this.onResultPress}
+          theme={theme}
         />
         <CheckinModal
           modalVisible={modalVisible}
           onBackdropPress={this.onBackdropPress}
           onSubmit={this.onCheckIn}
           checkin_id={checkin_id}
+          theme={theme}
         />
       </View>
     );

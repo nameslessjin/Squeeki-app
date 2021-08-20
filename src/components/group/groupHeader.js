@@ -21,12 +21,14 @@ import {pointFormat} from '../../utils/point';
 import {getGroupPointLeaderBoard, cleanLeaderboard} from '../../actions/point';
 import {loadLeaderBoardFunc} from '../../functions/point';
 import {getMonth} from '../../utils/time';
+import {getTheme} from '../../utils/theme';
 
 const extractKey = ({key}) => key;
 class GroupHeader extends React.Component {
   state = {
     loading: false,
     notificationToggled: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   // join button method / setting method
@@ -97,7 +99,7 @@ class GroupHeader extends React.Component {
     // if joined result is true then navigate to group page or change button to requested
     if (result) {
       navigation.navigate('GroupNavigator', {
-        prevRoute: 'GroupSearch'
+        prevRoute: 'GroupSearch',
       });
     }
   };
@@ -111,7 +113,7 @@ class GroupHeader extends React.Component {
   };
 
   renderItem = ({item}) => {
-    const {notificationPriority} = this.props.group;
+    const {theme} = this.state;
     return (
       <TouchableOpacity
         style={[
@@ -119,9 +121,10 @@ class GroupHeader extends React.Component {
           {
             borderBottomWidth: item.key == '-1' ? 0 : StyleSheet.hairlineWidth,
           },
+          theme.borderColor
         ]}
         onPress={() => this.changeNotification(item.value)}>
-        <Text style={{color: item.key == '-1' ? 'red' : 'black'}}>
+        <Text style={{color: item.key == '-1' ? 'red' : theme.textColor.color}}>
           {item.label}
         </Text>
       </TouchableOpacity>
@@ -130,7 +133,7 @@ class GroupHeader extends React.Component {
 
   onLeaderboardPress = () => {
     const {cleanLeaderboard, navigation} = this.props;
-    cleanLeaderboard()
+    cleanLeaderboard();
     navigation.navigate('Leaderboard');
   };
 
@@ -169,18 +172,18 @@ class GroupHeader extends React.Component {
       visibility,
       tags,
       join_requested,
-      rank_setting
+      rank_setting,
     } = this.props.item;
     const {point, onAddPost} = this.props;
     let {total_point, base_point_time, leaderboard} = point;
     const {users} = leaderboard;
     const {container, underImageStyle, component} = styles;
-    const {notificationToggled} = this.state;
+    const {notificationToggled, theme} = this.state;
     const date = dateConversion(createdAt, 'timeDisplay');
 
     const total_point_display = pointFormat(total_point);
     const base_point_time_display = pointFormat(base_point_time);
-    const {month} = getMonth()
+    const {month} = getMonth();
 
     return (
       <TouchableWithoutFeedback>
@@ -199,12 +202,18 @@ class GroupHeader extends React.Component {
               visibility={visibility}
               join_requested={join_requested}
               rank_setting={rank_setting}
+              theme={theme}
             />
 
             <View style={underImageStyle}>
               <View style={{width: '70%'}}>
                 <View style={[component]}>
-                  <Text style={{fontWeight: 'bold', fontSize: 20}} numberOfLines={2}>
+                  <Text
+                    style={[
+                      {fontWeight: 'bold', fontSize: 20},
+                      theme.textColor,
+                    ]}
+                    numberOfLines={2}>
                     {display_name}
                   </Text>
                 </View>
@@ -226,7 +235,10 @@ class GroupHeader extends React.Component {
                     width: '30%',
                   }}>
                   <Text
-                    style={{fontSize: 19, fontWeight: '600', color: '#53535f'}}>
+                    style={[
+                      {fontSize: 19, fontWeight: '600'},
+                      theme.groupPointColor,
+                    ]}>
                     {total_point_display}
                   </Text>
                   <Text style={{fontSize: 9, color: 'grey'}}>
@@ -256,7 +268,7 @@ class GroupHeader extends React.Component {
                   paddingHorizontal: 10,
                 },
               ]}>
-              <Text numberOfLines={8}>{shortDescription}</Text>
+              <Text numberOfLines={8} style={theme.textColor}>{shortDescription}</Text>
             </View>
 
             {tags.length == 0 ? null : (
@@ -284,8 +296,8 @@ class GroupHeader extends React.Component {
               animationIn={'slideInUp'}
               animationOut={'slideOutDown'}
               onBackdropPress={this.onBackdropPress}>
-              <View style={styles.notificationSetting}>
-                <Text>Receive Notification only on and above priority</Text>
+              <View style={[styles.notificationSetting, theme.backgroundColor]}>
+                <Text style={theme.textColor}>Receive Notification only on and above priority</Text>
                 <FlatList
                   style={{width: '100%', marginTop: 20}}
                   data={this.notificationSettingOptions}
@@ -309,13 +321,13 @@ class GroupHeader extends React.Component {
           ) : null}
           {auth && users.length > 0 ? (
             <TouchableWithoutFeedback onPress={this.onLeaderboardPress}>
-              <View style={styles.leaderboard}>
+              <View style={[styles.leaderboard, theme.groupLeaderBoard]}>
                 <View style={{height: 20}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                  <Text style={[{fontWeight: 'bold', fontSize: 15}, theme.textColor]}>
                     Monthly Leaderboard:
                   </Text>
                 </View>
-                <Leaderboard users={users} />
+                <Leaderboard users={users} theme={theme} />
               </View>
             </TouchableWithoutFeedback>
           ) : null}

@@ -18,6 +18,7 @@ export default class Leaderboard extends React.Component {
     const {index, item} = i;
     const {base_point, user} = i.item;
     const {username, id, displayName, icon, group_username} = user;
+    const {theme} = this.props
 
     const trophyColors = ['#f1bc12', '#bdc3c7', '#cd6133'];
 
@@ -37,8 +38,8 @@ export default class Leaderboard extends React.Component {
               style={styles.icon}
             />
           </View>
-          <View style={styles.nameStyle}>
-            <Text>{group_username}</Text>
+          <View style={[styles.nameStyle]}>
+            <Text style={theme.textColor}>{group_username}</Text>
           </View>
         </View>
         <View
@@ -47,7 +48,7 @@ export default class Leaderboard extends React.Component {
             justifyContent: 'center',
             alignItems: 'flex-start',
           }}>
-          <Text>{base_point}</Text>
+          <Text style={theme.textColor}>{base_point}</Text>
         </View>
       </View>
     ) : null;

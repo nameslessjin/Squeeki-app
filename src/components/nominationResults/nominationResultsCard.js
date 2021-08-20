@@ -21,6 +21,7 @@ export default class NominationResultsCard extends React.Component {
       nomineeId,
       time,
       nominationId,
+      theme,
     } = this.props;
     const percentage = vote / total_vote_count;
 
@@ -37,10 +38,10 @@ export default class NominationResultsCard extends React.Component {
         <View style={styles.container}>
           <View style={styles.name_vote}>
             <View style={{maxWidth: width - 140}}>
-              <Text>{nominee_name}</Text>
+              <Text style={theme.textColor}>{nominee_name}</Text>
             </View>
             <View style={{maxWidth: 90}}>
-              <Text>Vote: {vote}</Text>
+              <Text style={theme.textColor}>Vote: {vote}</Text>
             </View>
           </View>
           <View
@@ -49,9 +50,9 @@ export default class NominationResultsCard extends React.Component {
               {
                 backgroundColor: most_recent
                   ? max
-                    ? '#ff7675'
+                    ? '#EA2027'
                     : '#c7ecee'
-                  : '#b8e994',
+                  : '#1dd1a1',
                 width: percentage * width - 23,
               },
             ]}

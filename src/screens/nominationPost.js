@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import PostList from '../components/posts/postList';
 import {userLogout} from '../actions/auth';
 import {getSundays} from '../utils/time';
+import {getTheme} from '../utils/theme';
 
 class NominationPost extends React.Component {
   state = {
@@ -19,27 +20,30 @@ class NominationPost extends React.Component {
     count: 0,
     nomineeId: '',
     time: '',
-    nominationId: ''
+    nominationId: '',
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation, route} = this.props;
+    const {theme} = this.state
     navigation.setOptions({
       headerTitle: 'Nomination Posts',
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
 
     this.setState({
-        nomineeId: route.params.nomineeId,
-        nominationId: route.params.nominationId,
-        time: route.params.time
-    })
+      nomineeId: route.params.nomineeId,
+      nominationId: route.params.nominationId,
+      time: route.params.time,
+    });
 
     this.loadNominationPost({...route.params, count: 0});
   }
 
   loadNominationPost = async props => {
-
     let {nomineeId, time, nominationId, count} = props;
     const {navigation, group, auth, getNominationPost} = this.props;
 
@@ -57,7 +61,9 @@ class NominationPost extends React.Component {
     const req = await getNominationPost(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load nomination posts at this time, please try again later')
+      alert(
+        'Cannot load nomination posts at this time, please try again later',
+      );
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -78,16 +84,16 @@ class NominationPost extends React.Component {
   };
 
   onEndReached = () => {
-    this.loadNominationPost({...this.state})
-  }
+    this.loadNominationPost({...this.state});
+  };
 
   render() {
-    const {posts, count} = this.state;
+    const {posts, count, theme} = this.state;
     const {group, navigation} = this.props;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
           <StatusBar barStyle={'dark-content'} />
           {count != 0 ? (
             <PostList

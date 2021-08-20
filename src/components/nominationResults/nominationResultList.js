@@ -10,8 +10,8 @@ const extractNomineeName = ({nominee_name}) =>
 
 export default class NominationResultsList extends React.Component {
   renderItemNominee = i => {
-    const {onNomineePress} = this.props;
-    return <NominationResultsCard onPress={onNomineePress} {...i.item} />;
+    const {onNomineePress, theme} = this.props;
+    return <NominationResultsCard onPress={onNomineePress} {...i.item} theme={theme} />;
   };
 
   renderItemNominationName = ({item}) => {
@@ -23,6 +23,7 @@ export default class NominationResultsList extends React.Component {
       most_recent,
       time,
     } = item;
+    const {theme} = this.props
 
     const max_vote = Math.max.apply(
       Math,
@@ -41,7 +42,7 @@ export default class NominationResultsList extends React.Component {
 
     return (
       <View style={{padding: 5}}>
-        <Text style={{fontWeight: 'bold', marginBottom: 5}}>
+        <Text style={[{fontWeight: 'bold', marginBottom: 5}, theme.textColor]}>
           {nomination_name}:
         </Text>
         <FlatList
@@ -58,11 +59,13 @@ export default class NominationResultsList extends React.Component {
 
   renderItemTime = ({item}) => {
     const {time} = item;
-
+    const {theme} = this.props;
     const {year, month, date} = getFormalTime(parseInt(time) * 1000000);
 
     // - 1 second.  For example, 5/23/2021 EST 8:59pm
-    const {last_sunday, next_sunday} = getSundays(parseInt(time) * 1000000 - 1000);
+    const {last_sunday, next_sunday} = getSundays(
+      parseInt(time) * 1000000 - 1000,
+    );
     const this_sunday = getSundays().next_sunday;
     const {list} = item;
 
@@ -71,7 +74,11 @@ export default class NominationResultsList extends React.Component {
       Math.floor(next_sunday.getTime() / 1000);
 
     const timeText = (
-      <Text style={{fontStyle: 'italic', fontSize: 15, marginVertical: 5}}>
+      <Text
+        style={[
+          {fontStyle: 'italic', fontSize: 15, marginVertical: 5},
+          theme.textColor,
+        ]}>
         {most_recent
           ? 'This Week'
           : last_sunday.getMonth() +
@@ -110,12 +117,16 @@ export default class NominationResultsList extends React.Component {
 
     return (
       <View
-        style={{
-          backgroundColor: 'white',
-          alignItems: 'center',
-          margin: 7,
-          borderRadius: 10,
-        }}>
+        style={[
+          {
+            alignItems: 'center',
+            margin: 7,
+            borderRadius: 10,
+            borderWidth: StyleSheet.hairlineWidth
+          },
+          theme.backgroundColor,
+          theme.borderColor
+        ]}>
         {timeText}
         {list ? (
           modified_list.length == 0 ? (
@@ -151,7 +162,6 @@ export default class NominationResultsList extends React.Component {
     const nominationResultList = mostRecentNominationResults.time
       ? [mostRecentNominationResults].concat(oldResultList || [])
       : oldResultList || [];
-
 
     return (
       <FlatList

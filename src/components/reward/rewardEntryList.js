@@ -89,7 +89,7 @@ class RewardEntryList extends React.Component {
       giftedGroupDisplayName,
     } = item;
 
-    const {onPress, type} = this.props;
+    const {onPress, type, theme} = this.props;
     const {redeemItemId} = this.state;
     const expired = expiration
       ? dateConversion(expiration, 'expirationDisplay') == 'Expired'
@@ -101,15 +101,16 @@ class RewardEntryList extends React.Component {
           style={[
             styles.cardInfo,
             {width: type == 'redeem' ? width * 0.9 - 95 : width * 0.9 - 90},
+            styles.underLineColor,
           ]}>
-          <Text style={styles.name}>{name}</Text>
+          <Text style={[styles.name, theme.textColor]}>{name}</Text>
           {groupDisplayName ? (
             <View
               style={[
                 styles.infoText,
                 {flexDirection: 'row', alignItems: 'center'},
               ]}>
-              <Text>From: </Text>
+              <Text style={theme.textColor}>From: </Text>
               <TouchableOpacity onPress={() => this.getGroup(item)}>
                 <View style={styles.groupNameTag}>
                   <Text style={{color: 'white'}}>{groupDisplayName}</Text>
@@ -123,7 +124,7 @@ class RewardEntryList extends React.Component {
                 styles.infoText,
                 {flexDirection: 'row', alignItems: 'center'},
               ]}>
-              <Text>To: </Text>
+              <Text style={theme.textColor}>To: </Text>
               <TouchableOpacity onPress={() => this.getGroup(item)}>
                 <View style={styles.groupNameTag}>
                   <Text style={{color: 'white'}}>{giftedGroupDisplayName}</Text>
@@ -132,11 +133,11 @@ class RewardEntryList extends React.Component {
             </View>
           ) : null}
           {type == 'redeem' ? (
-            <Text style={styles.infoText}>{pointCost}pts</Text>
+            <Text style={[styles.infoText, theme.textColor]}>{pointCost}pts</Text>
           ) : null}
-          <Text style={styles.infoText}>{count} Remaining</Text>
+          <Text style={[styles.infoText, theme.textColor]}>{count} Remaining</Text>
           {expiration ? (
-            <Text style={styles.infoText}>
+            <Text style={[styles.infoText, theme.textColor]}>
               {dateConversion(expiration, 'expirationDisplay')}
             </Text>
           ) : null}
@@ -178,12 +179,12 @@ class RewardEntryList extends React.Component {
 
   renderSectionHeader = ({section}) => {
     const {title, data, index, id, chance} = section;
-
+    const {theme} = this.props;
     if (data.length != 0) {
       return (
         <View style={styles.title}>
-          <Text style={styles.titleText}>{`${title}`}</Text>
-          <Text style={styles.chance}>{`(${chance}%)`}</Text>
+          <Text style={[styles.titleText, theme.textColor]}>{`${title}`}</Text>
+          <Text style={[styles.chance]}>{`(${chance}%)`}</Text>
         </View>
       );
     }

@@ -26,7 +26,8 @@ export default class CheckinCard extends React.Component {
   }
 
   componentDidUpdate(){
-    if (!this.state.time){
+    const {endAt} = this.props.item
+    if (endAt < Date.now()){
       clearInterval(this.interval)
     }
   }
@@ -60,6 +61,7 @@ export default class CheckinCard extends React.Component {
       item,
       rank_required,
       onResultPress,
+      theme
     } = this.props;
     const {
       name,
@@ -75,27 +77,21 @@ export default class CheckinCard extends React.Component {
     } = item;
     const {time} = this.state
     const timeDisplay = countDownFormat(time);
+
     const allowToCheckResult = checked || auth.rank <= rank_required
     return (
       <TouchableWithoutFeedback>
-        <View style={styles.card}>
+        <View style={[styles.card, theme.backgroundColor]}>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <Text style={[styles.name, styles.text]}>{name}</Text>
+            <Text style={[styles.name, styles.text, theme.textColor]}>{name}</Text>
             {currentUserId == userId || auth.rank <= rank_required ? (
               <TouchableOpacity onPress={this.onDelete}>
-                <Text
-                  style={[
-                    styles.name,
-                    styles.text,
-                    {color: 'red', marginLeft: 3},
-                  ]}>
-                  X
-                </Text>
+                <MaterialIcons name={'close'} size={20} color={'red'} />
               </TouchableOpacity>
             ) : null}
           </View>
@@ -105,12 +101,12 @@ export default class CheckinCard extends React.Component {
             style={[styles.text, {color: 'grey'}]}>
             {content.slice(0, 100)} {content.length > 100 ? '...' : null}
           </Text>
-          <Text style={styles.text}>Local: {location ? 'ON' : 'OFF'}</Text>
-          <Text style={styles.text}>Attended: {count}</Text>
+          <Text style={[styles.text, theme.textColor]}>Local: {location ? 'ON' : 'OFF'}</Text>
+          <Text style={[styles.text, theme.textColor]}>Attended: {count}</Text>
           {/* <Text style={styles.text}>Points: {point}</Text> */}
-          <Text style={styles.text}>End At: {timeDisplay}</Text>
+          <Text style={[styles.text, theme.textColor]}>End At: {timeDisplay}</Text>
 
-          <View style={styles.checkin}>
+          <View style={[styles.checkin, theme.underLineColor]}>
             {(checked && time) || (!time && allowToCheckResult) ? (
               <TouchableOpacity onPress={() => onResultPress({checkin_id: id, userId: userId})}>
                 <View>
@@ -126,7 +122,7 @@ export default class CheckinCard extends React.Component {
                 <View style={{flexDirection: 'row'}}>
                   {hasPassword ? (
                     time ? (
-                      <MaterialIcons name={'lock'} size={15} />
+                      <MaterialIcons name={'lock'} size={15} style={theme.iconColor}/>
                     ) : null
                   ) : null}
                   <Text

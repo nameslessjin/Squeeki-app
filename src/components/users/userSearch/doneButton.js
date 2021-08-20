@@ -3,13 +3,13 @@ import {StyleSheet, TouchableOpacity, Text} from 'react-native';
 
 export default class addButton extends React.Component {
   render() {
-    const {onPress, disabled} = this.props;
+    const {onPress, disabled, theme} = this.props;
     return (
       <TouchableOpacity
         style={styles.headerRightButton}
         onPress={onPress}
         disabled={disabled}>
-        <Text style={[styles.text, {color: disabled ? '#95a5a6' : 'black'}]}>
+        <Text style={[styles.text, {color: disabled ? '#95a5a6' : theme.textColor.color}]}>
           Done
         </Text>
       </TouchableOpacity>

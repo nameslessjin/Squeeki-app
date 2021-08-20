@@ -181,62 +181,47 @@ mutation updateGroup($GroupInput: GroupInput!){
 export const joinGroupMutation = `
 mutation joinGroup($groupId: ID!){
     joinGroup(groupId: $groupId){
-        joinedGroup{
+        id
+        groupname
+        display_name
+        shortDescription
+        icon {
+            uri
+        }
+        backgroundImg {
+            uri
+        }
+        auth {
+            rank
+            title
+            notification
+            notificationPriority
+        }
+        tags {
             id
-            groupname
-            display_name
-            shortDescription
-            icon {
-                uri
-            }
-            backgroundImg {
-                uri
-            }
-            auth {
-                rank
-                title
-                notification
-                notificationPriority
-            }
-            tags {
-                id
-                tag_name
-                use_count
-            }
-            visibility
-            join_requested
-            rank_setting {
-                post_rank_required
-                priority_1_rank_required
-                priority_2_rank_required
-                priority_3_rank_required
-                manage_member_rank_required
-                group_setting_rank_required
-                nominate_rank_required
-                manage_post_rank_required
-                manage_comment_rank_required
-                manage_check_in_rank_required
-                manage_chat_rank_required
-                manage_task_rank_required
-                manage_reward_rank_required
-            }
-            memberCount
-            createdAt
+            tag_name
+            use_count
         }
-        groups{
-            groups{
-                id
-                groupname
-                display_name
-                shortDescription
-                icon {
-                    uri
-                }
-                memberCount
-                createdAt
-            }
-            count
+        memberCount
+        request_to_join
+        visibility
+        join_requested
+        rank_setting {
+            post_rank_required
+            priority_1_rank_required
+            priority_2_rank_required
+            priority_3_rank_required
+            manage_member_rank_required
+            group_setting_rank_required
+            nominate_rank_required
+            manage_post_rank_required
+            manage_comment_rank_required
+            manage_check_in_rank_required
+            manage_chat_rank_required
+            manage_task_rank_required
+            manage_reward_rank_required
         }
+        createdAt
     }
 }
 `;

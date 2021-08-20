@@ -9,6 +9,7 @@ import {getGroupJoinRequestCount, getGroupRankName} from '../actions/group';
 import MemberList from '../components/users/members/memberList';
 import AddButton from '../components/users/members/addButton';
 import {searchGroupMembers, cleanMembers} from '../actions/user';
+import {getTheme} from '../utils/theme'
 
 class Users extends React.Component {
   state = {
@@ -16,6 +17,7 @@ class Users extends React.Component {
     search_term: '',
     searched_users: [],
     count: 0,
+    theme: getTheme(this.props.auth.user.theme)
   };
 
   onSearchChange = async (text, init = true) => {
@@ -86,6 +88,7 @@ class Users extends React.Component {
   componentDidMount() {
     const {navigation, group} = this.props;
     const {group_join_request_count} = group;
+    const {theme} = this.state
     const button =
       group.group.auth.rank <=
       group.group.rank_setting.manage_member_rank_required ? (
@@ -98,6 +101,8 @@ class Users extends React.Component {
     navigation.setOptions({
       headerRight: () => button,
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     this.loadGroupMembers(true);
     this.getGroupJoinRequestCount();
@@ -201,12 +206,12 @@ class Users extends React.Component {
 
   render() {
     const {user, navigation, group} = this.props;
-    const {search_term, searched_users} = this.state;
+    const {search_term, searched_users, theme} = this.state;
     const members =
       searched_users.length == 0 ? user.members.members : searched_users;
-
+    console.log(members)
     return (
-      <View style={{width: '100%', height: '100%', backgroundColor: 'white'}}>
+      <View style={[{width: '100%', height: '100%', backgroundColor: 'white'}, theme.greyArea]}>
         <StatusBar barStyle={'dark-content'} />
         <MemberList
           members={members}
@@ -216,6 +221,7 @@ class Users extends React.Component {
           onSearchChange={this.onSearchChange}
           search_term={search_term}
           rankName={group.rankName}
+          theme={theme}
         />
       </View>
     );

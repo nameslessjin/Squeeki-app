@@ -18,11 +18,13 @@ import {getGroupJoinRequestCountFunc} from '../functions/group';
 import {userLogout} from '../actions/auth';
 import {getGroupJoinRequestCount, getSingleGroupById} from '../actions/group';
 import {getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point';
+import {getTheme} from '../utils/theme';
 
 class Group extends React.Component {
   state = {
     loading: false,
     refreshing: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
@@ -41,6 +43,14 @@ class Group extends React.Component {
         this.loadGroupPosts(true);
       }
     }, 100);
+  }
+
+  componentDidUpdate(prevProps) {
+    const {group} = this.props;
+    if (!prevProps.group.group.auth && group.group.auth) {
+      // load group post
+      this.loadGroupPosts(true);
+    }
   }
 
   getUserGroupPoint = async () => {
@@ -172,10 +182,10 @@ class Group extends React.Component {
 
   render() {
     const {group, post, navigation, point} = this.props;
-    const {refreshing} = this.state;
+    const {refreshing, theme} = this.state;
 
     return (
-      <KeyboardAvoidingView style={styles.container}>
+      <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
         <StatusBar barStyle={'dark-content'} />
         {group.group.id ? (
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -188,6 +198,7 @@ class Group extends React.Component {
               onRefresh={this.onRefresh}
               refreshing={refreshing}
               onAddPost={this.onAddPost}
+              theme={theme}
             />
           </TouchableWithoutFeedback>
         ) : null}

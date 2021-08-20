@@ -106,7 +106,7 @@ class RewardHistoryList extends React.Component {
       return (
         <View style={styles.header}>
           <View style={styles.rewardInfoContainer}>
-            <Text style={styles.headerText}>Reward</Text>
+            <Text style={[styles.headerText, theme.textColor]}>Reward</Text>
           </View>
           <View style={styles.rightContainer}>
             <Text style={[styles.headerText, {color: '#EA2027'}]}>Winner</Text>
@@ -121,7 +121,7 @@ class RewardHistoryList extends React.Component {
         icon = winner.icon;
         userId = winner.userId;
       }
-      console.log(theme)
+
       return (
         <View style={styles.container}>
           <TouchableWithoutFeedback onPress={() => this.getReward(id)}>

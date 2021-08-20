@@ -15,16 +15,23 @@ import {userLogout} from '../actions/auth';
 import {TouchableWithoutFeedback, View, TouchableOpacity} from 'react-native';
 import MyReward from '../screens/myReward';
 import RewardManagement from '../screens/rewardManagement';
+import {getTheme} from '../utils/theme';
 
 const Tabs = createBottomTabNavigator();
 
 class RewardTabNavigator extends React.Component {
+  state = {
+    theme: getTheme(this.props.auth.user.theme),
+  };
+
   componentDidMount() {
     const {navigation} = this.props;
-
+    const {theme} = this.state
     navigation.setOptions({
       headerTitle: 'Reward',
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
@@ -36,6 +43,7 @@ class RewardTabNavigator extends React.Component {
 
   componentDidUpdate() {
     const routeName = this.getRouteName();
+    const {theme} = this.state;
     const {navigation, group} = this.props;
     const hasRewardManagementAuthority = group.group.auth
       ? group.group.auth.rank <=
@@ -46,7 +54,11 @@ class RewardTabNavigator extends React.Component {
       navigation.setOptions({
         headerRight: () =>
           hasRewardManagementAuthority ? (
-            <TopRightButton type={'add'} onPress={this.onTopRightButtonPress} />
+            <TopRightButton
+              type={'add'}
+              onPress={this.onTopRightButtonPress}
+              theme={theme}
+            />
           ) : null,
       });
     } else if (routeName == 'RewardManagement') {
@@ -56,6 +68,7 @@ class RewardTabNavigator extends React.Component {
             <TopRightButton
               type={'gift'}
               onPress={this.onTopRightButtonPress}
+              theme={theme}
             />
           ) : null,
       });
@@ -153,6 +166,7 @@ class RewardTabNavigator extends React.Component {
 
   render() {
     const {group} = this.props;
+    const {theme} = this.state
     const hasRewardManagementAuthority = group.group.auth
       ? group.group.auth.rank <=
         group.group.rank_setting.manage_reward_rank_required
@@ -166,6 +180,7 @@ class RewardTabNavigator extends React.Component {
           tabBarActiveTintColor: 'tomato',
           tabBarInactiveTintColor: 'grey',
           headerShown: false,
+          tabBarStyle: theme.backgroundColor
         }}>
         <Tabs.Screen
           name="RewardHistory"

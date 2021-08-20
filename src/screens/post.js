@@ -12,39 +12,42 @@ import {getGroupPosts, getGroupPostForCheckIn} from '../actions/post';
 import PostList from '../components/posts/postList';
 import {getGroupPostsFunc} from '../functions/post';
 import {userLogout} from '../actions/auth';
+import {getTheme} from '../utils/theme';
 
 class Post extends React.Component {
   state = {
     loading: false,
     refreshing: false,
     post: [],
-    count: 0
+    count: 0,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {visibility, auth} = this.props.group.group;
     const {navigation} = this.props;
+    const {theme} = this.state
 
     navigation.setOptions({
       headerTitle: 'Posts',
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
-
 
     if (visibility == 'public' || auth != null) {
       this.setState({loading: true});
-      this.loadPosts(true)
+      this.loadPosts(true);
       this.setState({loading: false});
     }
 
     Keyboard.dismiss();
   }
 
-
-  onPostSelect = (post) => {
+  onPostSelect = post => {
     const {navigation} = this.props;
     navigation.navigate('CheckInSetting', {
-      post: post
+      post: post,
     });
   };
 
@@ -52,7 +55,7 @@ class Post extends React.Component {
     const {visibility, auth} = this.props.group.group;
     if (visibility == 'public' || auth != null) {
       this.setState({loading: true});
-      this.loadPosts(false)
+      this.loadPosts(false);
       this.setState({loading: false});
     }
   };
@@ -60,25 +63,31 @@ class Post extends React.Component {
   onRefresh = () => {
     const {visibility, auth} = this.props.group.group;
     if (visibility == 'public' || auth != null) {
-    this.setState({refreshing: true});
-    this.loadPosts(true)
-    this.setState({refreshing: false});
+      this.setState({refreshing: true});
+      this.loadPosts(true);
+      this.setState({refreshing: false});
     }
   };
 
   loadPosts = async init => {
-    const {userLogout, group, auth, navigation, getGroupPostForCheckIn} = this.props
-    const {count, post} = this.state
+    const {
+      userLogout,
+      group,
+      auth,
+      navigation,
+      getGroupPostForCheckIn,
+    } = this.props;
+    const {count, post} = this.state;
     const request = {
       token: auth.token,
       groupId: group.group.id,
-      count: init ? 0 : count
-    }
+      count: init ? 0 : count,
+    };
 
-    const req = await getGroupPostForCheckIn(request)
+    const req = await getGroupPostForCheckIn(request);
     if (req.errors) {
       // alert(req.errors[0].message);
-      alert('Cannot load posts at this time, please try again later')
+      alert('Cannot load posts at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();
         navigation.reset({
@@ -89,29 +98,31 @@ class Post extends React.Component {
       return;
     }
 
-    this.setState({post: init ? req.posts : post.concat(req.posts), count: req.count})
-
-  }
+    this.setState({
+      post: init ? req.posts : post.concat(req.posts),
+      count: req.count,
+    });
+  };
 
   render() {
-    const {post, count} = this.state
+    const {post, count, theme} = this.state;
     const posts = {
       posts: post,
       count: count,
-    }
+    };
     return (
-        <KeyboardAvoidingView style={{height: '100%', width: '100%'}}>
-          <StatusBar barStyle={'dark-content'} />
-          <PostList
-            posts={posts}
-            group={null}
-            onEndReached={this.onEndReached}
-            onRefresh={this.onRefresh}
-            refreshing={this.state.refreshing}
-            selectionMode={true}
-            onPostSelect={this.onPostSelect}
-          />
-        </KeyboardAvoidingView>
+      <KeyboardAvoidingView style={[{height: '100%', width: '100%'}, theme.greyArea]}>
+        <StatusBar barStyle={'dark-content'} />
+        <PostList
+          posts={posts}
+          group={null}
+          onEndReached={this.onEndReached}
+          onRefresh={this.onRefresh}
+          refreshing={this.state.refreshing}
+          selectionMode={true}
+          onPostSelect={this.onPostSelect}
+        />
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -125,7 +136,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getGroupPosts: data => dispatch(getGroupPosts(data)),
     userLogout: () => dispatch(userLogout()),
-    getGroupPostForCheckIn: data => dispatch(getGroupPostForCheckIn(data))
+    getGroupPostForCheckIn: data => dispatch(getGroupPostForCheckIn(data)),
   };
 };
 

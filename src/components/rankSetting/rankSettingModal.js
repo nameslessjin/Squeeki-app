@@ -71,14 +71,14 @@ export default class RankSettingModal extends React.Component {
             <Text style={theme.textColor}>{name}</Text>
           </View>
         </TouchableOpacity>
-        {index != ranks.length - 1 ? <View style={[styles.underline, theme.underLineColor]} /> : null}
+        {index != ranks.length - 1 ? <View style={[styles.underline, theme.borderColor]} /> : null}
       </View>
     );
   };
 
   render() {
-    const {modalVisible, onBackdropPress} = this.props;
-    const {ranks, theme} = this.state;
+    const {modalVisible, onBackdropPress, theme} = this.props;
+    const {ranks} = this.state;
     return (
       <View style={styles.centeredView}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>

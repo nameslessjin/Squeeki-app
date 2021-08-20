@@ -243,7 +243,11 @@ export default class PostHeader extends React.Component {
               </Text>
             )}
             {groupAuth == null ? null : (
-              <Text style={{fontSize: titleSize, color: '#4a69bd'}}>
+              <Text
+                style={[
+                  {fontSize: titleSize, color: '#4a69bd'},
+                  theme.groupMemberTitle,
+                ]}>
                 {'<' + groupAuth.title + '>'}
               </Text>
             )}
@@ -255,18 +259,10 @@ export default class PostHeader extends React.Component {
             flexDirection: 'row',
             alignItems: 'center',
             width: 85,
-            justifyContent: 'space-between',
+            justifyContent: selectionMode ? 'center' : 'space-between',
           }}>
-          {/* {priority !== 0 ? (
-            <View style={{flexDirection: 'row', marginRight: 5}}>
-              <MaterialIcons name={'feather'} size={20} color={priorityColor} />
-              <Text style={{fontSize: 10, color: priorityColor}}>
-                {priority}
-              </Text>
-            </View>
-          ) : null} */}
           <Text
-            style={[styles.timeStyle, {marginRight: selectionMode ? 5 : 0}]}>
+            style={[styles.timeStyle]}>
             {date}
           </Text>
           {!selectionMode ? (

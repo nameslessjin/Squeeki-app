@@ -18,6 +18,7 @@ export default class disPlayNameList extends React.Component {
 
   renderItem = ({item}) => {
     const {id, displayName} = item;
+    const {theme} = this.props
     const colors = ['#fab1a0', '#c7ecee', '#b8e999'];
     const chosenColor = colors[Math.floor(Math.random() * 3)];
     const user = {
@@ -27,7 +28,7 @@ export default class disPlayNameList extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={() => this.onPress(user)}>
         <View style={[styles.card, {backgroundColor: chosenColor}]}>
-          <Text numberOfLines={1}>{displayName}</Text>
+          <Text numberOfLines={1} style={theme.textColor} >{displayName}</Text>
         </View>
       </TouchableWithoutFeedback>
     );

@@ -4,10 +4,12 @@ import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {getGroupRewardHistory} from '../actions/reward';
 import RewardHistoryList from '../components/reward/rewardHistoryList';
+import {getTheme} from '../utils/theme'
 
 class RewardHistory extends React.Component {
   state = {
     loading: false,
+    theme: getTheme(this.props.auth.user.theme)
   };
 
   componentDidMount() {
@@ -52,13 +54,13 @@ class RewardHistory extends React.Component {
 
   render() {
     const {reward, group, navigation} = this.props;
-
+    const {theme} = this.state
     return (
-      <View style={{backgroundColor: 'white'}}>
+      <View style={[{backgroundColor: 'white'}, theme.greyArea]}>
         <StatusBar barStyle={'dark-content'} />
         {reward.groupRewardHistory.length == 0 ? (
           <View style={styles.container}>
-            <Text style={styles.text}>No one has won any reward yet</Text>
+            <Text style={[styles.text, theme.textColor]}>No one has won any reward yet</Text>
           </View>
         ) : (
           <RewardHistoryList
@@ -67,6 +69,7 @@ class RewardHistory extends React.Component {
             onEndReached={this.onEndReached}
             navigation={navigation}
             prevRoute={'RewardHistory'}
+            theme={theme}
           />
         )}
       </View>

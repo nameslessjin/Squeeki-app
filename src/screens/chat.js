@@ -835,7 +835,7 @@ class Chat extends React.Component {
     return (
       <View>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-          <StatusBar barStyle={'dark-content'} />
+
           <GiftedChat
             ref={component => (this._giftedChatRef = component)}
             messages={messages}

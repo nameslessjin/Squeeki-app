@@ -12,18 +12,27 @@ import {getGroupNominations, turnNomination} from '../actions/nomination';
 import {userLogout} from '../actions/auth';
 import {getGroupNominationsFunc} from '../functions/nomination';
 import NominationList from '../components/nomination/nominationList';
+import {getTheme} from '../utils/theme';
 
 class Nomination extends React.Component {
   state = {
     chosenUser: {},
     nomination: {},
     loading: false,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
-    const {navigation, auth, userLogout, getGroupNominations, group} = this.props;
-    const {rank_setting} = group.group
+    const {
+      navigation,
+      auth,
+      userLogout,
+      getGroupNominations,
+      group,
+    } = this.props;
+    const {rank_setting} = group.group;
     const {params} = this.props.route;
+    const {theme} = this.state;
     if (params) {
       this.setState({
         chosenUser: params.chosenUser,
@@ -41,13 +50,16 @@ class Nomination extends React.Component {
       getGroupNominationsFunc(input);
     }
 
-    let button = group.group.auth.rank > rank_setting.group_setting_rank_required ? null : (
-      <HeaderRightButton
-        type={'create'}
-        disabled={false}
-        onPress={this.onHeaderRightButtonPress}
-      />
-    );
+    let button =
+      group.group.auth.rank >
+      rank_setting.group_setting_rank_required ? null : (
+        <HeaderRightButton
+          type={'create'}
+          disabled={false}
+          onPress={this.onHeaderRightButtonPress}
+          theme={theme}
+        />
+      );
 
     if (params.prev_route == 'PostSetting') {
       button = (
@@ -55,39 +67,45 @@ class Nomination extends React.Component {
           type={'submit'}
           disabled={true}
           onPress={this.onHeaderRightButtonPress}
+          theme={theme}
         />
       );
     }
-    
+
     navigation.setOptions({
       headerRight: () => button,
-      headerBackTitleVisible: false
+      headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
   componentDidUpdate() {
-    const {prev_route, chosenUser, nomination} = this.state;
+    const {prev_route, chosenUser, nomination, theme} = this.state;
     const {navigation, group} = this.props;
-    const {auth, rank_setting} = group.group
+    const {auth, rank_setting} = group.group;
     let disabled = false;
 
-    let button = auth.rank > rank_setting.group_setting_rank_required ? null : (
-      <HeaderRightButton
-        type={'create'}
-        disabled={false}
-        onPress={this.onHeaderRightButtonPress}
-      />
-    );
+    let button =
+      auth.rank > rank_setting.group_setting_rank_required ? null : (
+        <HeaderRightButton
+          type={'create'}
+          disabled={false}
+          onPress={this.onHeaderRightButtonPress}
+          theme={theme}
+        />
+      );
 
     if (prev_route == 'PostSetting') {
-    if (chosenUser.id == null || nomination.id == null) {
-      disabled = true;
-    }
+      if (chosenUser.id == null || nomination.id == null) {
+        disabled = true;
+      }
       button = (
         <HeaderRightButton
           type={'submit'}
           disabled={disabled}
           onPress={this.onHeaderRightButtonPress}
+          theme={theme}
         />
       );
     }
@@ -112,7 +130,7 @@ class Nomination extends React.Component {
     if (prev_route == 'PostSetting') {
       navigation.navigate(prev_route, {
         chosenUser: chosenUser,
-        nomination: nomination
+        nomination: nomination,
       });
     } else {
       navigation.navigate('NominationSetting', {
@@ -124,7 +142,7 @@ class Nomination extends React.Component {
 
   onNominationSelect = n => {
     const {nomination} = this.state;
-   
+
     if (nomination != n) {
       this.setState({nomination: n});
     } else {
@@ -134,25 +152,24 @@ class Nomination extends React.Component {
 
   render() {
     let {nominations} = this.props;
-    const {prev_route} = this.state;
+    const {prev_route, theme} = this.state;
 
     nominations = nominations.map(n => {
-      if (n.id == this.state.nomination.id){
+      if (n.id == this.state.nomination.id) {
         return {
           ...n,
-          selected: true
-        }
+          selected: true,
+        };
       }
       return {
         ...n,
-        selected: false
-      }
-    })
-
+        selected: false,
+      };
+    });
 
     return (
       <TouchableWithoutFeedback>
-        <View style={styles.container}>
+        <View style={[styles.container, theme.greyArea]}>
           <StatusBar barStyle={'dark-content'} />
           <NominationList
             nominations={nominations}

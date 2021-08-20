@@ -14,7 +14,8 @@ const {width} = Dimensions.get('screen');
 
 export default class LeaderboardCard extends React.Component {
   render() {
-    const {index, item} = this.props.i;
+    const {theme, i} = this.props;
+    const {index, item} = i;
     const {base_point, user} = item;
     const {username, id, displayName, icon, group_username} = user;
     const trophyColors = ['#f1bc12', '#bdc3c7', '#cd6133'];
@@ -32,7 +33,7 @@ export default class LeaderboardCard extends React.Component {
                 />
               </View>
             ) : (
-              <View style={[styles.trophy]}>
+              <View style={[styles.trophy, theme.textColor]}>
                 <Text>{index}</Text>
               </View>
             )}
@@ -43,11 +44,11 @@ export default class LeaderboardCard extends React.Component {
               />
             </View>
             <View style={styles.nameStyle}>
-              <Text>{group_username}</Text>
+              <Text style={theme.textColor}>{group_username}</Text>
             </View>
           </View>
           <View style={styles.pointContainer}>
-            <Text>{base_point}</Text>
+            <Text style={theme.textColor}>{base_point}</Text>
           </View>
         </View>
       </TouchableWithoutFeedback>

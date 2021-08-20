@@ -12,7 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class Input extends React.Component {
   render() {
-    const {type, value, onInputChange} = this.props;
+    const {type, value, onInputChange, theme} = this.props;
     let display = <View />;
     let title = 'Name';
     if (type == 'post') {
@@ -27,7 +27,7 @@ export default class Input extends React.Component {
 
     if (type == 'post') {
       display = (
-        <View style={styles.container}>
+        <View style={[styles.container, theme.backgroundColor]}>
           <Text style={{color: 'grey'}}>{title}</Text>
           <View style={styles.postSelection}>
             <TouchableOpacity onPress={() => onInputChange(type)}>
@@ -42,7 +42,7 @@ export default class Input extends React.Component {
                 ) : (
                   <Text style={{color: 'grey'}}>Not Selected</Text>
                 )}
-                <MaterialIcons name={'chevron-right'} size={30} />
+                <MaterialIcons name={'chevron-right'} size={30} style={theme.iconColor} />
               </View>
             </TouchableOpacity>
           </View>
@@ -50,8 +50,8 @@ export default class Input extends React.Component {
       );
     } else if (type == 'local') {
       display = (
-        <View style={[styles.container, {justifyContent: 'space-between'}]}>
-          <Text style={{color: 'grey'}}>{title}</Text>
+        <View style={[styles.container, {justifyContent: 'space-between'}, theme.backgroundColor]}>
+          <Text style={{color: 'grey', width: 70}}>{title}</Text>
           <TouchableWithoutFeedback
             disabled={true}
             onPress={() => onInputChange(type)}>
@@ -65,10 +65,10 @@ export default class Input extends React.Component {
       );
     } else {
       display = (
-        <View style={styles.container}>
-          <Text>{title}</Text>
+        <View style={[styles.container, theme.backgroundColor]}>
+          <Text style={{color: 'grey', width: 70}}>{title}</Text>
           <TextInput
-            style={styles.textInputStyle}
+            style={[styles.textInputStyle, theme.textColor]}
             value={value.toString()}
             keyboardType={type == 'duration' ? 'numeric' : null}
             onChangeText={t => onInputChange(type, t)}
@@ -80,7 +80,7 @@ export default class Input extends React.Component {
                 : 'Check-in name'
             }
             placeholderTextColor={'#7f8fa6'}
-            maxLength={type == 'name' ? 40 : 30}
+            maxLength={30}
           />
         </View>
       );

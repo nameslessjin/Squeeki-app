@@ -52,6 +52,7 @@ export default class PostSettingModal extends React.Component {
       priorityExpiration,
       taskExpiration,
       modifyInput,
+      theme,
     } = this.props;
     const {process} = this.state;
 
@@ -59,13 +60,27 @@ export default class PostSettingModal extends React.Component {
 
     if (Platform.OS == 'ios') {
       timeModal = (
-        <View style={[styles.modalView, {width: 210, height: 100}]}>
+        <View
+          style={[
+            styles.modalView,
+            {width: 210, height: 100},
+            theme.backgroundColor,
+            theme.borderColor,
+          ]}>
           {type == 'priorityExpiration' ? (
             priority == 0 ? (
-              <Text>Please select a priority first</Text>
+              <Text style={theme.textColor}>
+                Please select a priority first
+              </Text>
             ) : (
-              <View style={[styles.modalView, {width: 210, height: 100}]}>
-                <Text>SELECT DATE</Text>
+              <View
+                style={[
+                  styles.modalView,
+                  {width: 210, height: 100},
+                  theme.backgroundColor,
+                  theme.shadowColor,
+                ]}>
+                <Text style={theme.textColor}>SELECT DATE</Text>
                 <DateTimePicker
                   mode={'datetime'}
                   value={new Date(parseInt(priorityExpiration))}
@@ -103,8 +118,8 @@ export default class PostSettingModal extends React.Component {
               visible={modalVisible}>
               <TouchableWithoutFeedback onPress={() => onBackdropPress()}>
                 <View style={[styles.centeredView]}>
-                  <View style={[styles.modalView, {width: 210, height: 100}]}>
-                    <Text>Please select a priority first</Text>
+                  <View style={[styles.modalView, {width: 210, height: 100}, theme.shadowColor, theme.backgroundColor]}>
+                    <Text style={theme.textColor}>Please select a priority first</Text>
                   </View>
                 </View>
               </TouchableWithoutFeedback>
@@ -157,19 +172,26 @@ export default class PostSettingModal extends React.Component {
           <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={[styles.centeredView]}>
               {type == 'image' ? (
-                <View style={[styles.modalView]}>
+                <View
+                  style={[
+                    styles.modalView,
+                    theme.backgroundColor,
+                    theme.shadowColor,
+                  ]}>
                   <TouchableOpacity onPress={() => this.onPress('camera')}>
                     <View style={styles.button}>
-                      <Text>Take Photo</Text>
+                      <Text style={theme.textColor}>Take Photo</Text>
                     </View>
                   </TouchableOpacity>
-                  <View style={styles.underline} />
+                  <View style={[styles.underline, theme.borderColor]} />
                   <TouchableOpacity onPress={() => this.onPress('library')}>
                     <View style={styles.button}>
-                      <Text>Select From Image Library</Text>
+                      <Text style={theme.textColor}>
+                        Select From Image Library
+                      </Text>
                     </View>
                   </TouchableOpacity>
-                  <View style={styles.underline} />
+                  <View style={[styles.underline, theme.borderColor]} />
                   <TouchableOpacity onPress={() => onBackdropPress()}>
                     <View style={styles.button}>
                       <Text style={{color: 'red'}}>Cancel</Text>

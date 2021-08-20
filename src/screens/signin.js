@@ -126,7 +126,6 @@ class SignIn extends React.Component {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
-          <StatusBar barStyle={'dark-content'} />
           <Text style={styles.squeekiTitle}>Squeeki</Text>
           <Text style={{color: 'red'}}>{errorText}</Text>
 

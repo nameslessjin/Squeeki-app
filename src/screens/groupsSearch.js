@@ -8,6 +8,7 @@ import {
   Text,
   View,
   StatusBar,
+  Platform,
 } from 'react-native';
 import {connect} from 'react-redux';
 import GroupsSearchBar from '../components/groupsSearch/searchBar';
@@ -17,6 +18,8 @@ import GroupList from '../components/groups/groupList';
 import {userLogout} from '../actions/auth';
 import {searchGroupFunc} from '../functions/group';
 import {getTheme} from '../utils/theme';
+
+const {height} = Dimensions.get('screen');
 
 class GroupsSearch extends React.Component {
   state = {
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    height: '100%',
+    height: height,
     width: '100%',
     backgroundColor: '#ffffff',
   },

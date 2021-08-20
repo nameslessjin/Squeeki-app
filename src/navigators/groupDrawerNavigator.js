@@ -63,16 +63,23 @@ class GroupDrawerNavigator extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const {navigation, group, route} = this.props;
     const {auth} = group.group;
-    const {theme} = this.state
+    const {theme} = this.state;
     navigation.setOptions({
       headerRight: () =>
         auth == null ? null : (
-          <HeaderRightButton onPress={this.onToggleHeaderRightButton} theme={theme}/>
+          <HeaderRightButton
+            onPress={this.onToggleHeaderRightButton}
+            theme={theme}
+          />
         ),
     });
+
+    if (!prevProps.group.group.auth && group.group.auth) {
+      this.reloadGroup({groupId: null, isFullRefresh: false});
+    }
 
     if (route.params) {
       const {refresh, prevRoute} = route.params;
@@ -283,23 +290,27 @@ class GroupDrawerNavigator extends React.Component {
   CustomDrawerContent = props => {
     const {group, group_join_request_count} = this.props.group;
     const {auth, rank_setting} = group;
-
+    const {theme} = this.state;
     return auth == null ? null : (
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
         <DrawerItem
           label="Rules"
           icon={() => (
-            <MaterialIcons name="script-text" color={'grey'} size={25} />
+            <MaterialIcons
+              name="script-text"
+              size={25}
+              style={theme.groupDrawerTagIconColor}
+            />
           )}
-          labelStyle={styles.labelStyle}
+          labelStyle={[styles.labelStyle, theme.drawerTextColor]}
           onPress={() => {
             this.navigateToTabs('GroupRules');
           }}
         />
         <DrawerItem
           label={({focused, color}) => (
-            <Text style={styles.labelStyle}>
+            <Text style={[styles.labelStyle, theme.drawerTextColor]}>
               Members{' '}
               {auth.rank <= rank_setting.manage_member_rank_required &&
               group_join_request_count > 0 ? (
@@ -312,17 +323,27 @@ class GroupDrawerNavigator extends React.Component {
             </Text>
           )}
           icon={() => (
-            <MaterialIcons name="account-group" color={'grey'} size={25} />
+            <MaterialIcons
+              name="account-group"
+              style={theme.groupDrawerTagIconColor}
+              size={25}
+            />
           )}
-          labelStyle={styles.labelStyle}
+          labelStyle={[styles.labelStyle, theme.drawerTextColor]}
           onPress={() => {
             this.navigateToTabs('Members');
           }}
         />
         <DrawerItem
           label="Group Chats"
-          icon={() => <MaterialIcons name="chat" color={'grey'} size={25} />}
-          labelStyle={styles.labelStyle}
+          icon={() => (
+            <MaterialIcons
+              name="chat"
+              style={theme.groupDrawerTagIconColor}
+              size={25}
+            />
+          )}
+          labelStyle={[styles.labelStyle, theme.drawerTextColor]}
           onPress={() => {
             this.navigateToTabs('Chats');
           }}
@@ -330,9 +351,13 @@ class GroupDrawerNavigator extends React.Component {
         <DrawerItem
           label="Nomination"
           icon={() => (
-            <MaterialIcons name="poll-box" color={'grey'} size={25} />
+            <MaterialIcons
+              name="poll-box"
+              style={theme.groupDrawerTagIconColor}
+              size={25}
+            />
           )}
-          labelStyle={styles.labelStyle}
+          labelStyle={[styles.labelStyle, theme.drawerTextColor]}
           onPress={() => {
             this.navigateToTabs('NominationResults');
           }}
@@ -340,9 +365,13 @@ class GroupDrawerNavigator extends React.Component {
         <DrawerItem
           label="Check In"
           icon={() => (
-            <MaterialIcons name="check-bold" color={'grey'} size={25} />
+            <MaterialIcons
+              name="check-bold"
+              style={theme.groupDrawerTagIconColor}
+              size={25}
+            />
           )}
-          labelStyle={styles.labelStyle}
+          labelStyle={[styles.labelStyle, theme.drawerTextColor]}
           onPress={() => {
             this.navigateToTabs('CheckIn');
           }}
@@ -350,17 +379,27 @@ class GroupDrawerNavigator extends React.Component {
         <DrawerItem
           label="Rewards"
           icon={() => (
-            <MaterialIcons name="treasure-chest" color={'grey'} size={25} />
+            <MaterialIcons
+              name="treasure-chest"
+              style={theme.groupDrawerTagIconColor}
+              size={25}
+            />
           )}
-          labelStyle={styles.labelStyle}
+          labelStyle={[styles.labelStyle, theme.drawerTextColor]}
           onPress={() => {
             this.navigateToTabs('RewardNavigator');
           }}
         />
         <DrawerItem
           label="Settings"
-          icon={() => <MaterialIcons name="cog" color={'grey'} size={25} />}
-          labelStyle={styles.labelStyle}
+          icon={() => (
+            <MaterialIcons
+              name="cog"
+              style={theme.groupDrawerTagIconColor}
+              size={25}
+            />
+          )}
+          labelStyle={[styles.labelStyle, theme.drawerTextColor]}
           onPress={() => {
             this.navigateToTabs('GroupSetting');
           }}
@@ -371,13 +410,13 @@ class GroupDrawerNavigator extends React.Component {
 
   render() {
     const {groupname, display_name} = this.props.group.group;
-
+    const {theme} = this.state;
     return (
       <Drawer.Navigator
         screenOptions={{
           headerShown: false,
           drawerPosition: 'right',
-          drawerStyle: styles.drawerStyle,
+          drawerStyle: [styles.drawerStyle, theme.backgroundColor],
         }}
         initialRouteName="Group"
         drawerPosition="right"

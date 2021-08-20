@@ -10,7 +10,8 @@ export default class groupButton extends React.Component {
       onNotificationPress,
       onAddPost,
       join_requested,
-      rank_setting
+      rank_setting,
+      theme
     } = this.props;
 
     const joinButton = (
@@ -57,10 +58,10 @@ export default class groupButton extends React.Component {
             ]}>
             <MaterialIcons
               name={auth.notification ? 'bell' : 'bell-off'}
-              color={auth.notification ? '#576889' : null}
+              color={auth.notification ? 'grey' : theme.iconColor.color}
               size={30}
             />
-            <Text style={{color: '#576889', fontWeight: 'bold'}}>
+            <Text style={{color: 'grey', fontWeight: 'bold'}}>
               {auth.notificationPriority != -1
                 ? auth.notificationPriority
                 : null}
