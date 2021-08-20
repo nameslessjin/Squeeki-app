@@ -10,6 +10,7 @@ import {
   Text,
   Dimensions,
   TouchableWithoutFeedback,
+  Platform,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -49,6 +50,7 @@ import {
   renderMessageContainer,
   renderMessageText,
   renderTime,
+  renderInputToolBar,
 } from '../components/chat/render';
 import {timeDifferentInMandS} from '../utils/time';
 import HeaderRightButton from '../components/chat/headerRightButton';
@@ -98,6 +100,9 @@ class Chat extends React.Component {
     searchTerm: '',
     searchIndex: -1,
     atSearchResult: [],
+    atListShow: false,
+    inputHeight: 35,
+    barHeight: 35,
     theme: getTheme(this.props.auth.user.theme),
   };
 
@@ -371,7 +376,7 @@ class Chat extends React.Component {
     } = this.state;
     let message_status = 'alive';
 
-    this.setState({content: ''});
+    this.setState({content: '', atListShow: false});
 
     // check out user timeout in group chat
     if (status.timeout) {
@@ -494,6 +499,7 @@ class Chat extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    const {barHeight, inputHeight, atSearchResult, atListShow} = this.state;
     if (prevProps.chat.chat != this.props.chat.chat) {
       const {navigation} = this.props;
       const {
@@ -522,6 +528,33 @@ class Chat extends React.Component {
       this.state.searchTerm.length != 0
     ) {
       this.onAtSearch();
+    }
+
+    if (barHeight < inputHeight) {
+      this.setState({barHeight: inputHeight});
+    }
+
+    if (prevState.inputHeight > inputHeight) {
+      this.setState({barHeight: inputHeight});
+    }
+
+    if (
+      prevState.atSearchResult.length != atSearchResult.length &&
+      atListShow
+    ) {
+      let newBarHeight = inputHeight;
+      if (atSearchResult.length < 3) {
+        newBarHeight = newBarHeight + atSearchResult.length * 50 + 15;
+      } else {
+        newBarHeight = 180;
+      }
+      this.setState({
+        barHeight: newBarHeight,
+      });
+    }
+
+    if (!atListShow && prevState.atListShow != atListShow) {
+      this.setState({barHeight: inputHeight});
     }
   }
 
@@ -637,11 +670,15 @@ class Chat extends React.Component {
 
   onActionPress = () => {
     Keyboard.dismiss();
-    this.setState({modalVisible: true});
+    this.setState({modalVisible: true, atListShow: false});
   };
 
   onBackdropPress = () => {
-    this.setState({modalVisible: false, chatDMModalVisible: false});
+    this.setState({
+      modalVisible: false,
+      chatDMModalVisible: false,
+      atListShow: false,
+    });
   };
 
   onMediaUpload = media => {
@@ -755,22 +792,22 @@ class Chat extends React.Component {
       return;
     }
 
-    this.setState({atSearchResult: result});
+    this.setState({atSearchResult: result, atListShow: result.length > 0});
   };
 
-  onAtUserNGroupPress = (input, type) => {
-    const {name, id} = input;
+  onAtUserNGroupPress = item => {
+    const {username, groupname} = item;
     const {searchTerm, searchIndex, content} = this.state;
 
     let updatedContent = content.split(' ');
-    if (type == 'user') {
-      updatedContent[searchIndex] = `@${name}`;
-    } else {
-      updatedContent[searchIndex] = `g@${name}`;
-    }
+    updatedContent[searchIndex] = username ? `@${username}` : `g@${groupname}`;
     updatedContent = updatedContent.join(' ') + ' ';
 
-    this.setState({content: updatedContent, atSearchResult: []});
+    this.setState({
+      content: updatedContent.substr(0, 500),
+      atSearchResult: [],
+      atListShow: false,
+    });
   };
 
   onAtUserNGroupHightlightPress = message => {
@@ -803,11 +840,18 @@ class Chat extends React.Component {
       return;
     }
 
-    console.log(group.group.id);
     navigation.push('GroupNavigator', {
       prevRoute: 'Chat',
       groupId: group.group.id,
     });
+  };
+
+  inputHeightAdjustment = e => {
+    const height = e.nativeEvent.contentSize.height;
+    let inputHeight = height + 15;
+    this.setState(prevState => ({
+      inputHeight: inputHeight < 100 ? inputHeight : prevState.inputHeight,
+    }));
   };
 
   render() {
@@ -827,21 +871,27 @@ class Chat extends React.Component {
       id,
       atSearchResult,
       theme,
+      inputHeight,
+      barHeight,
+      atListShow,
     } = this.state;
     const user = {
       _id: auth.user.id,
     };
 
     return (
-      <View>
-        <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-
+      <KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          style={[styles.container, theme.backgroundColor]}
+          behavior={Platform.OS == 'ios' ? 'padding' : 'overflow'}
+          keyboardVerticalOffset={35}>
           <GiftedChat
             ref={component => (this._giftedChatRef = component)}
             messages={messages}
             renderUsernameOnMessage={!is_dm}
             text={content}
             user={user}
+            isKeyboardInternallyHandled={false}
             parsePatterns={linkStyle => {
               return [
                 {
@@ -885,10 +935,10 @@ class Chat extends React.Component {
             }}
             onInputTextChanged={this.onInputChange}
             onSend={this.onSend}
-            primaryStyle={theme.backgroundColor}
+            primaryStyle={[theme.backgroundColor]}
             keyboardShouldPersistTaps={'never'}
             alwaysShowSend={true}
-            bottomOffset={33}
+            // bottomOffset={33}
             renderSend={p => (
               <RenderSend text={this.state.content.trim()} onSend={p.onSend} />
             )}
@@ -897,13 +947,13 @@ class Chat extends React.Component {
             isLoadingEarlier={isLoadEarlier}
             infiniteScroll={true}
             keyboardShouldPersistTaps={'never'}
-            renderActions={p => (
-              <RenderActions
-                bottomOffset={p.bottomOffset}
-                onActionPress={this.onActionPress}
-                theme={theme}
-              />
-            )}
+            // renderActions={p => (
+            //   <RenderActions
+            //     bottomOffset={p.bottomOffset}
+            //     onActionPress={this.onActionPress}
+            //     theme={theme}
+            //   />
+            // )}
             maxComposerHeight={80}
             maxInputLength={500}
             onLongPress={(context, message) =>
@@ -927,19 +977,33 @@ class Chat extends React.Component {
                 updateUserMessage={updateUserMessage}
               />
             )}
-            renderComposer={props =>
-              renderComposer({
-                ...props,
-                atSearchResult,
-                onAtUserNGroupPress: this.onAtUserNGroupPress,
-                theme,
-              })
-            }
+            // renderComposer={props =>
+            //   renderComposer({
+            //     ...props,
+            //     atSearchResult,
+            //     onAtUserNGroupPress: this.onAtUserNGroupPress,
+            //     theme,
+            //   })
+            // }
+            renderInputToolbar={() => null}
             renderBubble={props => renderBubble({...props})}
             renderMessageContainer={props => renderMessageContainer({...props})}
             renderMessageText={props => renderMessageText({...props})}
             renderTime={props => renderTime({...props})}
           />
+          {renderInputToolBar({
+            text: content,
+            onSend: this.onSend,
+            theme,
+            atSearchResult,
+            onInputTextChanged: this.onInputChange,
+            onAtUserNGroupPress: this.onAtUserNGroupPress,
+            onActionPress: this.onActionPress,
+            inputHeightAdjustment: this.inputHeightAdjustment,
+            inputHeight,
+            barHeight,
+            atListShow,
+          })}
         </KeyboardAvoidingView>
 
         <ChatMediaModal
@@ -958,14 +1022,14 @@ class Chat extends React.Component {
           onPress={this.onUserPress}
           theme={theme}
         />
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
     height: '100%',
     width: '100%',
     backgroundColor: 'white',

@@ -41,7 +41,6 @@ import {getTheme} from '../utils/theme';
 const {height, width} = Dimensions.get('screen');
 
 class Comment extends React.Component {
-
   state = {
     newComment: '',
     post: {
@@ -49,6 +48,7 @@ class Comment extends React.Component {
     },
     loading: false,
     inputHeight: 35,
+    barHeight: 35,
     sent: false,
     modalVisible: false,
     comment_uid: '',
@@ -59,9 +59,9 @@ class Comment extends React.Component {
     atSearchResult: [],
     replyType: 'comment',
     replyTo: '',
+    atListShow: false,
     theme: getTheme(this.props.auth.user.theme),
   };
-
 
   componentDidMount() {
     this.getPostComment();
@@ -89,14 +89,45 @@ class Comment extends React.Component {
     // get post
   }
 
-
   componentDidUpdate(prevProps, prevState) {
+    const {
+      searchTerm,
+      inputHeight,
+      barHeight,
+      atListShow,
+      atSearchResult,
+    } = this.state;
     // check for search term
-    if (
-      prevState.searchTerm != this.state.searchTerm &&
-      this.state.searchTerm.length >= 2
-    ) {
+    if (prevState.searchTerm != searchTerm && searchTerm.length >= 2) {
       this.onAtSearch();
+    }
+
+    if (barHeight < inputHeight) {
+      this.setState({barHeight: inputHeight});
+    }
+
+    if (prevState.inputHeight > inputHeight){
+      this.setState({barHeight: inputHeight})
+    }
+
+    if (
+      prevState.atSearchResult.length != atSearchResult.length &&
+      atListShow
+    ) {
+      let newBarHeight = inputHeight;
+      if (atSearchResult.length < 3) {
+        newBarHeight = newBarHeight + atSearchResult.length * 50 + 15;
+      } else {
+        newBarHeight = 180;
+      }
+
+      this.setState({
+        barHeight: newBarHeight,
+      });
+    }
+
+    if (!atListShow && prevState.atListShow != atListShow) {
+      this.setState({barHeight: inputHeight});
     }
   }
 
@@ -268,7 +299,7 @@ class Comment extends React.Component {
       postId: postId,
       replyId,
     };
-    this.setState({sent: true});
+    this.setState({sent: true, atListShow: false});
     Keyboard.dismiss();
     const comment = replyId
       ? await replyComment(data)
@@ -294,6 +325,7 @@ class Comment extends React.Component {
       modalVisible: true,
       comment_uid: userId,
       commentId: commentId,
+      atListShow: false
     });
     Keyboard.dismiss();
   };
@@ -301,6 +333,7 @@ class Comment extends React.Component {
   onBackdropPress = () => {
     this.setState({
       modalVisible: false,
+      atListShow: false,
     });
     Keyboard.dismiss();
   };
@@ -353,12 +386,12 @@ class Comment extends React.Component {
       return;
     }
 
-    this.setState({atSearchResult: result});
+    this.setState({atSearchResult: result, atListShow: result.length > 0});
   };
 
   onAtPress = item => {
     const {username, id, groupname} = item;
-    const {searchIndex, newComment} = this.state;
+    const {searchIndex, newComment, atListShow} = this.state;
 
     let updatedComment = newComment.split(' ');
     updatedComment[searchIndex] = username ? `@${username}` : `g@${groupname}`;
@@ -366,7 +399,21 @@ class Comment extends React.Component {
     this.setState({
       atSearchResult: [],
       newComment: updatedComment.substr(0, 1000),
+      atListShow: false,
     });
+  };
+
+  onBackgroundPress = () => {
+    this.setState({atListShow: false});
+    Keyboard.dismiss();
+  };
+
+  inputHeightAdjustment = e => {
+    const height = e.nativeEvent.contentSize.height;
+    let inputHeight = height + 15;
+    this.setState(prevState => ({
+      inputHeight: inputHeight < 100 ? inputHeight : prevState.inputHeight,
+    }));
   };
 
   render() {
@@ -382,7 +429,9 @@ class Comment extends React.Component {
       atSearchResult,
       replyType,
       replyTo,
-      theme
+      theme,
+      atListShow,
+      barHeight,
     } = this.state;
     const disabled = newComment.trim().length == 0 || newComment.length > 1000;
     const {navigation, group, comment} = this.props;
@@ -391,7 +440,7 @@ class Comment extends React.Component {
     return (
       <ActionSheetProvider
         ref={component => (this._actionSheetRef = component)}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
           <KeyboardAvoidingView
             style={[container, theme.backgroundColor]}
             behavior={Platform.OS == 'ios' ? 'padding' : 'overflow'}
@@ -416,7 +465,7 @@ class Comment extends React.Component {
               <View style={[styles.inputBarContainer, theme.backgroundColor]}>
                 <ReplyIndicator
                   isReply={isReply}
-                  inputHeight={inputHeight}
+                  inputHeight={inputHeight-5}
                   onCancelReply={this.onCancelReply}
                   replyType={replyType}
                   replyTo={replyTo}
@@ -427,14 +476,16 @@ class Comment extends React.Component {
                     styles.textInputContainer,
                     {
                       width: isReply ? width - 100 : width - 50,
-                      height: Math.max(40, inputHeight),
+                      height: Math.max(35, barHeight),
                     },
                   ]}>
-                  <AtList
-                    atSearchResult={atSearchResult}
-                    onAtPress={this.onAtPress}
-                    theme={theme}
-                  />
+                  {atListShow ? (
+                    <AtList
+                      atSearchResult={atSearchResult}
+                      onAtPress={this.onAtPress}
+                      theme={theme}
+                    />
+                  ) : null}
                   <TextInput
                     style={[styles.textInput, theme.textColor]}
                     ref={r => (this.inputRef = r)}
@@ -444,20 +495,17 @@ class Comment extends React.Component {
                     placeholderTextColor={'#7f8fa6'}
                     multiline={true}
                     maxLength={1000}
-                    onContentSizeChange={e =>
-                      this.setState({
-                        inputHeight: e.nativeEvent.contentSize.height + 15,
-                      })
-                    }
+                    onContentSizeChange={e => this.inputHeightAdjustment(e)}
                     onChangeText={this.onChangeText}
                     value={newComment}
+                    onEndEditing={() => this.setState({atListShow: false})}
                   />
                 </View>
                 <SendButton
                   sent={sent}
                   disabled={disabled}
                   onSend={this.onSend}
-                  inputHeight={inputHeight}
+                  inputHeight={inputHeight-5}
                 />
               </View>
             ) : null}
@@ -495,16 +543,20 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'white',
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     // position: 'relative',
     bottom: Platform.OS == 'ios' ? 55 : 20,
     justifyContent: 'center',
   },
   textInputContainer: {
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    paddingBottom: 1,
+    // backgroundColor: 'blue',
+    // backgroundColor: 'transparent'
   },
   textInput: {
+    maxHeight: 100,
     fontSize: 16,
     width: '100%',
     borderWidth: StyleSheet.hairlineWidth,
@@ -512,6 +564,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
     paddingLeft: 8,
+    // backgroundColor: 'blue',
   },
 });
 

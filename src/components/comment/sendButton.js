@@ -15,7 +15,7 @@ export default class SendButton extends React.Component {
       <View
         style={[
           styles.sendButtonContainer,
-          {height: Math.max(40, inputHeight)},
+          {height: Math.max(35, inputHeight)},
         ]}>
         {sent ? (
           <ActivityIndicator animating={true} color={'grey'} />
@@ -23,14 +23,14 @@ export default class SendButton extends React.Component {
           <TouchableOpacity
             disabled={disabled}
             onPress={onSend}
-            style={{marginBottom: 5}}>
+            style={{marginBottom: 0}}>
             <MaterialIcons
               name={
                 disabled
                   ? 'arrow-up-drop-circle-outline'
                   : 'arrow-up-drop-circle'
               }
-              size={30}
+              size={35}
               color={disabled ? '#718093' : '#EA2027'}
             />
           </TouchableOpacity>
@@ -45,5 +45,6 @@ const styles = StyleSheet.create({
     width: 35,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    // backgroundColor: 'yellow'
   },
 });

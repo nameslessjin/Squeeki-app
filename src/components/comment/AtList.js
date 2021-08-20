@@ -8,6 +8,7 @@ import {
   Text,
   Dimensions,
 } from 'react-native';
+// import {TouchableWithoutFeedback} from 'react-native-gesture-handler'
 import {singleDefaultIcon} from '../../utils/defaultIcon';
 
 const {width} = Dimensions.get('screen');
@@ -29,7 +30,9 @@ export default class AtList extends React.Component {
             />
           </View>
           <View style={styles.name}>
-            <Text style={[styles.displayName, theme.textColor]}>{displayName}</Text>
+            <Text style={[styles.displayName, theme.textColor]}>
+              {displayName}
+            </Text>
             <Text style={styles.username}>
               {username ? `@${username}` : `g@${groupname}`}
             </Text>

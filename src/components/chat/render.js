@@ -11,6 +11,9 @@ import {
   Image,
   Keyboard,
   TouchableWithoutFeedback,
+  StyleSheet,
+  TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {
   Composer,
@@ -18,6 +21,7 @@ import {
   MessageContainer,
   MessageText,
   Time,
+  InputToolbar,
 } from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -26,11 +30,14 @@ import Communications from 'react-native-communications';
 import ImageModal from 'react-native-image-modal';
 import {handleDownload} from '../../utils/imagePicker';
 import {singleDefaultIcon} from '../../utils/defaultIcon';
+import SendButton from '../comment/sendButton';
+import AtList from '../comment/AtList';
 
 const {width} = Dimensions.get('screen');
 
 const extractKey = ({userId, groupId}) => (userId ? userId : groupId);
 
+// not using right now
 export const RenderSend = props => {
   const {text, onSend} = props;
   return (
@@ -48,18 +55,20 @@ export const RenderSend = props => {
 };
 
 export const RenderActions = props => {
-  const {onActionPress, bottomOffset, theme} = props;
+  const {onActionPress, theme} = props;
 
   return (
-    <TouchableOpacity
-      style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginLeft: 5,
-        marginBottom: bottomOffset - 23,
-      }}
-      onPress={onActionPress}>
-      <MaterialIcons size={30} name={'plus'} color={theme.iconColor.color} />
+    <TouchableOpacity onPress={onActionPress}>
+      <View
+        style={{
+          height: 35,
+          width: 35,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginRight: 5,
+        }}>
+        <MaterialIcons size={35} name={'plus'} color={theme.iconColor.color} />
+      </View>
     </TouchableOpacity>
   );
 };
@@ -256,9 +265,9 @@ export const RenderTicks = props => {
   ) : null;
 };
 
+// not using right now
 const renderAtUserItem = ({item, onAtUserNGroupPress, theme}) => {
   const {userId, displayName, username, icon, groupname, groupId} = item;
-  console.log(theme)
   const input = {
     id: userId ? userId : groupId,
     name: username ? username : groupname,
@@ -305,22 +314,28 @@ const renderAtUserItem = ({item, onAtUserNGroupPress, theme}) => {
   );
 };
 
+// not using right now
 export const renderComposer = props => {
   const {atSearchResult, composerHeight, onAtUserNGroupPress, theme} = props;
   return (
     <React.Fragment>
       {atSearchResult.length > 0 ? (
         <View
-          style={[{
-            maxHeight: 150,
-            backgroundColor: 'white',
-            position: 'absolute',
-            bottom: composerHeight + 7,
-            width: width - 85,
-            borderWidth: 0.5,
-            left: 42.5,
-            borderColor: 'silver',
-          }, theme.backgroundColor, theme.borderColor]}>
+          style={[
+            {
+              maxHeight: 150,
+              backgroundColor: 'white',
+              position: 'absolute',
+              bottom: composerHeight + 7,
+              width: width - 85,
+              borderWidth: 0.5,
+              left: 42.5,
+              borderColor: 'silver',
+            },
+            theme.backgroundColor,
+            theme.borderColor,
+            {backgroundColor: 'yellow'},
+          ]}>
           <FlatList
             style={{maxHeight: 150, width: width - 85}}
             data={atSearchResult}
@@ -331,15 +346,17 @@ export const renderComposer = props => {
             alwaysBounceHorizontal={false}
             alwaysBounceVertical={false}
             keyboardShouldPersistTaps={'handled'}
-            
           />
         </View>
       ) : null}
       <Composer
         {...props}
-        textInputStyle={[{
-          width: width - 85,
-        }, theme.textColor]}
+        textInputStyle={[
+          {
+            width: width - 85,
+          },
+          theme.textColor,
+        ]}
       />
     </React.Fragment>
   );
@@ -379,3 +396,107 @@ export const renderMessageText = props => {
 export const renderTime = props => {
   return <Time {...props} timeTextStyle={{right: {color: '#747d8c'}}} />;
 };
+
+export const renderInputToolBar = props => {
+  const {
+    theme,
+    onActionPress,
+    text,
+    onInputTextChanged,
+    onSend,
+    inputHeight,
+    inputHeightAdjustment,
+    onAtUserNGroupPress,
+    atListShow,
+    barHeight,
+    atSearchResult,
+  } = props;
+
+  const formatSearchResult = atSearchResult.map(r => {
+    if (r.userId) {
+      return {
+        username: r.username,
+        iconUrl: r.icon,
+        displayName: r.displayName,
+        id: r.userId,
+      };
+    }
+    if (r.groupId) {
+      return {
+        groupname: r.groupname,
+        iconUrl: r.icon,
+        displayName: r.displayName,
+        id: r.groupId,
+      };
+    }
+    return r;
+  });
+  return (
+    <View
+      style={[
+        styles.inputBarContainer,
+        theme.backgroundColor,
+        // {backgroundColor: 'yellow'},
+      ]}>
+      {RenderActions({theme, onActionPress})}
+      <View
+        style={[
+          styles.textInputContainer,
+          {width: width - 80, height: Math.max(35, barHeight)},
+        ]}>
+        {atListShow ? (
+          <AtList
+            theme={theme}
+            onAtPress={onAtUserNGroupPress}
+            atSearchResult={formatSearchResult}
+          />
+        ) : null}
+        <TextInput
+          style={[styles.textInput, theme.textColor]}
+          placeholder={'Start chatting...'}
+          placeholderTextColor={'#7f8fa6'}
+          multiline={true}
+          maxLength={500}
+          value={text}
+          onChangeText={onInputTextChanged}
+          onContentSizeChange={e => inputHeightAdjustment(e)}
+        />
+      </View>
+      <SendButton
+        sent={false}
+        disabled={!(text.length >= 1 && text.length <= 500)}
+        inputHeight={inputHeight}
+        onSend={onSend}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  inputBarContainer: {
+    width: '100%',
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    // position: 'absolute',
+    bottom: Platform.OS == 'ios' ? 55 : 20,
+  },
+  textInputContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingBottom: 1,
+    // backgroundColor: 'yellow'
+  },
+  textInput: {
+    maxHeight: 100,
+    fontSize: 16,
+    width: '100%',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#718093',
+    borderRadius: 10,
+    padding: 5,
+    paddingLeft: 8,
+    // backgroundColor: 'blue',
+  },
+});

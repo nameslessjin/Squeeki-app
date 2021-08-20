@@ -11,13 +11,14 @@ export default class ReplyIndicator extends React.Component {
       replyTo,
     } = this.props;
 
-    const username = replyTo.length <= 10 ? replyTo : `${replyTo.substr(0,7)}...`
+    const username =
+      replyTo.length <= 10 ? replyTo : `${replyTo.substr(0, 7)}...`;
 
     return isReply ? (
       <View
         style={[
           styles.replyIndicatorContainer,
-          {height: Math.max(40, inputHeight)},
+          {height: Math.max(35, inputHeight)},
         ]}>
         <TouchableOpacity onPress={onCancelReply}>
           <View style={styles.replyButton}>
@@ -33,16 +34,17 @@ export default class ReplyIndicator extends React.Component {
 
 const styles = StyleSheet.create({
   replyIndicatorContainer: {
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     width: 50,
     alignItems: 'center',
     marginRight: 3,
+    marginBottom: 3
   },
   replyButton: {
     backgroundColor: '#e84118',
     width: 50,
     padding: 3,
-    height: 35,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
