@@ -136,7 +136,6 @@ class CheckIn extends React.Component {
       groupId: group.group.id,
       checkin_id: checkin_id,
       password: password,
-      auth: false,
     };
 
     const req = await userCheckIn(request);

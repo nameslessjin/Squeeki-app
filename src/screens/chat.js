@@ -374,7 +374,7 @@ class Chat extends React.Component {
       user_relation,
       name,
     } = this.state;
-    let message_status = 'alive';
+    let message_status = 'active';
 
     this.setState({content: '', atListShow: false});
 

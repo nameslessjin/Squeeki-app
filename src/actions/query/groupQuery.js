@@ -24,6 +24,7 @@ query getGroup($groupId: ID!){
         groupname
         display_name
         shortDescription
+        status
         icon {
             uri
         }

@@ -208,10 +208,11 @@ export const userCheckInBatch = request => {
         input: input,
       },
     };
-
+    console.log(graphql)
     const result = await httpCall(token, graphql);
 
     if (result.errors) {
+      console.log(result.errors)
       return result;
     }
 

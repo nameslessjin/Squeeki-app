@@ -135,19 +135,46 @@ class RewardHistoryList extends React.Component {
                       : theme.backgroundColor.backgroundColor
                     : theme.backgroundColor.backgroundColor,
                 },
-                theme.shadowColor
+                theme.shadowColor,
               ]}>
               <View style={styles.rewardInfoContainer}>
                 <Text
-                  style={[{fontSize: 16, fontWeight: '500'}, theme.textColor]}>
+                  style={[
+                    {
+                      fontSize: 16,
+                      fontWeight: '500',
+                      color:
+                        parseInt(chance) <= 10
+                          ? 'black'
+                          : theme.textColor.color,
+                    },
+                  ]}>
                   {name}
                 </Text>
                 {chance ? (
-                  <Text style={[styles.text, theme.textColor]}>
+                  <Text
+                    style={[
+                      styles.text,
+                      {
+                        color:
+                          parseInt(chance) <= 10
+                            ? 'black'
+                            : theme.textColor.color,
+                      },
+                    ]}>
                     Chance To Win: {chance}%
                   </Text>
                 ) : (
-                  <Text style={[styles.text, theme.textColor]}>
+                  <Text
+                    style={[
+                      styles.text,
+                      {
+                        color:
+                          parseInt(chance) <= 10
+                            ? 'black'
+                            : theme.textColor.color,
+                      },
+                    ]}>
                     Point Cost: {pointCost}pts
                   </Text>
                 )}
@@ -157,10 +184,24 @@ class RewardHistoryList extends React.Component {
                   <View
                     style={[
                       styles.text,
-                      {flexDirection: 'row', alignItems: 'center'},
-                      theme.textColor,
+                      {
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        color:
+                          parseInt(chance) <= 10
+                            ? 'black'
+                            : theme.textColor.color,
+                      },
                     ]}>
-                    <Text style={theme.textColor}>From: </Text>
+                    <Text
+                      style={{
+                        color:
+                          parseInt(chance) <= 10
+                            ? 'black'
+                            : theme.textColor.color,
+                      }}>
+                      From:{' '}
+                    </Text>
                     <TouchableOpacity onPress={() => this.getGroup(item)}>
                       <View style={styles.groupNameTag}>
                         <Text style={{color: 'white'}}>{groupDisplayName}</Text>
@@ -169,7 +210,16 @@ class RewardHistoryList extends React.Component {
                   </View>
                 )}
 
-                <Text style={[styles.text, theme.textColor]}>
+                <Text
+                  style={[
+                    styles.text,
+                    {
+                      color:
+                        parseInt(chance) <= 10
+                          ? 'black'
+                          : theme.textColor.color,
+                    },
+                  ]}>
                   On: {dateConversion(createdAt, 'reward')}
                 </Text>
               </View>
@@ -179,7 +229,16 @@ class RewardHistoryList extends React.Component {
                     source={icon ? {uri: icon} : singleDefaultIcon()}
                     style={styles.userIconStyle}
                   />
-                  <Text style={[styles.text, theme.textColor]}>
+                  <Text
+                    style={[
+                      styles.text,
+                      {
+                        color:
+                          parseInt(chance) <= 10
+                            ? 'black'
+                            : theme.textColor.color,
+                      },
+                    ]}>
                     {displayName}
                   </Text>
                 </View>
@@ -192,7 +251,16 @@ class RewardHistoryList extends React.Component {
                       {height: 40, borderRadius: 20},
                     ]}
                   />
-                  <Text style={[styles.text, theme.textColor]}>
+                  <Text
+                    style={[
+                      styles.text,
+                      {
+                        color:
+                          parseInt(chance) <= 10
+                            ? 'black'
+                            : theme.textColor.color,
+                      },
+                    ]}>
                     {displayName}
                   </Text>
                   <TouchableOpacity
@@ -215,7 +283,15 @@ class RewardHistoryList extends React.Component {
               ) : (
                 <View
                   style={[styles.rightContainer, {justifyContent: 'center'}]}>
-                  <Text style={{color: status == 'default' ? theme.textColor.color : 'grey'}}>
+                  <Text
+                    style={{
+                      color:
+                        status == 'default'
+                          ? parseInt(chance) <= 10
+                            ? 'black'
+                            : theme.textColor.color
+                          : 'grey',
+                    }}>
                     {status == 'default' ? 'Available' : 'Redeemed'}
                   </Text>
                 </View>

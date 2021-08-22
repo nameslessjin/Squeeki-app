@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {countFormat} from '../../utils/format'
+import {countFormat} from '../../utils/format';
 import {dateConversion} from '../../utils/time';
 
 const {width} = Dimensions.get('screen');
@@ -38,7 +38,8 @@ export default class PostFooter extends React.Component {
       currentUserAuth,
       onViewButtonPress,
       taskExpiration,
-      theme
+      theme,
+      priority,
     } = this.props;
 
     const likeCount_text = countFormat(likeCount);
@@ -53,9 +54,19 @@ export default class PostFooter extends React.Component {
               // disabled={!commentTouchable}
             >
               <View style={styles.IconContainer}>
-                <MaterialIcons name="comment-outline" size={25} color={theme.iconColor.color} />
+                <MaterialIcons
+                  name="comment-outline"
+                  size={25}
+                  color={priority > 0 ? 'black' : theme.iconColor.color}
+                />
                 {commentCount == 0 ? null : (
-                  <Text style={[styles.IconText, theme.textColor]}>{commentCount_text}</Text>
+                  <Text
+                    style={[
+                      styles.IconText,
+                      {color: priority > 0 ? 'black' : theme.textColor.color},
+                    ]}>
+                    {commentCount_text}
+                  </Text>
                 )}
               </View>
             </TouchableOpacity>
@@ -70,12 +81,25 @@ export default class PostFooter extends React.Component {
                   <MaterialIcons
                     name={liked ? 'heart' : 'heart-outline'}
                     size={25}
-                    style={liked ? {color: '#e84118'} : theme.iconColor}
+                    style={
+                      liked
+                        ? {color: '#e84118'}
+                        : {
+                            color:
+                              priority > 0 ? 'black' : theme.iconColor.color,
+                          }
+                    }
                   />
                 )}
 
                 {likeCount == 0 ? null : (
-                  <Text style={[styles.IconText, theme.textColor]}>{likeCount_text}</Text>
+                  <Text
+                    style={[
+                      styles.IconText,
+                      {color: priority > 0 ? 'black' : theme.textColor.color},
+                    ]}>
+                    {likeCount_text}
+                  </Text>
                 )}
               </View>
             </TouchableOpacity>
@@ -184,8 +208,13 @@ export default class PostFooter extends React.Component {
                   </View>
                 </TouchableOpacity>
               </View>
-              <View style={[styles.rowContainer, {height: 25,width: '100%'}]}>
-                <Text style={theme.textColor} >{dateConversion(taskExpiration, 'expirationDisplay')}</Text>
+              <View style={[styles.rowContainer, {height: 25, width: '100%'}]}>
+                <Text
+                  style={{
+                    color: priority > 0 ? 'black' : theme.textColor.color,
+                  }}>
+                  {dateConversion(taskExpiration, 'expirationDisplay')}
+                </Text>
               </View>
             </View>
           )

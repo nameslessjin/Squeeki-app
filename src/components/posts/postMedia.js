@@ -52,12 +52,15 @@ export default class PostMedia extends React.Component {
   };
 
   render() {
-    const {image, content, _actionSheetRef, theme} = this.props;
+    const {image, content, _actionSheetRef, theme, priority} = this.props;
 
     return (
       <View style={styles.contentStyle}>
         <ParsedText
-          style={[styles.textStyle, theme.textColor]}
+          style={[
+            styles.textStyle,
+            {color: priority > 0 ? 'black' : theme.textColor.color},
+          ]}
           parse={[
             {
               type: 'url',

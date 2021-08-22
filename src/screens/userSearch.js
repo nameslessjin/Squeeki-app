@@ -217,7 +217,7 @@ class UserSearch extends React.Component {
     }
 
     if (req.errors) {
-      // alert(req.errors[0].message);
+      console.log(req.errors)
       alert('Cannot add members at this time, please try again later');
       if (req.errors[0].message == 'Not Authenticated') {
         userLogout();

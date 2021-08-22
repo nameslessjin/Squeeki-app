@@ -227,8 +227,8 @@ export default class PostHeader extends React.Component {
                     group_username != null
                       ? group_username_size
                       : displayNameSize,
+                  color: priority > 0 ? 'black' : theme.textColor.color,
                 },
-                theme.textColor,
               ]}
               numberOfLines={2}
               multiline={true}>
@@ -261,10 +261,7 @@ export default class PostHeader extends React.Component {
             width: 85,
             justifyContent: selectionMode ? 'center' : 'space-between',
           }}>
-          <Text
-            style={[styles.timeStyle]}>
-            {date}
-          </Text>
+          <Text style={[styles.timeStyle]}>{date}</Text>
           {!selectionMode ? (
             <TouchableOpacity
               onPress={toggleModal}
@@ -272,7 +269,7 @@ export default class PostHeader extends React.Component {
               <MaterialIcons
                 size={25}
                 name={'dots-vertical'}
-                color={theme.textColor.color}
+                color={priority > 0 ? 'black' : theme.iconColor.color}
               />
             </TouchableOpacity>
           ) : null}

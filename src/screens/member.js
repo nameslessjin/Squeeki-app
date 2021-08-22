@@ -444,7 +444,6 @@ class Member extends React.Component {
           ) : (
             <View style={{marginTop: 200}}>
               <OptionButtons
-                // onDeleteMember={this.onDeleteMember}
                 isSelf={isSelf}
                 allowToDeleteMember={allowToDeleteMember}
                 allowToMakeOwner={allowToMakeOwner}
