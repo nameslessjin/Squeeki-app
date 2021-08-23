@@ -29,6 +29,15 @@ export default class HomeModal extends React.Component {
   render() {
     const {modalVisible, onBackdropPress, type, theme} = this.props;
 
+    let message = 'A New Version is available'
+    if (type == 'update'){
+      message = 'A New Version is available'
+    } else if (type == 'error'){
+      message = 'An error has occurred, please visit us on twitter for more information'
+    } else if (type == 'account'){
+      message = 'This account is currently suspended, please contact us for more information'
+    }
+ 
     return (
       <View style={[styles.centeredView]}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -40,21 +49,24 @@ export default class HomeModal extends React.Component {
                   theme.backgroundColor,
                   theme.shadowColor,
                 ]}>
-                <Text style={[{fontSize: 18, fontWeight: 'bold'}, theme.textColor]}>
-                  A New Version is available
+                <Text
+                  style={[{fontSize: 18, fontWeight: 'bold'}, theme.textColor]}>
+                  {message}
                 </Text>
-                <TouchableOpacity onPress={this.directToStore}>
-                  <View style={styles.button}>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: 20,
-                      }}>
-                      Go to App Store
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                {type == 'update' ? (
+                  <TouchableOpacity onPress={this.directToStore}>
+                    <View style={styles.button}>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontWeight: 'bold',
+                          fontSize: 20,
+                        }}>
+                        Go to App Store
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : null}
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -87,6 +99,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     height: 150,
     width: 300,
+    padding: 10
   },
   modalText: {
     marginBottom: 15,

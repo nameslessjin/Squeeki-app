@@ -47,6 +47,15 @@ export default (authReducer = (state = INITIAL_STATE, action) => {
         },
       };
 
+    case 'getUserStatus':
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          status: action.i.status
+        }
+      }
+
     default:
       return state;
   }

@@ -9,7 +9,6 @@ import {
   updateNotificationsMutation,
   updateVisibilitiesMutation,
   getDefaultIconQuery,
-  getLastVersionQuery,
   updateThemeMutation,
 } from '../actions/query/authQuery';
 import {http_upload} from '../../server_config';
@@ -367,21 +366,6 @@ export const getDefaultIcon = data => {
     }
 
     return result.data.getDefaultIcon;
-  };
-};
-
-export const getLastVersion = () => {
-  return async function(dispatch) {
-    const graphql = {
-      query: getLastVersionQuery,
-    };
-
-    const result = await httpCall(null, graphql);
-    if (result.errors) {
-      return result;
-    }
-
-    return result.data.getLastVersion;
   };
 };
 

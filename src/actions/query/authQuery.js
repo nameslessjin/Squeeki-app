@@ -6,6 +6,7 @@ query login($email: String, $password: String, $token: String){
             id
             username
             displayName
+            status
             email
             icon{
                 uri
@@ -45,6 +46,7 @@ mutation signup($userInput: AuthInput!){
             username
             displayName
             email
+            status
             icon{
                 uri
             }
@@ -83,6 +85,7 @@ mutation updateProfile($userInput: AuthInput!){
             username
             displayName
             email
+            status
             icon{
                 uri
             }
@@ -156,15 +159,6 @@ query getDefaultIcon {
 }
 `
 
-export const getLastVersionQuery = `
-query getLastVersion {
-    getLastVersion {
-        serverVersion
-        IOSVersion
-        AndroidVersion
-    }
-}
-`
 export const updateThemeMutation = `
 mutation updateTheme($input: ThemeInput!){
     updateTheme(input: $input)

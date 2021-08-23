@@ -14,7 +14,8 @@ import {connect} from 'react-redux';
 import {getFeed} from '../actions/post';
 import PostList from '../components/posts/postList';
 import {getFeedFunc} from '../functions/post';
-import {userLogout, getLastVersion} from '../actions/auth';
+import {userLogout} from '../actions/auth';
+import {getLastVersion, getUserStatus} from '../actions/security';
 import DeviceInfo from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
 import {requestNotificationPermission} from '../functions/permission';
@@ -29,12 +30,14 @@ class Home extends React.Component {
     appState: AppState.currentState,
     modalVisible: false,
     theme: getTheme(this.props.auth.user.theme),
+    type: 'update',
   };
 
   componentDidMount() {
     this.loadFeed(true);
     this.getNotificationToken();
     this.getLastVersion();
+    this.checkAuth();
 
     AppState.addEventListener('change', this._handleAppStateChange);
   }
@@ -43,24 +46,55 @@ class Home extends React.Component {
     AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
+  checkAuth = async () => {
+    const {auth, getUserStatus} = this.props;
+
+    const request = {
+      token: auth.token,
+    };
+
+    try {
+      const req = await getUserStatus(request);
+      if (req.errors) {
+        console.log(req.errors);
+        this.setState({modalVisible: true, type: 'error'});
+        return;
+      }
+      if (req.status != 'active') {
+        this.setState({modalVisible: true, type: 'account'});
+      } else {
+        this.setState({modalVisible: false});
+      }
+    } catch (err) {
+      console.log(err);
+      this.setState({modalVisible: true, type: 'error'});
+    }
+  };
+
   getLastVersion = async () => {
     const {getLastVersion, metadata} = this.props;
-    const req = await getLastVersion();
-    if (req.errors) {
-      console.log(req.errors);
-      alert('Server is under maintenance, please try again later');
-      return;
-    }
+    try {
+      const req = await getLastVersion();
+      if (req.errors) {
+        console.log(req.errors);
+        alert('Server is under maintenance, please try again later');
+        return;
+      }
 
-    const {serverVersion, IOSVersion, AndroidVersion} = req;
-    if (Platform.OS == 'ios') {
-      if (metadata.IOSVersion != IOSVersion) {
-        this.setState({modalVisible: true});
+      const {serverVersion, IOSVersion, AndroidVersion} = req;
+
+      if (Platform.OS == 'ios') {
+        if (metadata.version.IOSVersion != IOSVersion) {
+          this.setState({modalVisible: true, type: 'update'});
+        }
+      } else {
+        if (metadata.version.AndroidVersion != AndroidVersion) {
+          this.setState({modalVisible: true, type: 'update'});
+        }
       }
-    } else {
-      if (metadata.AndroidVersion != AndroidVersion) {
-        this.setState({modalVisible: true});
-      }
+    } catch (err) {
+      console.log(err);
+      this.setState({modalVisible: true, type: 'error'});
     }
   };
 
@@ -99,6 +133,7 @@ class Home extends React.Component {
     const {appState} = this.state;
     if (appState.match(/(inactive|background)/) && nextAppState === 'active') {
       this.getLastVersion();
+      this.checkAuth();
     }
     this.setState({appState: nextAppState});
   };
@@ -150,7 +185,7 @@ class Home extends React.Component {
 
   render() {
     const {feed} = this.props.post;
-    const {modalVisible, theme} = this.state;
+    const {modalVisible, theme, type} = this.state;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
@@ -167,11 +202,7 @@ class Home extends React.Component {
             <ActivityIndicator animating={true} color={'grey'} />
           ) : null}
           {modalVisible ? (
-            <HomeModal
-              type={'update'}
-              modalVisible={modalVisible}
-              theme={theme}
-            />
+            <HomeModal type={type} modalVisible={modalVisible} theme={theme} />
           ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -206,6 +237,7 @@ const mapDispatchToProps = dispatch => {
     registerDeviceForNotification: data =>
       dispatch(registerDeviceForNotification(data)),
     getLastVersion: () => dispatch(getLastVersion()),
+    getUserStatus: data => dispatch(getUserStatus(data)),
   };
 };
 
