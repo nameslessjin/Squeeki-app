@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'yellow'
   },
   textInput: {
-    maxHeight: 100,
+    maxHeight: 150,
     fontSize: 16,
     width: '100%',
     borderWidth: StyleSheet.hairlineWidth,

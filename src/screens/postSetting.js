@@ -183,16 +183,6 @@ class PostSetting extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    const {group, navigation} = this.props;
-    if (group.group.id) {
-      navigation.navigate('GroupNavigator', {
-        refresh: true,
-        prevRoute: 'PostSetting',
-      });
-    }
-  }
-
   getGroup = async () => {
     const {
       group,
@@ -490,12 +480,10 @@ class PostSetting extends React.Component {
       getFeedFunc(data);
     }
 
-    if (this.props.route.params.prevRoute == 'comment') {
-      navigation.navigate(group.group.id ? 'GroupNavigator' : 'Home');
-      return;
-    }
-
-    navigation.goBack();
+    navigation.navigate(group.group.id ? 'GroupNavigator' : 'Home', {
+      refresh: true,
+      prevRoute: 'PostSetting',
+    });
   };
 
   onAtSearch = async () => {
@@ -547,7 +535,7 @@ class PostSetting extends React.Component {
         contentKeyboard: true,
         postData: {
           ...this.state.postData,
-          content: value,
+          content: value.substr(0, 1000),
         },
       });
     } else if (type == 'priority') {
@@ -658,7 +646,7 @@ class PostSetting extends React.Component {
     updatedContent = updatedContent.join(' ') + ' ';
     this.setState({
       atSearchResult: [],
-      postData: {...postData, content: updatedContent.substr(0, 255)},
+      postData: {...postData, content: updatedContent.substr(0, 1000)},
     });
   };
 
@@ -717,6 +705,7 @@ class PostSetting extends React.Component {
               contentKeyboard={contentKeyboard}
               onPress={() => this.onModalTrigger('image')}
               disabled={!create}
+              theme={theme}
             />
             <InputContent
               content={content}

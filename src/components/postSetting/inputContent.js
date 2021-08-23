@@ -30,7 +30,7 @@ export default class InputContent extends React.Component {
             theme.underLineColor
           ]}
           multiline={true}
-          maxLength={255}
+          maxLength={1000}
           placeholder={
             type == 'post'
               ? "What's in your mind..."

@@ -161,6 +161,7 @@ class Home extends React.Component {
             onEndReached={this.onEndReached}
             onRefresh={this.onRefresh}
             refreshing={this.state.refreshing}
+            prevRoute={'Home'}
           />
           {this.state.loading ? (
             <ActivityIndicator animating={true} color={'grey'} />

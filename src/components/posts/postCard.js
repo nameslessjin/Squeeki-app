@@ -211,9 +211,9 @@ class PostCard extends React.Component {
 
   onPostUpdate = () => {
     const {auth, groupAuth} = this.props.item;
-    const {navigation, prev_route} = this.props;
+    const {navigation, prevRoute} = this.props;
     const currentUserAuth = this.props.group.group.auth;
-
+    // console.log(prevRoute)
     let currentUserAuthQualified = false;
     if (currentUserAuth && groupAuth) {
       // group owner can set post change restriction
@@ -234,7 +234,7 @@ class PostCard extends React.Component {
       navigation.navigate('PostSetting', {
         postData: postData,
         create: false,
-        prevRoute: prev_route,
+        prevRoute,
       });
       this.onBackDropPress();
     } else {
@@ -367,14 +367,14 @@ class PostCard extends React.Component {
     } = this.state;
     const {
       commentTouchable,
-      selectionMode,
       onPostSelect,
       group,
       navigation,
+      prevRoute
     } = this.props;
 
     const date = dateConversion(createdAt, 'timeDisplay');
-
+    // console.log(this.state)
     // default
     let backgroundColor = theme.backgroundColor.backgroundColor;
 
@@ -394,7 +394,7 @@ class PostCard extends React.Component {
         ref={component => (this._actionSheetRef = component)}>
         <TouchableWithoutFeedback
           onPress={() =>
-            selectionMode && !checked
+            prevRoute == 'CheckInSetting' && !checked
               ? onPostSelect({...this.props.item})
               : null
           }>
@@ -414,7 +414,6 @@ class PostCard extends React.Component {
               currentUserAuth={group.group.auth}
               onReportInput={this.onReportInput}
               onSubmitReport={this.onSubmitReport}
-              selectionMode={selectionMode}
               rank_required_manage={
                 group.group.rank_setting
                   ? group.group.rank_setting.manage_post_rank_required
@@ -426,10 +425,12 @@ class PostCard extends React.Component {
                   : null
               }
               theme={theme}
+              prevRoute={prevRoute}
             />
 
             <PostMedia
               {...this.state}
+              postId={id}
               navigation={navigation}
               getGroup={this.getGroup}
               _actionSheetRef={
@@ -438,9 +439,10 @@ class PostCard extends React.Component {
                   : this._actionSheetRef
               }
               theme={theme}
+              prevRoute={prevRoute}
             />
 
-            {selectionMode ? (
+            {prevRoute == 'CheckInSetting' ? (
               checked ? (
                 <View style={styles.footer}>
                   <Text style={{color: 'red', marginVertical: 5}}>Checked</Text>
@@ -462,7 +464,7 @@ class PostCard extends React.Component {
                 theme={theme}
               />
             )}
-            {nomination == null || selectionMode ? null : (
+            {nomination == null || prevRoute == 'CheckInSetting' ? null : (
               <PostNomination
                 {...this.state}
                 onPress={this.onVotePress}
@@ -479,7 +481,7 @@ class PostCard extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    maxHeight: 1100,
+    maxHeight: 1350,
     justifyContent: 'flex-start',
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,

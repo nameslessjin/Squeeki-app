@@ -530,29 +530,28 @@ class Chat extends React.Component {
       this.onAtSearch();
     }
 
+    // input tool bar height adjustment
     if (barHeight < inputHeight) {
       this.setState({barHeight: inputHeight});
     }
-
     if (prevState.inputHeight > inputHeight) {
       this.setState({barHeight: inputHeight});
     }
-
     if (
       prevState.atSearchResult.length != atSearchResult.length &&
       atListShow
     ) {
       let newBarHeight = inputHeight;
       if (atSearchResult.length < 3) {
-        newBarHeight = newBarHeight + atSearchResult.length * 50 + 15;
+        newBarHeight =
+          newBarHeight + atSearchResult.length * 50 + 15 - (inputHeight - 35);
       } else {
-        newBarHeight = 180;
+        newBarHeight = 190;
       }
       this.setState({
         barHeight: newBarHeight,
       });
     }
-
     if (!atListShow && prevState.atListShow != atListShow) {
       this.setState({barHeight: inputHeight});
     }
@@ -847,10 +846,17 @@ class Chat extends React.Component {
   };
 
   inputHeightAdjustment = e => {
+    const {content} = this.state;
     const height = e.nativeEvent.contentSize.height;
     let inputHeight = height + 15;
+
+    // when copy paste large number of text
+    if ((content.length * 9) / (width - 100) > 5) {
+      inputHeight = 150;
+    }
+
     this.setState(prevState => ({
-      inputHeight: inputHeight < 100 ? inputHeight : prevState.inputHeight,
+      inputHeight: inputHeight <= 150 ? inputHeight : prevState.inputHeight,
     }));
   };
 

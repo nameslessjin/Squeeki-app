@@ -37,14 +37,14 @@ export default class InputImage extends React.Component {
   }
 
   render() {
-    const {image, contentKeyboard, onPress, disabled} = this.props;
+    const {image, contentKeyboard, onPress, disabled, theme} = this.props;
     const imageSelected = image != null;
 
     return (
       <TouchableOpacity
         style={[
           styles.imageSelection,
-          imageSelected ? {backgroundColor: 'white'} : {height: 100},
+          imageSelected ? theme.backgroundColor : {height: 100},
           imageSelected && contentKeyboard ? {maxHeight: 250} : null,
         ]}
         disabled={disabled}

@@ -121,7 +121,7 @@ class GroupHeader extends React.Component {
           {
             borderBottomWidth: item.key == '-1' ? 0 : StyleSheet.hairlineWidth,
           },
-          theme.borderColor
+          theme.borderColor,
         ]}
         onPress={() => this.changeNotification(item.value)}>
         <Text style={{color: item.key == '-1' ? 'red' : theme.textColor.color}}>
@@ -268,7 +268,9 @@ class GroupHeader extends React.Component {
                   paddingHorizontal: 10,
                 },
               ]}>
-              <Text numberOfLines={8} style={theme.textColor}>{shortDescription}</Text>
+              <Text numberOfLines={8} style={theme.textColor}>
+                {shortDescription}
+              </Text>
             </View>
 
             {tags.length == 0 ? null : (
@@ -297,7 +299,9 @@ class GroupHeader extends React.Component {
               animationOut={'slideOutDown'}
               onBackdropPress={this.onBackdropPress}>
               <View style={[styles.notificationSetting, theme.backgroundColor]}>
-                <Text style={theme.textColor}>Receive Notification only on and above priority</Text>
+                <Text style={theme.textColor}>
+                  Receive Notification only on and above priority
+                </Text>
                 <FlatList
                   style={{width: '100%', marginTop: 20}}
                   data={this.notificationSettingOptions}
@@ -323,7 +327,11 @@ class GroupHeader extends React.Component {
             <TouchableWithoutFeedback onPress={this.onLeaderboardPress}>
               <View style={[styles.leaderboard, theme.groupLeaderBoard]}>
                 <View style={{height: 20}}>
-                  <Text style={[{fontWeight: 'bold', fontSize: 15}, theme.textColor]}>
+                  <Text
+                    style={[
+                      {fontWeight: 'bold', fontSize: 15},
+                      theme.textColor,
+                    ]}>
                     Monthly Leaderboard:
                   </Text>
                 </View>

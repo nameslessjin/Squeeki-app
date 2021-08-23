@@ -11,7 +11,7 @@ export default class CommentPost extends React.Component {
         commentTouchable={false}
         option={option}
         navigation={navigation}
-        prev_route={'comment'}
+        prevRoute={'Comment'}
         _actionSheetRef={_actionSheetRef}
       />
     );

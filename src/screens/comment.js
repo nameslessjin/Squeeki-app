@@ -102,30 +102,28 @@ class Comment extends React.Component {
       this.onAtSearch();
     }
 
+    // input tool bar height adjustment
     if (barHeight < inputHeight) {
       this.setState({barHeight: inputHeight});
     }
-
-    if (prevState.inputHeight > inputHeight){
-      this.setState({barHeight: inputHeight})
+    if (prevState.inputHeight > inputHeight) {
+      this.setState({barHeight: inputHeight});
     }
-
     if (
       prevState.atSearchResult.length != atSearchResult.length &&
       atListShow
     ) {
       let newBarHeight = inputHeight;
       if (atSearchResult.length < 3) {
-        newBarHeight = newBarHeight + atSearchResult.length * 50 + 15;
+        newBarHeight =
+          newBarHeight + atSearchResult.length * 50 + 15 - (inputHeight - 35);
       } else {
-        newBarHeight = 180;
+        newBarHeight = 190;
       }
-
       this.setState({
         barHeight: newBarHeight,
       });
     }
-
     if (!atListShow && prevState.atListShow != atListShow) {
       this.setState({barHeight: inputHeight});
     }
@@ -325,7 +323,7 @@ class Comment extends React.Component {
       modalVisible: true,
       comment_uid: userId,
       commentId: commentId,
-      atListShow: false
+      atListShow: false,
     });
     Keyboard.dismiss();
   };
@@ -409,10 +407,19 @@ class Comment extends React.Component {
   };
 
   inputHeightAdjustment = e => {
+    const {newComment, replyId} = this.state;
+    const isReply = replyId ? true : false;
+    const inputBarWidth = isReply ? width - 100 : width - 50;
     const height = e.nativeEvent.contentSize.height;
     let inputHeight = height + 15;
+
+    // when copy paste large number of text.  More than 5 lines
+    if ((newComment.length * 9) / inputBarWidth > 5) {
+      inputHeight = 150;
+    }
+
     this.setState(prevState => ({
-      inputHeight: inputHeight < 100 ? inputHeight : prevState.inputHeight,
+      inputHeight: inputHeight <= 150 ? inputHeight : prevState.inputHeight,
     }));
   };
 
@@ -465,7 +472,7 @@ class Comment extends React.Component {
               <View style={[styles.inputBarContainer, theme.backgroundColor]}>
                 <ReplyIndicator
                   isReply={isReply}
-                  inputHeight={inputHeight-5}
+                  inputHeight={inputHeight - 5}
                   onCancelReply={this.onCancelReply}
                   replyType={replyType}
                   replyTo={replyTo}
@@ -505,7 +512,7 @@ class Comment extends React.Component {
                   sent={sent}
                   disabled={disabled}
                   onSend={this.onSend}
-                  inputHeight={inputHeight-5}
+                  inputHeight={inputHeight - 5}
                 />
               </View>
             ) : null}
@@ -556,7 +563,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'transparent'
   },
   textInput: {
-    maxHeight: 100,
+    maxHeight: 150,
     fontSize: 16,
     width: '100%',
     borderWidth: StyleSheet.hairlineWidth,

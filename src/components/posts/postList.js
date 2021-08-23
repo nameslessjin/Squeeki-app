@@ -13,7 +13,7 @@ const extractKey = ({id}) => id;
 
 export default class PostList extends React.Component {
   renderItem = ({item}) => {
-    const {navigation, onAddPost, onPostSelect, selectionMode} = this.props;
+    const {navigation, onAddPost, onPostSelect, prevRoute} = this.props;
 
     if (item.groupname) {
       return (
@@ -39,7 +39,7 @@ export default class PostList extends React.Component {
         // commentTouchable={true}
         // option={true}
         onPostSelect={onPostSelect}
-        selectionMode={selectionMode}
+        prevRoute={prevRoute}
       />
     );
   };

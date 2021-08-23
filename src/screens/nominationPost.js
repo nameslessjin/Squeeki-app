@@ -102,6 +102,7 @@ class NominationPost extends React.Component {
               onEndReached={this.onEndReached}
               onRefresh={null}
               refreshing={null}
+              prevRoute={'NominationPost'}
             />
           ) : (
             <Text style={styles.noPostStyle}>

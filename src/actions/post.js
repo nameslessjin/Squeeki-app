@@ -38,7 +38,6 @@ export const getGroupPosts = data => {
     if (result.errors) {
       return result;
     }
-
     dispatch(getGroupPostsData(result.data.getGroupPosts));
 
     return 0;
@@ -96,8 +95,7 @@ export const getPost = data => {
     }
 
     const post = result.data.getPost;
-
-    return {...post, priorityExpiration: new Date(parseInt(post.priorityExpiration))};
+    return post;
   };
 };
 
@@ -295,7 +293,6 @@ export const updatePost = data => {
       taskExpiration: newType == 'task' ? new Date(parseInt(newTaskExpiration)) : null
     };
 
-    console.log(postInput)
     const graphql = {
       query: updatePostMutation,
       variables: {

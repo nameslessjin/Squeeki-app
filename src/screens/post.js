@@ -119,8 +119,8 @@ class Post extends React.Component {
           onEndReached={this.onEndReached}
           onRefresh={this.onRefresh}
           refreshing={this.state.refreshing}
-          selectionMode={true}
           onPostSelect={this.onPostSelect}
+          prevRoute={'CheckInSetting'}
         />
       </KeyboardAvoidingView>
     );

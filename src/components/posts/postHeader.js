@@ -48,11 +48,11 @@ export default class PostHeader extends React.Component {
       onReportInput,
       onSubmitReport,
       onReport,
-      selectionMode,
       rank_required_manage,
       rank_required_task,
       onTaskManagementPress,
       theme,
+      prevRoute,
     } = this.props;
 
     let currentUserAuthPostManagementQualified = false;
@@ -259,10 +259,17 @@ export default class PostHeader extends React.Component {
             flexDirection: 'row',
             alignItems: 'center',
             width: 85,
-            justifyContent: selectionMode ? 'center' : 'space-between',
+            justifyContent:
+              prevRoute == 'Home' ||
+              prevRoute == 'Group' ||
+              prevRoute == 'Comment'
+                ? 'space-between'
+                : 'center',
           }}>
           <Text style={[styles.timeStyle]}>{date}</Text>
-          {!selectionMode ? (
+          {prevRoute == 'Home' ||
+          prevRoute == 'Group' ||
+          prevRoute == 'Comment' ? (
             <TouchableOpacity
               onPress={toggleModal}
               style={styles.verticalDotStyle}>

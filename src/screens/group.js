@@ -128,6 +128,7 @@ class Group extends React.Component {
     navigation.navigate('PostSetting', {
       groupId: id,
       create: true,
+      prevRoute: 'Group'
     });
   };
 
@@ -199,6 +200,7 @@ class Group extends React.Component {
               refreshing={refreshing}
               onAddPost={this.onAddPost}
               theme={theme}
+              prevRoute={'Group'}
             />
           </TouchableWithoutFeedback>
         ) : null}

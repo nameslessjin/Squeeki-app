@@ -1,10 +1,11 @@
 import React from 'react';
 import {
   StyleSheet,
-  TouchableWithoutFeedback,
+  Text,
   View,
   Image,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import ImageModal from 'react-native-image-modal';
 import ParsedText from 'react-native-parsed-text';
@@ -23,6 +24,7 @@ export default class PostMedia extends React.Component {
   state = {
     height: 100,
     width: width,
+    isShowMorePressed: false,
   };
 
   componentDidMount() {
@@ -51,8 +53,34 @@ export default class PostMedia extends React.Component {
     }
   };
 
+  onPress = type => {
+    const {prevRoute, navigation, postId} = this.props;
+    if (type == 'showMore') {
+      // if user is in the home page then redirect to comment page else show all the content
+      if (prevRoute == 'Home') {
+        navigation.navigate('Comment', {
+          postId: postId,
+        });
+      } else {
+        this.setState(prevState => ({
+          isShowMorePressed: !prevState.isShowMorePressed,
+        }));
+      }
+    }
+  };
+
   render() {
-    const {image, content, _actionSheetRef, theme, priority} = this.props;
+    const {
+      image,
+      content,
+      _actionSheetRef,
+      theme,
+      priority,
+      prevRoute,
+    } = this.props;
+
+    const {isShowMorePressed} = this.state;
+    const isMediaLong = content.length > 255 || this.state.height > 300;
 
     return (
       <View style={styles.contentStyle}>
@@ -97,7 +125,9 @@ export default class PostMedia extends React.Component {
             },
           ]}
           childrenProps={{allowFontScaling: false}}>
-          {content}
+          {isShowMorePressed
+            ? content
+            : `${content.substr(0, 255)}${content.length > 255 ? '...' : ''}`}
         </ParsedText>
         {image != null ? (
           <View style={styles.imageView}>
@@ -105,11 +135,28 @@ export default class PostMedia extends React.Component {
               resizeMode="cover"
               style={[
                 styles.imageStyle,
-                {aspectRatio: this.state.width / this.state.height},
+                // {aspectRatio: this.state.width / this.state.height},
+                {
+                  height:
+                    this.state.height <= 300
+                      ? this.state.height
+                      : isShowMorePressed
+                      ? this.state.height
+                      : 300,
+                },
               ]}
               source={{uri: image.uri}}
               modalImageResizeMode={'contain'}
             />
+          </View>
+        ) : null}
+        {isMediaLong && !isShowMorePressed ? (
+          <View style={styles.moreContent}>
+            <TouchableOpacity onPress={() => this.onPress('showMore')}>
+              <Text style={theme.titleColor}>
+                {isShowMorePressed ? 'Hide Content' : 'Show More'}
+              </Text>
+            </TouchableOpacity>
           </View>
         ) : null}
       </View>
@@ -119,7 +166,7 @@ export default class PostMedia extends React.Component {
 
 const styles = StyleSheet.create({
   contentStyle: {
-    maxHeight: 800,
+    maxHeight: 1100,
     width: '100%',
     justifyContent: 'center',
     // backgroundColor: 'orange'
@@ -133,12 +180,19 @@ const styles = StyleSheet.create({
   textStyle: {
     padding: 7,
     marginBottom: 10,
-    maxHeight: 180,
+    maxHeight: 380,
     lineHeight: 15,
   },
   imageStyle: {
-    width: '100%',
+    height: 300,
+    width: width,
     maxHeight: 600,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  moreContent: {
+    height: 25,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
