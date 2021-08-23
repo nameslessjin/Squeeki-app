@@ -664,7 +664,15 @@ class Chat extends React.Component {
       this.setState({searchTerm: '', searchIndex: -1, atSearchResult: []});
     }
 
-    this.setState({content: text});
+    // make sure the numer of lines and length of content is limited
+    const lineCount = text.split(/\r\n|\r|\n/).length;
+    const valueSplit = text.substr(0, 500).split('\n');
+    if (lineCount >= 20) {
+      this.setState({content: valueSplit.slice(0, 20).join('\n')});
+      return;
+    }
+
+    this.setState({content: text.substr(0, 500)});
   };
 
   onActionPress = () => {

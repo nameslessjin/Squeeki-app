@@ -14,7 +14,7 @@ import {userLogout} from '../../actions/auth';
 import GroupSettingModal from './groupSettingModal';
 import {getTheme} from '../../utils/theme';
 
-const {height} = Dimensions.get('screen');
+const {height, width} = Dimensions.get('screen');
 
 class GroupSettingsHeader extends React.Component {
   state = {
@@ -72,14 +72,22 @@ class GroupSettingsHeader extends React.Component {
   }
 
   updateShortDescription = descritpion => {
-    this.setState({shortDescription: descritpion});
+    // make sure the numer of lines and length of content is limited
+    const lineCount = descritpion.split(/\r\n|\r|\n/).length;
+    const valueSplit = descritpion.substr(0, 255).split('\n');
+    if (lineCount >= 10) {
+      this.setState({shortDescription: valueSplit.slice(0, 8).join('\n')});
+      return;
+    }
+
+    this.setState({shortDescription: descritpion.substr(0, 255)});
   };
 
   updateGroupName = (type, name) => {
     if (type == 'display_name') {
-      this.setState({display_name: name});
+      this.setState({display_name: name.substr(0, 50)});
     } else if (type == 'groupname') {
-      this.setState({groupname: name.replace(/ /g, '')});
+      this.setState({groupname: name.replace(/ /g, '').substr(0, 30)});
     }
   };
 
@@ -235,14 +243,14 @@ const styles = StyleSheet.create({
     paddingLeft: -1,
     padding: 0,
     maxHeight: height * 0.185,
-    color: '#95a5a6'
+    color: '#95a5a6',
   },
   groupname: {
     width: '100%',
     marginLeft: 1,
     padding: 0,
     color: '#95a5a6',
-  }
+  },
 });
 
 const mapStateToProps = state => {

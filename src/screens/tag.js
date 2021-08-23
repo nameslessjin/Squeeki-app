@@ -90,6 +90,16 @@ class EditTag extends React.Component {
           'Tag name must be length from 3 to 20 characters and does not contain special characters',
       });
       return;
+    } else if (tag_name.toLowerCase().search('squeeki') != -1) {
+      this.setState({
+        warning: 'Tag name cannot contain Squeeki',
+      });
+      return;
+    } else if (tag_name.toLowerCase().search('admin') != -1) {
+      this.setState({
+        warning: 'Tag name cannot contain admin ',
+      });
+      return;
     } else {
       this.setState({warning: ''});
     }
@@ -335,7 +345,7 @@ class EditTag extends React.Component {
           ) : null}
 
           {create ? (
-            <Text>
+            <Text style={theme.textColor}>
               Create tag <Text style={{color: 'red'}}>{searchTerm} </Text>
             </Text>
           ) : (

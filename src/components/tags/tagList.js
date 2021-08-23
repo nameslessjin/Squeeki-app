@@ -7,15 +7,30 @@ export default class TagList extends React.Component {
   renderItem = ({item}) => {
     const {isSearch, onPress, isGroupHeader, theme} = this.props;
 
+    let disabled = false;
+
+    if (
+      item.tag_name.toLowerCase().search('squeeki') != -1 ||
+      item.tag_name.toLowerCase().search('admin') != -1
+    ) {
+      disabled = true;
+    }
+
     const style = isSearch
-      ? styles.tag
+      ? [
+          styles.tag,
+          {backgroundColor: disabled ? 'grey' : styles.tag.backgroundColor},
+        ]
       : isGroupHeader
       ? styles.groupHeaderTag
       : styles.groupTag;
     const textStyle = isGroupHeader ? styles.groupHeaderText : styles.tagText;
+
     return (
-      <TouchableOpacity onPress={() => isGroupHeader ? null : onPress(item)}>
-        <View style={[style]}>
+      <TouchableOpacity
+        onPress={() => (isGroupHeader ? null : onPress(item))}
+        disabled={disabled}>
+        <View style={style}>
           <Text style={textStyle}>{item.tag_name}</Text>
           {isGroupHeader ? null : (
             <View style={styles.use_count}>
@@ -110,7 +125,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   tag: {
-    backgroundColor: '#a7ecee',
+    backgroundColor: '#00cec9',
     padding: 7,
     borderRadius: 15,
     justifyContent: 'center',

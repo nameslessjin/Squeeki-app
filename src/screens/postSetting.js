@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   StatusBar,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
 import InputContent from '../components/postSetting/inputContent';
@@ -26,6 +27,8 @@ import {detectAtPeopleNGroup} from '../utils/detect';
 import AtUserNGroupList from '../components/postSetting/atUserNGroupList';
 import InputOption from '../components/postSetting/inputOption';
 import {getTheme} from '../utils/theme';
+
+const {width} = Dimensions.get('screen');
 
 class PostSetting extends React.Component {
   state = {
@@ -529,6 +532,20 @@ class PostSetting extends React.Component {
         this.setState({searchTerm, searchIndex});
       } else {
         this.setState({searchTerm: '', searchIndex: -1, atSearchResult: []});
+      }
+
+      // make sure the numer of lines and length of content is limited
+      const lineCount = value.split(/\r\n|\r|\n/).length;
+      const valueSplit = value.substr(0, 1000).split('\n');
+      if (lineCount >= 25) {
+        this.setState({
+          contentKeyboard: true,
+          postData: {
+            ...this.state.postData,
+            content: valueSplit.slice(0, 25).join('\n'),
+          },
+        });
+        return;
       }
 
       this.setState({

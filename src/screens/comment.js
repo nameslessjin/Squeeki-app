@@ -341,6 +341,7 @@ class Comment extends React.Component {
   };
 
   onChangeText = value => {
+    const {replyId} = this.state;
     const {searchTerm, searchIndex} = detectAtPeopleNGroup({
       prevText: this.state.newComment,
       currentText: value,
@@ -359,7 +360,23 @@ class Comment extends React.Component {
       this.setState({searchTerm: '', searchIndex: -1, atSearchResult: []});
     }
 
-    this.setState({newComment: value});
+    // make sure the numer of lines and length of content is limited
+    const isReply = replyId ? true : false;
+    const lineCount = value.split(/\r\n|\r|\n/).length;
+    const valueSplit = value.substr(0, 1000).split('\n');
+    if (isReply) {
+      if (lineCount >= 35) {
+        this.setState({newComment: valueSplit.slice(0, 35).join('\n')});
+        return;
+      }
+    } else {
+      if (lineCount >= 30) {
+        this.setState({newComment: valueSplit.slice(0, 30).join('\n')});
+        return;
+      }
+    }
+
+    this.setState({newComment: value.substr(0, 1000)});
   };
 
   onAtSearch = async () => {
