@@ -105,7 +105,7 @@ class HomeDrawerNavigator extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const name = this.getHeaderTitle(this.props.route);
     const {navigation, currentScreen, auth} = this.props;
-    const {theme} = this.state
+    const {theme} = this.state;
     if (name != currentScreen.currentScreen) {
       this.props.changeScreen(name);
     }
@@ -124,7 +124,10 @@ class HomeDrawerNavigator extends React.Component {
     } else if (name == 'Groups') {
       navigation.setOptions({
         headerRight: () => (
-          <GroupRightButton onPress={this.onToggleGroupsRightButton} theme={theme}/>
+          <GroupRightButton
+            onPress={this.onToggleGroupsRightButton}
+            theme={theme}
+          />
         ),
         headerTitle: 'My Groups',
       });
@@ -174,7 +177,7 @@ class HomeDrawerNavigator extends React.Component {
   }
 
   render() {
-    const {logout, auth} = this.props;
+    const {logout, auth, metadata} = this.props;
     const {theme} = this.state;
     return (
       <Drawer.Navigator
@@ -202,6 +205,9 @@ class HomeDrawerNavigator extends React.Component {
             drawerLabel: 'My Rewards',
           })}
         />
+        {metadata.securityClearance ? (
+          <Drawer.Screen name="Admin" component={Chats} />
+        ) : null}
       </Drawer.Navigator>
     );
   }
@@ -301,8 +307,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {currentScreen, auth, chat, group} = state;
-  return {currentScreen, auth, chat, group};
+  const {currentScreen, auth, chat, group, metadata} = state;
+  return {currentScreen, auth, chat, group, metadata};
 };
 
 const mapDispatchToProps = dispatch => {

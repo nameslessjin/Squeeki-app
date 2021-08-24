@@ -30,6 +30,7 @@ query getSecurityClearance{
         deletePostClearance
         searchCommentClearance
         deleteCommentClearance
+        securityClearanceLvl
     }
 }
 `

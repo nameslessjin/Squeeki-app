@@ -57,7 +57,7 @@ class RewardSetting extends React.Component {
 
   componentDidMount() {
     const {navigation, route} = this.props;
-    const {theme} = this.state
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitle: 'Cancel',
       headerRight: () => (
@@ -458,7 +458,14 @@ class RewardSetting extends React.Component {
     if (type == 'name') {
       this.setState({name: value.substr(0, 30)});
     } else if (type == 'description') {
-      this.setState({description: value});
+      const lineCount = value.split(/\r\n|\r|\n/).length;
+      const valueSplit = value.substr(0, 255).split('\n');
+      if (lineCount >= 15) {
+        this.setState({description: valueSplit.slice(0, 15).join('\n')});
+        return;
+      }
+
+      this.setState({description: value.substr(0, 255)});
     } else if (type == 'chance') {
       this.setState({chance: value.id, chanceDisplay: value.label});
     } else if (type == 'count') {
@@ -552,7 +559,7 @@ class RewardSetting extends React.Component {
           // hasExpiration: !prevState.isGift ? true : false,
           // expiration: !prevState.isGift ? Date.now() : null,
           hasExpiration: true,
-          expiration: Date.now()
+          expiration: Date.now(),
         };
       });
     }
@@ -652,12 +659,14 @@ class RewardSetting extends React.Component {
       giftTo,
       isGift,
       systemRewardSetting,
-      theme
+      theme,
     } = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView style={[styles.container, theme.backgroundColor]} bounces={false}>
+        <ScrollView
+          style={[styles.container, theme.backgroundColor]}
+          bounces={false}>
           <StatusBar barStyle={'dark-content'} />
           <Input
             type={'name'}

@@ -22,6 +22,7 @@ export default class ResponseCard extends React.Component {
       iconUrl,
       taskReplyId,
       onPress,
+      theme
     } = this.props;
 
     return (
@@ -48,7 +49,7 @@ export default class ResponseCard extends React.Component {
               />
             </View>
             <View style={styles.nameStyle}>
-              <Text>{displayName}</Text>
+              <Text style={theme.textColor}>{displayName}</Text>
             </View>
           </View>
           <View style={styles.buttonContainer}>

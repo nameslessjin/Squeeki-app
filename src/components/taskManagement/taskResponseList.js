@@ -10,13 +10,13 @@ export default class TaskResponseList extends React.Component {
   };
 
   renderItem = ({item}) => {
-    const {onPress} = this.props;
+    const {onPress, theme} = this.props;
 
     if (item.userId == 'options') {
       // return this.optionButtons();
       return this.optionButtons();
     }
-    return <Card {...item} onPress={onPress} />;
+    return <Card {...item} onPress={onPress} theme={theme}/>;
   };
 
   onOptionsPress = option => {

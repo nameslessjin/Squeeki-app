@@ -128,7 +128,7 @@ export default class PostHeader extends React.Component {
               placeholderTextColor={'#7f8fa6'}
               style={[{width: '100%'}, theme.textColor]}
               multiline={true}
-              maxLength={100}
+              maxLength={255}
               value={report}
               onChangeText={t => onReportInput(t)}
             />

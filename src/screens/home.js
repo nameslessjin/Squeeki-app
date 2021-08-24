@@ -15,7 +15,11 @@ import {getFeed} from '../actions/post';
 import PostList from '../components/posts/postList';
 import {getFeedFunc} from '../functions/post';
 import {userLogout} from '../actions/auth';
-import {getLastVersion, getUserStatus} from '../actions/security';
+import {
+  getLastVersion,
+  getUserStatus,
+  getSecurityClearance,
+} from '../actions/security';
 import DeviceInfo from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
 import {requestNotificationPermission} from '../functions/permission';
@@ -38,6 +42,7 @@ class Home extends React.Component {
     this.getNotificationToken();
     this.getLastVersion();
     this.checkAuth();
+    this.getSecurityClearance()
 
     AppState.addEventListener('change', this._handleAppStateChange);
   }
@@ -46,6 +51,18 @@ class Home extends React.Component {
     AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
+  getSecurityClearance = async () => {
+    const {getSecurityClearance, auth} = this.props;
+    const request = {
+      token: auth.token,
+    };
+
+    const req = await getSecurityClearance(request);
+    if (req.errors) {
+      console.log(req.errors);
+    }
+  };
+
   checkAuth = async () => {
     const {auth, getUserStatus} = this.props;
 
@@ -53,6 +70,7 @@ class Home extends React.Component {
       token: auth.token,
     };
 
+    // if user status is no longer active, lock user out
     try {
       const req = await getUserStatus(request);
       if (req.errors) {
@@ -73,6 +91,8 @@ class Home extends React.Component {
 
   getLastVersion = async () => {
     const {getLastVersion, metadata} = this.props;
+
+    // if user version is incorrect, lock user out
     try {
       const req = await getLastVersion();
       if (req.errors) {
@@ -134,6 +154,8 @@ class Home extends React.Component {
     if (appState.match(/(inactive|background)/) && nextAppState === 'active') {
       this.getLastVersion();
       this.checkAuth();
+      this.getSecurityClearance()
+      this.loadFeed(true);
     }
     this.setState({appState: nextAppState});
   };
@@ -238,6 +260,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(registerDeviceForNotification(data)),
     getLastVersion: () => dispatch(getLastVersion()),
     getUserStatus: data => dispatch(getUserStatus(data)),
+    getSecurityClearance: data => dispatch(getSecurityClearance(data)),
   };
 };
 

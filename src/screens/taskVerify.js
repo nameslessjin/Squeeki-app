@@ -15,6 +15,7 @@ import InputImage from '../components/postSetting/inputImage';
 import ImageModal from '../components/postSetting/postSettingModal';
 import AddOrModify from '../components/postSetting/addOrModifyPost';
 import {createUpdateTaskVerify, manageUserTaskResponse} from '../actions/post';
+import {getTheme} from '../utils/theme';
 
 class TaskVerify extends React.Component {
   state = {
@@ -27,11 +28,12 @@ class TaskVerify extends React.Component {
     loading: false,
     change: null,
     ...this.props.route.params,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation, auth} = this.props;
-    const {respondentId, taskResponse} = this.state;
+    const {respondentId, taskResponse, theme} = this.state;
     const isSelf = respondentId == auth.user.id;
     const disabled = taskResponse == 'completed' || !isSelf;
 
@@ -44,16 +46,19 @@ class TaskVerify extends React.Component {
               update={false}
               onPress={this.createOrUpdate}
               loading={this.state.loading}
+              theme={theme}
             />
           ),
       headerBackTitleVisible: false,
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
       const {navigation, auth} = this.props;
-      const {respondentId, taskResponse} = this.state;
+      const {respondentId, taskResponse, theme} = this.state;
       const isSelf = respondentId == auth.user.id;
       const disabled = taskResponse == 'completed' || !isSelf;
 
@@ -65,6 +70,7 @@ class TaskVerify extends React.Component {
                 update={this.validation(prevState)}
                 onPress={this.createOrUpdate}
                 loading={this.state.loading}
+                theme={theme}
               />
             ),
       });
@@ -128,9 +134,18 @@ class TaskVerify extends React.Component {
 
   modifyInput = (value, type) => {
     if (type == 'content') {
+      const lineCount = value.split(/\r\n|\r|\n/).length;
+      const valueSplit = value.substr(0, 255).split('\n');
+      if (lineCount >= 15) {
+        this.setState({
+          contentKeyboard: true,
+          content: valueSplit.slice(0, 15).join('\n'),
+        });
+        return;
+      }
       this.setState({
         contentKeyboard: true,
-        content: value,
+        content: value.substr(0, 255),
       });
     } else if (type == 'image') {
       this.setState({
@@ -182,19 +197,23 @@ class TaskVerify extends React.Component {
       modalVisible,
       respondentId,
       taskResponse,
+      theme,
     } = this.state;
     const isSelf = respondentId == this.props.auth.user.id;
     const disabled = taskResponse == 'completed' || !isSelf;
-    
+
     return (
       <TouchableWithoutFeedback onPress={this.onBackdropPress}>
-        <ScrollView style={styles.scroll} bounces={false}>
-          <KeyboardAvoidingView style={styles.container}>
+        <ScrollView
+          style={[styles.scroll, theme.backgroundColor]}
+          bounces={false}>
+          <KeyboardAvoidingView style={[styles.container]}>
             <InputImage
               image={image}
               contentKeyboard={contentKeyboard}
               onPress={this.onAddMediaPress}
               disabled={disabled}
+              theme={theme}
             />
             <InputContent
               content={content}
@@ -202,6 +221,7 @@ class TaskVerify extends React.Component {
               onKeyboardInputFocus={this.onKeyboardInputFocus}
               type={'verify'}
               disabled={disabled}
+              theme={theme}
             />
 
             {isSelf ||
@@ -252,6 +272,7 @@ class TaskVerify extends React.Component {
               onBackdropPress={this.onBackdropPress}
               onChangeMedia={this.modifyInput}
               type={'image'}
+              theme={theme}
             />
           </KeyboardAvoidingView>
         </ScrollView>
@@ -269,7 +290,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
     flex: 1,
   },
   emptySpace: {

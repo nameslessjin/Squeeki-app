@@ -3,13 +3,14 @@ const INITIAL_STATE = {
     IOSVersion: '1.0.16',
     AndroidVersion: '1.0.16',
   },
-  securityClearance: {},
+  securityClearance: null,
 };
 
 export default (metadataReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case 'getSecurityClearance':
       return {
+        ...state,
         securityClearance: action.i,
       };
 

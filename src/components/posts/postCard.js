@@ -90,6 +90,13 @@ class PostCard extends React.Component {
   };
 
   onReportInput = content => {
+    const lineCount = content.split(/\r\n|\r|\n/).length;
+    const valueSplit = content.substr(0, 255).split('\n');
+    if (lineCount >= 15) {
+      this.setState({report: valueSplit.slice(0, 15).join('\n')});
+      return;
+    }
+
     this.setState({report: content});
   };
 
@@ -370,7 +377,7 @@ class PostCard extends React.Component {
       onPostSelect,
       group,
       navigation,
-      prevRoute
+      prevRoute,
     } = this.props;
 
     const date = dateConversion(createdAt, 'timeDisplay');
@@ -449,7 +456,11 @@ class PostCard extends React.Component {
                 </View>
               ) : (
                 <View style={styles.footer}>
-                  <Text style={[{marginVertical: 5}, theme.textColor]}>{priority == 3 ? '100 points available' : 'No point available'}</Text>
+                  <Text style={[{marginVertical: 5}, theme.textColor]}>
+                    {priority == 3
+                      ? '100 points available'
+                      : 'No point available'}
+                  </Text>
                 </View>
               )
             ) : (

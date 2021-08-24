@@ -7,6 +7,7 @@ import {
   manageUserTaskResponse,
 } from '../actions/post';
 import TaskResponseList from '../components/taskManagement/taskResponseList';
+import {getTheme} from '../utils/theme';
 
 class TaskManagement extends React.Component {
   state = {
@@ -16,13 +17,17 @@ class TaskManagement extends React.Component {
     postId: '',
     type: 'pending',
     ...this.props.route.params,
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
     const {navigation} = this.props;
+    const {theme} = this.state
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Task Management',
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
     });
     // this.loadParticipants(true);
   }
@@ -134,15 +139,16 @@ class TaskManagement extends React.Component {
   };
 
   render() {
-    const {taskResponse} = this.state;
+    const {taskResponse, theme} = this.state;
 
     return (
-      <KeyboardAvoidingView style={styles.container}>
+      <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
         <TaskResponseList
           taskResponse={taskResponse}
           onPress={this.onPress}
           onEndReached={this.onEndReached}
           loadParticipants={this.loadParticipants}
+          theme={theme}
         />
       </KeyboardAvoidingView>
     );
