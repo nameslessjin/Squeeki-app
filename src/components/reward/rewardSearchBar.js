@@ -14,6 +14,7 @@ export default class RewardSearchBar extends React.Component {
           placeholderTextColor={'#95a5a6'}
           onChangeText={text => onChange(text)}
           value={value}
+          maxLength={50}
         />
       </View>
     );

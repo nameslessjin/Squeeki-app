@@ -24,7 +24,7 @@ import checkinReducer from './src/reducers/checkinReducer';
 import pointReducer from './src/reducers/pointReducer';
 import rewardReducer from './src/reducers/rewardReducer';
 import chatReducer from './src/reducers/chatReducer';
-import metadataReducer from './src/reducers/metadataReducer'
+import metadataReducer from './src/reducers/metadataReducer';
 
 // screens import
 import SignIn from './src/screens/signin';
@@ -76,6 +76,7 @@ import RewardListSetting from './src/screens/rewardListSetting';
 import RewardDetail from './src/screens/rewardDetail';
 import GiftedRewardList from './src/screens/reward';
 import GroupRankNameSetting from './src/screens/groupRankNameSetting';
+import AdminDrawerNavigator from './src/navigators/adminDrawerNavigator';
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -246,6 +247,10 @@ export default (App = () => {
             <Stack.Screen
               name="GroupRankNameSetting"
               component={GroupRankNameSetting}
+            />
+            <Stack.Screen
+              name="AdminDrawerNavigator"
+              component={AdminDrawerNavigator}
             />
           </Stack.Navigator>
         </NavigationContainer>

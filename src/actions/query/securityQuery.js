@@ -6,7 +6,7 @@ query getLastVersion {
         AndroidVersion
     }
 }
-`
+`;
 
 export const getUserStatusQuery = `
 query getUserStatus {
@@ -14,7 +14,7 @@ query getUserStatus {
         status
     }
 }
-`
+`;
 
 export const getSecurityClearanceQuery = `
 query getSecurityClearance{
@@ -33,4 +33,53 @@ query getSecurityClearance{
         securityClearanceLvl
     }
 }
-`
+`;
+
+export const searchASAdminQuery = `
+query searchASAdmin($input: SearchInput!){
+    searchASAdmin(input: $input){
+        data {
+            id
+            username
+            displayName
+            icon
+            status
+            securityClearance {
+                status
+                searchUserClearance
+                suspendUserClearance
+                deleteUserClearance
+                searchGroupClearance
+                suspendGroupClearance
+                deleteGroupClearance
+                searchPostClearance
+                suspendPostClearance
+                deletePostClearance
+                searchCommentClearance
+                deleteCommentClearance
+                securityClearanceLvl
+            }
+            groupname
+            shortDescription
+            image
+            content
+            createdAt
+            user {
+                id
+                username
+                displayName
+                icon
+                status
+                securityClearance {
+                    securityClearanceLvl
+                }
+            }
+            type
+            postId
+            replyId
+        }
+        count
+    }
+}
+
+`;

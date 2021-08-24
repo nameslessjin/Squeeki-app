@@ -193,6 +193,7 @@ class HomeDrawerNavigator extends React.Component {
             logout={logout}
             auth={auth}
             theme={theme}
+            metadata={metadata}
           />
         )}>
         <Drawer.Screen name="Home" component={Home} />
@@ -205,16 +206,13 @@ class HomeDrawerNavigator extends React.Component {
             drawerLabel: 'My Rewards',
           })}
         />
-        {metadata.securityClearance ? (
-          <Drawer.Screen name="Admin" component={Chats} />
-        ) : null}
       </Drawer.Navigator>
     );
   }
 }
 
 function CustomDrawerContent(props) {
-  const {logout, navigation, auth, theme} = props;
+  const {logout, navigation, auth, theme, metadata} = props;
   const {displayName, icon} = auth.user;
   return (
     <DrawerContentScrollView
@@ -265,6 +263,16 @@ function CustomDrawerContent(props) {
           navigation.navigate('UserSettings');
         }}
       />
+
+      {metadata.securityClearance ? (
+        <DrawerItem
+          label="Admin"
+          labelStyle={theme.drawerTextColor}
+          onPress={() => {
+            navigation.navigate('AdminDrawerNavigator');
+          }}
+        />
+      ) : null}
     </DrawerContentScrollView>
   );
 }

@@ -1,17 +1,29 @@
 import React from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 
-export default class UserSearchBar extends React.Component {
+export default class AdminSearchBar extends React.Component {
   render() {
-    const {onChange, value, theme} = this.props;
+    const {onInputChange, value, theme, type} = this.props;
+
+    let placeHolder = 'Search user';
+    if (type == 'user') {
+      placeHolder = 'Search user';
+    } else if (type == 'group') {
+      placeHolder = 'Search group';
+    } else if (type == 'post') {
+      placeHolder = 'Search post';
+    } else if (type == 'comment') {
+      placeHolder = 'Search comment';
+    }
 
     return (
-      <View style={[styles.searchBar, theme.backgroundColor, theme.shadowColor]}>
+      <View
+        style={[styles.searchBar, theme.backgroundColor, theme.shadowColor]}>
         <TextInput
           style={[styles.textInput, theme.textColor]}
-          placeholder={'search users'}
+          placeholder={placeHolder}
           placeholderTextColor={'#95a5a6'}
-          onChangeText={text => onChange(text)}
+          onChangeText={text => onInputChange('searchTerm', text)}
           value={value}
           maxLength={50}
         />
@@ -24,7 +36,7 @@ const styles = StyleSheet.create({
   searchBar: {
     height: 40,
     backgroundColor: 'white',
-    width: '80%',
+    width: '75%',
     shadowOffset: {
       width: 1,
       height: 1,
@@ -39,8 +51,8 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: '100%',
-    height: 100,
-    textAlign: 'center',
+    height: 50,
     color: 'black',
+    textAlign: 'center',
   },
 });

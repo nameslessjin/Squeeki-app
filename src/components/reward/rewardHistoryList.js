@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Keyboard,
 } from 'react-native';
 import {dateConversion} from '../../utils/time';
 import {singleDefaultIcon} from '../../utils/defaultIcon';
@@ -323,6 +324,7 @@ class RewardHistoryList extends React.Component {
         style={{width: '100%', height: '100%'}}
         onEndReachedThreshold={0.1}
         onEndReached={onEndReached}
+        onScroll={() => Keyboard.dismiss()}
       />
     );
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {FlatList, StyleSheet, View, Keyboard} from 'react-native';
 import UserCard from '../users/userCard';
 
 const extractKey = ({id}) => id;
@@ -61,6 +61,7 @@ export default class UserList extends React.Component {
         refreshing={refreshing}
         keyboardShouldPersistTaps={'handled'}
         showsVerticalScrollIndicator={false}
+        onScroll={() => Keyboard.dismiss()}
       />
     );
   }

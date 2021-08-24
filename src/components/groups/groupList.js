@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, StyleSheet} from 'react-native';
+import {FlatList, StyleSheet, Keyboard} from 'react-native';
 import GroupCard from './groupCard';
 
 const extractKey = ({id}) => id;
@@ -33,6 +33,7 @@ export default class GroupList extends React.Component {
         refreshing={refreshing}
         keyboardShouldPersistTaps={'handled'}
         showsVerticalScrollIndicator={false}
+        onScroll={() => Keyboard.dismiss()}
       />
     );
   }

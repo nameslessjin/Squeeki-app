@@ -9,10 +9,11 @@ export default class GroupsSearchBar extends React.Component {
       <View style={[styles.searchBar, theme.backgroundColor, theme.shadowColor]}>
         <TextInput
           style={[styles.textInput, theme.textColor]}
-          placeholder={'search group'}
+          placeholder={'Search group'}
           placeholderTextColor={'#95a5a6'}
           onChangeText={text => onChange(text)}
           value={value}
+          maxLength={50}
         />
       </View>
     );

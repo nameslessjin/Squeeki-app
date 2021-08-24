@@ -2,6 +2,7 @@ import {
   getLastVersionQuery,
   getUserStatusQuery,
   getSecurityClearanceQuery,
+  searchASAdminQuery,
 } from '../actions/query/securityQuery';
 import {httpCall} from './utils/httpCall';
 
@@ -65,5 +66,30 @@ const getSecurityClearanceReducer = data => {
   return {
     type: 'getSecurityClearance',
     i: data,
+  };
+};
+
+export const searchASAdmin = data => {
+  const {token, searchTerm, type, count} = data;
+  return async function(dispatch) {
+    const input = {
+      searchTerm,
+      type,
+      count
+    };
+    console.log(data)
+    const graphql = {
+      query: searchASAdminQuery,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.searchASAdmin;
   };
 };

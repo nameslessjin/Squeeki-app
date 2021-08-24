@@ -419,7 +419,6 @@ class GroupDrawerNavigator extends React.Component {
           drawerStyle: [styles.drawerStyle, theme.backgroundColor],
         }}
         initialRouteName="Group"
-        drawerPosition="right"
         drawerContent={props => this.CustomDrawerContent(props)}>
         <Drawer.Screen name={display_name || 'Group'} component={Group} />
       </Drawer.Navigator>

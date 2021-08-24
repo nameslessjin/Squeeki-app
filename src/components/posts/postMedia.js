@@ -30,9 +30,15 @@ export default class PostMedia extends React.Component {
   componentDidMount() {
     const {image} = this.props;
     if (image) {
-      Image.getSize(image.uri, (w, h) => {
-        this.setState({height: h, width: w});
-      });
+      if (image.uri) {
+        Image.getSize(image.uri, (w, h) => {
+          this.setState({height: h, width: w});
+        });
+      } else {
+        Image.getSize(image, (w, h) => {
+          this.setState({height: h, width: w});
+        });
+      }
     }
   }
 
@@ -100,7 +106,10 @@ export default class PostMedia extends React.Component {
             {
               type: 'phone',
               style: {color: '#1e90ff'},
-              onPress: phone => onPhonePress({phone, ..._actionSheetRef}),
+              onPress: phone =>
+                _actionSheetRef
+                  ? onPhonePress({phone, ..._actionSheetRef})
+                  : null,
               onLongPress: phone =>
                 onLinkPhoneLongPress({type: 'phone', content: phone}),
             },
@@ -145,7 +154,7 @@ export default class PostMedia extends React.Component {
                       : 300,
                 },
               ]}
-              source={{uri: image.uri}}
+              source={{uri: image.uri ? image.uri : image}}
               modalImageResizeMode={'contain'}
             />
           </View>
