@@ -4,6 +4,7 @@ import {
   getSecurityClearanceQuery,
   searchASAdminQuery,
   adminActionMutation,
+  updateSecurityClearanceMutation
 } from '../actions/query/securityQuery';
 import {httpCall} from './utils/httpCall';
 
@@ -121,3 +122,29 @@ export const adminAction = data => {
     return 0;
   };
 };
+
+export const updateSecurityClearance = data => {
+  const {token, securityClearance} = data
+
+  return async function(dispatch){
+    const input = {
+      ...securityClearance
+    }
+
+    const graphql = {
+      query: updateSecurityClearanceMutation,
+      variables: {
+        input
+      }
+    }
+
+    const result = await httpCall(token, graphql)
+    if (result.errors) {
+      return result;
+    }
+
+    return 0;
+
+
+  }
+}

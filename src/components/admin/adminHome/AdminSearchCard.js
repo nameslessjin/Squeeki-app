@@ -14,7 +14,7 @@ import {singleDefaultIcon} from '../../../utils/defaultIcon';
 import {dateConversion} from '../../../utils/time';
 import PostMedia from '../../posts/postMedia';
 import AdminModal from './adminModal';
-import {adminAction} from '../../../actions/security';
+import {adminAction, updateSecurityClearance} from '../../../actions/security';
 
 const {width} = Dimensions.get('screen');
 
@@ -86,6 +86,44 @@ class AdminSearchCard extends React.Component {
     }));
   };
 
+  updateSecurityClearance = async data => {
+    const {auth, updateSecurityClearance} = this.props;
+    const updatedSecurityClearance = this.state.item.securityClearance
+      ? {
+          userId: this.state.item.id,
+          ...this.state.item.securityClearance,
+          ...data,
+        }
+      : {
+          userId: this.state.item.id,
+          ...data,
+          deleteUserClearance: false,
+          deleteGroupClearance: false,
+          deletePostClearance: false,
+          deleteCommentClearance: false,
+        };
+    const request = {
+      token: auth.token,
+      securityClearance: updatedSecurityClearance,
+    };
+
+    const req = await updateSecurityClearance(request);
+    if (req.errors) {
+      console.log(req.errors);
+      if (req.errors[0].message == 'Security clearance failed') {
+        alert('Security clearance failed');
+      }
+      return;
+    }
+
+    this.setState(prevState => ({
+      item: {
+        ...prevState.item,
+        securityClearance: updatedSecurityClearance,
+      },
+    }));
+  };
+
   render() {
     const {navigation, type, metadata} = this.props;
     const {theme, modalVisible, item} = this.state;
@@ -110,8 +148,7 @@ class AdminSearchCard extends React.Component {
     if (type == 'user' && securityClearance) {
       if (
         securityClearance.securityClearanceLvl <=
-          metadata.securityClearance.securityClearanceLvl &&
-        securityClearance.status == 'active'
+        metadata.securityClearance.securityClearanceLvl
       ) {
         const {
           securityClearanceLvl,
@@ -369,6 +406,7 @@ class AdminSearchCard extends React.Component {
               }
               status={status}
               onAction={this.onAction}
+              updateSecurityClearance={this.updateSecurityClearance}
             />
           </View>
         </TouchableOpacity>
@@ -442,7 +480,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 1,
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
   },
   postCommentNameStyle: {
     fontSize: 13,
@@ -489,6 +527,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     adminAction: data => dispatch(adminAction(data)),
+    updateSecurityClearance: data => dispatch(updateSecurityClearance(data)),
   };
 };
 

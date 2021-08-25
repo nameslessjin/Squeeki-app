@@ -32,6 +32,7 @@ query getSecurityClearance{
         suspendCommentClearance
         deleteCommentClearance
         securityClearanceLvl
+        status
     }
 }
 `;
@@ -90,4 +91,10 @@ export const adminActionMutation = `
 mutation adminAction($input: ActionInput!){
     adminAction(input: $input)
 }
+`
+export const updateSecurityClearanceMutation = `
+mutation updateSecurityClearance($input: SecurityClearanceInput!){
+    updateSecurityClearance(input: $input)
+}
+
 `

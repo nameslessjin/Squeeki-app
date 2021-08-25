@@ -265,13 +265,15 @@ function CustomDrawerContent(props) {
       />
 
       {metadata.securityClearance ? (
-        <DrawerItem
-          label="Admin"
-          labelStyle={theme.drawerTextColor}
-          onPress={() => {
-            navigation.navigate('AdminDrawerNavigator');
-          }}
-        />
+        metadata.securityClearance.status == 'active' ? (
+          <DrawerItem
+            label="Admin"
+            labelStyle={theme.drawerTextColor}
+            onPress={() => {
+              navigation.navigate('AdminDrawerNavigator');
+            }}
+          />
+        ) : null
       ) : null}
     </DrawerContentScrollView>
   );
