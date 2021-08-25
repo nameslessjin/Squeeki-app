@@ -56,6 +56,7 @@ class RankSetting extends React.Component {
       manage_check_in_rank_required,
       manage_chat_rank_required,
       manage_task_rank_required,
+      manage_event_rank_required,
       manage_reward_rank_required,
     } = this.state;
     const request = {
@@ -74,6 +75,7 @@ class RankSetting extends React.Component {
         manage_check_in_rank_required,
         manage_chat_rank_required,
         manage_task_rank_required,
+        manage_event_rank_required,
         manage_reward_rank_required,
       },
     };
@@ -94,6 +96,7 @@ class RankSetting extends React.Component {
       manage_check_in_rank_required,
       manage_chat_rank_required,
       manage_task_rank_required,
+      manage_event_rank_required,
       manage_reward_rank_required,
     } = this.state;
     const {rank_setting} = this.props.group.group;
@@ -113,7 +116,8 @@ class RankSetting extends React.Component {
         manage_check_in_rank_required &&
       rank_setting.manage_chat_rank_required == manage_chat_rank_required &&
       rank_setting.manage_task_rank_required == manage_task_rank_required &&
-      rank_setting.manage_reward_rank_required == manage_reward_rank_required
+      rank_setting.manage_reward_rank_required == manage_reward_rank_required &&
+      rank_setting.manage_event_rank_required == manage_event_rank_required
     ) {
       return false;
     }
@@ -161,6 +165,8 @@ class RankSetting extends React.Component {
       this.setState({manage_task_rank_required: value});
     } else if (type == 'manage_reward') {
       this.setState({manage_reward_rank_required: value});
+    } else if (type == 'manage_event') {
+      this.setState({manage_event_rank_required: value});
     }
   };
 
@@ -178,6 +184,7 @@ class RankSetting extends React.Component {
       manage_check_in_rank_required,
       manage_chat_rank_required,
       manage_task_rank_required,
+      manage_event_rank_required,
       manage_reward_rank_required,
       modalVisible,
       type,
@@ -251,6 +258,13 @@ class RankSetting extends React.Component {
           <RankFunction
             type={'manage_task'}
             value={manage_task_rank_required}
+            onPress={this.onPress}
+            rankName={rankName}
+            theme={theme}
+          />
+          <RankFunction
+            type={'manage_event'}
+            value={manage_event_rank_required}
             onPress={this.onPress}
             rankName={rankName}
             theme={theme}

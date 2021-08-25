@@ -84,6 +84,12 @@ export default class InputOption extends React.Component {
     } else if (type == 'taskExpiration') {
       header = 'Task Expiration';
       isTouchable = true;
+    } else if (type == 'eventStart') {
+      header = 'Start At';
+      isTouchable = true;
+    } else if (type == 'eventEnd') {
+      header = 'End At';
+      isTouchable = true;
     }
 
     // the current toggled type.  This is used to correctly show the selections
@@ -119,9 +125,17 @@ export default class InputOption extends React.Component {
     } else if (toggleTyple == 'type') {
       if (currentUserAuth) {
         options = this.typeOptions.filter(option => {
-          const {manage_task_rank_required} = rank_setting;
+          const {
+            manage_task_rank_required,
+            manage_event_rank_required,
+          } = rank_setting;
           if (option.value == 'task') {
             if (currentUserAuth.rank <= manage_task_rank_required) {
+              return true;
+            }
+            return false;
+          } else if (option.value == 'event') {
+            if (currentUserAuth.rank <= manage_event_rank_required) {
               return true;
             }
             return false;
@@ -153,9 +167,11 @@ export default class InputOption extends React.Component {
     } else if (type == 'taskExpiration') {
       display_text = dateConversion(textInputValue, 'task');
     } else if (type == 'visibility') {
-      display_text = value == 1 ? 'public' : 'private'
+      display_text = value == 1 ? 'public' : 'private';
+    } else if (type == 'eventStart' || type == 'eventEnd') {
+      display_text = dateConversion(textInputValue, 'event');
     }
-
+    
     const toggled = onToggle && toggleTyple == type;
 
     return (

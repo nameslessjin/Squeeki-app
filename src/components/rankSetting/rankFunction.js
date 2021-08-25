@@ -39,6 +39,8 @@ export default class RankFunction extends React.Component {
       name = 'Manage Chat';
     } else if (type == 'manage_task') {
       name = 'Manage Task';
+    } else if (type == 'manage_event'){
+      name = 'Manage Event'
     }
 
     let rankTitle = rankName.rank1Name;

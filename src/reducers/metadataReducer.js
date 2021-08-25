@@ -4,6 +4,7 @@ const INITIAL_STATE = {
     AndroidVersion: '1.0.16',
   },
   securityClearance: null,
+  location: null
 };
 
 export default (metadataReducer = (state = INITIAL_STATE, action) => {
@@ -13,6 +14,12 @@ export default (metadataReducer = (state = INITIAL_STATE, action) => {
         ...state,
         securityClearance: action.i,
       };
+
+    case 'updateLocation':
+      return {
+        ...state,
+        location: action.i
+      }
 
     default:
       return state;

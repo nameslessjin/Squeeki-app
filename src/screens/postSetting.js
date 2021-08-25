@@ -47,6 +47,8 @@ class PostSetting extends React.Component {
       confirmButton: 'Accept',
       denyButton: 'Skip',
       taskExpiration: Date.now(),
+      start: Date.now(),
+      end: Date.now(),
     },
     onToggle: false,
     toggleTyple: 'priority',
@@ -571,12 +573,15 @@ class PostSetting extends React.Component {
           priorityExpiration: value.getTime(),
         },
       });
+      this.onBackdropPress();
     } else if (type == 'type') {
       this.setState({
         postData: {
           ...this.state.postData,
           type: value,
           taskExpiration: Date.now(),
+          start: Date.now(),
+          end: Date.now(),
         },
       });
     } else if (type == 'comment') {
@@ -625,6 +630,31 @@ class PostSetting extends React.Component {
           taskExpiration: value.getTime(),
         },
       });
+      this.onBackdropPress();
+    } else if (type == 'eventStart') {
+      this.setState({
+        postData: {
+          ...this.state.postData,
+          start: value.getTime(),
+          end:
+            value.getTime() >= this.state.postData.end
+              ? value.getTime()
+              : this.state.postData.end,
+        },
+      });
+      this.onBackdropPress();
+    } else if (type == 'eventEnd') {
+      this.setState({
+        postData: {
+          ...this.state.postData,
+          begin:
+            value.getTime() <= this.state.postData.begin
+              ? value.getTime()
+              : this.state.postData.begin,
+          end: value.getTime(),
+        },
+      });
+      this.onBackdropPress();
     }
   };
 
@@ -708,6 +738,8 @@ class PostSetting extends React.Component {
       denyButton,
       taskExpiration,
       auth,
+      start,
+      end,
     } = postData;
 
     return (
@@ -835,6 +867,7 @@ class PostSetting extends React.Component {
                 group={this.props.group.group}
                 postId={postId}
                 theme={theme}
+                rankName={this.props.group.rankName}
               />
             )}
 
@@ -887,6 +920,37 @@ class PostSetting extends React.Component {
               </View>
             ) : null}
 
+            {type == 'event' ? (
+              <View style={styles.lineContainer}>
+                <InputOption
+                  value={start}
+                  modifyInput={this.modifyInput}
+                  onBackdropPress={this.onBackdropPress}
+                  onToggle={onToggle}
+                  type={'eventStart'}
+                  disabled={false}
+                  toggleTyple={toggleTyple}
+                  currentUserAuth={this.props.group.group.auth}
+                  rank_setting={this.props.group.group.rank_setting}
+                  onInputFocus={() => this.onModalTrigger('eventStart')}
+                  theme={theme}
+                />
+                <InputOption
+                  value={end}
+                  modifyInput={this.modifyInput}
+                  onBackdropPress={this.onBackdropPress}
+                  onToggle={onToggle}
+                  type={'eventEnd'}
+                  disabled={false}
+                  toggleTyple={toggleTyple}
+                  currentUserAuth={this.props.group.group.auth}
+                  rank_setting={this.props.group.group.rank_setting}
+                  onInputFocus={() => this.onModalTrigger('eventEnd')}
+                  theme={theme}
+                />
+              </View>
+            ) : null}
+
             <ActivityIndicator animating={loading} color={'grey'} />
 
             <View style={styles.emptySpace} />
@@ -902,6 +966,8 @@ class PostSetting extends React.Component {
                 modifyInput={this.modifyInput}
                 taskExpiration={taskExpiration}
                 theme={theme}
+                eventStart={start}
+                eventEnd={end}
               />
             ) : null}
           </KeyboardAvoidingView>

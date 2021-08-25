@@ -43,6 +43,7 @@ export const dateConversion = (time, type) => {
   } else if (
     type == 'priority' ||
     type == 'task' ||
+    type == 'event' ||
     type == 'expiration' ||
     type == 'expirationDisplay'
   ) {

@@ -4,7 +4,7 @@ import {
   getSecurityClearanceQuery,
   searchASAdminQuery,
   adminActionMutation,
-  updateSecurityClearanceMutation
+  updateSecurityClearanceMutation,
 } from '../actions/query/securityQuery';
 import {httpCall} from './utils/httpCall';
 
@@ -124,27 +124,32 @@ export const adminAction = data => {
 };
 
 export const updateSecurityClearance = data => {
-  const {token, securityClearance} = data
+  const {token, securityClearance} = data;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const input = {
-      ...securityClearance
-    }
+      ...securityClearance,
+    };
 
     const graphql = {
       query: updateSecurityClearanceMutation,
       variables: {
-        input
-      }
-    }
+        input,
+      },
+    };
 
-    const result = await httpCall(token, graphql)
+    const result = await httpCall(token, graphql);
     if (result.errors) {
       return result;
     }
 
     return 0;
+  };
+};
 
-
-  }
-}
+export const updateLocationReducer = data => {
+  return {
+    type: 'updateLocation',
+    i: data,
+  };
+};

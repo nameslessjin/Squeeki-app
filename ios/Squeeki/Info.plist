@@ -40,7 +40,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>You can choose or save a photo for customization or messaging</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Turn on location to discover nearby groups and events</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Turn on location to discover nearby groups and events</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Turn on location to discover nearby groups and events</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>You can choose or save a photo for customization or messaging</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
@@ -83,5 +87,6 @@
 	<array>
 		<string>itms-apps</string>
 	</array>
+
 </dict>
 </plist>

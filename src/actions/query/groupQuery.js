@@ -59,6 +59,7 @@ query getGroup($groupId: ID!){
             manage_check_in_rank_required
             manage_chat_rank_required
             manage_task_rank_required
+            manage_event_rank_required
             manage_reward_rank_required
         }
         createdAt
@@ -124,6 +125,7 @@ mutation createGroup($GroupInput: GroupInput!){
             manage_check_in_rank_required
             manage_chat_rank_required
             manage_task_rank_required
+            manage_event_rank_required
             manage_reward_rank_required
         }
         memberCount
@@ -171,6 +173,7 @@ mutation updateGroup($GroupInput: GroupInput!){
             manage_check_in_rank_required
             manage_chat_rank_required
             manage_task_rank_required
+            manage_event_rank_required
             manage_reward_rank_required
         }
         memberCount
@@ -220,6 +223,7 @@ mutation joinGroup($groupId: ID!){
             manage_check_in_rank_required
             manage_chat_rank_required
             manage_task_rank_required
+            manage_event_rank_required
             manage_reward_rank_required
         }
         createdAt

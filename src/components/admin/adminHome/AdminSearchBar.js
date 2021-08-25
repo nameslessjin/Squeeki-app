@@ -26,6 +26,7 @@ export default class AdminSearchBar extends React.Component {
           onChangeText={text => onInputChange('searchTerm', text)}
           value={value}
           maxLength={50}
+          textAlign={'center'}
         />
       </View>
     );

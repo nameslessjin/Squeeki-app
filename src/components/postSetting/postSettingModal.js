@@ -53,10 +53,31 @@ export default class PostSettingModal extends React.Component {
       taskExpiration,
       modifyInput,
       theme,
+      eventStart,
+      eventEnd,
     } = this.props;
     const {process} = this.state;
 
     let timeModal = null;
+
+    let time = 0;
+
+    switch (type) {
+      case 'priorityExpiration':
+        time = priorityExpiration;
+        break;
+      case 'taskExpiration':
+        time = taskExpiration;
+        break;
+      case 'eventStart':
+        time = eventStart;
+        break;
+      case 'eventEnd':
+        time = eventEnd;
+        break;
+      default:
+        break;
+    }
 
     if (Platform.OS == 'ios') {
       timeModal = (
@@ -83,7 +104,7 @@ export default class PostSettingModal extends React.Component {
                 <Text style={theme.textColor}>SELECT DATE</Text>
                 <DateTimePicker
                   mode={'datetime'}
-                  value={new Date(parseInt(priorityExpiration))}
+                  value={new Date(parseInt(time))}
                   minimumDate={new Date()}
                   display={'default'}
                   style={{width: 190, marginLeft: 20}}
@@ -98,11 +119,15 @@ export default class PostSettingModal extends React.Component {
               <Text>SELECT DATE</Text>
               <DateTimePicker
                 mode={'datetime'}
-                value={new Date(parseInt(taskExpiration))}
-                minimumDate={new Date()}
+                value={new Date(parseInt(time))}
+                minimumDate={
+                  type == 'eventEnd'
+                    ? new Date(parseInt(eventStart))
+                    : new Date()
+                }
                 display={'default'}
                 style={{width: 190, marginLeft: 20}}
-                onChange={(event, date) => modifyInput(date, 'taskExpiration')}
+                onChange={(event, date) => modifyInput(date, type)}
               />
             </View>
           )}
@@ -118,8 +143,16 @@ export default class PostSettingModal extends React.Component {
               visible={modalVisible}>
               <TouchableWithoutFeedback onPress={() => onBackdropPress()}>
                 <View style={[styles.centeredView]}>
-                  <View style={[styles.modalView, {width: 210, height: 100}, theme.shadowColor, theme.backgroundColor]}>
-                    <Text style={theme.textColor}>Please select a priority first</Text>
+                  <View
+                    style={[
+                      styles.modalView,
+                      {width: 210, height: 100},
+                      theme.shadowColor,
+                      theme.backgroundColor,
+                    ]}>
+                    <Text style={theme.textColor}>
+                      Please select a priority first
+                    </Text>
                   </View>
                 </View>
               </TouchableWithoutFeedback>
@@ -131,12 +164,10 @@ export default class PostSettingModal extends React.Component {
           timeModal = (
             <DateTimePicker
               mode={'date'}
-              value={
-                type == 'priorityExpiration'
-                  ? new Date(parseInt(priorityExpiration))
-                  : new Date(parseInt(taskExpiration))
+              value={new Date(parseInt(time))}
+              minimumDate={
+                type == 'eventEnd' ? new Date(parseInt(eventStart)) : new Date()
               }
-              minimumDate={new Date()}
               display={'default'}
               onChange={(event, date) => this.setTimeOnAndroid(date, 'date')}
             />
@@ -145,12 +176,10 @@ export default class PostSettingModal extends React.Component {
           timeModal = (
             <DateTimePicker
               mode={'time'}
-              value={
-                type == 'priorityExpiration'
-                  ? new Date(parseInt(priorityExpiration))
-                  : new Date(parseInt(taskExpiration))
+              value={new Date(parseInt(time))}
+              minimumDate={
+                type == 'eventEnd' ? new Date(parseInt(eventStart)) : new Date()
               }
-              minimumDate={new Date()}
               display={'default'}
               onChange={(event, date) => this.setTimeOnAndroid(date, 'time')}
             />
@@ -158,12 +187,14 @@ export default class PostSettingModal extends React.Component {
         }
         if (process == 3) {
           modifyInput(this.state.time, type);
-          onBackdropPress();
         }
       }
     }
 
-    return (type == 'priorityExpiration' || type == 'taskExpiration') &&
+    return (type == 'priorityExpiration' ||
+      type == 'taskExpiration' ||
+      type == 'eventStart' ||
+      type == 'eventEnd') &&
       Platform.OS == 'android' ? (
       timeModal
     ) : (
@@ -198,7 +229,10 @@ export default class PostSettingModal extends React.Component {
                     </View>
                   </TouchableOpacity>
                 </View>
-              ) : type == 'priorityExpiration' || type == 'taskExpiration' ? (
+              ) : type == 'priorityExpiration' ||
+                type == 'taskExpiration' ||
+                type == 'eventStart' ||
+                type == 'eventEnd' ? (
                 timeModal
               ) : null}
             </View>

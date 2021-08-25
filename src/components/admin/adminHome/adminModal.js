@@ -373,7 +373,7 @@ export default class AdminModal extends React.Component {
               styles.modalView,
               theme.backgroundColor,
               theme.shadowColor,
-              {marginBottom: Platform.OS == 'ios' ? 250 : 150},
+              {marginBottom: Platform.OS == 'ios' ? 250 : 100},
             ]}>
             <View style={styles.reportHeader}>
               <Text

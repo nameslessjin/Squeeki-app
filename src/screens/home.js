@@ -9,6 +9,9 @@ import {
   StatusBar,
   AppState,
   Platform,
+  PermissionsAndroid,
+  Linking,
+  Alert,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {getFeed} from '../actions/post';
@@ -19,13 +22,15 @@ import {
   getLastVersion,
   getUserStatus,
   getSecurityClearance,
+  updateLocationReducer,
 } from '../actions/security';
 import DeviceInfo from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
-import {requestNotificationPermission} from '../functions/permission';
+import {requestNotificationPermission, hasLocationPermission} from '../functions/permission';
 import {registerDeviceForNotification} from '../actions/user';
 import HomeModal from '../components/home/homeModal';
 import {getTheme} from '../utils/theme';
+import Geolocation from 'react-native-geolocation-service';
 
 class Home extends React.Component {
   state = {
@@ -35,6 +40,7 @@ class Home extends React.Component {
     modalVisible: false,
     theme: getTheme(this.props.auth.user.theme),
     type: 'update',
+    position: null
   };
 
   componentDidMount() {
@@ -42,10 +48,46 @@ class Home extends React.Component {
     this.getNotificationToken();
     this.getLastVersion();
     this.checkAuth();
-    this.getSecurityClearance()
+    this.getSecurityClearance();
+    this.watchId = null;
+    this.getLocation();
 
     AppState.addEventListener('change', this._handleAppStateChange);
   }
+
+  getLocation = async () => {
+    const hasPermission = await hasLocationPermission();
+    if (!hasPermission) {
+      return;
+    }
+
+    Geolocation.getCurrentPosition(
+      position => {
+        console.log(position);
+        this.setState({position})
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        accuracy: {
+          android: 'high',
+          ios: 'best',
+        },
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
+        distanceFilter: 0,
+      },
+    );
+  };
+
+  removeLocationUpdate = () => {
+    if (this.watchId !== null) {
+      Geolocation.clearWatch(this.watchId);
+      this.watchId = null;
+    }
+  };
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange);
@@ -154,8 +196,11 @@ class Home extends React.Component {
     if (appState.match(/(inactive|background)/) && nextAppState === 'active') {
       this.getLastVersion();
       this.checkAuth();
-      this.getSecurityClearance()
+      this.getSecurityClearance();
       this.loadFeed(true);
+      this.getLocation();
+    } else if (nextAppState !== 'active') {
+      this.removeLocationUpdate();
     }
     this.setState({appState: nextAppState});
   };
@@ -261,6 +306,7 @@ const mapDispatchToProps = dispatch => {
     getLastVersion: () => dispatch(getLastVersion()),
     getUserStatus: data => dispatch(getUserStatus(data)),
     getSecurityClearance: data => dispatch(getSecurityClearance(data)),
+    updateLocationReducer: data => dispatch(updateLocationReducer(data)),
   };
 };
 
