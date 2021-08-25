@@ -13,7 +13,7 @@ const extractKey = ({id}) => id;
 
 export default class PostList extends React.Component {
   renderItem = ({item}) => {
-    const {navigation, onAddPost, onPostSelect, prevRoute} = this.props;
+    const {navigation, onAddPost, onPostSelect, prevRoute, group} = this.props;
 
     if (item.groupname) {
       return (
@@ -27,7 +27,13 @@ export default class PostList extends React.Component {
     if (item.id == 'null') {
       return (
         <View style={styles.placeholder}>
-          <Text style={styles.noPostStyle}>There is not any post yet</Text>
+          <Text style={styles.noPostStyle}>
+            {group
+              ? group.status != 'active'
+                ? `This group is ${group.status}`
+                : 'There is not any post yet'
+              : 'There is not any post yet'}
+          </Text>
         </View>
       );
     }
@@ -48,7 +54,6 @@ export default class PostList extends React.Component {
     const {group, onEndReached, onRefresh, refreshing} = this.props;
     const {posts, count} = this.props.posts;
     let data = [];
-
     if (group != null) {
       const groupHeader = {
         ...group,

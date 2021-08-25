@@ -38,11 +38,11 @@ class GroupDrawerNavigator extends React.Component {
 
   componentDidMount() {
     const {navigation, group, route} = this.props;
-    const {auth} = group.group;
+    const {auth, status} = group.group;
     const {theme} = this.state;
     navigation.setOptions({
       headerRight: () =>
-        auth == null ? null : (
+        auth == null || status != 'active' ? null : (
           <HeaderRightButton
             onPress={this.onToggleHeaderRightButton}
             theme={theme}
@@ -65,11 +65,11 @@ class GroupDrawerNavigator extends React.Component {
 
   componentDidUpdate(prevProps) {
     const {navigation, group, route} = this.props;
-    const {auth} = group.group;
+    const {auth, status} = group.group;
     const {theme} = this.state;
     navigation.setOptions({
       headerRight: () =>
-        auth == null ? null : (
+        auth == null || status != 'active' ? null : (
           <HeaderRightButton
             onPress={this.onToggleHeaderRightButton}
             theme={theme}

@@ -3,6 +3,7 @@ import {
   getUserStatusQuery,
   getSecurityClearanceQuery,
   searchASAdminQuery,
+  adminActionMutation,
 } from '../actions/query/securityQuery';
 import {httpCall} from './utils/httpCall';
 
@@ -75,9 +76,9 @@ export const searchASAdmin = data => {
     const input = {
       searchTerm,
       type,
-      count
+      count,
     };
-    console.log(data)
+
     const graphql = {
       query: searchASAdminQuery,
       variables: {
@@ -91,5 +92,32 @@ export const searchASAdmin = data => {
     }
 
     return result.data.searchASAdmin;
+  };
+};
+
+export const adminAction = data => {
+  const {token, id, comment, action, type} = data;
+
+  return async function(dispatch) {
+    const input = {
+      id,
+      comment: comment.trim(),
+      action,
+      type,
+    };
+
+    const graphql = {
+      query: adminActionMutation,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return 0;
   };
 };

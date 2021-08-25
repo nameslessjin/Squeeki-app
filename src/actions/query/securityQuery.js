@@ -29,6 +29,7 @@ query getSecurityClearance{
         suspendPostClearance
         deletePostClearance
         searchCommentClearance
+        suspendCommentClearance
         deleteCommentClearance
         securityClearanceLvl
     }
@@ -56,6 +57,7 @@ query searchASAdmin($input: SearchInput!){
                 suspendPostClearance
                 deletePostClearance
                 searchCommentClearance
+                suspendCommentClearance
                 deleteCommentClearance
                 securityClearanceLvl
             }
@@ -83,3 +85,9 @@ query searchASAdmin($input: SearchInput!){
 }
 
 `;
+
+export const adminActionMutation = `
+mutation adminAction($input: ActionInput!){
+    adminAction(input: $input)
+}
+`

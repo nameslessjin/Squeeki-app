@@ -13,16 +13,27 @@ import {getTheme} from '../../../utils/theme';
 import {singleDefaultIcon} from '../../../utils/defaultIcon';
 import {dateConversion} from '../../../utils/time';
 import PostMedia from '../../posts/postMedia';
+import AdminModal from './adminModal';
+import {adminAction} from '../../../actions/security';
+
 const {width} = Dimensions.get('screen');
 
 class AdminSearchCard extends React.Component {
   state = {
     ...this.props,
     theme: getTheme(this.props.auth.user.theme),
+    modalVisible: false,
   };
 
   onPress = () => {
+    const {type, item} = this.props;
+    const {id} = item;
+    this.setState({modalVisible: true});
     Keyboard.dismiss();
+  };
+
+  onBackgroundPress = () => {
+    this.setState({modalVisible: false});
   };
 
   securityClearanceDisplay = (type, value) => {
@@ -42,9 +53,42 @@ class AdminSearchCard extends React.Component {
     return null;
   };
 
+  onAction = async data => {
+    const {auth, item, adminAction} = this.props;
+    const {id, status} = item;
+    const {action} = data;
+    const request = {
+      token: auth.token,
+      id,
+      ...data,
+    };
+
+    const req = await adminAction(request);
+    if (req.errors) {
+      console.log(req.errors);
+      if (req.errors[0].message == 'Security clearance failed') {
+        alert('Security clearance failed');
+      }
+      return;
+    }
+
+    let updateStatus = status;
+    if (action == 'suspend') {
+      updateStatus = 'suspended';
+    } else if (action == 'delete') {
+      updateStatus = 'deleted';
+    } else if (action == 'activate') {
+      updateStatus = 'active';
+    }
+
+    this.setState(prevState => ({
+      item: {...prevState.item, status: updateStatus},
+    }));
+  };
+
   render() {
-    const {navigation, type, metadata, item} = this.props;
-    const {theme} = this.state;
+    const {navigation, type, metadata} = this.props;
+    const {theme, modalVisible, item} = this.state;
     const {
       id,
       username,
@@ -61,8 +105,6 @@ class AdminSearchCard extends React.Component {
       replyId,
       securityClearance,
     } = item;
-
-    console.log(item);
 
     let userSecurityClearanceDisplay = null;
     if (type == 'user' && securityClearance) {
@@ -83,9 +125,9 @@ class AdminSearchCard extends React.Component {
           suspendPostClearance,
           deletePostClearance,
           searchCommentClearance,
+          suspendCommentClearance,
           deleteCommentClearance,
         } = securityClearance;
-
         userSecurityClearanceDisplay = (
           <View>
             <View style={styles.metaDataSubContainer}>
@@ -146,6 +188,12 @@ class AdminSearchCard extends React.Component {
               {this.securityClearanceDisplay(
                 'searchCommentClearance',
                 searchCommentClearance,
+              )}
+            </View>
+            <View style={styles.metaDataSubContainer}>
+              {this.securityClearanceDisplay(
+                'suspendCommentClearance',
+                suspendCommentClearance,
               )}
             </View>
             <View style={styles.metaDataSubContainer}>
@@ -217,9 +265,7 @@ class AdminSearchCard extends React.Component {
                   <Text style={[styles.groupnameStyle, theme.textColor]}>
                     {displayName}
                   </Text>
-                  <Text style={[styles.groupnameStyle, {color: 'grey'}]}>
-                    @{username}
-                  </Text>
+                  <Text style={[styles.postCommentNameStyle]}>@{username}</Text>
                 </View>
               </View>
             ) : null}
@@ -239,7 +285,7 @@ class AdminSearchCard extends React.Component {
                       <Text style={[styles.groupnameStyle, theme.textColor]}>
                         {user.displayName}
                       </Text>
-                      <Text style={[styles.groupnameStyle, {color: 'grey'}]}>
+                      <Text style={[styles.postCommentNameStyle]}>
                         @{user.username}
                       </Text>
                     </View>
@@ -266,10 +312,14 @@ class AdminSearchCard extends React.Component {
                   </View>
                   <View style={styles.postUserInfoContainer}>
                     <View style={styles.postUserNameContainer}>
-                      <Text style={[styles.groupnameStyle, theme.textColor]}>
+                      <Text
+                        style={[
+                          styles.groupnameStyle,
+                          {color: theme.textColor.color},
+                        ]}>
                         {user.displayName}
                       </Text>
-                      <Text style={[styles.groupnameStyle, {color: 'grey'}]}>
+                      <Text style={[styles.postCommentNameStyle]}>
                         @{user.username}
                       </Text>
                     </View>
@@ -287,15 +337,16 @@ class AdminSearchCard extends React.Component {
             ) : null}
             <View style={styles.metadata}>
               <View style={styles.metaDataSubContainer}>
-                {type == 'comment' ? (
-                  <Text style={theme.textColor}>postId: {postId}</Text>
-                ) : (
-                  <Text style={theme.textColor}>Status: {status}</Text>
-                )}
+                <Text style={theme.textColor}>Status: {status}</Text>
                 {type == 'post' ? (
                   <Text style={theme.textColor}>Type: {postType}</Text>
                 ) : null}
               </View>
+              {type == 'comment' ? (
+                <View style={styles.metaDataSubContainer}>
+                  <Text style={theme.textColor}>postId: {postId}</Text>
+                </View>
+              ) : null}
               {replyId ? (
                 <View style={styles.metaDataSubContainer}>
                   <Text style={theme.textColor}>replyId: {replyId}</Text>
@@ -303,6 +354,22 @@ class AdminSearchCard extends React.Component {
               ) : null}
               {type == 'user' ? userSecurityClearanceDisplay : null}
             </View>
+            <AdminModal
+              theme={theme}
+              modalVisible={modalVisible}
+              onBackgroundPress={this.onBackgroundPress}
+              type={type}
+              securityClearance={metadata.securityClearance}
+              securityClearanceLvl={
+                securityClearance
+                  ? securityClearance.securityClearanceLvl
+                  : user
+                  ? user.securityClearance.securityClearanceLvl
+                  : 0
+              }
+              status={status}
+              onAction={this.onAction}
+            />
           </View>
         </TouchableOpacity>
       </View>
@@ -375,6 +442,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 1,
+    paddingHorizontal: 5
+  },
+  postCommentNameStyle: {
+    fontSize: 13,
+    color: 'grey',
   },
   postCard: {
     width: '100%',
@@ -415,7 +487,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    adminAction: data => dispatch(adminAction(data)),
+  };
 };
 
 export default connect(

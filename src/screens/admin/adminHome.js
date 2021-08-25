@@ -32,8 +32,8 @@ class AdminHome extends React.Component {
       this.onSearchChange(value);
     }
 
-    if (type != 'searchTerm'){
-        Keyboard.dismiss()
+    if (type != 'searchTerm') {
+      Keyboard.dismiss();
     }
   };
 
@@ -132,9 +132,13 @@ class AdminHome extends React.Component {
     }));
   };
 
+  onEndReached = () => {
+    this.onSearchChange(this.state.searchTerm)
+  }
+
   render() {
     const {theme, type, searchTerm, searchResult} = this.state;
-    const {navigation} = this.props
+    const {navigation} = this.props;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
@@ -147,7 +151,12 @@ class AdminHome extends React.Component {
             />
             <SearchTypeSwtich type={type} onInputChange={this.onInputChange} />
           </View>
-          <AdminSearchList data={searchResult || []} navigation={navigation} type={type} />
+          <AdminSearchList
+            data={searchResult || []}
+            navigation={navigation}
+            type={type}
+            onEndReached={this.onEndReached}
+          />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );

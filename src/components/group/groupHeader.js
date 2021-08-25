@@ -173,6 +173,7 @@ class GroupHeader extends React.Component {
       tags,
       join_requested,
       rank_setting,
+      status
     } = this.props.item;
     const {point, onAddPost} = this.props;
     let {total_point, base_point_time, leaderboard} = point;
@@ -203,6 +204,7 @@ class GroupHeader extends React.Component {
               join_requested={join_requested}
               rank_setting={rank_setting}
               theme={theme}
+              status={status}
             />
 
             <View style={underImageStyle}>
@@ -323,7 +325,7 @@ class GroupHeader extends React.Component {
               </Text>
             </View>
           ) : null}
-          {auth && users.length > 0 ? (
+          {auth && users.length > 0 && status == 'active'  ? (
             <TouchableWithoutFeedback onPress={this.onLeaderboardPress}>
               <View style={[styles.leaderboard, theme.groupLeaderBoard]}>
                 <View style={{height: 20}}>

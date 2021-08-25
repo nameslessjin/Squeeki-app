@@ -2,7 +2,6 @@ import React from 'react';
 import {FlatList, StyleSheet, Keyboard} from 'react-native';
 import AdminSearchCard from './AdminSearchCard';
 
-
 const extractKey = ({id}) => id;
 
 export default class AdminSearchList extends React.Component {
@@ -12,7 +11,7 @@ export default class AdminSearchList extends React.Component {
   };
 
   render() {
-    const {data} = this.props;
+    const {data, onEndReached} = this.props;
     return (
       <FlatList
         styles={styles.container}
@@ -23,6 +22,8 @@ export default class AdminSearchList extends React.Component {
         showsVerticalScrollIndicator={false}
         renderItem={this.renderItem}
         onScroll={() => Keyboard.dismiss()}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.3}
       />
     );
   }

@@ -11,7 +11,8 @@ export default class groupButton extends React.Component {
       onAddPost,
       join_requested,
       rank_setting,
-      theme
+      theme,
+      status,
     } = this.props;
 
     const joinButton = (
@@ -21,29 +22,38 @@ export default class groupButton extends React.Component {
     );
 
     const request_send = (
-      <TouchableOpacity style={[styles.joinButton, {backgroundColor: 'grey', width: 100}]} disabled={true}>
+      <TouchableOpacity
+        style={[styles.joinButton, {backgroundColor: 'grey', width: 100}]}
+        disabled={true}>
         <Text style={[styles.text, {fontSize: 13}]}>Request sent</Text>
       </TouchableOpacity>
     );
 
-    let create_post_allowed = false
+    let create_post_allowed = false;
 
-    if (rank_setting && auth){
-
-      if (rank_setting.post_rank_required >= auth.rank){
-        create_post_allowed = true
+    if (rank_setting && auth) {
+      if (rank_setting.post_rank_required >= auth.rank) {
+        create_post_allowed = true;
       }
     }
 
     const createButton = (
       <TouchableOpacity onPress={onAddPost} disabled={!create_post_allowed}>
-        <MaterialIcons name={'plus'} size={50} color={create_post_allowed ? '#EA2027' : 'grey'} />
+        <MaterialIcons
+          name={'plus'}
+          size={50}
+          color={create_post_allowed ? '#EA2027' : 'grey'}
+        />
       </TouchableOpacity>
     );
 
     const button =
-      auth == null ? join_requested ? (request_send) : (
-        joinButton
+      auth == null ? (
+        join_requested ? (
+          request_send
+        ) : (
+          joinButton
+        )
       ) : (
         <View style={styles.authorizedUserButton}>
           <TouchableOpacity
@@ -70,7 +80,7 @@ export default class groupButton extends React.Component {
           {createButton}
         </View>
       );
-    return button;
+    return status == 'active' ? button : null;
   }
 }
 

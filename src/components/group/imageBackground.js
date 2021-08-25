@@ -62,7 +62,8 @@ export default class HeaderImageBackground extends React.Component {
       visibility,
       join_requested,
       rank_setting,
-      theme
+      theme,
+      status
     } = this.props;
 
     const {background_text_sequence} = this.state;
@@ -117,6 +118,7 @@ export default class HeaderImageBackground extends React.Component {
               join_requested={join_requested}
               rank_setting={rank_setting}
               theme={theme}
+              status={status}
             />
           )}
         </View>
