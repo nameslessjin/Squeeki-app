@@ -38,8 +38,11 @@ export default class PostFooter extends React.Component {
       currentUserAuth,
       onViewButtonPress,
       taskExpiration,
+      start,
+      end,
       theme,
       priority,
+      prevRoute,
     } = this.props;
 
     const likeCount_text = countFormat(likeCount);
@@ -47,64 +50,66 @@ export default class PostFooter extends React.Component {
 
     return (
       <View style={styles.footerContainer}>
-        <View style={styles.rowContainer}>
-          <View style={styles.rowSubContainer}>
-            <TouchableOpacity
-              onPress={this.onCommentPress}
-              // disabled={!commentTouchable}
-            >
-              <View style={styles.IconContainer}>
-                <MaterialIcons
-                  name="comment-outline"
-                  size={25}
-                  color={priority > 0 ? 'black' : theme.iconColor.color}
-                />
-                {commentCount == 0 ? null : (
-                  <Text
-                    style={[
-                      styles.IconText,
-                      {color: priority > 0 ? 'black' : theme.textColor.color},
-                    ]}>
-                    {commentCount_text}
-                  </Text>
-                )}
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => onRespondPost('like')}
-              disabled={loading}>
-              <View style={styles.IconContainer}>
-                {loading && pressedButton == 'like' ? (
-                  <ActivityIndicator animating={true} color={'grey'} />
-                ) : (
+        {prevRoute == 'CheckInSetting' ? null : (
+          <View style={styles.rowContainer}>
+            <View style={styles.rowSubContainer}>
+              <TouchableOpacity
+                onPress={this.onCommentPress}
+                // disabled={!commentTouchable}
+              >
+                <View style={styles.IconContainer}>
                   <MaterialIcons
-                    name={liked ? 'heart' : 'heart-outline'}
+                    name="comment-outline"
                     size={25}
-                    style={
-                      liked
-                        ? {color: '#e84118'}
-                        : {
-                            color:
-                              priority > 0 ? 'black' : theme.iconColor.color,
-                          }
-                    }
+                    color={priority > 0 ? 'black' : theme.iconColor.color}
                   />
-                )}
+                  {commentCount == 0 ? null : (
+                    <Text
+                      style={[
+                        styles.IconText,
+                        {color: priority > 0 ? 'black' : theme.textColor.color},
+                      ]}>
+                      {commentCount_text}
+                    </Text>
+                  )}
+                </View>
+              </TouchableOpacity>
 
-                {likeCount == 0 ? null : (
-                  <Text
-                    style={[
-                      styles.IconText,
-                      {color: priority > 0 ? 'black' : theme.textColor.color},
-                    ]}>
-                    {likeCount_text}
-                  </Text>
-                )}
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onRespondPost('like')}
+                disabled={loading}>
+                <View style={styles.IconContainer}>
+                  {loading && pressedButton == 'like' ? (
+                    <ActivityIndicator animating={true} color={'grey'} />
+                  ) : (
+                    <MaterialIcons
+                      name={liked ? 'heart' : 'heart-outline'}
+                      size={25}
+                      style={
+                        liked
+                          ? {color: '#e84118'}
+                          : {
+                              color:
+                                priority > 0 ? 'black' : theme.iconColor.color,
+                            }
+                      }
+                    />
+                  )}
+
+                  {likeCount == 0 ? null : (
+                    <Text
+                      style={[
+                        styles.IconText,
+                        {color: priority > 0 ? 'black' : theme.textColor.color},
+                      ]}>
+                      {likeCount_text}
+                    </Text>
+                  )}
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        )}
         {type == 'task' ? (
           parseInt(taskExpiration) <= Date.now() &&
           taskResponse != 'completed' ? (
@@ -218,6 +223,49 @@ export default class PostFooter extends React.Component {
               </View>
             </View>
           )
+        ) : type == 'event' ? (
+          <View style={[{width: '100%'}]}>
+            <View
+              style={[
+                styles.rowContainer,
+                {
+                  justifyContent: 'space-evenly',
+                  height: 40,
+                  borderTopWidth: StyleSheet.hairlineWidth,
+                  borderTopColor: theme.underLineColor.borderColor,
+                },
+                theme.greyArea,
+              ]}>
+              <View
+                style={[
+                  styles.textContainer,
+                  {
+                    borderRightWidth: StyleSheet.hairlineWidth,
+                    borderRightColor: 'grey',
+                  },
+                ]}>
+                <Text
+                  style={[
+                    styles.textStyle,
+                    {fontWeight: '500'},
+                    theme.textColor,
+                  ]}>
+                  {dateConversion(start, 'event')}
+                </Text>
+              </View>
+
+              <View style={[styles.textContainer]}>
+                <Text
+                  style={[
+                    styles.textStyle,
+                    {fontWeight: '500'},
+                    theme.textColor,
+                  ]}>
+                  {dateConversion(end, 'event')}
+                </Text>
+              </View>
+            </View>
+          </View>
         ) : null}
       </View>
     );
@@ -227,7 +275,6 @@ export default class PostFooter extends React.Component {
 const styles = StyleSheet.create({
   footerContainer: {
     width: '100%',
-    minHeight: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },

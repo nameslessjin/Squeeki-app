@@ -13,7 +13,7 @@ import {
   getPostTaskResponseQuery,
   createUpdateTaskVerifyMutation,
   getUserTaskVerificationQuery,
-  manageUserTaskResponseMutation
+  manageUserTaskResponseMutation,
 } from './query/postQuery';
 import {http_upload} from '../../server_config';
 import {httpCall, httpUpload} from './utils/httpCall';
@@ -113,7 +113,9 @@ export const createPost = data => {
     visibility,
     confirmButton,
     denyButton,
-    taskExpiration
+    taskExpiration,
+    start,
+    end,
   } = data;
 
   return async function(dispatch) {
@@ -149,7 +151,6 @@ export const createPost = data => {
       };
     }
 
-    
     const postInput = {
       content: content,
       priority: priority,
@@ -159,10 +160,13 @@ export const createPost = data => {
       image: uploadImage,
       visibility,
       nomination: nomination,
-      priorityExpiration: new Date(priorityExpiration),
+      priorityExpiration: new Date(parseInt(priorityExpiration)),
       confirmButton: confirmButton,
       denyButton: denyButton,
-      taskExpiration: type == 'task' ? new Date(taskExpiration) : null
+      taskExpiration:
+        type == 'task' ? new Date(parseInt(taskExpiration)) : null,
+      start: type == 'event' ? new Date(parseInt(start)) : null,
+      end: type == 'event' ? new Date(parseInt(end)) : null,
     };
 
     const graphql = {
@@ -197,7 +201,9 @@ export const updatePost = data => {
     visibility,
     confirmButton,
     denyButton,
-    taskExpiration
+    taskExpiration,
+    start,
+    end,
   } = updateData;
 
   return async function(dispatch) {
@@ -210,7 +216,9 @@ export const updatePost = data => {
     let newVisibility = visibility;
     let newConfirmButton = confirmButton;
     let newDenyButton = denyButton;
-    let newTaskExpiration = taskExpiration
+    let newTaskExpiration = taskExpiration;
+    let newStart = start;
+    let newEnd = end;
 
     if (image != null) {
       const imageData = new FormData();
@@ -274,8 +282,16 @@ export const updatePost = data => {
       newDenyButton = origin.denyButton;
     }
 
-    if (taskExpiration == null){
-      newTaskExpiration = origin.taskExpiration
+    if (taskExpiration == null) {
+      newTaskExpiration = origin.taskExpiration;
+    }
+
+    if (start == null) {
+      newStart = origin.start;
+    }
+
+    if (end == null) {
+      newEnd = origin.end;
     }
 
     const postInput = {
@@ -290,7 +306,10 @@ export const updatePost = data => {
       denyButton: newDenyButton,
       confirmButton: newConfirmButton,
       priorityExpiration: new Date(parseInt(newPriorityExpiration)),
-      taskExpiration: newType == 'task' ? new Date(parseInt(newTaskExpiration)) : null
+      taskExpiration:
+        newType == 'task' ? new Date(parseInt(newTaskExpiration)) : null,
+      start: type == 'event' ? new Date(parseInt(newStart)) : null,
+      end: type == 'event' ? new Date(parseInt(newEnd)) : null,
     };
 
     const graphql = {
@@ -468,7 +487,7 @@ export const getPostTaskResponse = request => {
     const input = {
       postId,
       count,
-      type
+      type,
     };
 
     const graphql = {
@@ -543,23 +562,24 @@ export const getUserTaskVerification = request => {
 };
 
 export const manageUserTaskResponse = request => {
-  const {token, respondentId, postId, type} = request
+  const {token, respondentId, postId, type} = request;
 
-  return async function(dispatch){
+  return async function(dispatch) {
     const input = {
-      respondentId, postId, type
-    }
+      respondentId,
+      postId,
+      type,
+    };
 
     const graphql = {
       query: manageUserTaskResponseMutation,
-      variables: {input}
-    }
+      variables: {input},
+    };
 
-    const result = await httpCall(token, graphql)
-    if (result.errors){
-      return result
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
     }
-    return 0
-
-  }
-}
+    return 0;
+  };
+};

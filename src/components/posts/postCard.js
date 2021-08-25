@@ -434,7 +434,6 @@ class PostCard extends React.Component {
               theme={theme}
               prevRoute={prevRoute}
             />
-
             <PostMedia
               {...this.state}
               postId={id}
@@ -448,33 +447,36 @@ class PostCard extends React.Component {
               theme={theme}
               prevRoute={prevRoute}
             />
-
-            {prevRoute == 'CheckInSetting' ? (
-              checked ? (
-                <View style={styles.footer}>
-                  <Text style={{color: 'red', marginVertical: 5}}>Checked</Text>
-                </View>
-              ) : (
-                <View style={styles.footer}>
-                  <Text style={[{marginVertical: 5}, theme.textColor]}>
-                    {priority == 3
-                      ? '100 points available'
-                      : 'No point available'}
-                  </Text>
-                </View>
-              )
+            {checked ? (
+              <View style={styles.footer}>
+                <Text style={{color: 'red', marginVertical: 5}}>Checked</Text>
+              </View>
             ) : (
-              <PostFooter
-                navigation={this.props.navigation}
-                currentUserAuth={group.group.auth}
-                postId={id}
-                commentTouchable={commentTouchable}
-                onRespondPost={this.onRespondPost}
-                onViewButtonPress={this.getGroup}
-                {...this.state}
-                theme={theme}
-              />
+              <View style={styles.footer}>
+                <Text
+                  style={[
+                    {
+                      marginVertical: 5,
+                      color: priority ? 'black' : theme.textColor.color,
+                    },
+                  ]}>
+                  {priority == 3
+                    ? '100 points available'
+                    : 'No point available'}
+                </Text>
+              </View>
             )}
+            <PostFooter
+              navigation={this.props.navigation}
+              currentUserAuth={group.group.auth}
+              postId={id}
+              commentTouchable={commentTouchable}
+              onRespondPost={this.onRespondPost}
+              onViewButtonPress={this.getGroup}
+              prevRoute={prevRoute}
+              {...this.state}
+              theme={theme}
+            />
             {nomination == null || prevRoute == 'CheckInSetting' ? null : (
               <PostNomination
                 {...this.state}

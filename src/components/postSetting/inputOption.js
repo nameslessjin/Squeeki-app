@@ -171,7 +171,7 @@ export default class InputOption extends React.Component {
     } else if (type == 'eventStart' || type == 'eventEnd') {
       display_text = dateConversion(textInputValue, 'event');
     }
-    
+
     const toggled = onToggle && toggleTyple == type;
 
     return (

@@ -89,6 +89,8 @@ class PostSetting extends React.Component {
         denyButton,
         taskExpiration,
         auth,
+        start,
+        end
       } = this.props.route.params.postData;
 
       this.setState({
@@ -108,6 +110,8 @@ class PostSetting extends React.Component {
           denyButton,
           taskExpiration,
           auth,
+          start,
+          end
         },
       });
 
@@ -259,6 +263,8 @@ class PostSetting extends React.Component {
       denyButton,
       taskExpiration,
       originContent,
+      start,
+      end,
     } = postData;
     content = content.trim();
 
@@ -285,9 +291,6 @@ class PostSetting extends React.Component {
       if (allowComment == origin.allowComment) {
         allowComment = null;
       }
-      if (type == origin.type) {
-        type = null;
-      }
       if (visibility == origin.visibility) {
         visibility = null;
       }
@@ -300,6 +303,12 @@ class PostSetting extends React.Component {
       if (taskExpiration == origin.taskExpiration) {
         taskExpiration = null;
       }
+      if (start == origin.start) {
+        start = null;
+      }
+      if (end == origin.end) {
+        end = null;
+      }
     }
 
     if (
@@ -308,11 +317,13 @@ class PostSetting extends React.Component {
       priority != null ||
       priorityExpiration != null ||
       allowComment != null ||
-      type != null ||
+      // type != null ||
       visibility != null ||
       confirmButton != null ||
       denyButton != null ||
-      taskExpiration != null
+      taskExpiration != null ||
+      start != null ||
+      end != null
     ) {
       const updateData = {
         id: create ? null : postId,
@@ -328,6 +339,8 @@ class PostSetting extends React.Component {
         confirmButton: type == 'task' ? confirmButton : null,
         denyButton: type == 'task' ? denyButton : null,
         taskExpiration: type == 'task' ? taskExpiration : null,
+        start: type == 'event' ? start : null,
+        end: type == 'event' ? end : null,
         token: token,
         nomination: {
           nominationId: nomination.id || null,
@@ -355,17 +368,19 @@ class PostSetting extends React.Component {
       priorityExpiration,
       confirmButton,
       denyButton,
-      initTime,
       taskExpiration,
       type,
       image,
       allowComment,
       visibility,
       originContent,
+      start,
+      end,
     } = postData;
     origin = {
       ...this.props.route.params.postData,
     };
+
     if (content.trim().length == 0) {
       return false;
     }
@@ -374,7 +389,7 @@ class PostSetting extends React.Component {
       return false;
     }
 
-    if (priority == 0 && priorityExpiration > initTime) {
+    if (priority == 0 && priorityExpiration > Date.now()) {
       return false;
     }
 
@@ -394,6 +409,26 @@ class PostSetting extends React.Component {
       }
     }
 
+    if (type == 'event') {
+      if (start) {
+        if (start <= Date.now()) {
+          return false;
+        }
+      }
+
+      if (end) {
+        if (end <= Date.now()) {
+          return false;
+        }
+      }
+
+      if (start && end) {
+        if (start == end) {
+          return false;
+        }
+      }
+    }
+
     if (!create) {
       if (
         image == origin.image &&
@@ -405,7 +440,9 @@ class PostSetting extends React.Component {
         visibility == origin.visibility &&
         confirmButton == origin.confirmButton &&
         denyButton == origin.denyButton &&
-        taskExpiration == origin.taskExpiration
+        taskExpiration == origin.taskExpiration &&
+        start == origin.start &&
+        end == origin.end
       ) {
         return false;
       }
@@ -573,7 +610,6 @@ class PostSetting extends React.Component {
           priorityExpiration: value.getTime(),
         },
       });
-      this.onBackdropPress();
     } else if (type == 'type') {
       this.setState({
         postData: {
@@ -630,7 +666,6 @@ class PostSetting extends React.Component {
           taskExpiration: value.getTime(),
         },
       });
-      this.onBackdropPress();
     } else if (type == 'eventStart') {
       this.setState({
         postData: {
@@ -642,7 +677,6 @@ class PostSetting extends React.Component {
               : this.state.postData.end,
         },
       });
-      this.onBackdropPress();
     } else if (type == 'eventEnd') {
       this.setState({
         postData: {
@@ -654,7 +688,6 @@ class PostSetting extends React.Component {
           end: value.getTime(),
         },
       });
-      this.onBackdropPress();
     }
   };
 

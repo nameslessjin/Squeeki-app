@@ -187,6 +187,9 @@ export default class PostSettingModal extends React.Component {
         }
         if (process == 3) {
           modifyInput(this.state.time, type);
+          setTimeout(() => {
+            onBackdropPress();
+          }, 100);
         }
       }
     }

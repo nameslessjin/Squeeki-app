@@ -33,6 +33,8 @@ query getGroupPosts($input: GetPostInput!){
             confirmButton
             denyButton
             taskExpiration
+            start
+            end
             commentCount
             auth
             groupId
@@ -87,6 +89,8 @@ query getFeed($count: Int!){
             confirmButton
             denyButton
             taskExpiration
+            start
+            end
             type
             commentCount
             auth
@@ -141,6 +145,8 @@ query getPost($postId: ID!){
             confirmButton
             denyButton
             taskExpiration
+            start
+            end
             priorityExpiration
             allowComment
             type
@@ -270,6 +276,8 @@ query getGroupPostForCheckIn($input: GetPostInput!){
             priority
             visibility
             priorityExpiration
+            start
+            end
             allowComment
             type
             commentCount
@@ -278,17 +286,6 @@ query getGroupPostForCheckIn($input: GetPostInput!){
             likeCount
             liked
             notification
-            nomination{
-                postNominationId
-                nominationId
-                nomineeId
-                endAt
-                nominee_name
-                username
-                nomination_name
-                points
-                voted
-            }
         }
         count
     }
