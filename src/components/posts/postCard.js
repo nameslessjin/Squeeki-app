@@ -447,25 +447,29 @@ class PostCard extends React.Component {
               theme={theme}
               prevRoute={prevRoute}
             />
-            {checked ? (
-              <View style={styles.footer}>
-                <Text style={{color: 'red', marginVertical: 5}}>Checked</Text>
-              </View>
-            ) : (
-              <View style={styles.footer}>
-                <Text
-                  style={[
-                    {
-                      marginVertical: 5,
-                      color: priority ? 'black' : theme.textColor.color,
-                    },
-                  ]}>
-                  {priority == 3
-                    ? '100 points available'
-                    : 'No point available'}
-                </Text>
-              </View>
-            )}
+
+            {prevRoute == 'CheckInSetting' ? (
+              checked ? (
+                <View style={styles.footer}>
+                  <Text style={{color: 'red', marginVertical: 5}}>Checked</Text>
+                </View>
+              ) : (
+                <View style={styles.footer}>
+                  <Text
+                    style={[
+                      {
+                        marginVertical: 5,
+                        color: priority ? 'black' : theme.textColor.color,
+                      },
+                    ]}>
+                    {priority == 3 && prevRoute == 'CheckInSetting'
+                      ? '100 points available'
+                      : 'No point available'}
+                  </Text>
+                </View>
+              )
+            ) : null}
+
             <PostFooter
               navigation={this.props.navigation}
               currentUserAuth={group.group.auth}
@@ -476,6 +480,7 @@ class PostCard extends React.Component {
               prevRoute={prevRoute}
               {...this.state}
               theme={theme}
+              backgroundColor={backgroundColor}
             />
             {nomination == null || prevRoute == 'CheckInSetting' ? null : (
               <PostNomination

@@ -27,6 +27,7 @@ import {detectAtPeopleNGroup} from '../utils/detect';
 import AtUserNGroupList from '../components/postSetting/atUserNGroupList';
 import InputOption from '../components/postSetting/inputOption';
 import {getTheme} from '../utils/theme';
+import EventLocationButton from '../components/postSetting/eventLocationButton';
 
 const {width} = Dimensions.get('screen');
 
@@ -49,6 +50,10 @@ class PostSetting extends React.Component {
       taskExpiration: Date.now(),
       start: Date.now(),
       end: Date.now(),
+      locationDescription: null,
+      place_id: null,
+      lat: null,
+      lng: null,
     },
     onToggle: false,
     toggleTyple: 'priority',
@@ -90,7 +95,11 @@ class PostSetting extends React.Component {
         taskExpiration,
         auth,
         start,
-        end
+        end,
+        locationDescription,
+        place_id,
+        lat,
+        lng,
       } = this.props.route.params.postData;
 
       this.setState({
@@ -111,7 +120,11 @@ class PostSetting extends React.Component {
           taskExpiration,
           auth,
           start,
-          end
+          end,
+          locationDescription,
+          place_id,
+          lat,
+          lng,
         },
       });
 
@@ -162,8 +175,24 @@ class PostSetting extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.route.params != prevProps.route.params) {
-      const {chosenUser, nomination} = this.props.route.params;
-      this.setState({chosenUser: chosenUser, nomination: nomination});
+      const {
+        chosenUser,
+        nomination,
+        prevRoute,
+        location,
+      } = this.props.route.params;
+      if (chosenUser && nomination) {
+        this.setState({chosenUser, nomination});
+      }
+
+      // update location
+      if (prevRoute == 'SearchLocation') {
+        if (location) {
+          this.setState(prevProps => ({
+            postData: {...prevProps.postData, ...location},
+          }));
+        }
+      }
     }
     const {theme} = this.state;
     // general checking
@@ -265,6 +294,10 @@ class PostSetting extends React.Component {
       originContent,
       start,
       end,
+      locationDescription,
+      place_id,
+      lat,
+      lng,
     } = postData;
     content = content.trim();
 
@@ -309,6 +342,18 @@ class PostSetting extends React.Component {
       if (end == origin.end) {
         end = null;
       }
+      if (locationDescription == origin.locationDescription) {
+        locationDescription = null;
+      }
+      if (place_id == origin.place_id) {
+        place_id = null;
+      }
+      if (lat == origin.lat) {
+        lat = null;
+      }
+      if (lng == origin.lng) {
+        lng = null;
+      }
     }
 
     if (
@@ -323,7 +368,11 @@ class PostSetting extends React.Component {
       denyButton != null ||
       taskExpiration != null ||
       start != null ||
-      end != null
+      end != null ||
+      locationDescription != null ||
+      place_id != null ||
+      lat != null ||
+      lng != null
     ) {
       const updateData = {
         id: create ? null : postId,
@@ -341,6 +390,10 @@ class PostSetting extends React.Component {
         taskExpiration: type == 'task' ? taskExpiration : null,
         start: type == 'event' ? start : null,
         end: type == 'event' ? end : null,
+        locationDescription: type == 'event' ? locationDescription : null,
+        place_id: type == 'event' ? place_id : null,
+        lat: type == 'event' ? lat : null,
+        lng: type == 'event' ? lng : null,
         token: token,
         nomination: {
           nominationId: nomination.id || null,
@@ -376,6 +429,10 @@ class PostSetting extends React.Component {
       originContent,
       start,
       end,
+      locationDescription,
+      place_id,
+      lat,
+      lng,
     } = postData;
     origin = {
       ...this.props.route.params.postData,
@@ -427,6 +484,10 @@ class PostSetting extends React.Component {
           return false;
         }
       }
+
+      if (!(lat && lng && locationDescription && place_id)) {
+        return false;
+      }
     }
 
     if (!create) {
@@ -442,7 +503,11 @@ class PostSetting extends React.Component {
         denyButton == origin.denyButton &&
         taskExpiration == origin.taskExpiration &&
         start == origin.start &&
-        end == origin.end
+        end == origin.end &&
+        locationDescription == origin.locationDescription &&
+        place_id == origin.place_id &&
+        lat == origin.lat &&
+        lng == origin.lng
       ) {
         return false;
       }
@@ -773,6 +838,10 @@ class PostSetting extends React.Component {
       auth,
       start,
       end,
+      locationDescription,
+      place_id,
+      lat,
+      lng,
     } = postData;
 
     return (
@@ -982,6 +1051,27 @@ class PostSetting extends React.Component {
                   theme={theme}
                 />
               </View>
+            ) : null}
+
+            {type == 'event' ? (
+              <EventLocationButton
+                theme={theme}
+                onPress={() =>
+                  this.props.navigation.navigate('SearchLocation', {
+                    prevRoute: 'PostSetting',
+                  })
+                }
+                location={
+                  place_id
+                    ? {
+                        description: locationDescription,
+                        place_id,
+                        lat,
+                        lng,
+                      }
+                    : null
+                }
+              />
             ) : null}
 
             <ActivityIndicator animating={loading} color={'grey'} />

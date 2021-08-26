@@ -35,6 +35,10 @@ query getGroupPosts($input: GetPostInput!){
             taskExpiration
             start
             end
+            locationDescription
+            place_id
+            lat
+            lng
             commentCount
             auth
             groupId
@@ -91,6 +95,10 @@ query getFeed($count: Int!){
             taskExpiration
             start
             end
+            locationDescription
+            place_id
+            lat
+            lng
             type
             commentCount
             auth
@@ -147,6 +155,10 @@ query getPost($postId: ID!){
             taskExpiration
             start
             end
+            locationDescription
+            place_id
+            lat
+            lng
             priorityExpiration
             allowComment
             type
@@ -278,6 +290,10 @@ query getGroupPostForCheckIn($input: GetPostInput!){
             priorityExpiration
             start
             end
+            locationDescription
+            place_id
+            lat
+            lng
             allowComment
             type
             commentCount

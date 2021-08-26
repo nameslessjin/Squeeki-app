@@ -116,6 +116,10 @@ export const createPost = data => {
     taskExpiration,
     start,
     end,
+    locationDescription,
+    place_id,
+    lat,
+    lng,
   } = data;
 
   return async function(dispatch) {
@@ -167,6 +171,10 @@ export const createPost = data => {
         type == 'task' ? new Date(parseInt(taskExpiration)) : null,
       start: type == 'event' ? new Date(parseInt(start)) : null,
       end: type == 'event' ? new Date(parseInt(end)) : null,
+      locationDescription: type == 'event' ? locationDescription : null,
+      place_id: type == 'event' ? place_id : null,
+      lat: type == 'event' ? lat : null,
+      lng: type == 'event' ? lng : null,
     };
 
     const graphql = {
@@ -204,6 +212,10 @@ export const updatePost = data => {
     taskExpiration,
     start,
     end,
+    locationDescription,
+    place_id,
+    lat,
+    lng,
   } = updateData;
 
   return async function(dispatch) {
@@ -219,6 +231,10 @@ export const updatePost = data => {
     let newTaskExpiration = taskExpiration;
     let newStart = start;
     let newEnd = end;
+    let newLocationDescription = locationDescription;
+    let newPlace_id = place_id;
+    let newLat = lat;
+    let newLng = lng;
 
     if (image != null) {
       const imageData = new FormData();
@@ -253,45 +269,47 @@ export const updatePost = data => {
     if (content == null) {
       newContent = originContent;
     }
-
     if (priority == null) {
       newPriority = origin.priority;
     }
-
     if (priorityExpiration == null) {
       newPriorityExpiration = origin.priorityExpiration;
     }
-
     if (allowComment == null) {
       newAllowComment = origin.allowComment;
     }
-
     if (type == null) {
       newType = origin.type;
     }
-
     if (visibility == null) {
       newVisibility = origin.visibility;
     }
-
     if (confirmButton == null) {
       newConfirmButton = origin.confirmButton;
     }
-
     if (denyButton == null) {
       newDenyButton = origin.denyButton;
     }
-
     if (taskExpiration == null) {
       newTaskExpiration = origin.taskExpiration;
     }
-
     if (start == null) {
       newStart = origin.start;
     }
-
     if (end == null) {
       newEnd = origin.end;
+    }
+    if (locationDescription == null) {
+      newLocationDescription = origin.locationDescription;
+    }
+    if (place_id == null) {
+      newPlace_id = origin.place_id;
+    }
+    if (lat == null) {
+      newLat = origin.lat;
+    }
+    if (lng == null) {
+      newLng = origin.lng;
     }
 
     const postInput = {
@@ -310,6 +328,10 @@ export const updatePost = data => {
         newType == 'task' ? new Date(parseInt(newTaskExpiration)) : null,
       start: type == 'event' ? new Date(parseInt(newStart)) : null,
       end: type == 'event' ? new Date(parseInt(newEnd)) : null,
+      locationDescription: type == 'event' ? newLocationDescription : null,
+      place_id: type == 'event' ? newPlace_id : null,
+      lat: type == 'event' ? newLat : null,
+      lng: type == 'event' ? newLng : null,
     };
 
     const graphql = {

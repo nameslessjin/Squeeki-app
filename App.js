@@ -77,6 +77,7 @@ import RewardDetail from './src/screens/rewardDetail';
 import GiftedRewardList from './src/screens/reward';
 import GroupRankNameSetting from './src/screens/groupRankNameSetting';
 import AdminDrawerNavigator from './src/navigators/adminDrawerNavigator';
+import SearchLocation from './src/screens/searchLocation';
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -252,6 +253,7 @@ export default (App = () => {
               name="AdminDrawerNavigator"
               component={AdminDrawerNavigator}
             />
+            <Stack.Screen name="SearchLocation" component={SearchLocation} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

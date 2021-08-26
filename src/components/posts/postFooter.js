@@ -43,6 +43,8 @@ export default class PostFooter extends React.Component {
       theme,
       priority,
       prevRoute,
+      locationDescription,
+      backgroundColor,
     } = this.props;
 
     const likeCount_text = countFormat(likeCount);
@@ -230,11 +232,8 @@ export default class PostFooter extends React.Component {
                 styles.rowContainer,
                 {
                   justifyContent: 'space-evenly',
-                  height: 40,
-                  borderTopWidth: StyleSheet.hairlineWidth,
-                  borderTopColor: theme.underLineColor.borderColor,
+                  backgroundColor,
                 },
-                theme.greyArea,
               ]}>
               <View
                 style={[
@@ -247,8 +246,10 @@ export default class PostFooter extends React.Component {
                 <Text
                   style={[
                     styles.textStyle,
-                    {fontWeight: '500'},
-                    theme.textColor,
+                    {
+                      fontWeight: '500',
+                      color: priority > 0 ? 'black' : theme.textColor.color,
+                    },
                   ]}>
                   {dateConversion(start, 'event')}
                 </Text>
@@ -258,13 +259,28 @@ export default class PostFooter extends React.Component {
                 <Text
                   style={[
                     styles.textStyle,
-                    {fontWeight: '500'},
-                    theme.textColor,
+                    {
+                      fontWeight: '500',
+                      color: priority > 0 ? 'black' : theme.textColor.color,
+                    },
                   ]}>
                   {dateConversion(end, 'event')}
                 </Text>
               </View>
             </View>
+            {locationDescription ? (
+              <View style={styles.locationDescriptionContainer}>
+                <Text
+                  style={[
+                    {
+                      textAlign: 'center',
+                      color: priority > 0 ? 'black' : theme.textColor.color,
+                    },
+                  ]}>
+                  {locationDescription}
+                </Text>
+              </View>
+            ) : null}
           </View>
         ) : null}
       </View>
@@ -317,5 +333,9 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  locationDescriptionContainer: {
+    paddingHorizontal: 5,
+    paddingBottom: 7,
   },
 });
