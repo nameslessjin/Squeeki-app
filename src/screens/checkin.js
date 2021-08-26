@@ -29,6 +29,7 @@ class CheckIn extends React.Component {
     forceLoad: false,
     checkin_id: null,
     refresh: false,
+
     theme: getTheme(this.props.auth.user.theme),
     position: null,
   };
@@ -145,7 +146,10 @@ class CheckIn extends React.Component {
 
   onRefresh = () => {
     this.setState({refresh: true});
-    this.loadCheckIn(true);
+    this.getUserLocation();
+    setTimeout(() => {
+      this.loadCheckIn(true);
+    }, 100);
     this.setState({refresh: false});
   };
 
