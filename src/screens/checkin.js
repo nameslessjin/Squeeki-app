@@ -18,6 +18,8 @@ import {userLogout} from '../actions/auth';
 import CheckinList from '../components/checkin/checkinList';
 import CheckinModal from '../components/checkin/checkinModal';
 import {getTheme} from '../utils/theme';
+import {hasLocationPermission} from '../functions/permission';
+import Geolocation from 'react-native-geolocation-service';
 
 class CheckIn extends React.Component {
   state = {
@@ -28,6 +30,7 @@ class CheckIn extends React.Component {
     checkin_id: null,
     refresh: false,
     theme: getTheme(this.props.auth.user.theme),
+    position: null,
   };
 
   componentDidMount() {
@@ -50,7 +53,10 @@ class CheckIn extends React.Component {
       headerTintColor: theme.textColor.color,
     });
 
-    this.loadCheckIn(true);
+    this.getUserLocation();
+    setTimeout(() => {
+      this.loadCheckIn(true);
+    }, 100);
   }
 
   componentWillUnmount() {
@@ -63,6 +69,34 @@ class CheckIn extends React.Component {
       });
     }
   }
+
+  componentDidUpdate(prevProps, prevState) {}
+
+  getUserLocation = async () => {
+    const hasPermission = await hasLocationPermission();
+    if (!hasPermission) {
+      return;
+    }
+
+    Geolocation.getCurrentPosition(
+      position => {
+        this.setState({position});
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        accuracy: {
+          android: 'high',
+          ios: 'best',
+        },
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
+        distanceFilter: 0,
+      },
+    );
+  };
 
   onHeaderRightButtonPress = () => {
     const {navigation} = this.props;
@@ -82,10 +116,11 @@ class CheckIn extends React.Component {
 
   loadCheckIn = async init => {
     const {group, auth, getGroupCheckIn, navigation, userLogout} = this.props;
+    const {count} = this.state;
     const request = {
       groupId: group.group.id,
       token: auth.token,
-      count: init ? 0 : this.state.count,
+      count: init ? 0 : count,
     };
     this.setState({loading: true});
     const req = await getGroupCheckIn(request);
@@ -147,8 +182,8 @@ class CheckIn extends React.Component {
           index: 0,
           routes: [{name: 'SignIn'}],
         });
-      } else if (req.errors[0].message == 'Wrong password'){
-        alert('Wrong password')
+      } else if (req.errors[0].message == 'Wrong password') {
+        alert('Wrong password');
       } else {
         alert('Cannot check in at this time, please try again later');
       }
@@ -196,11 +231,18 @@ class CheckIn extends React.Component {
   };
 
   render() {
-    const {checkin, modalVisible, refresh, checkin_id, theme} = this.state;
+    const {
+      checkin,
+      modalVisible,
+      refresh,
+      checkin_id,
+      theme,
+      position,
+    } = this.state;
     const {auth, group} = this.props;
+
     return (
       <View style={theme.greyArea}>
-
         <CheckinList
           checkin={checkin}
           onCheckInPress={this.onCheckInPress}
@@ -213,6 +255,7 @@ class CheckIn extends React.Component {
           onDeleteCheckIn={this.onDeleteCheckIn}
           onResultPress={this.onResultPress}
           theme={theme}
+          position={position}
         />
         <CheckinModal
           modalVisible={modalVisible}

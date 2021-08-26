@@ -9,31 +9,31 @@ import {
 } from 'react-native';
 import {timeDifferentInMandS, countDownFormat} from '../../utils/time';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ngeohash from 'ngeohash';
 
 export default class CheckinCard extends React.Component {
-
   state = {
-    time: false
-  }
+    time: false,
+  };
 
   componentDidMount() {
-    const {endAt} = this.props.item
-    const self = this
+    const {endAt} = this.props.item;
+    const self = this;
     this.interval = setInterval(() => {
       const time = timeDifferentInMandS(endAt);
-      self.setState({time})
-    }, 1000)
+      self.setState({time});
+    }, 1000);
   }
 
-  componentDidUpdate(){
-    const {endAt} = this.props.item
-    if (endAt < Date.now()){
-      clearInterval(this.interval)
+  componentDidUpdate() {
+    const {endAt} = this.props.item;
+    if (endAt < Date.now()) {
+      clearInterval(this.interval);
     }
   }
 
-  componentWillUnmount(){
-    clearInterval(this.interval)
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   onDelete = () => {
@@ -61,24 +61,37 @@ export default class CheckinCard extends React.Component {
       item,
       rank_required,
       onResultPress,
-      theme
+      theme,
+      position,
     } = this.props;
     const {
       name,
       content,
       point,
-      location,
       hasPassword,
-      endAt,
+      priority,
+      locationDescription,
       id,
       count,
       checked,
       userId,
+      isLocal,
+      geohash,
     } = item;
-    const {time} = this.state
+    const {time} = this.state;
     const timeDisplay = countDownFormat(time);
 
-    const allowToCheckResult = checked || auth.rank <= rank_required
+    const myGeoHash = position
+      ? ngeohash.encode(position.coords.latitude, position.coords.longitude, 7)
+      : null;
+
+    let userIsLocal = false;
+
+    if (myGeoHash && geohash) {
+      userIsLocal = geohash.includes(myGeoHash);
+    }
+
+    const allowToCheckResult = checked || auth.rank <= rank_required;
     return (
       <TouchableWithoutFeedback>
         <View style={[styles.card, theme.backgroundColor]}>
@@ -88,7 +101,9 @@ export default class CheckinCard extends React.Component {
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <Text style={[styles.name, styles.text, theme.textColor]}>{name}</Text>
+            <Text style={[styles.name, styles.text, theme.textColor]}>
+              {name}
+            </Text>
             {currentUserId == userId || auth.rank <= rank_required ? (
               <TouchableOpacity onPress={this.onDelete}>
                 <MaterialIcons name={'close'} size={20} color={'red'} />
@@ -101,18 +116,32 @@ export default class CheckinCard extends React.Component {
             style={[styles.text, {color: 'grey'}]}>
             {content.slice(0, 100)} {content.length > 100 ? '...' : null}
           </Text>
-          <Text style={[styles.text, theme.textColor]}>Local: {location ? 'ON' : 'OFF'}</Text>
+          {priority == 3 ? (
+            <Text style={[styles.text, theme.textColor]}>Point: {point}</Text>
+          ) : null}
+          {locationDescription && isLocal ? (
+            <Text style={[styles.text, theme.textColor]}>
+              Location: {'\n' + locationDescription}
+            </Text>
+          ) : null}
           <Text style={[styles.text, theme.textColor]}>Attended: {count}</Text>
           {/* <Text style={styles.text}>Points: {point}</Text> */}
-          <Text style={[styles.text, theme.textColor]}>End At: {timeDisplay}</Text>
+          <Text style={[styles.text, theme.textColor]}>
+            End At: {timeDisplay}
+          </Text>
 
           <View style={[styles.checkin, theme.underLineColor]}>
             {(checked && time) || (!time && allowToCheckResult) ? (
-              <TouchableOpacity onPress={() => onResultPress({checkin_id: id, userId: userId})}>
+              <TouchableOpacity
+                onPress={() => onResultPress({checkin_id: id, userId: userId})}>
                 <View>
                   <Text style={[styles.checkinText]}>Result</Text>
                 </View>
               </TouchableOpacity>
+            ) : isLocal && !userIsLocal ? (
+              <View>
+                <Text style={theme.secondaryTextColor}>User is not nearby</Text>
+              </View>
             ) : (
               <TouchableOpacity
                 disabled={!time}
@@ -122,7 +151,11 @@ export default class CheckinCard extends React.Component {
                 <View style={{flexDirection: 'row'}}>
                   {hasPassword ? (
                     time ? (
-                      <MaterialIcons name={'lock'} size={15} style={theme.iconColor}/>
+                      <MaterialIcons
+                        name={'lock'}
+                        size={15}
+                        style={theme.iconColor}
+                      />
                     ) : null
                   ) : null}
                   <Text

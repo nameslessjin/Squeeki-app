@@ -13,7 +13,8 @@ export default class CheckinList extends React.Component {
       onDeleteCheckIn,
       onResultPress,
       rank_required,
-      theme
+      theme,
+      position
     } = this.props;
     return (
       <CheckinCard
@@ -25,6 +26,7 @@ export default class CheckinList extends React.Component {
         onDeleteCheckIn={onDeleteCheckIn}
         onResultPress={onResultPress}
         theme={theme}
+        position={position}
       />
     );
   };

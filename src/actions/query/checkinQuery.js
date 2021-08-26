@@ -13,13 +13,17 @@ query getGroupCheckIn($groupCheckInInput: GroupCheckInInput!){
             postId
             point
             name
-            location
             hasPassword
             userId
             content
             endAt
             count
             checked
+            isLocal
+            locationDescription
+            priority
+            place_id
+            geohash
         }
         count
     }

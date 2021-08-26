@@ -16,8 +16,6 @@ export const createCheckIn = request => {
     name,
     password,
     isLocal,
-    lat,
-    long,
     endAt,
     token,
   } = request;
@@ -30,8 +28,6 @@ export const createCheckIn = request => {
       name: name,
       isLocal: isLocal,
       password: password,
-      lat: lat,
-      long: long,
       endAt: endAt,
     };
 
@@ -60,7 +56,6 @@ export const getGroupCheckIn = request => {
       groupId: groupId,
       count: count,
     };
-
     const graphql = {
       query: getGroupCheckInQuery,
       variables: {

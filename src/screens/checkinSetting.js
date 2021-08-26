@@ -25,8 +25,6 @@ class CheckInSetting extends React.Component {
     password: '',
     duration: '5',
     point: 100,
-    lat: null,
-    long: null,
     loading: false,
     theme: getTheme(this.props.auth.user.theme),
   };
@@ -51,7 +49,7 @@ class CheckInSetting extends React.Component {
   }
 
   validation = () => {
-    let {name, post, isLocal, password, duration, lat, long} = this.state;
+    let {name, post, isLocal, password, duration} = this.state;
     name = name.trim();
     // duration = parseInt(duration);
 
@@ -78,7 +76,7 @@ class CheckInSetting extends React.Component {
     }
 
     if (isLocal) {
-      if (lat == null || long == null) {
+      if (post.lat == null || post.lng == null) {
         return false;
       }
     }
@@ -120,7 +118,7 @@ class CheckInSetting extends React.Component {
     const {isLocal, theme} = this.state;
     const previsLocal = prevState.isLocal;
     if (route.params != prevParams) {
-      this.setState({post: route.params.post});
+      this.setState({post: route.params.post, isLocal: false});
     }
 
     if (prevState != this.state) {
@@ -139,7 +137,7 @@ class CheckInSetting extends React.Component {
   }
 
   onCreateCheckIn = async () => {
-    const {name, post, isLocal, password, duration, lat, long} = this.state;
+    const {name, post, isLocal, password, duration} = this.state;
     const {group, navigation, auth, createCheckIn, userLogout} = this.props;
 
     const request = {
@@ -149,8 +147,6 @@ class CheckInSetting extends React.Component {
       name: name.trim(),
       isLocal: isLocal,
       password: password.trim(),
-      lat: lat,
-      long: long,
       endAt: calculateTimeAddition(parseInt(duration)),
       token: auth.token,
     };
@@ -208,7 +204,6 @@ class CheckInSetting extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
-
           <Input
             type={'name'}
             value={name}
@@ -221,11 +216,15 @@ class CheckInSetting extends React.Component {
             onInputChange={this.onInputChange}
             theme={theme}
           />
-          {/* <Input
-            type={'local'}
-            value={isLocal}
-            onInputChange={this.onInputChange}
-          /> */}
+
+          {post.place_id ? (
+            <Input
+              type={'local'}
+              value={isLocal}
+              onInputChange={this.onInputChange}
+              theme={theme}
+            />
+          ) : null}
           <Input
             type={'password'}
             value={password}
