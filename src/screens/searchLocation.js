@@ -5,6 +5,8 @@ import {
   TouchableWithoutFeedback,
   View,
   Keyboard,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {getTheme} from '../utils/theme';
@@ -13,6 +15,7 @@ import LocationSearchBar from '../components/location/locationSearchBar';
 import LocationList from '../components/location/locationList';
 import {hasLocationPermission} from '../functions/permission';
 import Geolocation from 'react-native-geolocation-service';
+import LocationHeaderRight from '../components/location/headerRight';
 
 class SearchLocation extends React.Component {
   state = {
@@ -27,14 +30,27 @@ class SearchLocation extends React.Component {
   componentDidMount() {
     this.getUserLocation();
     const {theme} = this.state;
-    const {navigation} = this.props;
+    const {navigation, prevRoute} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerStyle: theme.backgroundColor,
       headerTintColor: theme.textColor.color,
       title: 'Search Location',
+      headerRight: () => (
+        <LocationHeaderRight theme={theme} onPress={this.onSetNull} />
+      ),
     });
   }
+
+  onSetNull = () => {
+    const {prevRoute} = this.state;
+    const {navigation} = this.props;
+    navigation.navigate(prevRoute, {
+      location: null,
+      setLocationNull: true,
+      prevRoute: 'SearchLocation',
+    });
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.searchTerm != prevState.searchTerm) {
@@ -62,7 +78,7 @@ class SearchLocation extends React.Component {
         },
         enableHighAccuracy: true,
         timeout: 15000,
-        maximumAge: 10000,
+        maximumAge: 0,
         distanceFilter: 0,
       },
     );
@@ -105,9 +121,9 @@ class SearchLocation extends React.Component {
 
     navigation.navigate(prevRoute, {
       location: {
-        ...location,
         ...req,
         locationDescription: location.description,
+        place_id: location.place_id
       },
       prevRoute: 'SearchLocation',
     });

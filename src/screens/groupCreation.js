@@ -29,9 +29,10 @@ class GroupCreation extends React.Component {
     shortDescription: '',
     initialize: true,
     loading: false,
-    visibility: 1,
+    visibility: true,
     request_to_join: false,
     tags: [],
+    location: null,
     theme: getTheme(this.props.auth.user.theme),
   };
 
@@ -56,13 +57,7 @@ class GroupCreation extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const{theme} = this.state
-    if (prevProps !== this.props) {
-      const {params} = this.props.route;
-      if (params) {
-        this.setState({tags: params.tags});
-      }
-    }
+    const {theme} = this.state;
 
     if (prevState != this.state) {
       const update = this.validate();
@@ -77,6 +72,25 @@ class GroupCreation extends React.Component {
           />
         ),
       });
+    }
+
+    if (this.props.route != prevProps.route) {
+      const {
+        prevRoute,
+        location,
+        setLocationNull,
+        tags,
+      } = this.props.route.params;
+      if (tags) {
+        this.setState({tags: tags});
+      }
+      if (prevRoute == 'SearchLocation') {
+        if (location) {
+          this.setState({location});
+        } else if (!location && setLocationNull) {
+          this.setState({location: null});
+        }
+      }
     }
   }
 
@@ -109,19 +123,23 @@ class GroupCreation extends React.Component {
       visibility,
       tags,
       request_to_join,
+      location,
     } = this.state;
     const {token} = this.props.auth;
+
     const data = {
       display_name: display_name.trim(),
       groupname: groupname.trim(),
       shortDescription: shortDescription.trim(),
-      backgroundImg: backgroundImg,
-      icon: icon,
-      token: token,
-      visibility: visibility,
+      backgroundImg,
+      icon,
+      token,
+      visibility,
       request_to_join,
       tagIds: tags.map(t => t.id),
+      location,
     };
+
 
     const {createGroup, navigation} = this.props;
     const createGroupResult = await createGroup(data);
@@ -148,9 +166,7 @@ class GroupCreation extends React.Component {
         ...prevState,
         loading: false,
         visibility:
-          type == 'visibility'
-            ? !prevState.visibility
-            : prevState.visibility,
+          type == 'visibility' ? !prevState.visibility : prevState.visibility,
         request_to_join:
           type == 'request_to_join'
             ? prevState.request_to_join
@@ -207,7 +223,7 @@ class GroupCreation extends React.Component {
 
   render() {
     const {visibility, loading, request_to_join, theme} = this.state;
-
+    const {navigation} = this.props;
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
@@ -224,6 +240,8 @@ class GroupCreation extends React.Component {
               data={this.state}
               auth_rank={1}
               required_rank={1}
+              navigation={navigation}
+              prevRoute={'GroupCreation'}
             />
             <ToggleSetting
               on={visibility}

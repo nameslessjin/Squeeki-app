@@ -29,9 +29,9 @@ class CheckIn extends React.Component {
     forceLoad: false,
     checkin_id: null,
     refresh: false,
-
     theme: getTheme(this.props.auth.user.theme),
     position: null,
+    hasLocationPermission: false
   };
 
   componentDidMount() {
@@ -75,6 +75,7 @@ class CheckIn extends React.Component {
 
   getUserLocation = async () => {
     const hasPermission = await hasLocationPermission();
+    this.setState({hasPermission})
     if (!hasPermission) {
       return;
     }
@@ -93,7 +94,7 @@ class CheckIn extends React.Component {
         },
         enableHighAccuracy: true,
         timeout: 15000,
-        maximumAge: 10000,
+        maximumAge: 0,
         distanceFilter: 0,
       },
     );
@@ -242,6 +243,7 @@ class CheckIn extends React.Component {
       checkin_id,
       theme,
       position,
+      hasLocationPermission
     } = this.state;
     const {auth, group} = this.props;
 
@@ -260,6 +262,7 @@ class CheckIn extends React.Component {
           onResultPress={this.onResultPress}
           theme={theme}
           position={position}
+          hasLocationPermission={hasLocationPermission}
         />
         <CheckinModal
           modalVisible={modalVisible}

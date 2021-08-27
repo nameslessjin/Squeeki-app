@@ -6,6 +6,7 @@ import {
   TextInput,
   Platform,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import {dateConversion} from '../../utils/time';
 import HeaderImageBackground from './ImageBackground';
@@ -29,33 +30,10 @@ class GroupSettingsHeader extends React.Component {
     isBackground: true,
     groupId: null,
     theme: getTheme(this.props.auth.user.theme),
+    location: null,
+    ...this.props.data,
+    groupId: this.props.data.id,
   };
-
-  componentDidMount() {
-    let {
-      icon,
-      backgroundImg,
-      shortDescription,
-      groupname,
-      display_name,
-      initialize,
-      createdAt,
-      memberCount,
-      id,
-    } = this.props.data;
-
-    this.setState({
-      icon: icon,
-      backgroundImg: backgroundImg,
-      shortDescription: shortDescription,
-      groupname: groupname,
-      initialize: initialize,
-      createdAt: createdAt,
-      memberCount: memberCount,
-      display_name,
-      groupId: id,
-    });
-  }
 
   setImage = (source, type) => {
     if (type == 'background') {
@@ -66,8 +44,13 @@ class GroupSettingsHeader extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState != this.state) {
+    const {loading} = this.props
+    if (prevState != this.state && !loading) {
       this.props.setGroupHeader(this.state);
+    }
+
+    if (this.props.data.location != prevProps.data.location) {
+      this.setState({location: this.props.data.location});
     }
   }
 
@@ -116,9 +99,10 @@ class GroupSettingsHeader extends React.Component {
       isBackground,
       groupId,
       theme,
+      location,
     } = this.state;
 
-    const {auth_rank, required_rank} = this.props;
+    const {auth_rank, required_rank, navigation, prevRoute} = this.props;
 
     let date = new Date();
 
@@ -179,6 +163,18 @@ class GroupSettingsHeader extends React.Component {
           </View>
           <View style={[component, {marginTop: 1}]}>
             <Text style={{color: '#95a5a6'}}>Member: {memberCount}</Text>
+          </View>
+          <View style={[component, {marginTop: 5}]}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('SearchLocation', {
+                  prevRoute,
+                })
+              }>
+              <Text style={{color: '#95a5a6'}}>
+                {location ? location.locationDescription : 'Set Location'}
+              </Text>
+            </TouchableOpacity>
           </View>
           <View
             style={[component, {paddingTop: 1, marginTop: 5, marginBottom: 5}]}>

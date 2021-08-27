@@ -32,7 +32,6 @@ class GroupSetting extends React.Component {
   state = {
     initialize: false,
     ...this.props.group.group,
-    updateData: {},
     loading: false,
     type: 'visibility',
     theme: getTheme(this.props.auth.user.theme),
@@ -76,7 +75,14 @@ class GroupSetting extends React.Component {
   };
 
   validation = () => {
-    const {display_name, shortDescription} = this.state;
+    const {
+      display_name,
+      shortDescription,
+      location,
+      icon,
+      backgroundImg,
+    } = this.state;
+    const origin = {...this.props.group.group};
 
     // group display name must not contain admin and squeeki
     // group display name must have length greater than 1 and no greather than 50
@@ -94,11 +100,28 @@ class GroupSetting extends React.Component {
       return false;
     }
 
+    if (
+      display_name == origin.display_name &&
+      shortDescription == origin.shortDescription &&
+      location == origin.location &&
+      icon.type == null &&
+      backgroundImg.type == null
+    ) {
+      return false;
+    }
+
     return true;
   };
 
   extractData = () => {
-    let {id, display_name, shortDescription, icon, backgroundImg} = this.state;
+    let {
+      id,
+      display_name,
+      shortDescription,
+      icon,
+      backgroundImg,
+      location,
+    } = this.state;
     const {group} = this.props.group;
     display_name = display_name.trim();
     shortDescription = shortDescription.trim();
@@ -108,30 +131,27 @@ class GroupSetting extends React.Component {
       shortDescription: group.shortDescription,
       icon: group.icon,
       backgroundImg: group.backgroundImg,
+      location: group.location,
     };
 
+    console.log('state')
+    console.log(this.state)
+
     // if icon picked and origin icon exist
-    if (icon == origin.icon) {
+    if (icon.type == null) {
       icon = null;
     }
 
-    if (backgroundImg == origin.backgroundImg) {
+    if (backgroundImg.type == null) {
       backgroundImg = null;
-    }
-
-    if (display_name == origin.display_name) {
-      display_name = null;
-    }
-
-    if (shortDescription == origin.shortDescription) {
-      shortDescription = null;
     }
 
     if (
       icon != null ||
       backgroundImg != null ||
-      display_name != null ||
-      shortDescription != null
+      display_name != origin.display_name ||
+      shortDescription != origin.shortDescription ||
+      location != origin.location
     ) {
       const updateData = {
         token: this.props.auth.token,
@@ -140,10 +160,12 @@ class GroupSetting extends React.Component {
         shortDescription: shortDescription,
         icon: icon,
         backgroundImg: backgroundImg,
+        location,
       };
+
       return {
         updateData: updateData,
-        update: true && this.validation(),
+        update: this.validation(),
         origin: origin,
       };
     } else {
@@ -171,13 +193,24 @@ class GroupSetting extends React.Component {
       });
     }
 
-    if (this.props.group.group.id) {
-      if (prevProps.group.group != this.props.group.group) {
-        this.setState({
-          ...this.props.group.group,
-          visibility: prevState.visibility,
-          request_to_join: prevState.request_to_join,
-        });
+    // if (this.props.group.group.id) {
+    //   if (prevProps.group.group != this.props.group.group) {
+    //     this.setState({
+    //       ...this.props.group.group,
+    //       visibility: prevState.visibility,
+    //       request_to_join: prevState.request_to_join,
+    //     });
+    //   }
+    // }
+
+    if (this.props.route != prevProps.route) {
+      const {prevRoute, location, setLocationNull} = this.props.route.params;
+      if (prevRoute == 'SearchLocation') {
+        if (location) {
+          this.setState({location});
+        } else if (!location && setLocationNull) {
+          this.setState({location: null});
+        }
       }
     }
   }
@@ -204,7 +237,7 @@ class GroupSetting extends React.Component {
     const updateGroup = await this.props.updateGroup(data);
 
     if (updateGroup.errors) {
-      // alert(updateGroup.errors[0].message);
+      console.log(updateGroup.errors[0].message);
       alert(
         'Cannot update group settings at this time, please try again later',
       );
@@ -217,7 +250,13 @@ class GroupSetting extends React.Component {
       }
       return;
     }
-    this.setState({loading: false});
+
+    console.log('update')
+    console.log(updateGroup)
+    this.setState({...updateGroup});
+    setTimeout(() => {
+      this.setState({loading: false})
+    }, 100)
     // this.props.navigation.goBack();
   };
 
@@ -269,7 +308,6 @@ class GroupSetting extends React.Component {
 
     this.setState(prevState => {
       return {
-        ...prevState,
         loading: false,
         visibility:
           type == 'visibility' ? !prevState.visibility : prevState.visibility,
@@ -355,6 +393,7 @@ class GroupSetting extends React.Component {
 
   render() {
     const {visibility, loading, request_to_join, type, theme} = this.state;
+    const {navigation} = this.props;
     const {auth, rank_setting} = this.props.group.group;
     const rank = auth ? auth.rank : 7;
     const required_rank = rank_setting
@@ -377,6 +416,9 @@ class GroupSetting extends React.Component {
               navigation={this.props.navigation}
               auth_rank={rank}
               required_rank={required_rank}
+              navigation={navigation}
+              prevRoute={'GroupSetting'}
+              loading={loading}
             />
 
             <ToggleSetting

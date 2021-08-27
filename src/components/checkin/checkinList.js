@@ -14,7 +14,8 @@ export default class CheckinList extends React.Component {
       onResultPress,
       rank_required,
       theme,
-      position
+      position,
+      hasLocationPermission,
     } = this.props;
     return (
       <CheckinCard
@@ -27,6 +28,7 @@ export default class CheckinList extends React.Component {
         onResultPress={onResultPress}
         theme={theme}
         position={position}
+        hasLocationPermission={hasLocationPermission}
       />
     );
   };

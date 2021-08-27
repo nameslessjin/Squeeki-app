@@ -42,6 +42,12 @@ query getGroup($groupId: ID!){
             tag_name
             use_count
         }
+        location {
+            locationDescription
+            place_id
+            lat
+            lng
+        }
         memberCount
         request_to_join
         visibility
@@ -93,6 +99,7 @@ mutation createGroup($GroupInput: GroupInput!){
         groupname
         display_name
         shortDescription
+        status
         icon {
             uri
         }
@@ -109,6 +116,12 @@ mutation createGroup($GroupInput: GroupInput!){
             id
             tag_name
             use_count
+        }
+        location {
+            locationDescription
+            place_id
+            lat
+            lng
         }
         visibility
         request_to_join
@@ -158,6 +171,12 @@ mutation updateGroup($GroupInput: GroupInput!){
             tag_name
             use_count
         }
+        location {
+            locationDescription
+            place_id
+            lat
+            lng
+        }
         visibility
         request_to_join
         rank_setting {
@@ -205,6 +224,12 @@ mutation joinGroup($groupId: ID!){
             id
             tag_name
             use_count
+        }
+        location {
+            locationDescription
+            place_id
+            lat
+            lng
         }
         memberCount
         request_to_join

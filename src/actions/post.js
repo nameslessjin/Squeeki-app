@@ -266,73 +266,28 @@ export const updatePost = data => {
       };
     }
 
-    if (content == null) {
-      newContent = originContent;
-    }
-    if (priority == null) {
-      newPriority = origin.priority;
-    }
-    if (priorityExpiration == null) {
-      newPriorityExpiration = origin.priorityExpiration;
-    }
-    if (allowComment == null) {
-      newAllowComment = origin.allowComment;
-    }
-    if (type == null) {
-      newType = origin.type;
-    }
-    if (visibility == null) {
-      newVisibility = origin.visibility;
-    }
-    if (confirmButton == null) {
-      newConfirmButton = origin.confirmButton;
-    }
-    if (denyButton == null) {
-      newDenyButton = origin.denyButton;
-    }
-    if (taskExpiration == null) {
-      newTaskExpiration = origin.taskExpiration;
-    }
-    if (start == null) {
-      newStart = origin.start;
-    }
-    if (end == null) {
-      newEnd = origin.end;
-    }
-    if (locationDescription == null) {
-      newLocationDescription = origin.locationDescription;
-    }
-    if (place_id == null) {
-      newPlace_id = origin.place_id;
-    }
-    if (lat == null) {
-      newLat = origin.lat;
-    }
-    if (lng == null) {
-      newLng = origin.lng;
-    }
-
     const postInput = {
       groupId: groupId,
       postId: id,
       image: newImage,
-      content: newContent,
-      priority: newPriority,
-      allowComment: newAllowComment,
-      type: newType,
-      visibility: newVisibility,
-      denyButton: newDenyButton,
-      confirmButton: newConfirmButton,
-      priorityExpiration: new Date(parseInt(newPriorityExpiration)),
+      content,
+      priority,
+      allowComment,
+      visibility,
+      denyButton,
+      confirmButton,
+      priorityExpiration: new Date(parseInt(priorityExpiration)),
       taskExpiration:
-        newType == 'task' ? new Date(parseInt(newTaskExpiration)) : null,
-      start: type == 'event' ? new Date(parseInt(newStart)) : null,
-      end: type == 'event' ? new Date(parseInt(newEnd)) : null,
-      locationDescription: type == 'event' ? newLocationDescription : null,
-      place_id: type == 'event' ? newPlace_id : null,
-      lat: type == 'event' ? newLat : null,
-      lng: type == 'event' ? newLng : null,
+        type == 'task' ? new Date(parseInt(taskExpiration)) : null,
+      start: type == 'event' ? new Date(parseInt(start)) : null,
+      end: type == 'event' ? new Date(parseInt(end)) : null,
+      locationDescription: type == 'event' ? locationDescription : null,
+      place_id: type == 'event' ? place_id : null,
+      lat: type == 'event' ? lat : null,
+      lng: type == 'event' ? lng : null,
     };
+
+    console.log(postInput)
 
     const graphql = {
       query: updatePostMutation,

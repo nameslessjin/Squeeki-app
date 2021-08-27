@@ -180,6 +180,7 @@ class PostSetting extends React.Component {
         nomination,
         prevRoute,
         location,
+        setLocationNull,
       } = this.props.route.params;
       if (chosenUser && nomination) {
         this.setState({chosenUser, nomination});
@@ -190,6 +191,16 @@ class PostSetting extends React.Component {
         if (location) {
           this.setState(prevProps => ({
             postData: {...prevProps.postData, ...location},
+          }));
+        } else if (!location && setLocationNull) {
+          this.setState(prevProps => ({
+            postData: {
+              ...prevProps.postData,
+              locationDescription: null,
+              place_id: null,
+              lat: null,
+              lng: null,
+            },
           }));
         }
       }
@@ -277,7 +288,7 @@ class PostSetting extends React.Component {
     let {nomination} = this.state;
     const {token} = this.props.auth;
     const {last_sunday, next_sunday} = getSundays();
-    let origin = null;
+    let origin = {};
     let {
       postId,
       image,
@@ -309,70 +320,23 @@ class PostSetting extends React.Component {
       origin = {
         ...this.props.route.params.postData,
       };
-      if (image == origin.image) {
-        image = null;
-      }
-      if (content == originContent) {
-        content = null;
-      }
-      if (priority == origin.priority) {
-        priority = null;
-      }
-      if (priorityExpiration == origin.priorityExpiration) {
-        priorityExpiration = null;
-      }
-      if (allowComment == origin.allowComment) {
-        allowComment = null;
-      }
-      if (visibility == origin.visibility) {
-        visibility = null;
-      }
-      if (confirmButton == origin.confirmButton) {
-        confirmButton = null;
-      }
-      if (denyButton == origin.denyButton) {
-        denyButton = null;
-      }
-      if (taskExpiration == origin.taskExpiration) {
-        taskExpiration = null;
-      }
-      if (start == origin.start) {
-        start = null;
-      }
-      if (end == origin.end) {
-        end = null;
-      }
-      if (locationDescription == origin.locationDescription) {
-        locationDescription = null;
-      }
-      if (place_id == origin.place_id) {
-        place_id = null;
-      }
-      if (lat == origin.lat) {
-        lat = null;
-      }
-      if (lng == origin.lng) {
-        lng = null;
-      }
     }
 
     if (
-      image != null ||
-      content != null ||
-      priority != null ||
-      priorityExpiration != null ||
-      allowComment != null ||
-      // type != null ||
-      visibility != null ||
-      confirmButton != null ||
-      denyButton != null ||
-      taskExpiration != null ||
-      start != null ||
-      end != null ||
-      locationDescription != null ||
-      place_id != null ||
-      lat != null ||
-      lng != null
+      content != origin.content ||
+      priority != origin.priority ||
+      priorityExpiration != origin.priorityExpiration ||
+      allowComment != origin.allowComment ||
+      visibility != origin.visibility ||
+      confirmButton != origin.confirmButton ||
+      denyButton != origin.denyButton ||
+      taskExpiration != origin.taskExpiration ||
+      start != origin.start ||
+      end != origin.end ||
+      locationDescription != origin.locationDescription ||
+      place_id != origin.place_id ||
+      lat != origin.lat ||
+      lng != origin.lng
     ) {
       const updateData = {
         id: create ? null : postId,
@@ -484,15 +448,10 @@ class PostSetting extends React.Component {
           return false;
         }
       }
-
-      if (!(lat && lng && locationDescription && place_id)) {
-        return false;
-      }
     }
 
     if (!create) {
       if (
-        image == origin.image &&
         content == origin.originContent &&
         priority == origin.priority &&
         priorityExpiration == origin.priorityExpiration &&
@@ -758,7 +717,7 @@ class PostSetting extends React.Component {
 
   onInputFocus = type => {
     Keyboard.dismiss();
-    this.setState({onToggle: true, toggleTyple: type, contentKeyboard: true});
+    this.setState({onToggle: true, toggleTyple: type, contentKeyboard: false});
   };
 
   onKeyboardInputFocus = () => {

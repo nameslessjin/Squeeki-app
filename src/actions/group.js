@@ -114,6 +114,7 @@ export const createGroup = data => {
     request_to_join,
     tagIds,
     display_name,
+    location
   } = data;
 
   return async function(dispatch) {
@@ -188,6 +189,7 @@ export const createGroup = data => {
       visibility: visibility,
       request_to_join,
       tagIds,
+      location
     };
 
     const graphql = {
@@ -196,7 +198,7 @@ export const createGroup = data => {
         GroupInput: groupInput,
       },
     };
-
+ 
     const result = await httpCall(token, graphql);
 
     if (result.errors) {
@@ -218,12 +220,14 @@ export const updateGroup = data => {
     icon,
     token,
     groupId,
+    location,
   } = updateData;
   return async function(dispatch) {
     let newgroupIcon = icon;
     let newgroupBackgroundImg = backgroundImg;
     let new_display_name = display_name;
     let newShortDescription = shortDescription;
+    let newLocation = location;
 
     if (icon != null) {
       const iconData = new FormData();
@@ -283,20 +287,13 @@ export const updateGroup = data => {
       };
     }
 
-    if (display_name == null) {
-      new_display_name = origin.display_name;
-    }
-
-    if (shortDescription == null) {
-      newShortDescription = origin.shortDescription;
-    }
-
     const groupInput = {
       groupId: groupId,
-      display_name: new_display_name,
-      shortDescription: newShortDescription,
+      display_name,
+      shortDescription,
       backgroundImg: newgroupBackgroundImg,
       icon: newgroupIcon,
+      location,
     };
 
     const graphql = {
@@ -314,7 +311,7 @@ export const updateGroup = data => {
 
     dispatch(getGroup(result.data.updateGroup));
 
-    return 0;
+    return result.data.updateGroup;
   };
 };
 
@@ -650,7 +647,6 @@ export const searchAtGroup = data => {
   return async function(dispatch) {
     const input = {searchTerm: searchTerm ? searchTerm : search_term};
 
-    console.log(input);
     const graphql = {
       query: searchAtGroupQuery,
       variables: {

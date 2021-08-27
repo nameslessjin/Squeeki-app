@@ -63,6 +63,7 @@ export default class CheckinCard extends React.Component {
       onResultPress,
       theme,
       position,
+      hasLocationPermission,
     } = this.props;
     const {
       name,
@@ -140,7 +141,11 @@ export default class CheckinCard extends React.Component {
               </TouchableOpacity>
             ) : isLocal && !userIsLocal ? (
               <View>
-                <Text style={theme.secondaryTextColor}>User is not nearby</Text>
+                <Text style={theme.secondaryTextColor}>
+                  {hasLocationPermission
+                    ? 'User is not nearby'
+                    : 'Unable to get user location'}
+                </Text>
               </View>
             ) : (
               <TouchableOpacity

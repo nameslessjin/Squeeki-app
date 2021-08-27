@@ -26,7 +26,10 @@ import {
 } from '../actions/security';
 import DeviceInfo from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
-import {requestNotificationPermission, hasLocationPermission} from '../functions/permission';
+import {
+  requestNotificationPermission,
+  hasLocationPermission,
+} from '../functions/permission';
 import {registerDeviceForNotification} from '../actions/user';
 import HomeModal from '../components/home/homeModal';
 import {getTheme} from '../utils/theme';
@@ -40,7 +43,7 @@ class Home extends React.Component {
     modalVisible: false,
     theme: getTheme(this.props.auth.user.theme),
     type: 'update',
-    position: null
+    position: null,
   };
 
   componentDidMount() {
@@ -63,8 +66,10 @@ class Home extends React.Component {
 
     Geolocation.getCurrentPosition(
       position => {
-        console.log(position);
-        this.setState({position})
+        if (position) {
+          console.log(position.coords);
+        }
+        this.setState({position});
       },
       error => {
         console.log(error);
@@ -76,7 +81,7 @@ class Home extends React.Component {
         },
         enableHighAccuracy: true,
         timeout: 15000,
-        maximumAge: 10000,
+        maximumAge: 0,
         distanceFilter: 0,
       },
     );
