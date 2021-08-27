@@ -16,18 +16,12 @@ import {
 } from 'react-native';
 import {DrawerActions} from '@react-navigation/native';
 import HeaderLeftButton from '../components/home/headerLeft';
-import Groups from '../screens/groups';
-import Chats from '../screens/chats';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {connect} from 'react-redux';
 import {changeScreen} from '../actions/screen';
-import GroupRightButton from '../components/groups/headerRight';
-import HeaderRightButton from '../components/chat/headerRightButton';
 import {userLogout} from '../actions/auth';
-import {socket} from '../../server_config';
 import {unsubSocket} from '../functions/chat';
 import {singleDefaultIcon} from '../utils/defaultIcon';
-import MyReward from '../screens/myReward';
 import {getTheme} from '../utils/theme';
 
 const {height} = Dimensions.get('screen');
@@ -42,18 +36,6 @@ class HomeDrawerNavigator extends React.Component {
     navigation.dispatch(DrawerActions.openDrawer());
   };
 
-  onToggleGroupsRightButton = async () => {
-    const {navigation} = this.props;
-    navigation.navigate('Search', {prevRoute: 'groups'});
-  };
-
-  onToggleHomeRightButton = () => {
-    const {navigation} = this.props;
-    navigation.navigate('PostSetting', {
-      create: true,
-      groupId: null,
-    });
-  };
 
   componentDidMount() {
     const {navigation} = this.props;
@@ -65,20 +47,12 @@ class HomeDrawerNavigator extends React.Component {
           theme={theme}
         />
       ),
-      // headerRight: () => <HomeHeaderRightButton onPress={this.onToggleHomeRightButton} />,
       headerBackTitleVisible: false,
       headerTitle: 'Squeeki',
 
       headerStyle: theme.backgroundColor,
       headerTintColor: theme.textColor.color,
     });
-
-    // delete this once the recommendation page is done
-    // setTimeout(() => {
-    //   this.props.navigation.dispatch(DrawerActions.openDrawer());
-    // }, 100);
-
-    socket.init();
   }
 
   getHeaderTitle = route => {
@@ -103,60 +77,7 @@ class HomeDrawerNavigator extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const name = this.getHeaderTitle(this.props.route);
-    const {navigation, currentScreen, auth} = this.props;
-    const {theme} = this.state;
-    if (name != currentScreen.currentScreen) {
-      this.props.changeScreen(name);
-    }
-    if (name == 'Home') {
-      navigation.setOptions({
-        headerRight: null,
-        headerTitle: 'Squeeki',
-      });
-      this.unsubSocket();
-    } else if (name == 'Profile') {
-      navigation.setOptions({
-        headerRight: null,
-        headerTitle: 'My Profile',
-      });
-      this.unsubSocket();
-    } else if (name == 'Groups') {
-      navigation.setOptions({
-        headerRight: () => (
-          <GroupRightButton
-            onPress={this.onToggleGroupsRightButton}
-            theme={theme}
-          />
-        ),
-        headerTitle: 'My Groups',
-      });
-
-      this.unsubSocket();
-    } else if (name == 'MyRewards') {
-      navigation.setOptions({
-        headerRight: null,
-        headerTitle: 'My Rewards',
-      });
-
-      this.unsubSocket();
-    } else if (name == 'Chats') {
-      navigation.setOptions({
-        headerRight: () => (
-          <HeaderRightButton
-            onPress={() =>
-              navigation.navigate('HomeDrawerNavigator', {
-                screen: 'Chats',
-                params: {modalVisible: true},
-              })
-            }
-            type={'create'}
-            theme={theme}
-          />
-        ),
-        headerTitle: 'My Chats',
-      });
-    }
+    const {navigation, auth} = this.props;
 
     // update theme
     if (prevProps.auth.user.theme != auth.user.theme) {
@@ -196,14 +117,12 @@ class HomeDrawerNavigator extends React.Component {
             metadata={metadata}
           />
         )}>
-        <Drawer.Screen name="Home" component={Home} />
-        <Drawer.Screen name="Groups" component={Groups} />
-        <Drawer.Screen name="Chats" component={Chats} />
         <Drawer.Screen
-          name="MyRewards"
-          component={MyReward}
+          name="Home"
+          component={Home}
           options={() => ({
-            drawerLabel: 'My Rewards',
+            drawerLabel: '',
+            drawerItemStyle: {width: 0, height: 0},
           })}
         />
       </Drawer.Navigator>
@@ -255,6 +174,14 @@ function CustomDrawerContent(props) {
         />
       </View>
       <DrawerItemList {...props} />
+
+      <DrawerItem
+        label="My Rewards"
+        labelStyle={theme.drawerTextColor}
+        onPress={() => {
+          navigation.navigate('MyRewards');
+        }}
+      />
 
       <DrawerItem
         label="Settings"

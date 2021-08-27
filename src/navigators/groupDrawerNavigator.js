@@ -155,7 +155,7 @@ class GroupDrawerNavigator extends React.Component {
       log,
     };
 
-    const req = await logUserEvent(request);
+    const req = logUserEvent(request);
   };
 
   reloadGroup = async ({groupId, isFullRefresh}) => {

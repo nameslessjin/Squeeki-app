@@ -34,6 +34,7 @@ import {registerDeviceForNotification} from '../actions/user';
 import HomeModal from '../components/home/homeModal';
 import {getTheme} from '../utils/theme';
 import Geolocation from 'react-native-geolocation-service';
+import {logUserEvent} from '../actions/userEvent';
 
 class Home extends React.Component {
   state = {
@@ -54,6 +55,7 @@ class Home extends React.Component {
     this.getSecurityClearance();
     this.watchId = null;
     this.getLocation();
+    this.logUserEvent({event: 'onScreen'});
 
     AppState.addEventListener('change', this._handleAppStateChange);
   }
@@ -94,7 +96,18 @@ class Home extends React.Component {
     }
   };
 
+  logUserEvent = log => {
+    const {auth, logUserEvent} = this.props;
+    const request = {
+      token: auth.token,
+      log,
+    };
+
+    const req = logUserEvent(request);
+  };
+
   componentWillUnmount() {
+    console.log('App is closed');
     AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
@@ -204,7 +217,17 @@ class Home extends React.Component {
       this.getSecurityClearance();
       this.loadFeed(true);
       this.getLocation();
+      this.logUserEvent({event: 'onScreen'});
     } else if (nextAppState !== 'active') {
+      if (Platform.OS == 'ios') {
+        if (nextAppState == 'inactive') {
+          this.logUserEvent({event: 'offScreen'});
+        }
+      } else {
+        if (nextAppState == 'background') {
+          this.logUserEvent({event: 'offScreen'});
+        }
+      }
       this.removeLocationUpdate();
     }
     this.setState({appState: nextAppState});
@@ -312,6 +335,7 @@ const mapDispatchToProps = dispatch => {
     getUserStatus: data => dispatch(getUserStatus(data)),
     getSecurityClearance: data => dispatch(getSecurityClearance(data)),
     updateLocationReducer: data => dispatch(updateLocationReducer(data)),
+    logUserEvent: data => dispatch(logUserEvent(data)),
   };
 };
 

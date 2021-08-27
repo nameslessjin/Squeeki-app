@@ -79,7 +79,7 @@ export default class RewardSettingInput extends React.Component {
     } else if (type == 'redeemable') {
       title = 'Redeem Reward With Points';
     } else if (type == 'expiration') {
-      title = 'Expiration';
+      title = 'Listing Expiration Date';
     } else if (type == 'hasExpiration') {
       title = 'Listing Expiration Date';
     } else if (type == 'pointCost') {

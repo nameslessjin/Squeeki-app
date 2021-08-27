@@ -9,6 +9,18 @@ class MyReward extends React.Component {
     theme: getTheme(this.props.auth.user.theme),
   };
 
+  componentDidMount() {
+    const {theme} = this.state;
+    const {navigation} = this.props;
+    navigation.setOptions({
+      headerStyle: theme.backgroundColor,
+      headerTintColor: theme.textColor.color,
+      headerTitle: 'My Rewards',
+      headerBackTitleVisible: false,
+    });
+    this.loadUserRewardHistory(true);
+  }
+
   componentDidUpdate(prevProps) {
     const {currentScreen, route, navigation, auth} = this.props;
     const prevScreen = prevProps.currentScreen;

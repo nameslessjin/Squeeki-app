@@ -78,6 +78,8 @@ import GiftedRewardList from './src/screens/reward';
 import GroupRankNameSetting from './src/screens/groupRankNameSetting';
 import AdminDrawerNavigator from './src/navigators/adminDrawerNavigator';
 import SearchLocation from './src/screens/searchLocation';
+import HomeTabNavigator from './src/navigators/homeTabNavigator'
+import MyRewards from './src/screens/myReward'
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -167,6 +169,10 @@ export default (App = () => {
               component={HomeDrawerNavigator}
               options={({route}) => ({headerTitle: getHeaderTitle(route)})}
             />
+            <Stack.Screen
+              name="HomeTabNavigator"
+              component={HomeTabNavigator}
+            />
             <Stack.Screen name="Search" component={GroupsSearch} />
             <Stack.Screen name="GroupCreation" component={GroupCreation} />
             <Stack.Screen
@@ -254,6 +260,7 @@ export default (App = () => {
               component={AdminDrawerNavigator}
             />
             <Stack.Screen name="SearchLocation" component={SearchLocation} />
+            <Stack.Screen name="MyRewards" component={MyRewards} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

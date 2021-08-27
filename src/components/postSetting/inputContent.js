@@ -1,5 +1,7 @@
 import React from 'react';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
+import ParsedText from 'react-native-parsed-text';
+import {onUrlPress, onLinkPhoneLongPress} from '../chat/render';
 
 export default class InputContent extends React.Component {
   render() {
@@ -9,7 +11,7 @@ export default class InputContent extends React.Component {
       onKeyboardInputFocus,
       type,
       disabled,
-      theme
+      theme,
     } = this.props;
     return (
       <View style={styles.container}>
@@ -19,31 +21,61 @@ export default class InputContent extends React.Component {
               ? "What's in your mind..."
               : type == 'verify'
               ? 'Show that you completed the task...'
-              : 'Description'}
+              : type == 'reward'
+              ? 'Description'
+              : ''}
           </Text>
         )}
-        <TextInput
-          style={[
-            styles.contentStyle,
-            content.length == 0 ? {marginTop: 15} : null,
-            theme.textColor,
-            theme.underLineColor
-          ]}
-          multiline={true}
-          maxLength={1000}
-          placeholder={
-            type == 'post'
-              ? "What's in your mind..."
-              : type == 'verify'
-              ? 'Show that you completed the task...'
-              : 'Description'
-          }
-          placeholderTextColor={'#7f8fa6'}
-          value={content}
-          onChangeText={v => (modifyInput ? modifyInput(v, 'content') : null)}
-          onFocus={() => (onKeyboardInputFocus ? onKeyboardInputFocus() : null)}
-          editable={!disabled}
-        />
+
+        {type == 'reward' ? (
+          <View
+            style={[
+              styles.contentStyle,
+              content.length == 0 ? {marginTop: 15} : null,
+              theme.textColor,
+              theme.underLineColor,
+            ]}>
+            <ParsedText
+              style={theme.textColor}
+              parse={[
+                {
+                  type: 'url',
+                  style: {color: '#1e90ff'},
+                  onPress: onUrlPress,
+                  onLongPress: url =>
+                    onLinkPhoneLongPress({type: 'url', content: url}),
+                },
+              ]}
+              childrenProps={{allowFontScaling: false}}>
+              {content}
+            </ParsedText>
+          </View>
+        ) : (
+          <TextInput
+            style={[
+              styles.contentStyle,
+              content.length == 0 ? {marginTop: 15} : null,
+              theme.textColor,
+              theme.underLineColor,
+            ]}
+            multiline={true}
+            maxLength={1000}
+            placeholder={
+              type == 'post'
+                ? "What's in your mind..."
+                : type == 'verify'
+                ? 'Show that you completed the task...'
+                : 'Description'
+            }
+            placeholderTextColor={'#7f8fa6'}
+            value={content}
+            onChangeText={v => (modifyInput ? modifyInput(v, 'content') : null)}
+            onFocus={() =>
+              onKeyboardInputFocus ? onKeyboardInputFocus() : null
+            }
+            editable={!disabled}
+          />
+        )}
       </View>
     );
   }
@@ -70,6 +102,6 @@ const styles = StyleSheet.create({
     padding: 5,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: 'black',
-    color: 'black'
+    color: 'black',
   },
 });
