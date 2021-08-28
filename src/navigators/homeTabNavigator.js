@@ -3,21 +3,11 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {connect} from 'react-redux';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Home from '../screens/home';
 import Groups from '../screens/groups';
 import Chats from '../screens/chats';
 import GroupRightButton from '../components/groups/headerRight';
 import HeaderRightButton from '../components/chat/headerRightButton';
 import {getTheme} from '../utils/theme';
-import {
-  StyleSheet,
-  Text,
-  Image,
-  View,
-  Dimensions,
-  Platform,
-} from 'react-native';
-import {Tab} from 'react-native-elements/dist/tab/Tab';
 import {socket} from '../../server_config';
 import {unsubSocket} from '../functions/chat';
 import {changeScreen} from '../actions/screen';

@@ -142,7 +142,7 @@ class SignUp extends React.Component {
     setTimeout(() => {
       this.props.navigation.reset({
         index: 0,
-        routes: [{name: 'HomeDrawerNavigator'}],
+        routes: [{name: 'HomeTabNavigator'}],
       });
     }, 500);
   };

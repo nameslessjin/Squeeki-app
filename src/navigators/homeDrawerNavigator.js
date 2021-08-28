@@ -20,7 +20,6 @@ import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {connect} from 'react-redux';
 import {changeScreen} from '../actions/screen';
 import {userLogout} from '../actions/auth';
-import {unsubSocket} from '../functions/chat';
 import {singleDefaultIcon} from '../utils/defaultIcon';
 import {getTheme} from '../utils/theme';
 
@@ -58,22 +57,6 @@ class HomeDrawerNavigator extends React.Component {
   getHeaderTitle = route => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
     return routeName;
-  };
-
-  unsubSocket = () => {
-    const {chat, group, currentScreen} = this.props;
-
-    if (currentScreen.currentScreen == 'Chats') {
-      // if not in group all chats in chat.chats
-      let socket_chat_id = chat.chats;
-
-      // if in group only the one with proper rank or people who added to chat
-      if (group.group.auth) {
-        socket_chat_id = chat.chats.filter(c => c.available);
-      }
-      socket_chat_id = socket_chat_id.map(c => c.id);
-      unsubSocket(socket_chat_id);
-    }
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -237,9 +220,6 @@ const styles = StyleSheet.create({
   displayName: {
     marginTop: 5,
     fontSize: 18,
-  },
-  darkModeColorHeader: {
-    backgroundColor: '#1d2027',
   },
 });
 

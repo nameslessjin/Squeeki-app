@@ -167,7 +167,6 @@ export default (App = () => {
             <Stack.Screen
               name="HomeDrawerNavigator"
               component={HomeDrawerNavigator}
-              options={({route}) => ({headerTitle: getHeaderTitle(route)})}
             />
             <Stack.Screen
               name="HomeTabNavigator"

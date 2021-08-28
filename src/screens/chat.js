@@ -905,8 +905,14 @@ class Chat extends React.Component {
             renderUsernameOnMessage={!is_dm}
             text={content}
             user={user}
+            renderAvatarOnTop={true}
             isKeyboardInternallyHandled={false}
             parsePatterns={linkStyle => {
+              const atLinkStyle = [
+                {...linkStyle[0], fontWeight: 'bold'},
+                {...linkStyle[1], fontWeight: 'bold'},
+              ];
+
               return [
                 {
                   type: 'url',
@@ -935,13 +941,13 @@ class Chat extends React.Component {
                 },
                 {
                   pattern: /\[(@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
-                  style: styles.atUser,
+                  style: linkStyle,
                   renderText: renderText,
                   onPress: m => this.onAtUserNGroupHightlightPress(m),
                 },
                 {
                   pattern: /\[(g@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
-                  style: {color: '#1e90ff', fontWeight: '500'},
+                  style: atLinkStyle,
                   renderText: renderText,
                   onPress: m => this.onAtUserNGroupHightlightPress(m),
                 },
@@ -1000,9 +1006,11 @@ class Chat extends React.Component {
             //   })
             // }
             renderInputToolbar={() => null}
-            renderBubble={props => renderBubble({...props})}
+            renderBubble={props => renderBubble({...props, theme: theme})}
             renderMessageContainer={props => renderMessageContainer({...props})}
-            renderMessageText={props => renderMessageText({...props})}
+            renderMessageText={props =>
+              renderMessageText({...props, theme: theme})
+            }
             renderTime={props => renderTime({...props})}
           />
           {renderInputToolBar({

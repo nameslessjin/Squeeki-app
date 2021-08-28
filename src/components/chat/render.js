@@ -259,7 +259,7 @@ export const RenderTicks = props => {
       <MaterialIcons
         name={'check-circle-outline'}
         size={15}
-        color={'#747d8c'}
+        color={'#dfe4ea'}
       />
     </View>
   ) : null;
@@ -363,8 +363,17 @@ export const renderComposer = props => {
 };
 
 export const renderBubble = props => {
+  const {currentMessage} = props;
   return (
-    <Bubble {...props} wrapperStyle={{right: {backgroundColor: '#ced6e0'}}} />
+    <Bubble
+      {...props}
+      wrapperStyle={{
+        right: {
+          backgroundColor: currentMessage.image ? 'transparent' : '#1e90ff',
+        },
+        left: {backgroundColor: '#a4b0be'},
+      }}
+    />
   );
 };
 
@@ -384,17 +393,22 @@ export const renderMessageText = props => {
   return (
     <MessageText
       {...props}
-      textStyle={{right: {color: 'black'}}}
+      textStyle={{right: {color: 'white'}, left: {color: 'white'}}}
       linkStyle={{
+        right: {color: 'white', textDecorationLine: 'none'},
         left: {color: '#1e90ff', textDecorationLine: 'none'},
-        right: {color: '#1e90ff', textDecorationLine: 'none'},
       }}
     />
   );
 };
 
 export const renderTime = props => {
-  return <Time {...props} timeTextStyle={{right: {color: '#747d8c'}}} />;
+  return (
+    <Time
+      {...props}
+      timeTextStyle={{right: {color: '#dfe4ea'}, left: {color: '#dfe4ea'}}}
+    />
+  );
 };
 
 export const renderInputToolBar = props => {
