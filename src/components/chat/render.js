@@ -393,7 +393,7 @@ export const renderMessageText = props => {
   return (
     <MessageText
       {...props}
-      textStyle={{right: {color: 'white'}, left: {color: 'white'}}}
+      textStyle={{right: {color: 'white'}, left: {color: 'black'}}}
       linkStyle={{
         right: {color: 'white', textDecorationLine: 'none'},
         left: {color: '#1e90ff', textDecorationLine: 'none'},
@@ -406,7 +406,7 @@ export const renderTime = props => {
   return (
     <Time
       {...props}
-      timeTextStyle={{right: {color: '#dfe4ea'}, left: {color: '#dfe4ea'}}}
+      timeTextStyle={{right: {color: '#dfe4ea'}, left: {color: 'black'}}}
     />
   );
 };

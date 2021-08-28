@@ -155,7 +155,7 @@ class Chat extends React.Component {
             theme={theme}
           />
         ),
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
       });
       //Load person to person status/create if doesn't exist (process)(probable do this in the next page)

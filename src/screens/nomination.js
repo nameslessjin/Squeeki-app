@@ -75,7 +75,7 @@ class Nomination extends React.Component {
     navigation.setOptions({
       headerRight: () => button,
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }

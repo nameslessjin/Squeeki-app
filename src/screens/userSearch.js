@@ -69,7 +69,7 @@ class UserSearch extends React.Component {
         params.prev_route == 'PostSetting' ? 'Pick nominee' : 'Search User',
       headerRight: () => button,
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }

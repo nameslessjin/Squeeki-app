@@ -70,7 +70,7 @@ class ChatDrawerkNavigator extends React.Component {
       headerTitleStyle: {
         fontSize: headerTitleSize,
       },
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }

@@ -31,7 +31,7 @@ class Post extends React.Component {
     navigation.setOptions({
       headerTitle: 'Posts',
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
 

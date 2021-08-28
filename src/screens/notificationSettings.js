@@ -33,7 +33,7 @@ class NotificationSettings extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Notifications',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
     this.setState({

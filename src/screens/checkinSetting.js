@@ -43,7 +43,7 @@ class CheckInSetting extends React.Component {
       ),
       headerBackTitleVisible: false,
       headerTitle: 'Check-in Setting',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }

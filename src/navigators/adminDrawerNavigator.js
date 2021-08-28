@@ -31,7 +31,7 @@ class AdminDrawerNavigator extends React.Component {
     const {navigation} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
       headerTitle: 'Admin',
     //   headerRight: () => (

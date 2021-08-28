@@ -28,8 +28,9 @@ class HomeTabNavigator extends React.Component {
     navigation.setOptions({
       headerTitle: 'Squeeki',
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
+      
     });
     socket.init();
   }
@@ -123,7 +124,7 @@ class HomeTabNavigator extends React.Component {
       const theme = getTheme(this.props.auth.user.theme);
       this.setState({theme});
       navigation.setOptions({
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
         headerLeft: () => (
           <HeaderLeftButton
@@ -146,7 +147,7 @@ class HomeTabNavigator extends React.Component {
           tabBarActiveTintColor: 'tomato',
           tabBarInactiveTintColor: 'grey',
           headerShown: false,
-          tabBarStyle: theme.backgroundColor,
+          tabBarStyle: [theme.backgroundColor, {borderTopColor: 'transparent'}],
         }}>
         <Tabs.Screen
           name="HomeDrawerNavigator"

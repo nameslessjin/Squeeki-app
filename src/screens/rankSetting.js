@@ -28,7 +28,7 @@ class RankSetting extends React.Component {
     navigation.setOptions({
       headerTitle: 'Rank Settings',
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }

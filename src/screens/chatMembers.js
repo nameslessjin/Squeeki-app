@@ -41,7 +41,7 @@ class ChatMembers extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Members',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
     // this.loadUserChat(true);

@@ -26,7 +26,7 @@ class GroupCard extends React.Component {
       const theme = getTheme(auth.user.theme);
       this.setState({theme});
       navigation.setOptions({
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
       });
     }

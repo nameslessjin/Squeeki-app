@@ -1,3 +1,5 @@
+import {Platform} from 'react-native';
+
 const uri = [
   require('../assets/defaultIcons/b1_l.png'),
   require('../assets/defaultIcons/b2_g.png'),
@@ -21,13 +23,42 @@ const uri = [
   require('../assets/defaultIcons/w4_l.png'),
 ];
 
+const powerByGoogle = {
+  ios: {
+    noWhite: require('../assets/powerByGoogle/ios/powered_by_google_on_non_white.png'),
+    white: require('../assets/powerByGoogle/ios/powered_by_google_on_white.png'),
+  },
+  android: {
+    noWhite: require('../assets/powerByGoogle/android/powered_by_google_on_non_white.png'),
+    white: require('../assets/powerByGoogle/android/powered_by_google_on_white.png'),
+  },
+};
+
 export const randomDefaultIcon = () => {
+  const random = Math.floor(Math.random() * 20);
+  const icon = uri[random];
 
-    const random = Math.floor(Math.random() * 20)
-    const icon = uri[random]
-    
-    return icon
+  return icon;
+};
 
-}
+export const singleDefaultIcon = () => require('../assets/defaultIcons/p1.png');
 
-export const singleDefaultIcon = () => require('../assets/defaultIcons/p1.png')
+export const powerByGoogleIconPick = isWhite => {
+  let googleIcon = powerByGoogle.ios.white;
+
+  if (Platform.OS == 'ios') {
+    if (isWhite) {
+      googleIcon = powerByGoogle.ios.white;
+    } else {
+      googleIcon = powerByGoogle.ios.noWhite;
+    }
+  } else {
+    if (isWhite) {
+      googleIcon = powerByGoogle.android.white;
+    } else {
+      googleIcon = powerByGoogle.android.noWhite;
+    }
+  }
+
+  return googleIcon;
+};

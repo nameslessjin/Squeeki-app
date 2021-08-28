@@ -32,7 +32,7 @@ class UserSettings extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Settings',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }
@@ -43,7 +43,7 @@ class UserSettings extends React.Component {
       const theme = getTheme(auth.user.theme);
       this.setState({theme});
       navigation.setOptions({
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
       });
     }

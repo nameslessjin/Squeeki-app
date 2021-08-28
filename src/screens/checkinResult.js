@@ -35,7 +35,7 @@ class CheckInResult extends React.Component {
         ) : null,
       headerBackTitleVisible: false,
       headerTitle: 'Attendees',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
     this.loadCheckInResult(true);

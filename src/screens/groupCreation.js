@@ -51,7 +51,7 @@ class GroupCreation extends React.Component {
           theme={theme}
         />
       ),
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }

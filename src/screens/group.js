@@ -29,7 +29,7 @@ class Group extends React.Component {
 
   componentDidMount() {
     const {navigation} = this.props;
-
+    const {theme} = this.state
     navigation.setOptions({
       headerBackTitleVisible: false,
     });

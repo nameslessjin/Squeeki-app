@@ -50,7 +50,7 @@ class GroupDrawerNavigator extends React.Component {
         ),
       headerTitle: group.group.display_name,
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
 

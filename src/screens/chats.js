@@ -58,7 +58,7 @@ class Chats extends React.Component {
               theme={theme}
             />
           ),
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
       });
     }
@@ -85,7 +85,7 @@ class Chats extends React.Component {
       const theme = getTheme(auth.user.theme);
       this.setState({theme});
       navigation.setOptions({
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
       });
     }
@@ -294,7 +294,6 @@ class Chats extends React.Component {
 
     return (
       <View style={theme.greyArea}>
-        
         {chat.chats.length == 0 ? (
           <View style={styles.container}>
             <Text style={styles.text}>You are not in any chat yet</Text>

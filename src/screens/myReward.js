@@ -13,7 +13,7 @@ class MyReward extends React.Component {
     const {theme} = this.state;
     const {navigation} = this.props;
     navigation.setOptions({
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
       headerTitle: 'My Rewards',
       headerBackTitleVisible: false,
@@ -46,7 +46,7 @@ class MyReward extends React.Component {
       const theme = getTheme(auth.user.theme);
       this.setState({theme});
       navigation.setOptions({
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
       });
     }

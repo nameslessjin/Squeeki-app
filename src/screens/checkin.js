@@ -50,7 +50,7 @@ class CheckIn extends React.Component {
         ) : null,
       headerBackTitleVisible: false,
       headerTitle: 'Check Ins',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
 

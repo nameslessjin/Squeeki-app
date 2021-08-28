@@ -36,7 +36,7 @@ class GroupsSearch extends React.Component {
     const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }

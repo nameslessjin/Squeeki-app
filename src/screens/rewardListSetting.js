@@ -50,7 +50,7 @@ class RewardListSetting extends React.Component {
           disabled={true}
         />
       ),
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }

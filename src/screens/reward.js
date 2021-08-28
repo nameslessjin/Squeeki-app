@@ -44,7 +44,7 @@ class Reward extends React.Component {
       navigation.setOptions({
         headerBackTitleVisible: false,
         headerTitle: 'Gift Management',
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
       });
       this.getGroupRewardList();

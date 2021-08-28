@@ -38,7 +38,7 @@ class RewardDetail extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Details',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
     if (prevRoute == 'RewardList' || prevRoute == 'GiftedRewardList') {

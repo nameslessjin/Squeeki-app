@@ -33,7 +33,7 @@ class ChangePassword extends React.Component {
     navigation.setOptions({
         headerBackTitleVisible: false,
         headerTitle: 'Change Password',
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
     })
   }

@@ -26,7 +26,7 @@ class TaskManagement extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Task Management',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
     // this.loadParticipants(true);

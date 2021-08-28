@@ -33,7 +33,7 @@ class SearchLocation extends React.Component {
     const {navigation, prevRoute} = this.props;
     navigation.setOptions({
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
       title: 'Search Location',
       headerRight: () => (
@@ -123,7 +123,7 @@ class SearchLocation extends React.Component {
       location: {
         ...req,
         locationDescription: location.description,
-        place_id: location.place_id
+        place_id: location.place_id,
       },
       prevRoute: 'SearchLocation',
     });
@@ -131,7 +131,6 @@ class SearchLocation extends React.Component {
 
   render() {
     const {theme, searchTerm, locations} = this.state;
-
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
@@ -146,6 +145,7 @@ class SearchLocation extends React.Component {
             locations={locations}
             onPress={this.getLocation}
             theme={theme}
+            isWhite={this.props.auth.user.theme == 'default'}
           />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

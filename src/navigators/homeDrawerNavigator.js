@@ -49,7 +49,7 @@ class HomeDrawerNavigator extends React.Component {
       headerBackTitleVisible: false,
       headerTitle: 'Squeeki',
 
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }
@@ -68,7 +68,7 @@ class HomeDrawerNavigator extends React.Component {
       this.setState({theme});
       console.log(theme);
       navigation.setOptions({
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
         headerLeft: () => (
           <HeaderLeftButton

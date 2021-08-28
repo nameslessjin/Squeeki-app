@@ -28,7 +28,7 @@ class NominationResult extends React.Component {
     navigation.setOptions({
       headerTitle: 'Nomination Results',
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
 

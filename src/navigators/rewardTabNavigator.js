@@ -30,7 +30,7 @@ class RewardTabNavigator extends React.Component {
     navigation.setOptions({
       headerTitle: 'Reward',
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }
@@ -180,7 +180,7 @@ class RewardTabNavigator extends React.Component {
           tabBarActiveTintColor: 'tomato',
           tabBarInactiveTintColor: 'grey',
           headerShown: false,
-          tabBarStyle: theme.backgroundColor
+          tabBarStyle: [theme.backgroundColor, {borderTopColor: 'transparent'}],
         }}>
         <Tabs.Screen
           name="RewardHistory"

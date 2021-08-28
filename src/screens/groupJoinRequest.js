@@ -36,7 +36,7 @@ class UserGroupJoinRequest extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Join Requests',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }

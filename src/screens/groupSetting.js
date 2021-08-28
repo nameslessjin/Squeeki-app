@@ -53,7 +53,7 @@ class GroupSetting extends React.Component {
           />
         ) : null,
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
     this.getGroupRankName();

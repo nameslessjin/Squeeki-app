@@ -30,7 +30,7 @@ class NominationPost extends React.Component {
     navigation.setOptions({
       headerTitle: 'Nomination Posts',
       headerBackTitleVisible: false,
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
 

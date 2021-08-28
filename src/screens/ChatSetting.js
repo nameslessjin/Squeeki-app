@@ -82,7 +82,7 @@ class ChatSetting extends React.Component {
             theme={theme}
           />
         ),
-        headerStyle: theme.backgroundColor,
+        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
         headerTintColor: theme.textColor.color,
       });
     }
@@ -90,7 +90,7 @@ class ChatSetting extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Settings',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
   }

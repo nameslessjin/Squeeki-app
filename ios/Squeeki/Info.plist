@@ -22,6 +22,10 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>itms-apps</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -39,11 +43,11 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>You can choose or save a photo for customization or messaging</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Turn on location to discover nearby groups and events</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Turn on location to discover nearby groups and events</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Turn on location to discover nearby groups and events</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>You can choose or save a photo for customization or messaging</string>
@@ -83,10 +87,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>itms-apps</string>
-	</array>
-
 </dict>
 </plist>

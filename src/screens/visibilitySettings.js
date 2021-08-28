@@ -27,7 +27,7 @@ class VisibilitySettings extends React.Component {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitle: 'Visibility',
-      headerStyle: theme.backgroundColor,
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
     this.setState({
