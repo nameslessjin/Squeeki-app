@@ -366,3 +366,29 @@ query searchAtGroup($input: SearchGroupInput!){
 }
 
 `;
+
+export const getGroupRecommendationQuery = `
+query getGroupRecommendation($input: SearchGroupInput!){
+    getGroupRecommendation(input: $input){
+        count
+        groups {
+            id
+            groupname
+            display_name
+            shortDescription
+            icon {
+                uri
+            }
+            tags {
+                id
+                tag_name
+                use_count
+            }
+            location {
+                lat
+                lng
+            }
+        }
+    }
+}
+`;

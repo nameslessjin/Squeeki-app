@@ -120,15 +120,18 @@ class GroupDrawerNavigator extends React.Component {
         prevRoute == 'GiftedRewardList' ||
         prevRoute == 'Chat' ||
         prevRoute == 'PostCard' ||
-        prevRoute == 'Comment'
+        prevRoute == 'Comment' ||
+        prevRoute == 'Home'
       ) {
         // MyRewads have no previous group page
         // if has previous group page thus reload group and reward
+        // from nongroup/subgroup back to nongroup/subgroup
         if (groupId) {
           this.reloadGroup({groupId, isFullRefresh: true});
         }
 
         // if the prevRoute is not PostCard or Comment or Chat, pass params back
+        // from group to group
         if (
           !(
             prevRoute == 'PostCard' ||
@@ -143,6 +146,7 @@ class GroupDrawerNavigator extends React.Component {
         }
       } else {
         // if the current route is general group page then load groups
+        // from group back to groups
         this.loadGroups(true);
       }
     }

@@ -118,7 +118,7 @@ class GroupCard extends React.Component {
               <Text numberOfLines={2} style={[nameStyle, theme.textColor]}>
                 {display_name}
               </Text>
-              {route == 'search' ? (
+              {route == 'search' || route == 'home' ? (
                 <Text
                   numberOfLines={2}
                   style={[nameStyle, {color: 'grey', fontSize: 13}]}>

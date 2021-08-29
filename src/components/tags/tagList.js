@@ -5,7 +5,7 @@ const extractKey = ({id}) => id;
 
 export default class TagList extends React.Component {
   renderItem = ({item}) => {
-    const {isSearch, onPress, isGroupHeader, theme} = this.props;
+    const {isSearch, onPress, isGroupHeader, theme, isGroupCard} = this.props;
 
     let disabled = false;
 
@@ -23,16 +23,22 @@ export default class TagList extends React.Component {
         ]
       : isGroupHeader
       ? styles.groupHeaderTag
+      : isGroupCard
+      ? styles.groupCardTag
       : styles.groupTag;
-    const textStyle = isGroupHeader ? styles.groupHeaderText : styles.tagText;
+    const textStyle = isGroupHeader
+      ? styles.groupHeaderText
+      : isGroupCard
+      ? styles.groupCardText
+      : styles.tagText;
 
     return (
       <TouchableOpacity
-        onPress={() => (isGroupHeader ? null : onPress(item))}
+        onPress={() => (isGroupHeader || isGroupCard ? null : onPress(item))}
         disabled={disabled}>
         <View style={style}>
           <Text style={textStyle}>{item.tag_name}</Text>
-          {isGroupHeader ? null : (
+          {isGroupHeader || isGroupCard ? null : (
             <View style={styles.use_count}>
               <Text style={[textStyle, {fontSize: 15}]}>{item.use_count}</Text>
             </View>
@@ -114,6 +120,7 @@ export default class TagList extends React.Component {
         keyboardShouldPersistTaps={'handled'}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
+        style={{flexDirection: 'row'}}
       />
     );
   }
@@ -142,6 +149,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 13,
   },
+  groupCardText: {
+    color: 'white',
+    fontSize: 11,
+  },
   use_count: {
     borderRadius: 10,
     backgroundColor: '#2980b9',
@@ -157,6 +168,17 @@ const styles = StyleSheet.create({
     margin: 3,
     flexDirection: 'row',
     height: 30,
+  },
+  groupCardTag: {
+    backgroundColor: '#74b9ff',
+    padding: 3,
+    borderRadius: 7,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 3,
+    marginLeft: 0,
+    flexDirection: 'row',
+    height: 20,
   },
   groupTag: {
     backgroundColor: '#74b9ff',

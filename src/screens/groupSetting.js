@@ -134,16 +134,20 @@ class GroupSetting extends React.Component {
       location: group.location,
     };
 
-    console.log('state')
-    console.log(this.state)
+    console.log('state');
+    console.log(this.state);
 
     // if icon picked and origin icon exist
-    if (icon.type == null) {
-      icon = null;
+    if (icon) {
+      if (icon.type == null) {
+        icon = null;
+      }
     }
 
-    if (backgroundImg.type == null) {
-      backgroundImg = null;
+    if (backgroundImg) {
+      if (backgroundImg.type == null) {
+        backgroundImg = null;
+      }
     }
 
     if (
@@ -251,12 +255,12 @@ class GroupSetting extends React.Component {
       return;
     }
 
-    console.log('update')
-    console.log(updateGroup)
+    console.log('update');
+    console.log(updateGroup);
     this.setState({...updateGroup});
     setTimeout(() => {
-      this.setState({loading: false})
-    }, 100)
+      this.setState({loading: false});
+    }, 100);
     // this.props.navigation.goBack();
   };
 

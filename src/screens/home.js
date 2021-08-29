@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {getFeed} from '../actions/post';
+import {getGroupRecommendation} from '../actions/group';
 import PostList from '../components/posts/postList';
 import {getFeedFunc} from '../functions/post';
 import {userLogout} from '../actions/auth';
@@ -45,10 +46,10 @@ class Home extends React.Component {
     theme: getTheme(this.props.auth.user.theme),
     type: 'update',
     position: null,
+    recommendedGroups: [],
   };
 
   componentDidMount() {
-    this.loadFeed(true);
     this.getNotificationToken();
     this.getLastVersion();
     this.checkAuth();
@@ -56,6 +57,11 @@ class Home extends React.Component {
     this.watchId = null;
     this.getLocation();
     this.logUserEvent({event: 'onScreen'});
+
+    setTimeout(() => {
+      this.getGroupRecommendation();
+      this.loadFeed(true);
+    }, 300);
 
     AppState.addEventListener('change', this._handleAppStateChange);
   }
@@ -68,9 +74,6 @@ class Home extends React.Component {
 
     Geolocation.getCurrentPosition(
       position => {
-        if (position) {
-          console.log(position.coords);
-        }
         this.setState({position});
       },
       error => {
@@ -94,6 +97,24 @@ class Home extends React.Component {
       Geolocation.clearWatch(this.watchId);
       this.watchId = null;
     }
+  };
+
+  getGroupRecommendation = async () => {
+    const {position} = this.state;
+    const {getGroupRecommendation, auth} = this.props;
+    const request = {
+      token: auth.token,
+      count: 0,
+      lat: position ? position.coords.latitude : null,
+      lng: position ? position.coords.longitude : null,
+    };
+
+    const req = await getGroupRecommendation(request);
+    if (req.errors) {
+      console.log(req.errors);
+    }
+
+    this.setState({recommendedGroups: req.groups});
   };
 
   logUserEvent = log => {
@@ -261,7 +282,11 @@ class Home extends React.Component {
 
   onRefresh = () => {
     this.setState({refreshing: true});
-    this.loadFeed(true);
+    this.getLocation();
+    setTimeout(() => {
+      this.getGroupRecommendation();
+      this.loadFeed(true);
+    }, 300);
     this.setState({refreshing: false});
   };
 
@@ -280,18 +305,22 @@ class Home extends React.Component {
 
   render() {
     const {feed} = this.props.post;
-    const {modalVisible, theme, type} = this.state;
+    const {modalVisible, theme, type, recommendedGroups, position} = this.state;
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
           <StatusBar barStyle={'dark-content'} />
           <PostList
+            recommendedGroups={recommendedGroups || null}
             posts={feed}
             navigation={this.props.navigation}
             onEndReached={this.onEndReached}
             onRefresh={this.onRefresh}
             refreshing={this.state.refreshing}
             prevRoute={'Home'}
+            theme={theme}
+            position={position}
           />
           {this.state.loading ? (
             <ActivityIndicator animating={true} color={'grey'} />
@@ -336,6 +365,7 @@ const mapDispatchToProps = dispatch => {
     getSecurityClearance: data => dispatch(getSecurityClearance(data)),
     updateLocationReducer: data => dispatch(updateLocationReducer(data)),
     logUserEvent: data => dispatch(logUserEvent(data)),
+    getGroupRecommendation: data => dispatch(getGroupRecommendation(data)),
   };
 };
 

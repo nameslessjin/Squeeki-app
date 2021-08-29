@@ -17,6 +17,7 @@ import {
   getGroupRankNameQuery,
   updateRankNamesMutation,
   searchAtGroupQuery,
+  getGroupRecommendationQuery,
 } from './query/groupQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
@@ -114,7 +115,7 @@ export const createGroup = data => {
     request_to_join,
     tagIds,
     display_name,
-    location
+    location,
   } = data;
 
   return async function(dispatch) {
@@ -189,7 +190,7 @@ export const createGroup = data => {
       visibility: visibility,
       request_to_join,
       tagIds,
-      location
+      location,
     };
 
     const graphql = {
@@ -198,7 +199,7 @@ export const createGroup = data => {
         GroupInput: groupInput,
       },
     };
- 
+
     const result = await httpCall(token, graphql);
 
     if (result.errors) {
@@ -660,5 +661,26 @@ export const searchAtGroup = data => {
     }
 
     return result.data.searchAtGroup;
+  };
+};
+
+export const getGroupRecommendation = data => {
+  const {token, count, lat, lng} = data;
+
+  return async function(dispatch) {
+    const input = {count, lat, lng};
+    const graphql = {
+      query: getGroupRecommendationQuery,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.getGroupRecommendation;
   };
 };

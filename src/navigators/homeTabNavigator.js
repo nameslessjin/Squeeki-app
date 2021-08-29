@@ -74,7 +74,7 @@ class HomeTabNavigator extends React.Component {
     if (routeName != currentScreen.currentScreen) {
       this.props.changeScreen(routeName);
     }
-
+    
     if (routeName == 'HomeDrawerNavigator') {
       navigation.setOptions({
         headerTitle: 'Squeeki',
@@ -88,6 +88,7 @@ class HomeTabNavigator extends React.Component {
       });
       this.unsubSocket();
     } else if (routeName == 'Groups') {
+      navigation.dispatch(DrawerActions.closeDrawer());
       navigation.setOptions({
         headerRight: () => (
           <GroupRightButton
@@ -101,6 +102,7 @@ class HomeTabNavigator extends React.Component {
 
       this.unsubSocket();
     } else if (routeName == 'Chats') {
+      navigation.dispatch(DrawerActions.closeDrawer());
       navigation.setOptions({
         headerRight: () => (
           <HeaderRightButton
