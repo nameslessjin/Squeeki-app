@@ -86,13 +86,13 @@ class SearchLocation extends React.Component {
 
   searchLocation = async () => {
     const {searchTerm, position} = this.state;
-    const {searchLocation, auth} = this.props;
+    const {searchLocation, auth, metadata} = this.props;
 
     const request = {
       token: auth.token,
       searchTerm,
-      lat: position ? position.coords.latitude : null,
-      lng: position ? position.coords.longitude : null,
+      lat: position ? position.coords.latitude : metadata.IP.latitude,
+      lng: position ? position.coords.longitude : metadata.IP.longitude,
     };
 
     const req = await searchLocation(request);
@@ -171,8 +171,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {auth} = state;
-  return {auth};
+  const {auth, metadata} = state;
+  return {auth, metadata};
 };
 
 const mapDispatchToProps = dispatch => {

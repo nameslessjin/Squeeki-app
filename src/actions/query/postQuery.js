@@ -64,8 +64,8 @@ query getGroupPosts($input: GetPostInput!){
 `;
 
 export const getFeedQuery = `
-query getFeed($count: Int!){
-    getFeed(count: $count){
+query getFeed($input: GetPostInput!){
+    getFeed(input: $input){
         posts{
             id
             image{

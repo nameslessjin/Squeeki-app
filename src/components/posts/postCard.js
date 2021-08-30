@@ -378,6 +378,7 @@ class PostCard extends React.Component {
       group,
       navigation,
       prevRoute,
+      position
     } = this.props;
 
     const date = dateConversion(createdAt, 'timeDisplay');
@@ -481,6 +482,7 @@ class PostCard extends React.Component {
               {...this.state}
               theme={theme}
               backgroundColor={backgroundColor}
+              position={position}
             />
             {nomination == null || prevRoute == 'CheckInSetting' ? null : (
               <PostNomination

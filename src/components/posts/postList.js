@@ -23,6 +23,7 @@ export default class PostList extends React.Component {
       prevRoute,
       group,
       theme,
+      position
     } = this.props;
 
     if (item.groupname) {
@@ -58,6 +59,7 @@ export default class PostList extends React.Component {
         navigation={navigation}
         onPostSelect={onPostSelect}
         prevRoute={prevRoute}
+        position={position}
       />
     );
   };

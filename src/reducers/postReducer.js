@@ -29,7 +29,6 @@ export default (postReducer = (state = INITIAL_STATE, action) => {
       };
 
     case 'getFeed':
-
       return {
         ...state,
         feed: {
@@ -39,7 +38,16 @@ export default (postReducer = (state = INITIAL_STATE, action) => {
               ? state.feed.posts
               : action.data.count == 10
               ? action.data.posts
-              : feed.posts.concat(action.data.posts),
+              : feed.posts.concat(
+                  action.data.posts.filter(p => {
+                    // filter duplicates
+                    const index = feed.posts.findIndex(f => f.id == p.id);
+                    if (index == -1) {
+                      return true;
+                    }
+                    return false;
+                  }),
+                ),
         },
       };
 

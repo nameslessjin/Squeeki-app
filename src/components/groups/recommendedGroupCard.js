@@ -21,24 +21,28 @@ class RecommendedGroupCard extends React.Component {
     theme: getTheme(this.props.auth.user.theme),
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.auth.user.theme != this.props.auth.user.theme) {
+      this.setState({theme: getTheme(this.props.auth.user.theme)});
+    }
+  }
+
   getGroup = async () => {
     const {getSingleGroupById, auth, item, navigation} = this.props;
     const request = {
-        id: item.id,
-        token: auth.token
-    }
-    const req = await getSingleGroupById(request)
-    if (req.errors){
-        console.log(req.errors)
-        alert('Cannot load group at this time, please try again later')
-        return
+      id: item.id,
+      token: auth.token,
+    };
+    const req = await getSingleGroupById(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot load group at this time, please try again later');
+      return;
     }
 
     navigation.navigate('GroupNavigator', {
-        prevRoute: 'Home'
-    })
-    
-
+      prevRoute: 'Home',
+    });
   };
 
   render() {
@@ -108,9 +112,12 @@ class RecommendedGroupCard extends React.Component {
             <View style={styles.tagContainer}>
               {tags.length != 0 ? (
                 <TagList groupTags={tags} isGroupCard={true} />
-              ) : null}
+              ) : (
+                <View style={styles.groupCardTag}>
+                  <Text style={styles.groupCardText}>Tags</Text>
+                </View>
+              )}
             </View>
-
             <View style={styles.locationContainer}>
               {isNearby ? (
                 <Text style={theme.textColor}>{distance} miles away</Text>
@@ -145,6 +152,7 @@ const styles = StyleSheet.create({
     color: '#718093',
     textAlign: 'left',
     marginTop: 2,
+    maxHeight: 55,
   },
   imgHolder: {
     width: 90,
@@ -180,10 +188,28 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 25,
     flexDirection: 'row',
+    paddingLeft: 5,
   },
   locationContainer: {
     width: '100%',
     height: 20,
+    paddingLeft: 5,
+  },
+  groupCardTag: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'grey',
+    padding: 3,
+    borderRadius: 7,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 3,
+    marginLeft: 0,
+    flexDirection: 'row',
+    height: 20,
+  },
+  groupCardText: {
+    color: 'grey',
+    fontSize: 11,
   },
 });
 

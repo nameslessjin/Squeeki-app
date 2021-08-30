@@ -52,12 +52,15 @@ const getGroupPostsData = data => {
 };
 
 export const getFeed = data => {
-  const {token, count} = data;
+  const {token, count, lat, lng} = data;
   return async function(dispatch) {
+    const input = {
+      count, lat, lng
+    }
     const graphql = {
       query: getFeedQuery,
       variables: {
-        count: count,
+        input,
       },
     };
 

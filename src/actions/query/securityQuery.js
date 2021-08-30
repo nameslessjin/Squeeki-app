@@ -16,6 +16,12 @@ query getUserStatus {
 }
 `;
 
+export const getAPIKeyQuery = `
+query getAPIKey($input: SearchInput!){
+    getAPIKey(input: $input)
+}
+`;
+
 export const getSecurityClearanceQuery = `
 query getSecurityClearance{
     getSecurityClearance {
@@ -91,10 +97,10 @@ export const adminActionMutation = `
 mutation adminAction($input: ActionInput!){
     adminAction(input: $input)
 }
-`
+`;
 export const updateSecurityClearanceMutation = `
 mutation updateSecurityClearance($input: SecurityClearanceInput!){
     updateSecurityClearance(input: $input)
 }
 
-`
+`;

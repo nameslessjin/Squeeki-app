@@ -18,6 +18,8 @@ import {getGroupJoinRequestCountFunc} from '../functions/group';
 import {userLogout} from '../actions/auth';
 import {getGroupJoinRequestCount, getSingleGroupById} from '../actions/group';
 import {getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point';
+import {hasLocationPermission} from '../functions/permission';
+import Geolocation from 'react-native-geolocation-service';
 import {getTheme} from '../utils/theme';
 
 class Group extends React.Component {
@@ -25,16 +27,18 @@ class Group extends React.Component {
     loading: false,
     refreshing: false,
     theme: getTheme(this.props.auth.user.theme),
+    position: null
   };
 
   componentDidMount() {
     const {navigation} = this.props;
-    const {theme} = this.state
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
     });
 
     Keyboard.dismiss();
+    this.getLocation()
 
     // set this just in case of redirect from an old group to a new group but group is not yet load
     setTimeout(() => {
@@ -52,6 +56,32 @@ class Group extends React.Component {
       this.loadGroupPosts(true);
     }
   }
+
+  getLocation = async () => {
+    const hasPermission = await hasLocationPermission();
+    if (!hasPermission) {
+      return;
+    }
+
+    Geolocation.getCurrentPosition(
+      position => {
+        this.setState({position});
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        accuracy: {
+          android: 'high',
+          ios: 'best',
+        },
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0,
+        distanceFilter: 0,
+      },
+    );
+  };
 
   getUserGroupPoint = async () => {
     const {auth, group, getUserGroupPoint} = this.props;
@@ -128,7 +158,7 @@ class Group extends React.Component {
     navigation.navigate('PostSetting', {
       groupId: id,
       create: true,
-      prevRoute: 'Group'
+      prevRoute: 'Group',
     });
   };
 
@@ -142,6 +172,7 @@ class Group extends React.Component {
   onRefresh = async () => {
     this.setState({refreshing: true});
     const {visibility, auth} = this.props.group.group;
+    this.getLocation()
     await this.getGroup();
     if (visibility || auth != null) {
       this.loadLeaderBoard();
@@ -183,7 +214,7 @@ class Group extends React.Component {
 
   render() {
     const {group, post, navigation, point} = this.props;
-    const {refreshing, theme} = this.state;
+    const {refreshing, theme, position} = this.state;
 
     return (
       <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
@@ -201,6 +232,7 @@ class Group extends React.Component {
               onAddPost={this.onAddPost}
               theme={theme}
               prevRoute={'Group'}
+              position={position}
             />
           </TouchableWithoutFeedback>
         ) : null}

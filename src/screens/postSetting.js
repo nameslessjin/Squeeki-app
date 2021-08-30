@@ -14,8 +14,8 @@ import {connect} from 'react-redux';
 import InputContent from '../components/postSetting/inputContent';
 import InputImage from '../components/postSetting/inputImage';
 import AddOrModifyPost from '../components/postSetting/addOrModifyPost';
-import {createPost, getFeed, getGroupPosts, updatePost} from '../actions/post';
-import {getFeedFunc, getGroupPostsFunc} from '../functions/post';
+import {createPost, getGroupPosts, updatePost} from '../actions/post';
+import {getGroupPostsFunc} from '../functions/post';
 import {userLogout} from '../actions/auth';
 import {searchAtUser} from '../actions/user';
 import NominationButton from '../components/postSetting/nominationButton';
@@ -479,7 +479,6 @@ class PostSetting extends React.Component {
     this.setState({loading: true});
     const {
       createPost,
-      getFeed,
       getGroupPosts,
       navigation,
       userLogout,
@@ -535,16 +534,7 @@ class PostSetting extends React.Component {
       };
 
       getGroupPostsFunc(data);
-    } else {
-      const data = {
-        token: token,
-        getFeed: getFeed,
-        navigation: navigation,
-        userLogout: userLogout,
-        count: 0,
-      };
-      getFeedFunc(data);
-    }
+    } 
 
     navigation.navigate(group.group.id ? 'GroupNavigator' : 'Home', {
       refresh: true,
@@ -1091,7 +1081,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     createPost: data => dispatch(createPost(data)),
-    getFeed: data => dispatch(getFeed(data)),
     getGroupPosts: data => dispatch(getGroupPosts(data)),
     updatePost: data => dispatch(updatePost(data)),
     userLogout: () => dispatch(userLogout()),

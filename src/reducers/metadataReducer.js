@@ -1,10 +1,11 @@
 const INITIAL_STATE = {
   version: {
-    IOSVersion: '1.0.16',
-    AndroidVersion: '1.0.16',
+    IOSVersion: '1.0.17',
+    AndroidVersion: '1.0.17',
   },
   securityClearance: null,
-  location: null
+  location: null,
+  IP: null,
 };
 
 export default (metadataReducer = (state = INITIAL_STATE, action) => {
@@ -15,11 +16,17 @@ export default (metadataReducer = (state = INITIAL_STATE, action) => {
         securityClearance: action.i,
       };
 
+    case 'getIpAddress':
+      return {
+        ...state,
+        IP: action.i,
+      };
+
     case 'updateLocation':
       return {
         ...state,
-        location: action.i
-      }
+        location: action.i,
+      };
 
     default:
       return state;

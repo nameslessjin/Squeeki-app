@@ -45,7 +45,28 @@ export default class PostFooter extends React.Component {
       prevRoute,
       locationDescription,
       backgroundColor,
+      lat,
+      lng,
+      position,
     } = this.props;
+
+    let distance = 0;
+    if (lat && lng && position) {
+      const {latitude, longitude} = position.coords;
+      const userLatRadians = (latitude * Math.PI) / 180;
+      const userLngRadians = (longitude * Math.PI) / 180;
+      const groupLatRadians = (lat * Math.PI) / 180;
+      const groupLngRadians = (lng * Math.PI) / 180;
+      distance =
+        3959 *
+        Math.acos(
+          Math.cos(userLatRadians) *
+            Math.cos(groupLatRadians) *
+            Math.cos(groupLngRadians - userLngRadians) +
+            Math.sin(userLatRadians) * Math.sin(groupLatRadians),
+        );
+      distance = distance.toFixed(2);
+    }
 
     const likeCount_text = countFormat(likeCount);
     const commentCount_text = countFormat(commentCount);
@@ -279,6 +300,18 @@ export default class PostFooter extends React.Component {
                   ]}>
                   {locationDescription}
                 </Text>
+                {distance <= 5 && distance ? (
+                  <Text
+                    style={[
+                      {
+                        textAlign: 'center',
+                        color: priority > 0 ? 'black' : theme.textColor.color,
+                        marginTop: 5
+                      },
+                    ]}>
+                    {distance} miles away
+                  </Text>
+                ) : null}
               </View>
             ) : null}
           </View>

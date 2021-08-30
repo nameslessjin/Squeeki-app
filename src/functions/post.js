@@ -1,6 +1,12 @@
 export const getFeedFunc = async data => {
-  const {token, getFeed, navigation, userLogout, count} = data;
-  const feedData = await getFeed({token: token, count: count});
+  const {token, getFeed, navigation, userLogout, count, lat, lng} = data;
+  const request = {
+    token,
+    count,
+    lat,
+    lng
+  }
+  const feedData = await getFeed(request);
   if (feedData.errors) {
     alert(feedData.errors[0].message);
     if (feedData.errors[0].message == 'Not Authenticated') {

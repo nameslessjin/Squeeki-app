@@ -24,6 +24,7 @@ import {
   getUserStatus,
   getSecurityClearance,
   updateLocationReducer,
+  getIpAddress,
 } from '../actions/security';
 import DeviceInfo from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
@@ -47,21 +48,23 @@ class Home extends React.Component {
     type: 'update',
     position: null,
     recommendedGroups: [],
+    ip: null,
   };
 
   componentDidMount() {
     this.getNotificationToken();
     this.getLastVersion();
     this.checkAuth();
+    this.props.getIpAddress();
     this.getSecurityClearance();
     this.watchId = null;
     this.getLocation();
-    this.logUserEvent({event: 'onScreen'});
 
     setTimeout(() => {
       this.getGroupRecommendation();
       this.loadFeed(true);
-    }, 300);
+      this.logUserEvent({event: 'onScreen'});
+    }, 500);
 
     AppState.addEventListener('change', this._handleAppStateChange);
   }
@@ -101,12 +104,12 @@ class Home extends React.Component {
 
   getGroupRecommendation = async () => {
     const {position} = this.state;
-    const {getGroupRecommendation, auth} = this.props;
+    const {getGroupRecommendation, auth, metadata} = this.props;
     const request = {
       token: auth.token,
       count: 0,
-      lat: position ? position.coords.latitude : null,
-      lng: position ? position.coords.longitude : null,
+      lat: position ? position.coords.latitude : metadata.IP.latitude,
+      lng: position ? position.coords.longitude : metadata.IP.longitude,
     };
 
     const req = await getGroupRecommendation(request);
@@ -118,10 +121,11 @@ class Home extends React.Component {
   };
 
   logUserEvent = log => {
-    const {auth, logUserEvent} = this.props;
+    const {auth, logUserEvent, metadata} = this.props;
     const request = {
       token: auth.token,
       log,
+      ip: metadata.IP.ip,
     };
 
     const req = logUserEvent(request);
@@ -234,11 +238,16 @@ class Home extends React.Component {
     const {appState} = this.state;
     if (appState.match(/(inactive|background)/) && nextAppState === 'active') {
       this.getLastVersion();
+      this.props.getIpAddress();
       this.checkAuth();
       this.getSecurityClearance();
-      this.loadFeed(true);
       this.getLocation();
-      this.logUserEvent({event: 'onScreen'});
+
+      setTimeout(() => {
+        this.getGroupRecommendation();
+        this.loadFeed(true);
+        this.logUserEvent({event: 'onScreen'});
+      }, 300);
     } else if (nextAppState !== 'active') {
       if (Platform.OS == 'ios') {
         if (nextAppState == 'inactive') {
@@ -272,6 +281,21 @@ class Home extends React.Component {
         headerTintColor: theme.textColor.color,
       });
     }
+
+    if (this.props.route.params) {
+      const {refresh, prevRoute} = this.props.route.params;
+      if (refresh) {
+        if (prevRoute == 'PostSetting') {
+          this.getLocation();
+          this.props.getIpAddress();
+          setTimeout(() => {
+            this.getGroupRecommendation();
+            this.loadFeed(true);
+          }, 300);
+          navigation.setParams({refresh: false});
+        }
+      }
+    }
   }
 
   onEndReached = () => {
@@ -291,13 +315,16 @@ class Home extends React.Component {
   };
 
   loadFeed = init => {
-    const {getFeed, navigation, userLogout, auth, post} = this.props;
+    const {getFeed, navigation, userLogout, auth, post, metadata} = this.props;
+    const {position} = this.state;
     const data = {
       token: auth.token,
       getFeed: getFeed,
       navigation: navigation,
       userLogout: userLogout,
       count: init ? 0 : post.feed.count,
+      lat: position ? position.coords.latitude : metadata.IP.latitude,
+      lng: position ? position.coords.longitude : metadata.IP.longitude,
     };
 
     getFeedFunc(data);
@@ -309,7 +336,7 @@ class Home extends React.Component {
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
+        <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
           <StatusBar barStyle={'dark-content'} />
           <PostList
             recommendedGroups={recommendedGroups || null}
@@ -366,6 +393,7 @@ const mapDispatchToProps = dispatch => {
     updateLocationReducer: data => dispatch(updateLocationReducer(data)),
     logUserEvent: data => dispatch(logUserEvent(data)),
     getGroupRecommendation: data => dispatch(getGroupRecommendation(data)),
+    getIpAddress: data => dispatch(getIpAddress(data)),
   };
 };
 

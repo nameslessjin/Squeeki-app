@@ -2,10 +2,10 @@ import {logUserEventMutation} from './query/userEventQuery';
 import {httpCall} from './utils/httpCall';
 
 export const logUserEvent = data => {
-  const {token, log} = data;
+  const {token, log, ip} = data;
 
   return async function(dispatch) {
-    const input = log;
+    const input = {...log, ip};
 
     const graphql = {
       query: logUserEventMutation,

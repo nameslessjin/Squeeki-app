@@ -5,6 +5,7 @@ import {
   searchASAdminQuery,
   adminActionMutation,
   updateSecurityClearanceMutation,
+  getAPIKeyQuery,
 } from '../actions/query/securityQuery';
 import {httpCall} from './utils/httpCall';
 
@@ -20,6 +21,40 @@ export const getLastVersion = () => {
     }
 
     return result.data.getLastVersion;
+  };
+};
+
+export const getIpAddress = () => {
+  return async function(dispatch) {
+    const input = {
+      type: 'ip',
+    };
+    const graphql = {
+      query: getAPIKeyQuery,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(null, graphql);
+    if (result.errors) {
+      console.log(result.errors);
+      return;
+    }
+
+    fetch(`https://api.ipdata.co?api-key=${result.data.getAPIKey}`)
+      .then(res => res.json())
+      .then(data => {
+        dispatch(getIpAddressReducer(data));
+      })
+      .catch(e => console.log(e));
+  };
+};
+
+const getIpAddressReducer = data => {
+  return {
+    type: 'getIpAddress',
+    i: data,
   };
 };
 
@@ -97,7 +132,7 @@ export const searchASAdmin = data => {
 };
 
 export const adminAction = data => {
-  const {token, id, comment, action, type} = data;
+  const {token, id, comment, action, type, ip} = data;
 
   return async function(dispatch) {
     const input = {
@@ -105,6 +140,7 @@ export const adminAction = data => {
       comment: comment.trim(),
       action,
       type,
+      ip,
     };
 
     const graphql = {
@@ -124,11 +160,12 @@ export const adminAction = data => {
 };
 
 export const updateSecurityClearance = data => {
-  const {token, securityClearance} = data;
+  const {token, securityClearance, ip} = data;
 
   return async function(dispatch) {
     const input = {
       ...securityClearance,
+      ip,
     };
 
     const graphql = {

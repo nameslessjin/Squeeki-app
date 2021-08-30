@@ -54,13 +54,14 @@ class AdminSearchCard extends React.Component {
   };
 
   onAction = async data => {
-    const {auth, item, adminAction} = this.props;
+    const {auth, item, adminAction, metadata} = this.props;
     const {id, status} = item;
     const {action} = data;
     const request = {
       token: auth.token,
       id,
       ...data,
+      ip: metadata.IP.ip,
     };
 
     const req = await adminAction(request);
@@ -87,7 +88,7 @@ class AdminSearchCard extends React.Component {
   };
 
   updateSecurityClearance = async data => {
-    const {auth, updateSecurityClearance} = this.props;
+    const {auth, updateSecurityClearance, metadata} = this.props;
     const updatedSecurityClearance = this.state.item.securityClearance
       ? {
           userId: this.state.item.id,
@@ -105,6 +106,7 @@ class AdminSearchCard extends React.Component {
     const request = {
       token: auth.token,
       securityClearance: updatedSecurityClearance,
+      ip: metadata.IP.ip,
     };
 
     const req = await updateSecurityClearance(request);
