@@ -4,7 +4,7 @@ import PostCard from '../posts/postCard';
 
 export default class CommentPost extends React.Component {
   render() {
-    const {post, option, navigation, _actionSheetRef} = this.props;
+    const {post, option, navigation, _actionSheetRef, from} = this.props;
     return (
       <PostCard
         item={post}
@@ -12,6 +12,7 @@ export default class CommentPost extends React.Component {
         option={option}
         navigation={navigation}
         prevRoute={'Comment'}
+        from={from}
         _actionSheetRef={_actionSheetRef}
       />
     );

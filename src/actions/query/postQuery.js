@@ -103,6 +103,8 @@ query getFeed($input: GetPostInput!){
             commentCount
             auth
             groupId
+            groupname
+            display_name
             likeCount
             liked
             notification

@@ -458,7 +458,7 @@ class Comment extends React.Component {
       barHeight,
     } = this.state;
     const disabled = newComment.trim().length == 0 || newComment.length > 1000;
-    const {navigation, group, comment} = this.props;
+    const {navigation, group, comment, route} = this.props;
     const isReply = replyId ? true : false;
 
     return (
@@ -483,6 +483,7 @@ class Comment extends React.Component {
               replyId={replyId}
               _actionSheetRef={this._actionSheetRef}
               theme={theme}
+              from={route ? route.params.prevRoute : null}
             />
 
             {post.allowComment && !modalVisible ? (

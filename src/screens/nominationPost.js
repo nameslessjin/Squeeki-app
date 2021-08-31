@@ -26,7 +26,7 @@ class NominationPost extends React.Component {
 
   componentDidMount() {
     const {navigation, route} = this.props;
-    const {theme} = this.state
+    const {theme} = this.state;
     navigation.setOptions({
       headerTitle: 'Nomination Posts',
       headerBackTitleVisible: false,
@@ -78,7 +78,16 @@ class NominationPost extends React.Component {
       return {
         ...prevState,
         count: req.count,
-        posts: prevState.posts.concat(req.posts),
+        posts: prevState.posts.concat(
+          req.posts.filter(p => {
+            // filter duplicates
+            const index = prevState.posts.findIndex(prev => prev.id == p.id);
+            if (index == -1) {
+              return true;
+            }
+            return false;
+          }),
+        ),
       };
     });
   };

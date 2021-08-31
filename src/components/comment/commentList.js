@@ -14,6 +14,7 @@ export default class CommentList extends React.Component {
       onCommentReplyPress,
       replyId,
       _actionSheetRef,
+      from
     } = this.props;
     if (item.id) {
       if (item.id == 'commentDisabled') {
@@ -31,6 +32,7 @@ export default class CommentList extends React.Component {
             option={false}
             navigation={navigation}
             _actionSheetRef={_actionSheetRef}
+            from={from}
           />
         );
       }

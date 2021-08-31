@@ -64,7 +64,7 @@ class Home extends React.Component {
       this.getGroupRecommendation();
       this.loadFeed(true);
       this.logUserEvent({event: 'onScreen'});
-    }, 500);
+    }, 2500);
 
     AppState.addEventListener('change', this._handleAppStateChange);
   }
@@ -108,13 +108,22 @@ class Home extends React.Component {
     const request = {
       token: auth.token,
       count: 0,
-      lat: position ? position.coords.latitude : metadata.IP.latitude,
-      lng: position ? position.coords.longitude : metadata.IP.longitude,
+      lat: position
+        ? position.coords.latitude
+        : metadata.IP
+        ? metadata.IP.latitude
+        : null,
+      lng: position
+        ? position.coords.longitude
+        : metadata.IP
+        ? metadata.IP.longitude
+        : null,
     };
 
     const req = await getGroupRecommendation(request);
     if (req.errors) {
       console.log(req.errors);
+      return
     }
 
     this.setState({recommendedGroups: req.groups});
@@ -125,7 +134,7 @@ class Home extends React.Component {
     const request = {
       token: auth.token,
       log,
-      ip: metadata.IP.ip,
+      ip: metadata.IP ? metadata.IP.ip : null,
     };
 
     const req = logUserEvent(request);
@@ -145,6 +154,7 @@ class Home extends React.Component {
     const req = await getSecurityClearance(request);
     if (req.errors) {
       console.log(req.errors);
+      return
     }
   };
 
@@ -166,11 +176,14 @@ class Home extends React.Component {
       if (req.status != 'active') {
         this.setState({modalVisible: true, type: 'account'});
       } else {
-        this.setState({modalVisible: false});
+        if (!(this.state.type == 'update' && this.state.modalVisible)) {
+          this.setState({modalVisible: false});
+        }
       }
     } catch (err) {
       console.log(err);
       this.setState({modalVisible: true, type: 'error'});
+      return
     }
   };
 
@@ -200,6 +213,7 @@ class Home extends React.Component {
     } catch (err) {
       console.log(err);
       this.setState({modalVisible: true, type: 'error'});
+      return
     }
   };
 
@@ -247,7 +261,7 @@ class Home extends React.Component {
         this.getGroupRecommendation();
         this.loadFeed(true);
         this.logUserEvent({event: 'onScreen'});
-      }, 300);
+      }, 1000);
     } else if (nextAppState !== 'active') {
       if (Platform.OS == 'ios') {
         if (nextAppState == 'inactive') {
@@ -291,7 +305,7 @@ class Home extends React.Component {
           setTimeout(() => {
             this.getGroupRecommendation();
             this.loadFeed(true);
-          }, 300);
+          }, 1000);
           navigation.setParams({refresh: false});
         }
       }
@@ -310,7 +324,7 @@ class Home extends React.Component {
     setTimeout(() => {
       this.getGroupRecommendation();
       this.loadFeed(true);
-    }, 300);
+    }, 1000);
     this.setState({refreshing: false});
   };
 
@@ -323,8 +337,16 @@ class Home extends React.Component {
       navigation: navigation,
       userLogout: userLogout,
       count: init ? 0 : post.feed.count,
-      lat: position ? position.coords.latitude : metadata.IP.latitude,
-      lng: position ? position.coords.longitude : metadata.IP.longitude,
+      lat: position
+        ? position.coords.latitude
+        : metadata.IP
+        ? metadata.IP.latitude
+        : null,
+      lng: position
+        ? position.coords.longitude
+        : metadata.IP
+        ? metadata.IP.longitude
+        : null,
     };
 
     getFeedFunc(data);

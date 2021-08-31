@@ -91,8 +91,8 @@ class SearchLocation extends React.Component {
     const request = {
       token: auth.token,
       searchTerm,
-      lat: position ? position.coords.latitude : metadata.IP.latitude,
-      lng: position ? position.coords.longitude : metadata.IP.longitude,
+      lat: position ? position.coords.latitude : metadata.IP ? metadata.IP.latitude : null,
+      lng: position ? position.coords.longitude : metadata.IP ? metadata.IP.longitude : null,
     };
 
     const req = await searchLocation(request);

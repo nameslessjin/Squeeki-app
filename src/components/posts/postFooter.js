@@ -16,9 +16,10 @@ const {width} = Dimensions.get('screen');
 
 export default class PostFooter extends React.Component {
   onCommentPress = () => {
-    const {navigation, postId} = this.props;
+    const {navigation, postId, prevRoute} = this.props;
     navigation.navigate('Comment', {
       postId: postId,
+      prevRoute
     });
   };
 

@@ -100,7 +100,7 @@ class SignUp extends React.Component {
     ) {
       this.setState({
         errorText:
-          'Username must only contain alphabet, numbers and underscore.  It must be at least 4 characters long and up tp 30 characters.',
+          'Username must only contain alphabet, numbers and underscore.  It must be at least 4 characters long and up tp 30 characters.  Squeeki or admin cannot be used in username',
       });
       return false;
     }

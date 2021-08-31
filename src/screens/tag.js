@@ -314,6 +314,15 @@ class EditTag extends React.Component {
       tagList = addedTags;
     }
 
+    let disabled = true;
+    if (searchTerm.length != 0) {
+      if (searchTerm[0] == '#') {
+        disabled = false;
+      } else {
+        disabled = true;
+      }
+    }
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
@@ -329,7 +338,7 @@ class EditTag extends React.Component {
               theme={theme}
             />
             {prev_route == 'GroupSetting' ? (
-              <CreateTagButton onPress={this.onTagCreate} create={create} />
+              <CreateTagButton onPress={this.onTagCreate} disabled={disabled} />
             ) : null}
           </View>
 

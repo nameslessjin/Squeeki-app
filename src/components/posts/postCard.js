@@ -371,6 +371,8 @@ class PostCard extends React.Component {
       nomination,
       checked,
       theme,
+      groupname,
+      display_name,
     } = this.state;
     const {
       commentTouchable,
@@ -378,8 +380,11 @@ class PostCard extends React.Component {
       group,
       navigation,
       prevRoute,
-      position
+      position,
+      from
     } = this.props;
+
+    // console.log(prevRoute)
 
     const date = dateConversion(createdAt, 'timeDisplay');
     // console.log(this.state)
@@ -435,6 +440,31 @@ class PostCard extends React.Component {
               theme={theme}
               prevRoute={prevRoute}
             />
+
+            {prevRoute == 'Home' || from == 'Home' ? (
+              <View
+                style={{
+                  width: '100%',
+                  // alignItems: 'center',
+                  padding: 7,
+                  paddingBottom: 0,
+                }}>
+                <TouchableOpacity onPress={() => this.getGroup()}>
+                  <Text
+                    style={[{fontSize: 15}, theme.textColor]}
+                    numberOfLines={2}>
+                    From {''}
+                    <Text style={[{color: '#1e90ff'}]}>
+                      g@
+                      {`${groupname}${
+                        groupname == display_name ? '' : `(${display_name})`
+                      }`}
+                    </Text>
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
+
             <PostMedia
               {...this.state}
               postId={id}
@@ -491,6 +521,7 @@ class PostCard extends React.Component {
                 theme={theme}
               />
             )}
+
           </View>
         </TouchableWithoutFeedback>
       </ActionSheetProvider>
@@ -501,7 +532,7 @@ class PostCard extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    maxHeight: 1350,
+    maxHeight: 1400,
     justifyContent: 'flex-start',
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,

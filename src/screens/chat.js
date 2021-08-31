@@ -958,7 +958,6 @@ class Chat extends React.Component {
             primaryStyle={[theme.backgroundColor]}
             keyboardShouldPersistTaps={'never'}
             alwaysShowSend={true}
-            // bottomOffset={33}
             renderSend={p => (
               <RenderSend text={this.state.content.trim()} onSend={p.onSend} />
             )}
@@ -967,13 +966,6 @@ class Chat extends React.Component {
             isLoadingEarlier={isLoadEarlier}
             infiniteScroll={true}
             keyboardShouldPersistTaps={'never'}
-            // renderActions={p => (
-            //   <RenderActions
-            //     bottomOffset={p.bottomOffset}
-            //     onActionPress={this.onActionPress}
-            //     theme={theme}
-            //   />
-            // )}
             maxComposerHeight={80}
             maxInputLength={500}
             onLongPress={(context, message) =>

@@ -26,7 +26,7 @@ export default class PostList extends React.Component {
       position
     } = this.props;
 
-    if (item.groupname) {
+    if (item.isGroup && prevRoute == 'Group') {
       return (
         <GroupHeader
           item={item}
@@ -118,6 +118,7 @@ export default class PostList extends React.Component {
       const groupHeader = {
         ...group,
         id: 'group ' + group.id,
+        isGroup: true,
       };
 
       data = [groupHeader];

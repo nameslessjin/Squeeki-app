@@ -24,7 +24,16 @@ export default (postReducer = (state = INITIAL_STATE, action) => {
               ? state.groupPosts.posts
               : action.data.count == 10
               ? action.data.posts
-              : groupPosts.posts.concat(action.data.posts),
+              : groupPosts.posts.concat(
+                  action.data.posts.filter(p => {
+                    // filter duplicates
+                    const index = groupPosts.posts.findIndex(g => g.id == p.id);
+                    if (index == -1) {
+                      return true;
+                    }
+                    return false;
+                  }),
+                ),
         },
       };
 

@@ -55,8 +55,10 @@ export const getFeed = data => {
   const {token, count, lat, lng} = data;
   return async function(dispatch) {
     const input = {
-      count, lat, lng
-    }
+      count,
+      lat,
+      lng,
+    };
     const graphql = {
       query: getFeedQuery,
       variables: {
@@ -166,7 +168,7 @@ export const createPost = data => {
       groupId: groupId,
       image: uploadImage,
       visibility,
-      nomination: nomination,
+      nomination: type == 'general' ? nomination : {},
       priorityExpiration: new Date(parseInt(priorityExpiration)),
       confirmButton: confirmButton,
       denyButton: denyButton,
@@ -223,21 +225,6 @@ export const updatePost = data => {
 
   return async function(dispatch) {
     let newImage = image;
-    let newContent = content;
-    let newPriority = priority;
-    let newPriorityExpiration = priorityExpiration;
-    let newAllowComment = allowComment;
-    let newType = type;
-    let newVisibility = visibility;
-    let newConfirmButton = confirmButton;
-    let newDenyButton = denyButton;
-    let newTaskExpiration = taskExpiration;
-    let newStart = start;
-    let newEnd = end;
-    let newLocationDescription = locationDescription;
-    let newPlace_id = place_id;
-    let newLat = lat;
-    let newLng = lng;
 
     if (image != null) {
       const imageData = new FormData();
@@ -290,7 +277,7 @@ export const updatePost = data => {
       lng: type == 'event' ? lng : null,
     };
 
-    console.log(postInput)
+    console.log(postInput);
 
     const graphql = {
       query: updatePostMutation,

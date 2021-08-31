@@ -26,7 +26,7 @@ class Post extends React.Component {
   componentDidMount() {
     const {visibility, auth} = this.props.group.group;
     const {navigation} = this.props;
-    const {theme} = this.state
+    const {theme} = this.state;
 
     navigation.setOptions({
       headerTitle: 'Posts',
@@ -99,7 +99,17 @@ class Post extends React.Component {
     }
 
     this.setState({
-      post: init ? req.posts : post.concat(req.posts),
+      post: init
+        ? req.posts
+        : post.concat(
+            req.posts.filter(p => {
+              const index = post.findIndex(po => po.id == p.id);
+              if (index == -1) {
+                return true;
+              }
+              return false;
+            }),
+          ),
       count: req.count,
     });
   };
@@ -111,7 +121,8 @@ class Post extends React.Component {
       count: count,
     };
     return (
-      <KeyboardAvoidingView style={[{height: '100%', width: '100%'}, theme.greyArea]}>
+      <KeyboardAvoidingView
+        style={[{height: '100%', width: '100%'}, theme.greyArea]}>
         <StatusBar barStyle={'dark-content'} />
         <PostList
           posts={posts}

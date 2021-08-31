@@ -27,6 +27,8 @@ export default class PostHeader extends React.Component {
       icon,
       username,
       group_username,
+      groupname,
+      display_name,
       displayName,
       date,
       auth,
@@ -236,7 +238,7 @@ export default class PostHeader extends React.Component {
             </Text>
             {groupAuth != null ? null : (
               <Text
-                style={[styles.usernameStyle, {fontSize: userNameSize}]}
+                style={[styles.usernameStyle, {fontSize: 13}]}
                 multiline={true}
                 numberOfLines={2}>
                 @{username}

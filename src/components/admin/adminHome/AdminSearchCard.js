@@ -61,7 +61,7 @@ class AdminSearchCard extends React.Component {
       token: auth.token,
       id,
       ...data,
-      ip: metadata.IP.ip,
+      ip: metadata.IP ? metadata.IP.ip : null,
     };
 
     const req = await adminAction(request);
@@ -106,7 +106,7 @@ class AdminSearchCard extends React.Component {
     const request = {
       token: auth.token,
       securityClearance: updatedSecurityClearance,
-      ip: metadata.IP.ip,
+      ip: metadata.IP ? metadata.IP.ip : null,
     };
 
     const req = await updateSecurityClearance(request);

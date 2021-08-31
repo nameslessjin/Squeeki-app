@@ -66,6 +66,7 @@ export default class PostMedia extends React.Component {
       if (prevRoute == 'Home') {
         navigation.navigate('Comment', {
           postId: postId,
+          prevRoute
         });
       } else {
         this.setState(prevState => ({
@@ -150,8 +151,11 @@ export default class PostMedia extends React.Component {
                     this.state.height <= 300
                       ? this.state.height
                       : isShowMorePressed
-                      ? this.state.height
+                      ? this.state.height <= this.state.width
+                        ? width
+                        : this.state.height
                       : 300,
+                  width: width,
                 },
               ]}
               source={{uri: image.uri ? image.uri : image}}
