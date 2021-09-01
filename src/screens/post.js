@@ -1,11 +1,7 @@
 import React from 'react';
 import {
-  StyleSheet,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback,
   Keyboard,
-  Text,
-  StatusBar,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {getGroupPosts, getGroupPostForCheckIn} from '../actions/post';
@@ -123,7 +119,6 @@ class Post extends React.Component {
     return (
       <KeyboardAvoidingView
         style={[{height: '100%', width: '100%'}, theme.greyArea]}>
-        <StatusBar barStyle={'dark-content'} />
         <PostList
           posts={posts}
           group={null}

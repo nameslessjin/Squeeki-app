@@ -5,7 +5,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
-  StatusBar,
   Platform,
   Text,
   Dimensions,
@@ -326,7 +325,6 @@ class EditTag extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-          <StatusBar barStyle={'dark-content'} />
           {warning.length > 0 ? (
             <Text style={{marginTop: 5, color: 'red'}}>{warning}</Text>
           ) : null}

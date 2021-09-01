@@ -3,7 +3,6 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  StatusBar,
   Keyboard,
   Text,
 } from 'react-native';
@@ -103,7 +102,6 @@ class NominationPost extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
-          <StatusBar barStyle={'dark-content'} />
           {count != 0 ? (
             <PostList
               posts={{posts: posts, count: count}}

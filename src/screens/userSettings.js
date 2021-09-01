@@ -4,7 +4,6 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   FlatList,
-  StatusBar,
   Text,
   TouchableOpacity,
 } from 'react-native';
@@ -99,7 +98,6 @@ class UserSettings extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <View style={[styles.container, theme.greyArea]}>
-          <StatusBar barStyle={'dark-content'} />
           <FlatList
             data={options}
             alwaysBounceHorizontal={false}

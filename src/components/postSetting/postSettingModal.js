@@ -78,7 +78,7 @@ export default class PostSettingModal extends React.Component {
       default:
         break;
     }
-
+    console.log(theme);
     if (Platform.OS == 'ios') {
       timeModal = (
         <View
@@ -115,8 +115,14 @@ export default class PostSettingModal extends React.Component {
               </View>
             )
           ) : (
-            <View style={[styles.modalView, {width: 210, height: 100}]}>
-              <Text>SELECT DATE</Text>
+            <View
+              style={[
+                styles.modalView,
+                {width: 210, height: 100},
+                theme.backgroundColor,
+                theme.borderColor,
+              ]}>
+              <Text style={theme.textColor}>SELECT DATE</Text>
               <DateTimePicker
                 mode={'datetime'}
                 value={new Date(parseInt(time))}

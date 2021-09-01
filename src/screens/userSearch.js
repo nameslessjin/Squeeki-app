@@ -6,7 +6,6 @@ import {
   Keyboard,
   View,
   Platform,
-  StatusBar,
   Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -412,7 +411,6 @@ class UserSearch extends React.Component {
 
     return (
       <KeyboardAvoidingView style={[styles.container, theme.greyArea]}>
-        <StatusBar barStyle={'dark-content'} />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.optionArea}>
             <UserSearchBar

@@ -4,8 +4,6 @@ import {
   View,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  StatusBar,
-  Text,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
@@ -75,7 +73,6 @@ class Leaderboard extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-          <StatusBar barStyle={'dark-content'} />
           <View style={styles.leaderboard}>
             <LeaderboardList
               users={users}

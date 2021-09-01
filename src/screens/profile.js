@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   StyleSheet,
-  Dimensions,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
@@ -9,7 +8,6 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
-  StatusBar,
   View,
 } from 'react-native';
 import {updateProfile, userLogout, getDefaultIcon} from '../actions/auth';
@@ -31,7 +29,7 @@ class Profile extends React.Component {
 
   componentDidMount() {
     const {navigation} = this.props;
-    const {theme} = this.state
+    const {theme} = this.state;
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
@@ -40,16 +38,6 @@ class Profile extends React.Component {
     this.getDefaultIcon();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.auth.user != this.props.auth.user) {
-      this.setState(prevState => ({...prevState, ...this.props.auth.user}));
-    }
-    if (prevState != this.state) {
-      let update = false;
-      update = this.extractData().update;
-      const {navigation} = this.props;
-    }
-  }
 
   componentWillUnmount() {
     // update profile when unmount
@@ -68,6 +56,7 @@ class Profile extends React.Component {
   };
 
   setIcon = (data, type) => {
+    console.log('here2');
     this.setState({icon: data, modalVisible: false});
   };
 
@@ -201,6 +190,7 @@ class Profile extends React.Component {
   };
 
   onDefaultIconPress = url => {
+    console.log('here1');
     this.setState({icon: {uri: url}});
     this.onBackdropPress();
   };
@@ -215,15 +205,13 @@ class Profile extends React.Component {
       displayName,
       modalVisible,
       defaultIcons,
-      theme
+      theme,
     } = this.state;
-
+    console.log(icon)
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-          <StatusBar barStyle={'dark-content'} />
-          <TouchableOpacity
-            onPress={() => this.setState({modalVisible: true})}>
+          <TouchableOpacity onPress={() => this.setState({modalVisible: true})}>
             <Image
               source={icon ? {uri: icon.uri} : singleDefaultIcon()}
               style={styles.imageStyle}
@@ -293,7 +281,7 @@ const styles = StyleSheet.create({
     borderColor: '#718093',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 5
+    marginTop: 5,
   },
   changePasswordButton: {
     width: '100%',

@@ -1,11 +1,9 @@
 import React from 'react';
 import {
   StyleSheet,
-  View,
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-  StatusBar,
   TextInput,
   ScrollView,
 } from 'react-native';
@@ -166,7 +164,6 @@ class GroupRules extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-          <StatusBar barStyle={'dark-content'} />
           <ScrollView style={styles.scrollView}>
             <TextInput
               style={theme.textColor}

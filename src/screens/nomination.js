@@ -1,10 +1,8 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   TouchableWithoutFeedback,
-  StatusBar,
 } from 'react-native';
 import {connect} from 'react-redux';
 import HeaderRightButton from '../components/nomination/headerRightButton';
@@ -170,7 +168,6 @@ class Nomination extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <View style={[styles.container, theme.greyArea]}>
-          <StatusBar barStyle={'dark-content'} />
           <NominationList
             nominations={nominations}
             onEditPress={this.onEditPressed}

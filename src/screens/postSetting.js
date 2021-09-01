@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
   View,
   ActivityIndicator,
-  StatusBar,
   ScrollView,
   Dimensions,
 } from 'react-native';
@@ -799,7 +798,6 @@ class PostSetting extends React.Component {
           style={[styles.scroll, theme.backgroundColor]}
           bounces={false}>
           <KeyboardAvoidingView style={styles.container}>
-            <StatusBar barStyle={'dark-content'} />
             <InputImage
               image={image}
               contentKeyboard={contentKeyboard}

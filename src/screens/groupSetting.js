@@ -5,7 +5,6 @@ import {
   Keyboard,
   ActivityIndicator,
   StyleSheet,
-  StatusBar,
   View,
   Text,
   TouchableOpacity,
@@ -413,7 +412,6 @@ class GroupSetting extends React.Component {
           style={[{height: '100%', width: '100%'}, theme.backgroundColor]}>
           <KeyboardAvoidingView
             style={[styles.container, theme.backgroundColor]}>
-            <StatusBar barStyle={'dark-content'} />
             <GroupHeader
               setGroupHeader={this.setGroupHeader}
               data={this.state}

@@ -4,14 +4,10 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  Text,
   ActivityIndicator,
   StatusBar,
   AppState,
   Platform,
-  PermissionsAndroid,
-  Linking,
-  Alert,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {getFeed} from '../actions/post';
@@ -123,7 +119,7 @@ class Home extends React.Component {
     const req = await getGroupRecommendation(request);
     if (req.errors) {
       console.log(req.errors);
-      return
+      return;
     }
 
     this.setState({recommendedGroups: req.groups});
@@ -154,7 +150,7 @@ class Home extends React.Component {
     const req = await getSecurityClearance(request);
     if (req.errors) {
       console.log(req.errors);
-      return
+      return;
     }
   };
 
@@ -183,7 +179,7 @@ class Home extends React.Component {
     } catch (err) {
       console.log(err);
       this.setState({modalVisible: true, type: 'error'});
-      return
+      return;
     }
   };
 
@@ -213,7 +209,7 @@ class Home extends React.Component {
     } catch (err) {
       console.log(err);
       this.setState({modalVisible: true, type: 'error'});
-      return
+      return;
     }
   };
 
@@ -353,13 +349,22 @@ class Home extends React.Component {
   };
 
   render() {
-    const {feed} = this.props.post;
+    const {auth, post} = this.props;
+    const {feed} = post;
     const {modalVisible, theme, type, recommendedGroups, position} = this.state;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-          <StatusBar barStyle={'dark-content'} />
+          <StatusBar
+            barStyle={
+              auth
+                ? auth.user.theme == 'darkMode'
+                  ? 'light-content'
+                  : 'dark-content'
+                : 'dark-content'
+            }
+          />
           <PostList
             recommendedGroups={recommendedGroups || null}
             posts={feed}

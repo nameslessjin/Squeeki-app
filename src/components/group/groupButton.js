@@ -38,7 +38,7 @@ export default class groupButton extends React.Component {
     }
 
     const createButton = (
-      <TouchableOpacity onPress={onAddPost} disabled={!create_post_allowed}>
+      <TouchableOpacity onPress={() => onAddPost(create_post_allowed)}>
         <MaterialIcons
           name={'plus'}
           size={50}

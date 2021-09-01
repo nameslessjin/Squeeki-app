@@ -7,7 +7,6 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
-  StatusBar
 } from 'react-native';
 import UserTextInput from '../components/profile/textinput';
 import validator from 'validator';

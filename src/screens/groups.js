@@ -1,15 +1,11 @@
 import React from 'react';
 import {
   StyleSheet,
-  Dimensions,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  View,
-  Platform,
   Text,
   StatusBar,
-  ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
 import GroupList from '../components/groups/groupList';
@@ -86,12 +82,20 @@ class Groups extends React.Component {
 
   render() {
     const {groups, count} = this.props.group.groups;
-    const {navigation} = this.props;
+    const {navigation, auth} = this.props;
     const {theme} = this.state;
 
     return (
       <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-        <StatusBar barStyle={'dark-content'} />
+        <StatusBar
+          barStyle={
+            auth
+              ? auth.user.theme == 'darkMode'
+                ? 'light-content'
+                : 'dark-content'
+              : 'dark-content'
+          }
+        />
         {groups.length == 0 ? (
           <Text style={styles.noGroupStyle}>
             You haven't joined a group yet

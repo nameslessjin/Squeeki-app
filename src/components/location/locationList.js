@@ -19,7 +19,7 @@ export default class LocationList extends React.Component {
   renderItem = ({item}) => {
     const {description, place_id} = item;
     const {theme, onPress, isWhite} = this.props;
-    console.log(isWhite)
+
     if (place_id == 'powerByGoogle') {
       return (
         <View style={{width: width, alignItems: 'center'}}>

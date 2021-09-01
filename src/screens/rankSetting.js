@@ -1,9 +1,6 @@
 import React from 'react';
 import {
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  StyleSheet,
-  StatusBar,
   ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -198,7 +195,6 @@ class RankSetting extends React.Component {
           alwaysBounceVertical={false}
           alwaysBounceHorizontal={false}
           showsVerticalScrollIndicator={false}>
-          <StatusBar barStyle={'dark-content'} />
           <RankFunction
             type={'group'}
             value={group_setting_rank_required}

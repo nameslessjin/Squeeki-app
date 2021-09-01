@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, StatusBar, Text} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {getGroupRewardHistory} from '../actions/reward';
@@ -57,7 +57,6 @@ class RewardHistory extends React.Component {
     const {theme} = this.state
     return (
       <View style={[{backgroundColor: 'white'}, theme.greyArea]}>
-        <StatusBar barStyle={'dark-content'} />
         {reward.groupRewardHistory.length == 0 ? (
           <View style={styles.container}>
             <Text style={[styles.text, theme.textColor]}>No one has won any reward yet</Text>

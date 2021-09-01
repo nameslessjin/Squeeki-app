@@ -5,12 +5,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   View,
-  Text,
   TextInput,
-  TouchableOpacity,
   Platform,
-  StatusBar,
-  ActivityIndicator,
   Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -469,7 +465,6 @@ class Comment extends React.Component {
             style={[container, theme.backgroundColor]}
             behavior={Platform.OS == 'ios' ? 'padding' : 'overflow'}
             keyboardVerticalOffset={35}>
-            <StatusBar barStyle={'dark-content'} />
 
             <CommentList
               post={post}

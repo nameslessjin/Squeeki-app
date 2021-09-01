@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   TouchableOpacity,
-  StatusBar
 } from 'react-native';
 import ForgetPasswordTextInput from '../components/forgetPassword/textInput';
 import RightButton from '../components/forgetPassword/rightButton';
@@ -111,7 +110,6 @@ class ForgetPassword extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container}>
-          <StatusBar barStyle={'dark-content'} />
           <ForgetPasswordTextInput
             type={'email'}
             onChangeText={this.onChangeText}

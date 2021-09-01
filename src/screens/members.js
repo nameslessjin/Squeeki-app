@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StatusBar} from 'react-native';
+import {View} from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {getGroupMembers} from '../actions/user';
@@ -212,7 +212,6 @@ class Users extends React.Component {
     console.log(members)
     return (
       <View style={[{width: '100%', height: '100%', backgroundColor: 'white'}, theme.greyArea]}>
-        <StatusBar barStyle={'dark-content'} />
         <MemberList
           members={members}
           navigation={navigation}

@@ -1,11 +1,9 @@
 import React from 'react';
 import {
   StyleSheet,
-  KeyboardAvoidingView,
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
-  StatusBar,
   ScrollView,
   View,
   TouchableOpacity,
@@ -667,7 +665,6 @@ class RewardSetting extends React.Component {
         <ScrollView
           style={[styles.container, theme.backgroundColor]}
           bounces={false}>
-          <StatusBar barStyle={'dark-content'} />
           <Input
             type={'name'}
             value={name}

@@ -5,10 +5,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  Text,
   View,
-  StatusBar,
-  Platform,
 } from 'react-native';
 import {connect} from 'react-redux';
 import GroupsSearchBar from '../components/groupsSearch/searchBar';
@@ -116,7 +113,6 @@ class GroupsSearch extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-          <StatusBar barStyle={'dark-content'} />
           <View style={styles.optionArea}>
             <GroupsSearchBar
               onChange={this.onSearchChange}

@@ -4,10 +4,6 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  Text,
-  Platform,
-  StatusBar,
-  ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {getGroupPosts} from '../actions/post';
@@ -27,7 +23,7 @@ class Group extends React.Component {
     loading: false,
     refreshing: false,
     theme: getTheme(this.props.auth.user.theme),
-    position: null
+    position: null,
   };
 
   componentDidMount() {
@@ -38,7 +34,7 @@ class Group extends React.Component {
     });
 
     Keyboard.dismiss();
-    this.getLocation()
+    this.getLocation();
 
     // set this just in case of redirect from an old group to a new group but group is not yet load
     setTimeout(() => {
@@ -152,14 +148,47 @@ class Group extends React.Component {
     }
   };
 
-  onAddPost = () => {
+  onAddPost = create_post_allowed => {
     const {navigation} = this.props;
-    const {id} = this.props.group.group;
-    navigation.navigate('PostSetting', {
-      groupId: id,
-      create: true,
-      prevRoute: 'Group',
-    });
+    const {id, rank_setting} = this.props.group.group;
+
+    if (create_post_allowed) {
+      navigation.navigate('PostSetting', {
+        groupId: id,
+        create: true,
+        prevRoute: 'Group',
+      });
+    } else {
+      const {rankName} = this.props.group;
+      let requiredRank = rankName.rank1Name;
+      switch (rank_setting.post_rank_required) {
+        case 1:
+          requiredRank = rankName.rank1Name;
+          break;
+        case 2:
+          requiredRank = rankName.rank2Name;
+          break;
+        case 3:
+          requiredRank = rankName.rank3Name;
+          break;
+        case 4:
+          requiredRank = rankName.rank4Name;
+          break;
+        case 5:
+          requiredRank = rankName.rank5Name;
+          break;
+        case 6:
+          requiredRank = rankName.rank6Name;
+          break;
+        case 7:
+          requiredRank = rankName.rank7Name;
+          break;
+      }
+
+      alert(
+        `Your rank is blow required rank ${requiredRank} to create a post in this group`,
+      );
+    }
   };
 
   onEndReached = () => {
@@ -172,7 +201,7 @@ class Group extends React.Component {
   onRefresh = async () => {
     this.setState({refreshing: true});
     const {visibility, auth} = this.props.group.group;
-    this.getLocation()
+    this.getLocation();
     await this.getGroup();
     if (visibility || auth != null) {
       this.loadLeaderBoard();
@@ -218,7 +247,6 @@ class Group extends React.Component {
 
     return (
       <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-        <StatusBar barStyle={'dark-content'} />
         {group.group.id ? (
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <PostList

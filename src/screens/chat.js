@@ -1,15 +1,10 @@
 import React from 'react';
 import {
   StyleSheet,
-  View,
   KeyboardAvoidingView,
-  StatusBar,
   Keyboard,
-  Linking,
   AppState,
-  Text,
   Dimensions,
-  TouchableWithoutFeedback,
   Platform,
 } from 'react-native';
 import {connect} from 'react-redux';

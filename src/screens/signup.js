@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Text,
-  StatusBar,
   ActivityIndicator,
   TouchableOpacity,
   View,
@@ -182,7 +181,6 @@ class SignUp extends React.Component {
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}>
           <KeyboardAvoidingView style={styles.container}>
-            <StatusBar barStyle={'dark-content'} />
             <Text style={{color: 'red', marginVertical: 5}}>{errorText}</Text>
             <TouchableOpacity
               style={styles.imageStyle}

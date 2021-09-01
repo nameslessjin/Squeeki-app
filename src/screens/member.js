@@ -8,7 +8,6 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   ActivityIndicator,
-  StatusBar,
   Alert,
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -410,7 +409,6 @@ class Member extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={this.onBackgroundPress}>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-          <StatusBar barStyle={'dark-content'} />
           <Image
             source={icon ? {uri: icon.uri} : singleDefaultIcon()}
             style={styles.imageStyle}

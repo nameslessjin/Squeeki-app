@@ -3,7 +3,6 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   View,
-  StatusBar,
   Text,
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -189,7 +188,6 @@ class UserGroupJoinRequest extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <View style={[styles.container, theme.backgroundColor]}>
-          <StatusBar barStyle={'dark-content'} />
           {users.length > 0 ? (
             <List
               users={users}

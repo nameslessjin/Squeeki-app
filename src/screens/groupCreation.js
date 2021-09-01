@@ -6,17 +6,14 @@ import {
   ActivityIndicator,
   Keyboard,
   Platform,
-  StatusBar,
   ScrollView,
 } from 'react-native';
-import GroupCreationButton from '../components/groupSetting/createButton';
 import {createGroup} from '../actions/group';
 import {connect} from 'react-redux';
 import GroupHeader from '../components/groupSetting/groupHeader';
 import {userLogout} from '../actions/auth';
 import ToggleSetting from '../components/groupSetting/toggleSetting';
 import SettingEdition from '../components/groupSetting/settingEdition';
-import validator from 'validator';
 import CreateButton from '../components/groupSetting/updateButton';
 import {getTheme} from '../utils/theme';
 
@@ -234,7 +231,6 @@ class GroupCreation extends React.Component {
           <KeyboardAvoidingView
             behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
             style={[styles.container, theme.backgroundColor]}>
-            <StatusBar barStyle={'dark-content'} />
             <GroupHeader
               setGroupHeader={this.setGroupHeader}
               data={this.state}

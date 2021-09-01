@@ -5,7 +5,6 @@ import {
   KeyboardAvoidingView,
   ActivityIndicator,
   Keyboard,
-  StatusBar,
   Alert,
 } from 'react-native';
 import {connect} from 'react-redux';

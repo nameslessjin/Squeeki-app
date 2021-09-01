@@ -1,10 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet,
-  Text,
   View,
-  TouchableWithoutFeedback,
-  StatusBar,
 } from 'react-native';
 import {connect} from 'react-redux';
 import HeaderRightButton from '../components/checkin/headerRightButton';

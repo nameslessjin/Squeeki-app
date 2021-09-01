@@ -4,9 +4,8 @@ import {
   Text,
   View,
   TouchableWithoutFeedback,
-  StatusBar,
-  ScrollView,
   AppState,
+  StatusBar,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {
@@ -288,12 +287,21 @@ class Chats extends React.Component {
   };
 
   render() {
-    const {chat, group, route} = this.props;
+    const {chat, group, route, auth} = this.props;
     const {refreshing, theme} = this.state;
     const modalVisible = route.params ? route.params.modalVisible : false;
 
     return (
       <View style={theme.greyArea}>
+        <StatusBar
+          barStyle={
+            auth
+              ? auth.user.theme == 'darkMode'
+                ? 'light-content'
+                : 'dark-content'
+              : 'dark-content'
+          }
+        />
         {chat.chats.length == 0 ? (
           <View style={styles.container}>
             <Text style={styles.text}>You are not in any chat yet</Text>
