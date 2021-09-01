@@ -13,7 +13,6 @@ import {
 } from '../actions/query/authQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
-// import AsyncStorage from '@react-native-community/async-storage';
 
 export const signup = data => {
   const {email, password, username, icon, refer_code} = data;

@@ -6,7 +6,6 @@ import {
 } from './query/messageQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
-// import { useSubscription, useQuery } from '@apollo/client'
 
 export const getChatMessage = request => {
   const {chatId, token, pointer, is_dm} = request;

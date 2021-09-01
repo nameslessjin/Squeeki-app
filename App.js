@@ -15,7 +15,7 @@ import currentScreenReducer from './src/reducers/currentScreenReducer';
 import groupReducer from './src/reducers/groupReducer';
 import postReducer from './src/reducers/postReducer';
 import {persistStore, persistReducer} from 'redux-persist';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PersistGate} from 'redux-persist/integration/react';
 import {createLogger} from 'redux-logger';
 import commentReducer from './src/reducers/commentReducer';

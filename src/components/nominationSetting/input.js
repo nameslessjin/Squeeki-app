@@ -7,7 +7,8 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import {Picker} from '@react-native-community/picker';
+// import {Picker} from '@react-native-community/picker';
+import {Picker} from '@react-native-picker/picker';
 import Modal from 'react-native-modal';
 
 export default class Input extends React.Component {

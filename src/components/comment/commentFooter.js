@@ -6,7 +6,6 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
-import {color} from 'react-native-reanimated';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {countFormat} from '../../utils/format';
 
