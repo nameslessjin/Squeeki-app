@@ -6,6 +6,7 @@ import {PermissionsAndroid, Platform} from 'react-native';
 import {FileSystem} from 'react-native-unimodules';
 import Clipboard from '@react-native-clipboard/clipboard';
 
+
 export const backgroundImagePicker = (setImage, from, cancel) => {
   const options = {
     quality: 1.0,
