@@ -45,7 +45,7 @@ const INITIAL_STATE = {
     {
       id: '4',
       type: 'loot',
-      listName: 'Gifted Rewards (100pts)',
+      listName: 'Reward Drops (100pts)',
       chance1: 1,
       chance2: 5,
       chance3: 14,
@@ -57,7 +57,7 @@ const INITIAL_STATE = {
     {
       id: '5',
       type: 'loot',
-      listName: 'Gifted Rewards (200pts)',
+      listName: 'Reward Drops (200pts)',
       chance1: 1,
       chance2: 5,
       chance3: 14,
@@ -69,7 +69,7 @@ const INITIAL_STATE = {
     {
       id: '6',
       type: 'loot',
-      listName: 'Gifted Rewards (1000pts)',
+      listName: 'Reward Drops (1000pts)',
       chance1: 1,
       chance2: 5,
       chance3: 14,

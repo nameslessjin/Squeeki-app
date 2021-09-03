@@ -209,9 +209,9 @@ query getSystemRewardListSetting {
 }
 `;
 
-export const getGroupGiftedRewardFromListQuery = `
-query getGroupGiftedRewardFromList($input: RewardInput!){
-    getGroupGiftedRewardFromList(input: $input){
+export const getGroupRewardDropFromListQuery = `
+query getGroupRewardDropFromList($input: RewardInput!){
+    getGroupRewardDropFromList(input: $input){
         id
         type
         listName
@@ -235,6 +235,19 @@ query getGroupGiftedRewardFromList($input: RewardInput!){
                 count
             }
         }
+    }
+}
+`;
+
+export const scanQRCodeQuery = `
+query scanQRCode($input: ScanInput!){
+    scanQRCode(input: $input){
+        message
+        id
+        pointCost
+        chance
+        name
+        createdAt
     }
 }
 `;

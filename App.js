@@ -74,12 +74,13 @@ import TaskVerify from './src/screens/taskVerify';
 import RewardContentList from './src/screens/rewardContentList';
 import RewardListSetting from './src/screens/rewardListSetting';
 import RewardDetail from './src/screens/rewardDetail';
-import GiftedRewardList from './src/screens/reward';
+import RewardDropList from './src/screens/reward';
 import GroupRankNameSetting from './src/screens/groupRankNameSetting';
 import AdminDrawerNavigator from './src/navigators/adminDrawerNavigator';
 import SearchLocation from './src/screens/searchLocation';
-import HomeTabNavigator from './src/navigators/homeTabNavigator'
-import MyRewards from './src/screens/myReward'
+import HomeTabNavigator from './src/navigators/homeTabNavigator';
+import MyRewards from './src/screens/myReward';
+import Scan from './src/screens/scanScreen';
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -128,22 +129,18 @@ let persistor = persistStore(store);
 
 const Stack = createStackNavigator();
 
-function getHeaderTitle(route) {
-  const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
-  return routeName;
-}
-
 export default (App = () => {
-  // const [token, setToken] = useState('')
+  // const [token, setToken] = useState('');
 
-  // AsyncStorage.getItem('token').then(r => {
-
-  //   if (r){
-  //     setToken(r)
-  //   }
-  // }).catch(e => {
-  //   console.log(e)
-  // })
+  // AsyncStorage.getItem('persist:root')
+  //   .then(r => {
+  //     if (r) {
+  //       setToken(r.match(/token\\":\\"[a-zA-Z0-9_]/g));
+  //     }
+  //   })
+  //   .catch(e => {
+  //     console.log(e);
+  //   });
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -157,7 +154,7 @@ export default (App = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator initialRouteName={'HomeDrawerNavigator'}>
             <Stack.Screen
               name="SignIn"
               component={SignIn}
@@ -246,10 +243,7 @@ export default (App = () => {
               component={RewardListSetting}
             />
             <Stack.Screen name="RewardDetail" component={RewardDetail} />
-            <Stack.Screen
-              name="GiftedRewardList"
-              component={GiftedRewardList}
-            />
+            <Stack.Screen name="RewardDropList" component={RewardDropList} />
             <Stack.Screen
               name="GroupRankNameSetting"
               component={GroupRankNameSetting}
@@ -260,6 +254,7 @@ export default (App = () => {
             />
             <Stack.Screen name="SearchLocation" component={SearchLocation} />
             <Stack.Screen name="MyRewards" component={MyRewards} />
+            <Stack.Screen name="Scan" component={Scan} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

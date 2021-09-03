@@ -15,6 +15,7 @@ import TopRightButton from '../components/reward/topRightButton';
 import {dateConversion} from '../utils/time';
 import {getSingleGroupById} from '../actions/group';
 import {getTheme} from '../utils/theme';
+import QRCode from 'react-native-qrcode-svg';
 
 class RewardDetail extends React.Component {
   state = {
@@ -41,7 +42,7 @@ class RewardDetail extends React.Component {
       headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
     });
-    if (prevRoute == 'RewardList' || prevRoute == 'GiftedRewardList') {
+    if (prevRoute == 'RewardList' || prevRoute == 'RewardDropList') {
       this.getRewardEntry();
     }
   }
@@ -65,7 +66,7 @@ class RewardDetail extends React.Component {
     }
 
     // always refresh if coming from a reward list
-    if (prevRoute == 'RewardList' || prevRoute == 'GiftedRewardList') {
+    if (prevRoute == 'RewardList' || prevRoute == 'RewardDropList') {
       navigation.navigate(prevRoute, {
         refresh: true,
       });
@@ -84,7 +85,7 @@ class RewardDetail extends React.Component {
     navigation.setOptions({
       headerRight: () =>
         hasRewardManagementAuthority &&
-        (prevRoute == 'RewardList' || prevRoute == 'GiftedRewardList') ? (
+        (prevRoute == 'RewardList' || prevRoute == 'RewardDropList') ? (
           <TopRightButton
             type={'edit'}
             onPress={this.onPress}
@@ -247,143 +248,145 @@ class RewardDetail extends React.Component {
     const {group} = this.props.group;
 
     return (
-        <TouchableWithoutFeedback>
-          <ScrollView style={[styles.container, theme.backgroundColor]}>
-            <InputImage image={image} contentKeyboard={false} disabled={true} />
-            <View style={[styles.infoContaier]}>
-              <View style={styles.infoSubContainer}>
+      <TouchableWithoutFeedback>
+        <ScrollView style={[styles.container, theme.backgroundColor]}>
+          <InputImage image={image} contentKeyboard={false} disabled={true} />
+          <View style={[styles.infoContaier]}>
+            <View style={styles.infoSubContainer}>
+              <Text
+                style={[{fontWeight: '500', fontSize: 17}, theme.textColor]}>
+                {name}
+              </Text>
+            </View>
+          </View>
+
+          <InputContent
+            content={description}
+            disabled={true}
+            theme={theme}
+            type={'reward'}
+          />
+
+          <View style={styles.infoContaier}>
+            <View style={styles.infoSubContainer}>
+              {prevRoute == 'RewardList' || prevRoute == 'RewardDropList' ? (
+                <Text style={theme.textColor}>{count} remaining</Text>
+              ) : null}
+              {content &&
+              (prevRoute == 'MyRewards' || prevRoute == 'MyGroupRewards') ? (
                 <Text
-                  style={[{fontWeight: '500', fontSize: 17}, theme.textColor]}>
-                  {name}
-                </Text>
-              </View>
-            </View>
-
-            <InputContent
-              content={description}
-              disabled={true}
-              theme={theme}
-              type={'reward'}
-            />
-
-            <View style={styles.infoContaier}>
-              <View style={styles.infoSubContainer}>
-                {prevRoute == 'RewardList' ||
-                prevRoute == 'GiftedRewardList' ? (
-                  <Text style={theme.textColor}>{count} remaining</Text>
-                ) : null}
-                {content &&
-                (prevRoute == 'MyRewards' || prevRoute == 'MyGroupRewards') ? (
-                  <Text
-                    style={
-                      theme.textColor
-                    }>{`Hidden Content: ${content}`}</Text>
-                ) : null}
+                  style={theme.textColor}>{`Hidden Content: ${content}`}</Text>
+              ) : null}
+              <Text style={[styles.text, theme.textColor]}>
+                {pointCost
+                  ? `Point Cost: ${pointCost} pts`
+                  : `Chance To Win: ${chanceDisplay}%`}
+              </Text>
+              {expiration ? (
                 <Text style={[styles.text, theme.textColor]}>
-                  {pointCost
-                    ? `Point Cost: ${pointCost} pts`
-                    : `Chance To Win: ${chanceDisplay}%`}
+                  Listing Expiration:{' '}
+                  {dateConversion(expiration, 'expirationDisplay')}
                 </Text>
-                {expiration ? (
-                  <Text style={[styles.text, theme.textColor]}>
-                    Listing Expiration:{' '}
-                    {dateConversion(expiration, 'expirationDisplay')}
-                  </Text>
-                ) : null}
-                {fromId == group.id || !groupDisplayName ? null : (
-                  <View
-                    style={[
-                      styles.text,
-                      {flexDirection: 'row', alignItems: 'center'},
-                    ]}>
-                    <Text style={theme.textColor}>From: </Text>
-                    <TouchableOpacity onPress={this.getGroup}>
-                      <View style={styles.groupNameTag}>
-                        <Text style={{color: 'white'}}>{groupDisplayName}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                {toId == group.id || !giftedGroupDisplayName ? null : (
-                  <View
-                    style={[
-                      styles.text,
-                      {flexDirection: 'row', alignItems: 'center'},
-                    ]}>
-                    <Text style={theme.textColor}>To: </Text>
-                    <TouchableOpacity onPress={this.getGroup}>
-                      <View style={styles.groupNameTag}>
-                        <Text style={{color: 'white'}}>
-                          {giftedGroupDisplayName}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                )}
+              ) : null}
+              {fromId == group.id || !groupDisplayName ? null : (
+                <View
+                  style={[
+                    styles.text,
+                    {flexDirection: 'row', alignItems: 'center'},
+                  ]}>
+                  <Text style={theme.textColor}>From: </Text>
+                  <TouchableOpacity onPress={this.getGroup}>
+                    <View style={styles.groupNameTag}>
+                      <Text style={{color: 'white'}}>{groupDisplayName}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              )}
+              {toId == group.id || !giftedGroupDisplayName ? null : (
+                <View
+                  style={[
+                    styles.text,
+                    {flexDirection: 'row', alignItems: 'center'},
+                  ]}>
+                  <Text style={theme.textColor}>To: </Text>
+                  <TouchableOpacity onPress={this.getGroup}>
+                    <View style={styles.groupNameTag}>
+                      <Text style={{color: 'white'}}>
+                        {giftedGroupDisplayName}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              )}
 
-                {prevRoute == 'MyRewards' ||
+              {winner &&
+              (prevRoute == 'MyRewards' ||
                 prevRoute == 'MyGroupRewards' ||
-                prevRoute == 'RewardManagement' ? (
-                  <Text style={[styles.text, theme.textColor]}>
-                    Reward ID: {id}
-                  </Text>
-                ) : null}
-                {winner &&
-                (prevRoute == 'MyRewards' ||
-                  prevRoute == 'MyGroupRewards' ||
-                  prevRoute == 'RewardManagement') ? (
-                  <Text style={[styles.text, {color: 'grey'}]}>{`Won by ${
-                    winner.displayName
-                  } ${
-                    winner.username == winner.displayName
-                      ? ''
-                      : `(@${winner.username})`
-                  }`}</Text>
-                ) : null}
-                {prevRoute == 'MyRewards' ||
+                prevRoute == 'RewardManagement') ? (
+                <Text style={[styles.text, {color: 'grey'}]}>{`Won by ${
+                  winner.displayName
+                } ${
+                  winner.username == winner.displayName
+                    ? ''
+                    : `(@${winner.username})`
+                }`}</Text>
+              ) : null}
+              {prevRoute == 'MyRewards' ||
+              prevRoute == 'MyGroupRewards' ||
+              prevRoute == 'RewardManagement' ? (
+                <Text
+                  style={[
+                    styles.text,
+                    {
+                      color:
+                        status == 'default' ? theme.textColor.color : 'grey',
+                    },
+                  ]}>
+                  {status == 'default'
+                    ? 'Available'
+                    : `Redeemed ${
+                        redeemer
+                          ? `by ${redeemer.displayName}${
+                              redeemer.username == redeemer.displayName
+                                ? ''
+                                : `(@${redeemer.username})`
+                            }`
+                          : ''
+                      }`}
+                </Text>
+              ) : null}
+              {redeemer &&
+              status == 'redeemed' &&
+              (prevRoute == 'MyRewards' ||
                 prevRoute == 'MyGroupRewards' ||
-                prevRoute == 'RewardManagement' ? (
-                  <Text
-                    style={[
-                      styles.text,
-                      {
-                        color:
-                          status == 'default' ? theme.textColor.color : 'grey',
-                      },
-                    ]}>
-                    {status == 'default'
-                      ? 'Available'
-                      : `Redeemed ${
-                          redeemer
-                            ? `by ${redeemer.displayName}${
-                                redeemer.username == redeemer.displayName
-                                  ? ''
-                                  : `(@${redeemer.username})`
-                              }`
-                            : ''
-                        }`}
-                  </Text>
-                ) : null}
-                {redeemer &&
-                status == 'redeemed' &&
-                (prevRoute == 'MyRewards' ||
-                  prevRoute == 'MyGroupRewards' ||
-                  prevRoute == 'RewardManagement') ? (
-                  <Text
-                    style={[
-                      styles.text,
-                      {
-                        color: 'grey',
-                      },
-                    ]}>
-                    {`Redeemed at ${dateConversion(updatedAt, 'reward')}`}
-                  </Text>
-                ) : null}
-              </View>
+                prevRoute == 'RewardManagement') ? (
+                <Text
+                  style={[
+                    styles.text,
+                    {
+                      color: 'grey',
+                    },
+                  ]}>
+                  {`Redeemed at ${dateConversion(updatedAt, 'reward')}`}
+                </Text>
+              ) : null}
+
+              {prevRoute == 'MyRewards' ||
+              prevRoute == 'MyGroupRewards' ||
+              prevRoute == 'RewardManagement' ? (
+                <View style={{width: '100%', marginTop: 10, justifyContent: 'center', alignItems: 'center'}}>
+                  <QRCode
+                    value={id}
+                    color={theme.textColor.color}
+                    backgroundColor={theme.backgroundColor.backgroundColor}
+                  />
+                </View>
+              ) : null}
             </View>
-            <View style={styles.empty} />
-          </ScrollView>
-        </TouchableWithoutFeedback>
+          </View>
+          <View style={styles.empty} />
+        </ScrollView>
+      </TouchableWithoutFeedback>
     );
   }
 }

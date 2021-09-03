@@ -13,6 +13,19 @@ import {
 export default class HomeModal extends React.Component {
   state = {};
 
+  onPress = type => {
+    const {userLogout, navigation} = this.props;
+    if (type == 'update') {
+      this.directToStore();
+    } else if (type == 'account') {
+      userLogout();
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'SignIn'}],
+      });
+    }
+  };
+
   directToStore = () => {
     const appStoreLink =
       Platform.OS == 'ios'
@@ -29,15 +42,17 @@ export default class HomeModal extends React.Component {
   render() {
     const {modalVisible, onBackdropPress, type, theme} = this.props;
 
-    let message = 'A New Version is available'
-    if (type == 'update'){
-      message = 'A New Version is available'
-    } else if (type == 'error'){
-      message = 'An error has occurred, please visit us on twitter for more information'
-    } else if (type == 'account'){
-      message = 'This account is currently suspended, please contact us for more information'
+    let message = 'A New Version is available';
+    if (type == 'update') {
+      message = 'A New Version is available';
+    } else if (type == 'error') {
+      message =
+        'An error has occurred, please visit us on twitter for more information';
+    } else if (type == 'account') {
+      message =
+        'This account is currently suspended, please contact us for more information';
     }
- 
+
     return (
       <View style={[styles.centeredView]}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -54,16 +69,15 @@ export default class HomeModal extends React.Component {
                   {message}
                 </Text>
                 {type == 'update' ? (
-                  <TouchableOpacity onPress={this.directToStore}>
+                  <TouchableOpacity onPress={() => this.onPress('update')}>
                     <View style={styles.button}>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontWeight: 'bold',
-                          fontSize: 20,
-                        }}>
-                        Go to App Store
-                      </Text>
+                      <Text style={styles.buttonText}>Go to App Store</Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : type == 'account' ? (
+                  <TouchableOpacity onPress={() => this.onPress('account')}>
+                    <View style={styles.button}>
+                      <Text style={styles.buttonText}>Logout</Text>
                     </View>
                   </TouchableOpacity>
                 ) : null}
@@ -99,7 +113,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     height: 150,
     width: 300,
-    padding: 10
+    padding: 10,
   },
   modalText: {
     marginBottom: 15,
@@ -114,6 +128,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#EA2027',
     padding: 10,
-    borderRadius: 20,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 20,
   },
 });

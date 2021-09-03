@@ -15,6 +15,7 @@ import SearchBar from '../components/reward/rewardSearchBar';
 import {searchReward, redeemUserReward} from '../actions/reward';
 import RewardHistoryList from '../components/reward/rewardHistoryList';
 import {getTheme} from '../utils/theme';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const {height} = Dimensions.get('screen');
 
@@ -122,6 +123,13 @@ class RewardManagement extends React.Component {
     );
   };
 
+  onNavigate = () => {
+    const {navigation} = this.props;
+    navigation.navigate('Scan', {
+      prevRoute: 'RewardManagement',
+    });
+  };
+
   render() {
     const {searchTerm, rewardList, theme} = this.state;
     const {group, navigation} = this.props;
@@ -135,6 +143,21 @@ class RewardManagement extends React.Component {
               value={searchTerm}
               theme={theme}
             />
+            <TouchableOpacity onPress={this.onNavigate}>
+              <View
+                style={{
+                  width: 30,
+                  aspectRatio: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <MaterialIcons
+                  name={'qrcode-scan'}
+                  size={25}
+                  style={theme.textColor}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
           <RewardHistoryList
             rewardHistory={rewardList || []}

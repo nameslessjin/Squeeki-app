@@ -117,7 +117,7 @@ class GroupDrawerNavigator extends React.Component {
         prevRoute == 'MyRewards' ||
         prevRoute == 'RewardList' ||
         prevRoute == 'RewardDetail' ||
-        prevRoute == 'GiftedRewardList' ||
+        prevRoute == 'RewardDropList' ||
         prevRoute == 'Chat' ||
         prevRoute == 'PostCard' ||
         prevRoute == 'Comment' ||

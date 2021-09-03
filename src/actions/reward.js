@@ -11,7 +11,8 @@ import {
   searchRewardQuery,
   redeemUserRewardMutation,
   getSystemRewardListSettingQuery,
-  getGroupGiftedRewardFromListQuery,
+  getGroupRewardDropFromListQuery,
+  scanQRCodeQuery,
 } from './query/rewardQuery';
 import {httpCall, httpUpload} from './utils/httpCall';
 
@@ -93,9 +94,7 @@ export const getGroupRewardList = request => {
     };
 
     const graphql = {
-      query: isGift
-        ? getGroupGiftedRewardFromListQuery
-        : getGroupRewardListQuery,
+      query: isGift ? getGroupRewardDropFromListQuery : getGroupRewardListQuery,
       variables: {
         input,
       },
@@ -110,7 +109,7 @@ export const getGroupRewardList = request => {
     dispatch(
       getGroupRewardListReducer(
         isGift
-          ? result.data.getGroupGiftedRewardFromList
+          ? result.data.getGroupRewardDropFromList
           : result.data.getGroupRewardList,
       ),
     );
@@ -406,5 +405,30 @@ export const getSystemRewardListSetting = request => {
     }
 
     return result.data.getSystemRewardListSetting;
+  };
+};
+
+export const scanQRCode = request => {
+  const {token, id, type} = request;
+
+  return async function(dispatch) {
+    const input = {
+      id,
+      type,
+    };
+
+    const graphql = {
+      query: scanQRCodeQuery,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    return result.data.scanQRCode;
   };
 };

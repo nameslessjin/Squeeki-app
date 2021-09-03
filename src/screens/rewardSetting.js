@@ -57,7 +57,6 @@ class RewardSetting extends React.Component {
     const {navigation, route} = this.props;
     const {theme} = this.state;
     navigation.setOptions({
-      headerBackTitle: 'Cancel',
       headerRight: () => (
         <TopRightButton
           type={'done'}
@@ -69,6 +68,7 @@ class RewardSetting extends React.Component {
       headerTitle: 'Settings',
       headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
+      headerBackTitleVisible: false
     });
 
     if (route.params) {
@@ -313,7 +313,7 @@ class RewardSetting extends React.Component {
     const request = {
       token: auth.token,
       groupId: group.group.id,
-      isGift: prevRoute == 'GiftedRewardList',
+      isGift: prevRoute == 'RewardDropList',
     };
     getGroupRewardList(request);
   }
@@ -436,7 +436,7 @@ class RewardSetting extends React.Component {
       return;
     }
     navigation.navigate(
-      prevRoute == 'GiftedRewardList' ? 'GiftedRewardList' : 'RewardList',
+      prevRoute == 'RewardDropList' ? 'RewardDropList' : 'RewardList',
     );
   };
 
@@ -597,7 +597,7 @@ class RewardSetting extends React.Component {
       return;
     }
     navigation.navigate(
-      prevRoute == 'GiftedRewardList' ? 'GiftedRewardList' : 'RewardList',
+      prevRoute == 'RewardDropList' ? 'RewardDropList' : 'RewardList',
     );
   };
 

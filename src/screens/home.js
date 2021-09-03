@@ -14,7 +14,7 @@ import {getFeed} from '../actions/post';
 import {getGroupRecommendation} from '../actions/group';
 import PostList from '../components/posts/postList';
 import {getFeedFunc} from '../functions/post';
-import {userLogout} from '../actions/auth';
+import {userLogout, signin} from '../actions/auth';
 import {
   getLastVersion,
   getUserStatus,
@@ -48,22 +48,59 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
-    this.getNotificationToken();
-    this.getLastVersion();
-    this.checkAuth();
-    this.props.getIpAddress();
-    this.getSecurityClearance();
-    this.watchId = null;
-    this.getLocation();
+    const {auth, navigation} = this.props;
+    if (auth.token) {
+      this.getNotificationToken();
+      this.getLastVersion();
+      this.login();
+      this.props.getIpAddress();
+      this.getSecurityClearance();
+      this.watchId = null;
+      this.getLocation();
 
-    setTimeout(() => {
-      this.getGroupRecommendation();
-      this.loadFeed(true);
-      this.logUserEvent({event: 'onScreen'});
-    }, 2500);
+      setTimeout(() => {
+        this.getGroupRecommendation();
+        this.loadFeed(true);
+        // this.logUserEvent({event: 'onScreen'});
+      }, 2500);
+    } else {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'SignIn'}],
+      });
+    }
 
     AppState.addEventListener('change', this._handleAppStateChange);
   }
+
+  login = async () => {
+    const {auth, signin, navigation, userLogout} = this.props;
+    const request = {
+      token: auth.token,
+    };
+
+    const req = await signin(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot find user account');
+      userLogout();
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'SignIn'}],
+      });
+      return;
+    }
+
+    console.log(req);
+
+    if (req.status != 'active') {
+      this.setState({modalVisible: true, type: 'account'});
+    } else {
+      if (!(this.state.type == 'update' && this.state.modalVisible)) {
+        this.setState({modalVisible: false});
+      }
+    }
+  };
 
   getLocation = async () => {
     const hasPermission = await hasLocationPermission();
@@ -256,16 +293,16 @@ class Home extends React.Component {
       setTimeout(() => {
         this.getGroupRecommendation();
         this.loadFeed(true);
-        this.logUserEvent({event: 'onScreen'});
+        // this.logUserEvent({event: 'onScreen'});
       }, 1000);
     } else if (nextAppState !== 'active') {
       if (Platform.OS == 'ios') {
         if (nextAppState == 'inactive') {
-          this.logUserEvent({event: 'offScreen'});
+          // this.logUserEvent({event: 'offScreen'});
         }
       } else {
         if (nextAppState == 'background') {
-          this.logUserEvent({event: 'offScreen'});
+          // this.logUserEvent({event: 'offScreen'});
         }
       }
       this.removeLocationUpdate();
@@ -349,7 +386,7 @@ class Home extends React.Component {
   };
 
   render() {
-    const {auth, post} = this.props;
+    const {auth, post, navigation} = this.props;
     const {feed} = post;
     const {modalVisible, theme, type, recommendedGroups, position} = this.state;
 
@@ -380,7 +417,13 @@ class Home extends React.Component {
             <ActivityIndicator animating={true} color={'grey'} />
           ) : null}
           {modalVisible ? (
-            <HomeModal type={type} modalVisible={modalVisible} theme={theme} />
+            <HomeModal
+              type={type}
+              modalVisible={modalVisible}
+              theme={theme}
+              userLogout={this.props.userLogout}
+              navigation={navigation}
+            />
           ) : null}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -421,6 +464,7 @@ const mapDispatchToProps = dispatch => {
     logUserEvent: data => dispatch(logUserEvent(data)),
     getGroupRecommendation: data => dispatch(getGroupRecommendation(data)),
     getIpAddress: data => dispatch(getIpAddress(data)),
+    signin: data => dispatch(signin(data)),
   };
 };
 

@@ -62,7 +62,7 @@ export const signin = data => {
     }
     dispatch(userSignIn(result.data.login));
 
-    return 0;
+    return result.data.login.user;
   };
 };
 

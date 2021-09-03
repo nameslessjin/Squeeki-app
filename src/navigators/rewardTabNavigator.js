@@ -158,7 +158,7 @@ class RewardTabNavigator extends React.Component {
       navigation.navigate('RewardSetting', {prevRoute: 'RewardList'});
     } else if (routeName == 'RewardManagement') {
       // direct to gifted reward management page
-      navigation.navigate('GiftedRewardList', {
+      navigation.navigate('RewardDropList', {
         prevRoute: 'RewardManagement',
       });
     }

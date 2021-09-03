@@ -29,11 +29,13 @@ class SignIn extends React.Component {
   };
 
   componentDidMount() {
-    const {auth} = this.props;
-    if (auth.token) {
-      this.setState({loading: true});
-      this.login(false);
-    }
+    const {auth, navigation} = this.props;
+    // if (auth.token) {
+    //   navigation.reset({
+    //     index: 0,
+    //     routes: [{name: 'HomeTabNavigator'}],
+    //   });
+    // }
   }
 
   onChangeText = (type, text) => {
@@ -100,8 +102,9 @@ class SignIn extends React.Component {
     if (signInResult.errors) {
       console.log({errorText: signInResult.errors[0].message});
       if (
-        signInResult.errors[0].message == 'Username and password do not match' ||
-        signInResult.errors[0].message == "User not found"
+        signInResult.errors[0].message ==
+          'Username and password do not match' ||
+        signInResult.errors[0].message == 'User not found'
       ) {
         this.setState({errorText: signInResult.errors[0].message});
       } else {
@@ -142,7 +145,7 @@ class SignIn extends React.Component {
 
           {loading ? (
             <View style={{marginTop: 15}}>
-              <ActivityIndicator animating={true} color={'grey'}/>
+              <ActivityIndicator animating={true} color={'grey'} />
               <Text>Connecting ...</Text>
             </View>
           ) : (

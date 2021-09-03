@@ -6,19 +6,23 @@ export const getFeedFunc = async data => {
     lat,
     lng,
   };
-  const feedData = await getFeed(request);
-  if (feedData.errors) {
-    console.log(feedData.errors[0].message);
-    alert('Cannot get feed at this time, please try again later');
-    if (feedData.errors[0].message == 'Not Authenticated') {
-      userLogout();
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'SignIn'}],
-      });
+
+  if (token) {
+    const feedData = await getFeed(request);
+    if (feedData.errors) {
+      console.log(feedData.errors[0].message);
+      alert('Cannot get feed at this time, please try again later');
+      if (feedData.errors[0].message == 'Not Authenticated') {
+        userLogout();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+      }
+      return;
     }
-    return;
   }
+  return;
 };
 
 export const getGroupPostsFunc = async data => {

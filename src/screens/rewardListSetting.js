@@ -41,7 +41,7 @@ class RewardListSetting extends React.Component {
     const {navigation} = this.props;
     const {theme} = this.state;
     navigation.setOptions({
-      headerBackTitle: 'Cancel',
+      headerBackTitleVisible: false,
       headerTitle: 'List Settings',
       headerRight: () => (
         <TopRightButton

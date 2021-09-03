@@ -2,10 +2,9 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import PhotoEditor from 'react-native-photo-editor';
 import RNFS from 'react-native-fs';
 import CameraRoll from '@react-native-community/cameraroll';
-import {PermissionsAndroid, Platform} from 'react-native';
+import {PermissionsAndroid, Platform, View} from 'react-native';
 import {FileSystem} from 'react-native-unimodules';
 import Clipboard from '@react-native-clipboard/clipboard';
-
 
 export const backgroundImagePicker = (setImage, from, cancel) => {
   const options = {

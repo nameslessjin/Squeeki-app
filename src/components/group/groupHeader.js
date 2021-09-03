@@ -42,7 +42,7 @@ class GroupHeader extends React.Component {
   };
 
   changeNotification = async notificationPriority => {
-    const {auth, changeGroupNotification} = this.props;
+    const {auth, changeGroupNotification, userLogout} = this.props;
     const {id} = this.props.group.group;
     const data = {
       token: auth.token,

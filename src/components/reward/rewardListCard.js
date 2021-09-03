@@ -26,7 +26,7 @@ export default class RewardListCard extends React.Component {
       navigation.navigate('RewardDetail', {
         ...item,
         prevRoute:
-          prevRoute == 'RewardManagement' ? 'GiftedRewardList' : 'RewardList',
+          prevRoute == 'RewardManagement' ? 'RewardDropList' : 'RewardList',
       });
     } else if (type == 'setting') {
       const {type} = item;
@@ -113,7 +113,7 @@ export default class RewardListCard extends React.Component {
               navigation={navigation}
               prevRoute={
                 prevRoute == 'RewardManagement'
-                  ? 'GiftedRewardList'
+                  ? 'RewardDropList'
                   : 'RewardList'
               }
               theme={theme}
