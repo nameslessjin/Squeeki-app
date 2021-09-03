@@ -154,7 +154,7 @@ export default (App = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName={'HomeDrawerNavigator'}>
+          <Stack.Navigator initialRouteName={'HomeTabNavigator'}>
             <Stack.Screen
               name="SignIn"
               component={SignIn}
