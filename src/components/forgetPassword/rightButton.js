@@ -9,7 +9,7 @@ export default class RightButton extends React.Component {
         style={styles.headerRightButton}
         onPress={onPress}
         disabled={disabled}>
-        <Text style={[styles.button, {color: disabled ? '#95a5a6' : '#3498db'}]}>
+        <Text style={[styles.button, {color: disabled ? '#95a5a6' : 'black'}]}>
           Next
         </Text>
       </TouchableOpacity>
@@ -19,11 +19,11 @@ export default class RightButton extends React.Component {
 
 const styles = StyleSheet.create({
   headerRightButton: {
-    marginRight: 15,
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
+    width: 50,
+    height: 50,
+    marginRight: 5,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     fontSize: 16,

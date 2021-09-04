@@ -48,6 +48,7 @@ class ForgetPassword extends React.Component {
 
     this.props.navigation.navigate('ChangePassword', {
       token: token,
+      prevRoute: 'ForgetPassword'
     });
   };
 

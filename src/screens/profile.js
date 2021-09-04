@@ -17,10 +17,12 @@ import validator from 'validator';
 import ProfileModal from '../components/profile/profileModal';
 import {singleDefaultIcon} from '../utils/defaultIcon';
 import {getTheme} from '../utils/theme';
+import ProfileButton from '../components/profile/profileButton';
 
 class Profile extends React.Component {
   state = {
     ...this.props.auth.user,
+    email: this.props.auth.user.email ? this.props.auth.user.email : '',
     loading: false,
     modalVisible: false,
     defaultIcons: [],
@@ -34,16 +36,32 @@ class Profile extends React.Component {
       headerBackTitleVisible: false,
       headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
       headerTintColor: theme.textColor.color,
+      headerRight: () => (
+        <ProfileButton update={false} loading={false} theme={theme} />
+      ),
     });
     this.getDefaultIcon();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const {navigation} = this.props;
+    const {update} = this.extractData();
+    const {loading, theme} = this.state;
 
-  componentWillUnmount() {
-    // update profile when unmount
-    if (this.extractData().update) {
-      this.updateProfile();
+    if (this.props.auth.user != prevProps.auth.user) {
+      this.setState(prevState => ({...prevState, ...this.props.auth.user}));
     }
+
+    navigation.setOptions({
+      headerRight: () => (
+        <ProfileButton
+          update={update}
+          loading={loading}
+          theme={theme}
+          onPress={this.updateProfile}
+        />
+      ),
+    });
   }
 
   getDefaultIcon = () => {
@@ -56,7 +74,6 @@ class Profile extends React.Component {
   };
 
   setIcon = (data, type) => {
-    console.log('here2');
     this.setState({icon: data, modalVisible: false});
   };
 
@@ -71,15 +88,14 @@ class Profile extends React.Component {
     this.setState({loading: true});
     const profile = await updateProfile(data);
     if (profile.errors) {
-      // alert(profile.errors[0].message);
-      alert('Cannot update profile at this time, please try again later');
-      if (profile.errors[0].message == 'Not Authenticated') {
-        userLogout();
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Home'}],
-        });
+      console.log(profile.errors[0].message);
+
+      if (profile.errors[0].message == 'Email is already used') {
+        alert(profile.errors[0].message);
+      } else {
+        alert('Cannot update profile at this time, please try again later');
       }
+      this.setState({loading: false});
       return;
     }
 
@@ -90,7 +106,7 @@ class Profile extends React.Component {
     if (type == 'Password') {
       this.setState({password: text});
     } else if (type == 'Email') {
-      this.setState({email: text.toLowerCase()});
+      this.setState({email: text.toLowerCase().trim()});
     } else if (type == 'RePassword') {
       this.setState({rePassword: text});
     } else if (type == 'Username') {
@@ -104,7 +120,7 @@ class Profile extends React.Component {
     let {email, username, icon, displayName} = this.state;
     const {token, user} = this.props.auth;
 
-    email = email.trim();
+    email = email ? email.trim() : null;
     username = username.trim();
     displayName = displayName.trim();
     origin = {
@@ -141,7 +157,7 @@ class Profile extends React.Component {
 
       return {
         updateData: updateData,
-        update: true && this.validation(),
+        update: this.validation(),
         origin: origin,
       };
     }
@@ -150,10 +166,15 @@ class Profile extends React.Component {
 
   validation = () => {
     const {email, username, displayName} = this.state;
-    if (!validator.isEmail(email.trim())) {
-      // this.setState({errorText: 'Invalid email address'});
-      return false;
+    const origin = this.props.auth.user;
+
+    if (email) {
+      if (!validator.isEmail(email.trim())) {
+        // this.setState({errorText: 'Invalid email address'});
+        return false;
+      }
     }
+
     // const trimmed_username = username.trim();
     // const check_username = trimmed_username.replace(/_/g, '');
 
@@ -176,12 +197,17 @@ class Profile extends React.Component {
       return false;
     }
 
+    if (email == origin.email && displayName == origin.displayName) {
+      return false;
+    }
+
     return true;
   };
 
   onChangePasswordPress = () => {
     this.props.navigation.navigate('ChangePassword', {
-      token: null,
+      token: this.props.auth.user.token,
+      prevRoute: 'Profile',
     });
   };
 
@@ -190,7 +216,6 @@ class Profile extends React.Component {
   };
 
   onDefaultIconPress = url => {
-    console.log('here1');
     this.setState({icon: {uri: url}});
     this.onBackdropPress();
   };
@@ -207,7 +232,8 @@ class Profile extends React.Component {
       defaultIcons,
       theme,
     } = this.state;
-    console.log(icon)
+    const {user} = this.props.auth;
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
@@ -234,18 +260,28 @@ class Profile extends React.Component {
             value={username}
           /> */}
 
-          <UserTextInput
-            type={'Email'}
-            onChangeText={this.onChangeText}
-            value={email}
-            theme={theme}
-          />
+          {user.email ? (
+            <UserTextInput
+              type={'Email'}
+              onChangeText={this.onChangeText}
+              value={email}
+              theme={theme}
+            />
+          ) : null}
 
-          <TouchableOpacity
-            style={styles.changePasswordButton}
-            onPress={this.onChangePasswordPress}>
-            <Text style={theme.titleColor}>Change password</Text>
-          </TouchableOpacity>
+          {user.email ? (
+            <TouchableOpacity
+              style={styles.changePasswordButton}
+              onPress={this.onChangePasswordPress}>
+              <Text style={theme.titleColor}>Change password</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.changePasswordButton}
+              onPress={this.onChangePasswordPress}>
+              <Text style={theme.titleColor}>Create email and password</Text>
+            </TouchableOpacity>
+          )}
 
           <Text style={{color: 'red'}}>{errorText}</Text>
           <ActivityIndicator animating={loading} color={'grey'} />

@@ -10,19 +10,20 @@ import {
   updateVisibilitiesMutation,
   getDefaultIconQuery,
   updateThemeMutation,
+  createEmailAndPasswordMutation,
 } from '../actions/query/authQuery';
 import {http_upload} from '../../server_config';
 import {httpCall} from './utils/httpCall';
 
 export const signup = data => {
-  const {email, password, username, icon, refer_code} = data;
+  const {email, password, username, icon, refer_code, deviceId} = data;
   return async function(dispatch) {
     const userInput = {
-      email: email,
-      password: password,
+      // email: email,
+      // password: password,
       username: username,
       icon: icon,
-      refer_code: refer_code,
+      deviceId,
     };
 
     const graphql = {
@@ -46,12 +47,15 @@ export const signup = data => {
 export const signin = data => {
   const {email, password, token} = data;
   return async function(dispatch) {
+    const input = {
+      email: email ? email.trim().toLowerCase() : null,
+      password,
+      token,
+    };
     const graphql = {
       query: signinQuery,
       variables: {
-        email: email,
-        password: password,
-        token: token,
+        input,
       },
     };
 
@@ -127,7 +131,7 @@ export const updateProfile = data => {
     }
 
     const userInput = {
-      email: newEmail,
+      email: newEmail ? newEmail.trim().toLowerCase() : null,
       username: newUsername,
       icon: newIcon,
       displayName: newDisplayName,
@@ -146,8 +150,33 @@ export const updateProfile = data => {
       return result;
     }
 
-    console.log(result.data.updateProfile);
     dispatch(userSignIn(result.data.updateProfile));
+    return 0;
+  };
+};
+
+export const createEmailAndPassword = data => {
+  const {token, email, password} = data;
+
+  return async function(dispatch) {
+    const input = {
+      email: email.trim().toLowerCase(),
+      password,
+    };
+
+    const graphql = {
+      query: createEmailAndPasswordMutation,
+      variables: {
+        input,
+      },
+    };
+
+    const result = await httpCall(token, graphql);
+    if (result.errors) {
+      return result;
+    }
+
+    dispatch(userSignIn(result.data.createEmailAndPassword));
     return 0;
   };
 };
@@ -196,7 +225,7 @@ export const requireVerificationCode = data => {
     const graphql = {
       query: requireVerificationCodeMutation,
       variables: {
-        email: email,
+        email: email.trim().toLowerCase(),
       },
     };
 

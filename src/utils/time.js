@@ -96,8 +96,12 @@ const withInAWeekCheck = (date, type) => {
       (type == 'down' ? 'd left' : 'd ago');
   }
 
-  if (timeDifference <= 0){
-    outputTime = 'Expired'
+  if (timeDifference <= 0) {
+    if (type == 'up') {
+      outputTime = 'Now';
+    } else {
+      outputTime = 'Expired';
+    }
   }
 
   return outputTime;

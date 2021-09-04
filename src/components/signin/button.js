@@ -7,13 +7,17 @@ export default class SignInButton extends React.Component {
     const isSignin = type == 'signin' ? true : false;
     const buttonStyle = isSignin ? styles.signInButton : styles.secondaryButton;
     const textStyle = isSignin ? styles.signInButtonText : styles.secondaryText;
-    let text = 'Start'
-    if (isSignin){
-        text = 'Start'
-    } else if (type == 'forget_password'){
-        text = 'Forget password'
-    } else {
-        text = 'Create an account'
+    let text = 'Start';
+    if (isSignin) {
+      text = 'Start';
+    } else if (type == 'forget_password') {
+      text = 'Forget password';
+    } else if (type == 'signup') {
+      text = 'Create an account';
+    } else if (type == 'haveNoAccount') {
+      text = 'Have an account?';
+    } else if (type == 'haveAccount'){
+      text = "Don't have an account"
     }
 
     return (
@@ -33,13 +37,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    marginBottom: 15
+    marginBottom: 15,
   },
   signInButtonText: {
     color: '#fff',
     fontSize: 25,
     // fontFamily: 'Jellee-Roman',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   secondaryButton: {
     marginTop: 10,

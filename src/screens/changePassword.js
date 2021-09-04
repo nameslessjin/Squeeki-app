@@ -11,7 +11,12 @@ import {
 import UserTextInput from '../components/profile/textinput';
 import validator from 'validator';
 import {connect} from 'react-redux';
-import {userLogout, changePassword, resetPassword} from '../actions/auth';
+import {
+  userLogout,
+  changePassword,
+  resetPassword,
+  createEmailAndPassword,
+} from '../actions/auth';
 import {getTheme} from '../utils/theme';
 
 class ChangePassword extends React.Component {
@@ -21,20 +26,21 @@ class ChangePassword extends React.Component {
     reNewPassword: '',
     errorText: '',
     loading: false,
+    email: '',
     theme: getTheme(this.props.auth.user.theme),
+    prevRoute: 'Profile',
+    ...this.props.route.params,
   };
 
   componentDidMount() {
-    const {token} = this.props.route.params;
-    const {theme} = this.state
-    this.setState({token: token});
-    const {navigation} = this.props
+    const {theme} = this.state;
+    const {navigation} = this.props;
     navigation.setOptions({
-        headerBackTitleVisible: false,
-        headerTitle: 'Change Password',
-        headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
-        headerTintColor: theme.textColor.color,
-    })
+      headerBackTitleVisible: false,
+      headerTitle: 'Change Password',
+      headerStyle: [theme.backgroundColor, {shadowColor: 'transparent'}],
+      headerTintColor: theme.textColor.color,
+    });
   }
 
   onChangePassword = async () => {
@@ -56,7 +62,7 @@ class ChangePassword extends React.Component {
       this.setState({errorText: user.errors[0].message});
       if (user.errors[0].message == 'Not Authenticated') {
         // alert(user.errors[0].message);
-        alert('Cannot change password at this time, please try again later')
+        alert('Cannot change password at this time, please try again later');
         userLogout();
         navigation.reset({
           index: 0,
@@ -66,7 +72,12 @@ class ChangePassword extends React.Component {
     } else {
       this.setState({errorText: 'Change password succeed'});
     }
-    this.setState({loading: false});
+    this.setState({
+      loading: false,
+      currentPassword: '',
+      newPassword: '',
+      reNewPassword: '',
+    });
   };
 
   onResetPassword = async () => {
@@ -85,9 +96,8 @@ class ChangePassword extends React.Component {
     const reset = await resetPassword(data);
 
     if (reset.errors) {
-
       // alert(reset.errors[0].message);
-      alert('Cannot reset password at this time, please try again later')
+      alert('Cannot reset password at this time, please try again later');
       return;
     }
 
@@ -106,11 +116,22 @@ class ChangePassword extends React.Component {
       this.setState({newPassword: text});
     } else if (type == 'reNewPassword') {
       this.setState({reNewPassword: text});
+    } else if (type == 'Email') {
+      this.setState({email: text.trim().toLowerCase()});
     }
   };
 
   validation = () => {
-    const {newPassword, reNewPassword} = this.state;
+    const {newPassword, reNewPassword, email, prevRoute} = this.state;
+
+    if (prevRoute == 'Profile') {
+      if (email) {
+        if (!validator.isEmail(email.trim())) {
+          this.setState({errorText: 'Invalid email address'});
+          return false;
+        }
+      }
+    }
 
     if (!validator.isLength(newPassword, {min: 8})) {
       this.setState({
@@ -127,6 +148,39 @@ class ChangePassword extends React.Component {
     return true;
   };
 
+  createEmailAndPassword = async () => {
+    const {createEmailAndPassword, auth, navigation} = this.props;
+    const {newPassword, email} = this.state;
+    const request = {
+      password: newPassword,
+      email,
+      token: auth.token,
+    };
+
+    if (!this.validation()) {
+      return;
+    }
+
+    this.setState({loading: true});
+    const req = await createEmailAndPassword(request);
+    if (req.errors) {
+      console.log(req.errors);
+      if (req.errors[0].message == 'Email is already used') {
+        this.setState({errorText: req.errors[0].message});
+      } else {
+        this.setState({
+          errorText:
+            'Create email and password failed, please check your email and password',
+        });
+      }
+      this.setState({loading: false});
+      return;
+    }
+
+    this.setState({loading: false});
+    navigation.goBack();
+  };
+
   render() {
     const {
       currentPassword,
@@ -135,19 +189,28 @@ class ChangePassword extends React.Component {
       errorText,
       loading,
       token,
-      theme
+      theme,
+      prevRoute,
+      email,
     } = this.state;
+    const {user} = this.props.auth;
 
     let buttonActivate = false;
 
-    if (token == null) {
-      buttonActivate =
-        !loading &&
-        (currentPassword.length == 0 ||
-        newPassword.length == 0 ||
-        reNewPassword.length == 0
-          ? false
-          : true);
+    if (prevRoute == 'Profile') {
+      if (user.email) {
+        buttonActivate =
+          !loading &&
+          (currentPassword.length == 0 ||
+          newPassword.length == 0 ||
+          reNewPassword.length == 0
+            ? false
+            : true);
+      } else {
+        buttonActivate =
+          !loading &&
+          (newPassword.length == 0 || reNewPassword.length == 0 ? false : true);
+      }
     } else {
       buttonActivate =
         !loading &&
@@ -157,14 +220,22 @@ class ChangePassword extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
-
-          {token == null ? (
-            <UserTextInput
-              type={'currentPassword'}
-              onChangeText={this.onChangeText}
-              value={currentPassword}
-              theme={theme}
-            />
+          {prevRoute == 'Profile' ? (
+            user.email ? (
+              <UserTextInput
+                type={'currentPassword'}
+                onChangeText={this.onChangeText}
+                value={currentPassword}
+                theme={theme}
+              />
+            ) : (
+              <UserTextInput
+                type={'Email'}
+                onChangeText={this.onChangeText}
+                value={email}
+                theme={theme}
+              />
+            )
           ) : null}
 
           <UserTextInput
@@ -184,7 +255,11 @@ class ChangePassword extends React.Component {
           <TouchableOpacity
             style={styles.changePasswordButton}
             onPress={
-              token == null ? this.onChangePassword : this.onResetPassword
+              prevRoute == 'Profile'
+                ? user.email
+                  ? this.onChangePassword
+                  : this.createEmailAndPassword
+                : this.onResetPassword
             }
             disabled={!buttonActivate}>
             <Text
@@ -194,7 +269,11 @@ class ChangePassword extends React.Component {
           </TouchableOpacity>
 
           <Text style={{color: 'red'}}>{errorText}</Text>
-          <ActivityIndicator animating={loading} style={{marginTop: 5}} color={'grey'}/>
+          <ActivityIndicator
+            animating={loading}
+            style={{marginTop: 5}}
+            color={'grey'}
+          />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );
@@ -240,6 +319,7 @@ const mapDispatchToProps = dispatch => {
     changePassword: data => dispatch(changePassword(data)),
     userLogout: () => dispatch(userLogout()),
     resetPassword: data => dispatch(resetPassword(data)),
+    createEmailAndPassword: data => dispatch(createEmailAndPassword(data)),
   };
 };
 

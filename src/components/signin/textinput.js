@@ -12,17 +12,22 @@ export default class SignInTextInput extends React.Component {
 
   render() {
     const {type, value} = this.props;
-
+    let placeholder = 'Email';
     let secureTextEntry = false;
     if (type == 'Password') {
-      this.text = 'Password';
       secureTextEntry = true;
+      placeholder = 'Password';
+    } else if (type == 'username') {
+      placeholder = 'Username';
+    } else if (type == 'Email') {
+      placeholder == 'Email';
     }
+
     return (
       <TextInput
         style={styles.container}
         value={value}
-        placeholder={type == 'Password' ? 'Password' : 'Email Address'}
+        placeholder={placeholder}
         onChangeText={this.onChangeText}
         placeholderTextColor={'#7f8fa6'}
         secureTextEntry={secureTextEntry}

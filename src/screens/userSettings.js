@@ -6,6 +6,7 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {connect} from 'react-redux';
@@ -60,7 +61,7 @@ class UserSettings extends React.Component {
             styles.card,
             {marginTop: id == 'Logout' ? 30 : 0},
             theme.backgroundColor,
-            theme.borderColor
+            theme.borderColor,
           ]}>
           <Text
             style={[
@@ -78,7 +79,7 @@ class UserSettings extends React.Component {
   };
 
   loadTerm = name => {
-    const {navigation, logout} = this.props;
+    const {navigation, auth} = this.props;
     if (name == 'Terms') {
       navigation.navigate('Terms');
     } else if (name == 'Notifications') {
@@ -88,13 +89,38 @@ class UserSettings extends React.Component {
     } else if (name == 'Theme') {
       navigation.navigate('ThemeSettings');
     } else if (name == 'Logout') {
-      logout();
-      navigation.reset({index: 0, routes: [{name: 'SignIn'}]});
+      if (auth.user.email) {
+        this.logout();
+        return;
+      } else {
+        Alert.alert(
+          'Logout',
+          "It seems like you haven't created your email and password.  Without email and password, you won't be able to login the same account next time.  Are you sure?",
+          [
+            {
+              text: 'Logout',
+              style: 'destructive',
+              onPress: () => this.logout(),
+            },
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+          ],
+        );
+      }
     }
+  };
+
+  logout = () => {
+    const {logout, navigation} = this.props;
+    logout();
+    navigation.reset({index: 0, routes: [{name: 'SignIn'}]});
   };
 
   render() {
     const {options, theme} = this.state;
+    const {user} = this.props.auth;
     return (
       <TouchableWithoutFeedback>
         <View style={[styles.container, theme.greyArea]}>
