@@ -91,8 +91,6 @@ class Home extends React.Component {
       return;
     }
 
-    console.log(req);
-
     if (req.status != 'active') {
       this.setState({modalVisible: true, type: 'account'});
     } else {
@@ -288,13 +286,14 @@ class Home extends React.Component {
       this.props.getIpAddress();
       this.checkAuth();
       this.getSecurityClearance();
-      this.getLocation();
 
+      this.getLocation();
       setTimeout(() => {
         this.getGroupRecommendation();
         this.loadFeed(true);
         // this.logUserEvent({event: 'onScreen'});
       }, 1000);
+
     } else if (nextAppState !== 'active') {
       if (Platform.OS == 'ios') {
         if (nextAppState == 'inactive') {
@@ -314,10 +313,10 @@ class Home extends React.Component {
     const {currentScreen, auth, navigation} = this.props;
     const prevScreen = prevProps.currentScreen;
     if (
-      currentScreen.currentScreen == 'Home' &&
-      prevScreen.currentScreen != 'Home'
+      currentScreen.currentScreen == 'HomeDrawerNavigator' &&
+      prevScreen.currentScreen != 'HomeDrawerNavigator'
     ) {
-      this.loadFeed(true);
+      this.onRefresh();
     }
 
     if (prevProps.auth.user.theme != auth.user.theme) {
@@ -333,12 +332,7 @@ class Home extends React.Component {
       const {refresh, prevRoute} = this.props.route.params;
       if (refresh) {
         if (prevRoute == 'PostSetting') {
-          this.getLocation();
-          this.props.getIpAddress();
-          setTimeout(() => {
-            this.getGroupRecommendation();
-            this.loadFeed(true);
-          }, 1000);
+          this.onRefresh();
           navigation.setParams({refresh: false});
         }
       }

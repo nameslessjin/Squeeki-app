@@ -24,6 +24,7 @@ class Group extends React.Component {
     refreshing: false,
     theme: getTheme(this.props.auth.user.theme),
     position: null,
+    selectedPostCategory: 'all',
   };
 
   componentDidMount() {
@@ -191,6 +192,13 @@ class Group extends React.Component {
     }
   };
 
+  onSelectPostCategory = category => {
+    this.setState({selectedPostCategory: category});
+    setTimeout(() => {
+      this.loadGroupPosts(true);
+    }, 50);
+  };
+
   onEndReached = () => {
     const {visibility, auth} = this.props.group.group;
     if (visibility || auth != null) {
@@ -217,7 +225,6 @@ class Group extends React.Component {
       navigation,
       getGroupPosts,
       userLogout,
-      getUserGroupPoint,
       auth,
       group,
       post,
@@ -228,9 +235,9 @@ class Group extends React.Component {
       getGroupPosts,
       navigation,
       userLogout,
-      getUserGroupPoint,
       count: init ? 0 : post.groupPosts.count,
       init,
+      type: this.state.selectedPostCategory,
     };
 
     this.setState({loading: true});
@@ -243,7 +250,7 @@ class Group extends React.Component {
 
   render() {
     const {group, post, navigation, point} = this.props;
-    const {refreshing, theme, position} = this.state;
+    const {refreshing, theme, position, selectedPostCategory} = this.state;
 
     return (
       <KeyboardAvoidingView style={[styles.container, theme.backgroundColor]}>
@@ -261,10 +268,11 @@ class Group extends React.Component {
               theme={theme}
               prevRoute={'Group'}
               position={position}
+              selectedPostCategory={selectedPostCategory}
+              onSelectPostCategory={this.onSelectPostCategory}
             />
           </TouchableWithoutFeedback>
         ) : null}
-        {/* {loading ? <ActivityIndicator animating={loading} /> : null} */}
       </KeyboardAvoidingView>
     );
   }

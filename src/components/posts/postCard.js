@@ -381,7 +381,7 @@ class PostCard extends React.Component {
       navigation,
       prevRoute,
       position,
-      from
+      from,
     } = this.props;
 
     // console.log(prevRoute)
@@ -401,6 +401,7 @@ class PostCard extends React.Component {
     } else if (priority == 1) {
       backgroundColor = '#b8e999';
     }
+
 
     return (
       <ActionSheetProvider
@@ -441,7 +442,8 @@ class PostCard extends React.Component {
               prevRoute={prevRoute}
             />
 
-            {prevRoute == 'Home' || from == 'Home' ? (
+            {(prevRoute == 'Home' || from == 'Home' || from == 'Mentioned') &&
+            groupname ? (
               <View
                 style={{
                   width: '100%',
@@ -513,15 +515,17 @@ class PostCard extends React.Component {
               theme={theme}
               backgroundColor={backgroundColor}
               position={position}
+              group={group.group}
+              from={from}
             />
             {nomination == null || prevRoute == 'CheckInSetting' ? null : (
               <PostNomination
                 {...this.state}
                 onPress={this.onVotePress}
                 theme={theme}
+                group={group.group}
               />
             )}
-
           </View>
         </TouchableWithoutFeedback>
       </ActionSheetProvider>

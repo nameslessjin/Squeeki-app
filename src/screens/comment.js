@@ -478,7 +478,7 @@ class Comment extends React.Component {
               replyId={replyId}
               _actionSheetRef={this._actionSheetRef}
               theme={theme}
-              from={route ? route.params.prevRoute : null}
+              from={route ? route.params.from : null}
             />
 
             {post.allowComment && !modalVisible ? (

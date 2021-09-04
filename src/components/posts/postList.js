@@ -1,19 +1,12 @@
 import React from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {FlatList, StyleSheet, View, Text} from 'react-native';
 import GroupHeader from '../group/groupHeader';
 import PostCard from './postCard';
 import RecommendedGroupCard from '../groups/recommendedGroupCard';
+import PostCategorySelector from '../posts/postCategorySelector';
 
 const extractKey = ({id}) => id;
-
+const extractCategory = ({category}) => category;
 export default class PostList extends React.Component {
   renderItem = ({item}) => {
     const {
@@ -23,7 +16,9 @@ export default class PostList extends React.Component {
       prevRoute,
       group,
       theme,
-      position
+      position,
+      selectedPostCategory,
+      onSelectPostCategory,
     } = this.props;
 
     if (item.isGroup && prevRoute == 'Group') {
@@ -35,6 +30,40 @@ export default class PostList extends React.Component {
         />
       );
     }
+
+    if (item.id == 'category') {
+      const list = [
+        {category: 'all'},
+        {category: 'general'},
+        {category: 'events'},
+        {category: 'tasks'},
+        {category: 'mentioned'},
+        // {category: 'rewards'},
+      ];
+      return (
+        <View style={styles.postCategoryContainer}>
+          <FlatList
+            keyExtractor={extractCategory}
+            data={list}
+            horizontal={true}
+            alwaysBounceVertical={false}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item}) => (
+              <PostCategorySelector
+                {...item}
+                selectedPostCategory={selectedPostCategory}
+                onSelectPostCategory={onSelectPostCategory}
+              />
+            )}
+          />
+        </View>
+      );
+    }
+
+    if (item.id == 'empty') {
+      return <View style={styles.empty} />;
+    }
+
     if (item.id == 'null') {
       return (
         <View style={styles.placeholder}>
@@ -60,6 +89,7 @@ export default class PostList extends React.Component {
         onPostSelect={onPostSelect}
         prevRoute={prevRoute}
         position={position}
+        from = {group ? selectedPostCategory == 'mentioned' ? 'Mentioned' : 'Group' : 'Home'}
       />
     );
   };
@@ -101,6 +131,8 @@ export default class PostList extends React.Component {
     );
   };
 
+  postCategory = () => {};
+
   render() {
     const {
       group,
@@ -113,7 +145,7 @@ export default class PostList extends React.Component {
     const {posts} = this.props.posts;
     let data = [];
 
-    // if user is not in a group
+    // if user is in a group
     if (group != null) {
       const groupHeader = {
         ...group,
@@ -123,7 +155,9 @@ export default class PostList extends React.Component {
 
       data = [groupHeader];
 
+      // if user auth in group
       if (group.visibility || group.auth) {
+        data = data.concat([{id: 'category'}]);
         data = data.concat(posts);
         if (posts.length == 0) {
           data = data.concat({id: 'null'});
@@ -157,6 +191,8 @@ export default class PostList extends React.Component {
         data = data.concat({id: 'null'});
       }
     }
+
+    data = data.concat([{id: 'empty'}])
 
     return (
       <FlatList
@@ -195,5 +231,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 10,
     marginVertical: 5,
+  },
+  postCategoryContainer: {
+    height: 50,
+    width: '100%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: 5,
+  },
+  empty: {
+    width: '100%',
+    height: 200,
   },
 });

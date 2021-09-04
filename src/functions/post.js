@@ -26,12 +26,13 @@ export const getFeedFunc = async data => {
 };
 
 export const getGroupPostsFunc = async data => {
-  const {token, getGroupPosts, navigation, userLogout, groupId, count} = data;
+  const {token, getGroupPosts, navigation, userLogout, groupId, count, type} = data;
 
   const inputData = {
     groupId: groupId,
     token: token,
     count: count,
+    type
   };
 
   const groupPosts = await getGroupPosts(inputData);

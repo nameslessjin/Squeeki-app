@@ -163,7 +163,7 @@ class SignIn extends React.Component {
         this.setState({errorText: signInResult.errors[0].message});
       } else {
         this.setState({
-          errorText: 'Please update to the lastest version of Squeeki',
+          errorText: 'Cannot login please check your email and password',
         });
       }
 
@@ -241,7 +241,7 @@ class SignIn extends React.Component {
         <KeyboardAvoidingView style={styles.container}>
           <StatusBar barStyle={'dark-content'} />
           <Text style={styles.squeekiTitle}>Squeeki</Text>
-          <Text style={{color: 'red'}}>{errorText}</Text>
+          <Text style={{color: 'red', padding: 5}}>{errorText}</Text>
 
           {haveAccount ? (
             <SignInTextInput
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   squeekiTitle: {
     fontSize: 60,
     fontFamily: 'Jellee-Roman',
-    marginTop: height * 0.25,
+    marginTop: height * 0.2,
     color: '#EA2027',
     marginBottom: 10,
   },

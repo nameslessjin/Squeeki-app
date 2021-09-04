@@ -19,11 +19,15 @@ import {http_upload} from '../../server_config';
 import {httpCall, httpUpload} from './utils/httpCall';
 
 export const getGroupPosts = data => {
-  const {groupId, token, count} = data;
+  const {groupId, token, count, type} = data;
   return async function(dispatch) {
     const input = {
-      groupId: groupId,
-      count: count,
+      groupId,
+      count,
+      type:
+        type == 'events' || type == 'tasks'
+          ? type.substr(0, type.length - 1)
+          : type,
     };
 
     const graphql = {

@@ -16,10 +16,12 @@ const {width} = Dimensions.get('screen');
 
 export default class PostFooter extends React.Component {
   onCommentPress = () => {
-    const {navigation, postId, prevRoute} = this.props;
+    const {navigation, postId, prevRoute, from} = this.props;
+    console.log(from)
     navigation.navigate('Comment', {
       postId: postId,
-      prevRoute
+      prevRoute,
+      from
     });
   };
 
@@ -49,6 +51,8 @@ export default class PostFooter extends React.Component {
       lat,
       lng,
       position,
+      group,
+      groupId,
     } = this.props;
 
     let distance = 0;
@@ -146,7 +150,9 @@ export default class PostFooter extends React.Component {
                 <Text style={styles.textStyle}>Expired</Text>
               </View>
             </View>
-          ) : currentUserAuth == null ? (
+          ) : currentUserAuth == null ||
+            group.id == null ||
+            group.id != groupId ? (
             <View
               style={[
                 styles.rowContainer,
@@ -307,7 +313,7 @@ export default class PostFooter extends React.Component {
                       {
                         textAlign: 'center',
                         color: priority > 0 ? 'black' : theme.textColor.color,
-                        marginTop: 5
+                        marginTop: 5,
                       },
                     ]}>
                     {distance} miles away

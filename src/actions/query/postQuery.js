@@ -7,6 +7,8 @@ query getGroupPosts($input: GetPostInput!){
                 uri
             }
             content
+            groupname
+            display_name
             originContent
             taskResponse
             createdAt
@@ -134,6 +136,8 @@ query getPost($postId: ID!){
             }
             content
             originContent
+            groupname
+            display_name
             createdAt
             taskResponse
             updatedAt
