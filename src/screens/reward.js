@@ -146,6 +146,12 @@ class Reward extends React.Component {
     const {point, auth, group} = this.props;
     let request = {};
 
+    // check if user has an account
+    if (!auth.user.email){
+      alert('Accounts without email and password is illegible to earn rewards')
+      return
+    }
+
     // check if there is enough points
     if (point.total_point < pointCost) {
       Alert.alert(
@@ -160,6 +166,7 @@ class Reward extends React.Component {
       );
       return;
     }
+
 
     if (type == 'loot') {
       const GroupRewardList = {
