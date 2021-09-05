@@ -17,6 +17,7 @@ import {getUserGroupPoint, getGroupPointLeaderBoard} from '../actions/point';
 import {hasLocationPermission} from '../functions/permission';
 import Geolocation from 'react-native-geolocation-service';
 import {getTheme} from '../utils/theme';
+import {getGroupRewardHistory} from '../actions/reward';
 
 class Group extends React.Component {
   state = {
@@ -194,9 +195,30 @@ class Group extends React.Component {
 
   onSelectPostCategory = category => {
     this.setState({selectedPostCategory: category});
-    setTimeout(() => {
-      this.loadGroupPosts(true);
-    }, 50);
+    if (category != 'rewards') {
+      setTimeout(() => {
+        this.loadGroupPosts(true);
+      }, 50);
+    } else {
+      this.loadGroupRewardHistory();
+    }
+  };
+
+  loadGroupRewardHistory = async () => {
+    const {group, auth, getGroupRewardHistory} = this.props;
+    const request = {
+      token: auth.token,
+      groupId: group.group.id,
+      count: 0,
+      init: true,
+    };
+
+    const req = await getGroupRewardHistory(request);
+    if (req.errors) {
+      console.log(req.errors);
+      alert('Cannot get reward history at this time, please try again later');
+      return;
+    }
   };
 
   onEndReached = () => {
@@ -207,7 +229,7 @@ class Group extends React.Component {
   };
 
   onRefresh = async () => {
-    this.setState({refreshing: true});
+    this.setState({refreshing: true, selectedPostCategory: 'all'});
     const {visibility, auth} = this.props.group.group;
     this.getLocation();
     await this.getGroup();
@@ -249,7 +271,7 @@ class Group extends React.Component {
   };
 
   render() {
-    const {group, post, navigation, point} = this.props;
+    const {group, post, navigation, point, reward} = this.props;
     const {refreshing, theme, position, selectedPostCategory} = this.state;
 
     return (
@@ -270,6 +292,7 @@ class Group extends React.Component {
               position={position}
               selectedPostCategory={selectedPostCategory}
               onSelectPostCategory={this.onSelectPostCategory}
+              rewards={reward.groupRewardHistory}
             />
           </TouchableWithoutFeedback>
         ) : null}
@@ -294,8 +317,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group, auth, post, point} = state;
-  return {group, auth, post, point};
+  const {group, auth, post, point, reward} = state;
+  return {group, auth, post, point, reward};
 };
 
 const mapDispatchToProps = dispatch => {
@@ -306,6 +329,7 @@ const mapDispatchToProps = dispatch => {
     getGroupPointLeaderBoard: data => dispatch(getGroupPointLeaderBoard(data)),
     getGroupJoinRequestCount: data => dispatch(getGroupJoinRequestCount(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
+    getGroupRewardHistory: data => dispatch(getGroupRewardHistory(data)),
   };
 };
 

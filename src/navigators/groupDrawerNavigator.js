@@ -121,7 +121,8 @@ class GroupDrawerNavigator extends React.Component {
         prevRoute == 'Chat' ||
         prevRoute == 'PostCard' ||
         prevRoute == 'Comment' ||
-        prevRoute == 'Home'
+        prevRoute == 'Home' || 
+        prevRoute == 'GroupNavigator'
       ) {
         // MyRewads have no previous group page
         // if has previous group page thus reload group and reward

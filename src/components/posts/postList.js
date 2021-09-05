@@ -4,6 +4,7 @@ import GroupHeader from '../group/groupHeader';
 import PostCard from './postCard';
 import RecommendedGroupCard from '../groups/recommendedGroupCard';
 import PostCategorySelector from '../posts/postCategorySelector';
+import RewardHistoryCard from '../reward/rewardHistoryCard';
 
 const extractKey = ({id}) => id;
 const extractCategory = ({category}) => category;
@@ -38,7 +39,7 @@ export default class PostList extends React.Component {
         {category: 'events'},
         {category: 'tasks'},
         {category: 'mentioned'},
-        // {category: 'rewards'},
+        {category: 'rewards'},
       ];
       return (
         <View style={styles.postCategoryContainer}>
@@ -56,6 +57,34 @@ export default class PostList extends React.Component {
               />
             )}
           />
+        </View>
+      );
+    }
+
+    if (item.type == 'reward') {
+      return (
+        <RewardHistoryCard
+          item={item}
+          groupId={group.id}
+          prevRoute={prevRoute == 'Group' ? 'GroupNavigator' : prevRoute}
+          theme={theme}
+          navigation={navigation}
+        />
+      );
+    }
+
+    if (item.id == 'rewardResult') {
+      return (
+        <View
+          style={{
+            width: '100%',
+            height: 40,
+            justifyContent: 'center',
+            paddingHorizontal: 10,
+          }}>
+          <Text style={{fontSize: 18, fontWeight: '500'}}>
+            Most recent 20 winners
+          </Text>
         </View>
       );
     }
@@ -89,7 +118,13 @@ export default class PostList extends React.Component {
         onPostSelect={onPostSelect}
         prevRoute={prevRoute}
         position={position}
-        from = {group ? selectedPostCategory == 'mentioned' ? 'Mentioned' : 'Group' : 'Home'}
+        from={
+          group
+            ? selectedPostCategory == 'mentioned'
+              ? 'Mentioned'
+              : 'Group'
+            : 'Home'
+        }
       />
     );
   };
@@ -131,8 +166,6 @@ export default class PostList extends React.Component {
     );
   };
 
-  postCategory = () => {};
-
   render() {
     const {
       group,
@@ -141,6 +174,8 @@ export default class PostList extends React.Component {
       refreshing,
       recommendedGroups,
       prevRoute,
+      selectedPostCategory,
+      rewards,
     } = this.props;
     const {posts} = this.props.posts;
     let data = [];
@@ -157,10 +192,16 @@ export default class PostList extends React.Component {
 
       // if user auth in group
       if (group.visibility || group.auth) {
-        data = data.concat([{id: 'category'}]);
-        data = data.concat(posts);
-        if (posts.length == 0) {
-          data = data.concat({id: 'null'});
+        if (selectedPostCategory == 'rewards') {
+          data = data.concat([{id: 'category'}]);
+          data = data.concat({id: 'rewardResult'});
+          data = data.concat(rewards.map(r => ({...r, type: 'reward'})));
+        } else {
+          data = data.concat([{id: 'category'}]);
+          data = data.concat(posts);
+          if (posts.length == 0) {
+            data = data.concat({id: 'null'});
+          }
         }
       }
     } else {
@@ -192,7 +233,7 @@ export default class PostList extends React.Component {
       }
     }
 
-    data = data.concat([{id: 'empty'}])
+    data = data.concat([{id: 'empty'}]);
 
     return (
       <FlatList
@@ -203,7 +244,7 @@ export default class PostList extends React.Component {
         alwaysBounceHorizontal={false}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps={'handled'}
-        onEndReached={onEndReached}
+        onEndReached={selectedPostCategory == 'rewards' ? null : onEndReached}
         onEndReachedThreshold={0.2}
         onRefresh={onRefresh}
         refreshing={refreshing}

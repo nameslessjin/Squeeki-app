@@ -250,7 +250,7 @@ class RewardDetail extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <ScrollView style={[styles.container, theme.backgroundColor]}>
-          <InputImage image={image} contentKeyboard={false} disabled={true} />
+          <InputImage image={image} contentKeyboard={false} disabled={true} theme={theme}/>
           <View style={[styles.infoContaier]}>
             <View style={styles.infoSubContainer}>
               <Text
