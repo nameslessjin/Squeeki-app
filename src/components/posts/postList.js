@@ -35,11 +35,11 @@ export default class PostList extends React.Component {
     if (item.id == 'category') {
       const list = [
         {category: 'all'},
+        {category: 'rewards'},
         {category: 'general'},
         {category: 'events'},
         {category: 'tasks'},
         {category: 'mentioned'},
-        {category: 'rewards'},
       ];
       return (
         <View style={styles.postCategoryContainer}>
@@ -73,7 +73,7 @@ export default class PostList extends React.Component {
       );
     }
 
-    if (item.id == 'rewardResult') {
+    if (item.id == 'rewardRecent') {
       return (
         <View
           style={{
@@ -83,7 +83,7 @@ export default class PostList extends React.Component {
             paddingHorizontal: 10,
           }}>
           <Text style={{fontSize: 18, fontWeight: '500'}}>
-            Most recent 20 winners
+            Recent 20 winners
           </Text>
         </View>
       );
@@ -194,7 +194,7 @@ export default class PostList extends React.Component {
       if (group.visibility || group.auth) {
         if (selectedPostCategory == 'rewards') {
           data = data.concat([{id: 'category'}]);
-          data = data.concat({id: 'rewardResult'});
+          data = data.concat({id: 'rewardRecent'});
           data = data.concat(rewards.map(r => ({...r, type: 'reward'})));
         } else {
           data = data.concat([{id: 'category'}]);

@@ -42,8 +42,8 @@ class RewardHistoryCard extends React.Component {
         log = {
           effectId: fromId,
           effectIdType: 'group',
-          causeId: id,
-          causeIdType: 'reward',
+          triggerId: id,
+          trigger: 'reward',
           event: 'redirection_reward_to_group',
         };
       }

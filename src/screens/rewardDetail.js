@@ -204,8 +204,8 @@ class RewardDetail extends React.Component {
         log = {
           effectId: fromId,
           effectIdType: 'group',
-          causeId: id,
-          causeIdType: prevRoute == 'RewardList' ? 'rewardEntry' : 'reward',
+          triggerId: id,
+          trigger: prevRoute == 'RewardList' ? 'rewardEntry' : 'reward',
           event:
             prevRoute == 'RewardList'
               ? 'redirection_rewardEntry_to_group'

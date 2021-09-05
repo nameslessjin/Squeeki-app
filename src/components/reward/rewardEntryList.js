@@ -46,8 +46,8 @@ class RewardEntryList extends React.Component {
         log = {
           effectId: fromId ? fromId : toId,
           effectIdType: 'group',
-          causeId: id,
-          causeIdType: 'rewardEntry',
+          triggerId: id,
+          trigger: 'rewardEntry',
           event: 'redirection_rewardEntry_to_group',
         };
       }
