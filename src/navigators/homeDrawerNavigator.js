@@ -35,7 +35,6 @@ class HomeDrawerNavigator extends React.Component {
     navigation.dispatch(DrawerActions.openDrawer());
   };
 
-
   componentDidMount() {
     const {navigation} = this.props;
     const {theme} = this.state;
@@ -80,8 +79,84 @@ class HomeDrawerNavigator extends React.Component {
     }
   }
 
+  onPress = navigateTo => {
+    const {navigation} = this.props;
+    navigation.navigate(navigateTo);
+    navigation.dispatch(DrawerActions.closeDrawer());
+  };
+
+  CustomDrawerContent = props => {
+    const {auth, metadata} = this.props;
+    const {theme} = this.state;
+    const {displayName, icon} = auth.user;
+    return (
+      <DrawerContentScrollView
+        {...props}
+        style={[
+          {bottom: Platform.OS == 'android' ? 0 : height * 0.05},
+          theme.backgroundColor,
+        ]}>
+        {displayName ? (
+          <DrawerItem
+            label={displayName}
+            labelStyle={{color: 'black'}}
+            icon={() => (
+              <View style={styles.profile}>
+                <Image
+                  source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+                  style={styles.imageStyle}
+                />
+                <Text style={[styles.displayName, theme.textColor]}>
+                  {displayName}
+                </Text>
+              </View>
+            )}
+            onPress={() => this.onPress('Profile')}
+          />
+        ) : null}
+        <View
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 7,
+          }}>
+          <View
+            style={{
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              borderColor: 'grey',
+              width: '85%',
+            }}
+          />
+        </View>
+        <DrawerItemList {...props} />
+
+        <DrawerItem
+          label="My Rewards"
+          labelStyle={theme.drawerTextColor}
+          onPress={() => this.onPress('MyRewards')}
+        />
+
+        <DrawerItem
+          label="Settings"
+          labelStyle={theme.drawerTextColor}
+          onPress={() => this.onPress('UserSettings')}
+        />
+
+        {metadata.securityClearance ? (
+          metadata.securityClearance.status == 'active' ? (
+            <DrawerItem
+              label="Admin"
+              labelStyle={theme.drawerTextColor}
+              onPress={() => this.onPress('AdminDrawerNavigator')}
+            />
+          ) : null
+        ) : null}
+      </DrawerContentScrollView>
+    );
+  };
+
   render() {
-    const {logout, auth, metadata} = this.props;
     const {theme} = this.state;
     return (
       <Drawer.Navigator
@@ -91,15 +166,7 @@ class HomeDrawerNavigator extends React.Component {
           drawerLabelStyle: theme.drawerTextColor,
         }}
         initialRouteName="Home"
-        drawerContent={props => (
-          <CustomDrawerContent
-            {...props}
-            logout={logout}
-            auth={auth}
-            theme={theme}
-            metadata={metadata}
-          />
-        )}>
+        drawerContent={props => this.CustomDrawerContent(props)}>
         <Drawer.Screen
           name="Home"
           component={Home}
@@ -113,81 +180,75 @@ class HomeDrawerNavigator extends React.Component {
   }
 }
 
-function CustomDrawerContent(props) {
-  const {logout, navigation, auth, theme, metadata} = props;
-  const {displayName, icon} = auth.user;
-  return (
-    <DrawerContentScrollView
-      {...props}
-      style={[
-        {bottom: Platform.OS == 'android' ? 0 : height * 0.05},
-        theme.backgroundColor,
-      ]}>
-      {displayName ? (
-        <DrawerItem
-          label={displayName}
-          labelStyle={{color: 'black'}}
-          icon={() => (
-            <View style={styles.profile}>
-              <Image
-                source={icon ? {uri: icon.uri} : singleDefaultIcon()}
-                style={styles.imageStyle}
-              />
-              <Text style={[styles.displayName, theme.textColor]}>
-                {displayName}
-              </Text>
-            </View>
-          )}
-          onPress={() => navigation.navigate('Profile')}
-        />
-      ) : null}
-      <View
-        style={{
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: 7,
-        }}>
-        <View
-          style={{
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            borderColor: 'grey',
-            width: '85%',
-          }}
-        />
-      </View>
-      <DrawerItemList {...props} />
+// function CustomDrawerContent(props) {
+//   const {logout, navigation, auth, theme, metadata} = props;
+//   const {displayName, icon} = auth.user;
+//   return (
+//     <DrawerContentScrollView
+//       {...props}
+//       style={[
+//         {bottom: Platform.OS == 'android' ? 0 : height * 0.05},
+//         theme.backgroundColor,
+//       ]}>
+//       {displayName ? (
+//         <DrawerItem
+//           label={displayName}
+//           labelStyle={{color: 'black'}}
+//           icon={() => (
+//             <View style={styles.profile}>
+//               <Image
+//                 source={icon ? {uri: icon.uri} : singleDefaultIcon()}
+//                 style={styles.imageStyle}
+//               />
+//               <Text style={[styles.displayName, theme.textColor]}>
+//                 {displayName}
+//               </Text>
+//             </View>
+//           )}
+//           onPress={() => this.onPress('Profile')}
+//         />
+//       ) : null}
+//       <View
+//         style={{
+//           width: '100%',
+//           justifyContent: 'center',
+//           alignItems: 'center',
+//           height: 7,
+//         }}>
+//         <View
+//           style={{
+//             borderBottomWidth: StyleSheet.hairlineWidth,
+//             borderColor: 'grey',
+//             width: '85%',
+//           }}
+//         />
+//       </View>
+//       <DrawerItemList {...props} />
 
-      <DrawerItem
-        label="My Rewards"
-        labelStyle={theme.drawerTextColor}
-        onPress={() => {
-          navigation.navigate('MyRewards');
-        }}
-      />
+//       <DrawerItem
+//         label="My Rewards"
+//         labelStyle={theme.drawerTextColor}
+//         onPress={() => this.onPress('MyRewards')}
+//       />
 
-      <DrawerItem
-        label="Settings"
-        labelStyle={theme.drawerTextColor}
-        onPress={() => {
-          navigation.navigate('UserSettings');
-        }}
-      />
+//       <DrawerItem
+//         label="Settings"
+//         labelStyle={theme.drawerTextColor}
+//         onPress={() => this.onPress('UserSettings')}
+//       />
 
-      {metadata.securityClearance ? (
-        metadata.securityClearance.status == 'active' ? (
-          <DrawerItem
-            label="Admin"
-            labelStyle={theme.drawerTextColor}
-            onPress={() => {
-              navigation.navigate('AdminDrawerNavigator');
-            }}
-          />
-        ) : null
-      ) : null}
-    </DrawerContentScrollView>
-  );
-}
+//       {metadata.securityClearance ? (
+//         metadata.securityClearance.status == 'active' ? (
+//           <DrawerItem
+//             label="Admin"
+//             labelStyle={theme.drawerTextColor}
+//             onPress={() => this.onPress('AdminDrawerNavigator')}
+//           />
+//         ) : null
+//       ) : null}
+//     </DrawerContentScrollView>
+//   );
+// }
 
 const Drawer = createDrawerNavigator();
 

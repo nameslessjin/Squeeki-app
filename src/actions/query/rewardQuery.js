@@ -97,6 +97,7 @@ query getGroupRewardHistory($input: RewardInput!){
     getGroupRewardHistory(input: $input){
         reward {
             id
+            entryId
             name
             groupDisplayName
             chance
@@ -120,6 +121,7 @@ query getUserRewardHistory($input: RewardInput!){
     getUserRewardHistory(input: $input){
         reward {
             id
+            entryId
             name
             groupDisplayName
             chance
@@ -144,6 +146,7 @@ query getReward($input: RewardInput!){
         chanceDisplay
         name
         description
+        entryId
         fromId
         from
         image

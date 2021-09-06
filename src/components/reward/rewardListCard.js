@@ -65,7 +65,14 @@ export default class RewardListCard extends React.Component {
   };
 
   render() {
-    const {item, group, onLootRedeemPress, navigation, prevRoute, theme} = this.props;
+    const {
+      item,
+      group,
+      onLootRedeemPress,
+      navigation,
+      prevRoute,
+      theme,
+    } = this.props;
     const {
       id,
       listName,
@@ -87,11 +94,14 @@ export default class RewardListCard extends React.Component {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <View style={[styles.container, theme.backgroundColor, theme.shadowColor]}>
+        <View
+          style={[styles.container, theme.backgroundColor, theme.shadowColor]}>
           <View style={styles.header}>
             <View style={styles.headerSide} />
             <View style={[styles.headerTextContainer, theme.underLineColor]}>
-              <Text style={[styles.headerText, theme.textColor]}>{listName}</Text>
+              <Text style={[styles.headerText, theme.textColor]}>
+                {listName}
+              </Text>
             </View>
             <View style={styles.headerSide}>
               {hasRewardManagementAuthority &&

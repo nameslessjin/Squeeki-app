@@ -15,7 +15,7 @@ import {getReward} from '../../actions/reward';
 
 class RewardHistoryCard extends React.Component {
   getGroup = async reward => {
-    const {from, fromId, id} = reward;
+    const {from, fromId, id, entryId} = reward;
     const {auth, getSingleGroupById, navigation, prevRoute, group} = this.props;
 
     if (from == 'group' && fromId) {
@@ -37,14 +37,15 @@ class RewardHistoryCard extends React.Component {
       if (
         prevRoute == 'RewardHistory' ||
         prevRoute == 'MyGroupRewards' ||
-        prevRoute == 'MyRewards'
+        prevRoute == 'MyRewards' ||
+        prevRoute == 'GroupNavigator'
       ) {
         log = {
           effectId: fromId,
           effectIdType: 'group',
-          triggerId: id,
-          trigger: 'reward',
-          event: 'redirection_reward_to_group',
+          triggerId: entryId,
+          trigger: 'rewardEntry',
+          event: 'redirection_rewardEntry_to_group',
         };
       }
 
@@ -99,7 +100,11 @@ class RewardHistoryCard extends React.Component {
     let icon = null;
     let userId = null;
 
-    if (prevRoute == 'RewardHistory' || prevRoute == 'RewardManagement' || prevRoute == 'GroupNavigator') {
+    if (
+      prevRoute == 'RewardHistory' ||
+      prevRoute == 'RewardManagement' ||
+      prevRoute == 'GroupNavigator'
+    ) {
       displayName = winner.displayName;
       icon = winner.icon;
       userId = winner.userId;
@@ -326,8 +331,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group, auth} = state;
-  return {group, auth};
+  const {group, auth, metadata} = state;
+  return {group, auth, metadata};
 };
 
 const mapDispatchToProps = dispatch => {

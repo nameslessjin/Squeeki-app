@@ -842,9 +842,19 @@ class Chat extends React.Component {
       return;
     }
 
+    // create user event log here
+    const log = {
+      trigger: 'message',
+      triggerId: null,
+      event: 'redirection_message_at_group',
+      effectIdType: 'group',
+      effectId: id,
+    };
+
     navigation.push('GroupNavigator', {
       prevRoute: 'Chat',
       groupId: group.group.id,
+      log,
     });
   };
 

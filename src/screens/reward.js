@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Dimensions,
-  Alert,
-} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, Alert} from 'react-native';
 import {connect} from 'react-redux';
 import {userLogout} from '../actions/auth';
 import {lootRedeemReward, getGroupRewardList} from '../actions/reward';
@@ -147,9 +141,9 @@ class Reward extends React.Component {
     let request = {};
 
     // check if user has an account
-    if (!auth.user.email){
-      alert('Accounts without email and password is illegible to earn rewards')
-      return
+    if (!auth.user.email) {
+      alert('Accounts without email and password is illegible to earn rewards');
+      return;
     }
 
     // check if there is enough points
@@ -166,7 +160,6 @@ class Reward extends React.Component {
       );
       return;
     }
-
 
     if (type == 'loot') {
       const GroupRewardList = {
@@ -243,7 +236,9 @@ class Reward extends React.Component {
         />
         {prevRoute == 'RewardManagement' ? null : (
           <View style={styles.point}>
-            <Text style={theme.groupPointColor}>Points: {point.total_point}</Text>
+            <Text style={theme.groupPointColor}>
+              Points: {point.total_point}
+            </Text>
           </View>
         )}
         <RewardModal
@@ -275,8 +270,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group, auth, point, reward} = state;
-  return {group, auth, point, reward};
+  const {group, auth, point, reward, metadata} = state;
+  return {group, auth, point, reward, metadata};
 };
 
 const mapDispatchToProps = dispatch => {

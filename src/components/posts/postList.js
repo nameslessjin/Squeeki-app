@@ -82,7 +82,7 @@ export default class PostList extends React.Component {
             justifyContent: 'center',
             paddingHorizontal: 10,
           }}>
-          <Text style={{fontSize: 18, fontWeight: '500'}}>
+          <Text style={[{fontSize: 18, fontWeight: '500'}, theme.textColor]}>
             Recent 20 winners
           </Text>
         </View>

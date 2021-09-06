@@ -103,7 +103,7 @@ export default class ReplyCard extends React.Component {
                     pattern: /\[(g@[a-zA-Z0-9_]{4,29}[a-zA-Z0-9]{1}):(.{1,50}):([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})\]/g,
                     style: {color: '#1e90ff', fontWeight: '500'},
                     renderText: renderText,
-                    onPress: m => onAtUserNGroupHightlightPress(m),
+                    onPress: m => onAtUserNGroupHightlightPress(m, id),
                   },
                 ]}
                 childrenProps={{allowFontScaling: false}}>

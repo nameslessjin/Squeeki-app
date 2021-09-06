@@ -22,7 +22,7 @@ import {
   onEmailPress,
 } from '../chat/render';
 import {getSingleGroupById} from '../../actions/group';
-import {getTheme} from '../../utils/theme'
+import {getTheme} from '../../utils/theme';
 
 class CommentCard extends React.Component {
   state = {
@@ -30,7 +30,7 @@ class CommentCard extends React.Component {
     loading: false,
     ...this.props.comment,
     reply_loading: false,
-    theme: getTheme(this.props.auth.user.theme)
+    theme: getTheme(this.props.auth.user.theme),
   };
 
   componentDidMount() {
@@ -94,7 +94,7 @@ class CommentCard extends React.Component {
     onOptionToggle({commentId: id, userId: user.id});
   };
 
-  getGroup = async id => {
+  getGroup = async (id, replyId) => {
     const {auth, getSingleGroupById, navigation, group} = this.props;
     const request = {
       id,
@@ -107,13 +107,23 @@ class CommentCard extends React.Component {
       return;
     }
 
+    // create user event log
+    const log = {
+      trigger: 'comment',
+      triggerId: replyId ? replyId : this.state.id,
+      event: 'redirection_comment_at_group',
+      effectIdType: 'group',
+      effectId: id,
+    };
+
     navigation.push('GroupNavigator', {
       prevRoute: 'Comment',
       groupId: group.group.id,
+      log
     });
   };
 
-  onAtUserNGroupHightlightPress = content => {
+  onAtUserNGroupHightlightPress = (content, replyId) => {
     const components = content.substr(1, content.length - 2).split(':');
 
     const atText = components[0];
@@ -125,7 +135,7 @@ class CommentCard extends React.Component {
       // this.onPressAvatar({_id: id});
     } else if (atText[0] == 'g' && atText[1] == '@') {
       // g@groupname check
-      this.getGroup(id);
+      this.getGroup(id, replyId);
     }
   };
 
@@ -141,7 +151,7 @@ class CommentCard extends React.Component {
       content,
       createdAt,
       user,
-      theme
+      theme,
     } = this.state;
 
     const {container, commentContainer, rightContainer, commentStyle} = styles;
@@ -160,10 +170,10 @@ class CommentCard extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <View style={container}>
-          <CommentProfile icon={icon}/>
+          <CommentProfile icon={icon} />
 
           <View style={rightContainer}>
-            <CommentUsername createdAt={createdAt} user={user} theme={theme}/>
+            <CommentUsername createdAt={createdAt} user={user} theme={theme} />
 
             <View style={commentContainer}>
               <ParsedText

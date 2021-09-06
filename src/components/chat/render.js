@@ -373,6 +373,7 @@ export const renderBubble = props => {
         },
         left: {backgroundColor: '#a4b0be'},
       }}
+      touchableProps={<TouchableOpacity />}
     />
   );
 };

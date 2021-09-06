@@ -8,6 +8,7 @@ import {
   getAPIKeyQuery,
 } from '../actions/query/securityQuery';
 import {httpCall} from './utils/httpCall';
+import DeviceInfo from 'react-native-device-info';
 
 export const getLastVersion = () => {
   return async function(dispatch) {
@@ -106,6 +107,23 @@ const getSecurityClearanceReducer = data => {
   };
 };
 
+export const getUserAgent = () => {
+  return async function(dispatch) {
+    const device = await DeviceInfo.getUserAgent();
+
+    dispatch(getUserAgentReducer(device));
+
+    return 0;
+  };
+};
+
+const getUserAgentReducer = data => {
+  return {
+    type: 'getUserAgent',
+    i: data,
+  };
+};
+
 export const searchASAdmin = data => {
   const {token, searchTerm, type, count} = data;
   return async function(dispatch) {
@@ -132,7 +150,7 @@ export const searchASAdmin = data => {
 };
 
 export const adminAction = data => {
-  const {token, id, comment, action, type, ip} = data;
+  const {token, id, comment, action, type, ip, userAgent} = data;
 
   return async function(dispatch) {
     const input = {
@@ -141,6 +159,7 @@ export const adminAction = data => {
       action,
       type,
       ip,
+      userAgent
     };
 
     const graphql = {

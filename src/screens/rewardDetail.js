@@ -16,6 +16,7 @@ import {dateConversion} from '../utils/time';
 import {getSingleGroupById} from '../actions/group';
 import {getTheme} from '../utils/theme';
 import QRCode from 'react-native-qrcode-svg';
+import {logUserEvent} from '../actions/userEvent';
 
 class RewardDetail extends React.Component {
   state = {
@@ -45,7 +46,34 @@ class RewardDetail extends React.Component {
     if (prevRoute == 'RewardList' || prevRoute == 'RewardDropList') {
       this.getRewardEntry();
     }
+
+    // console.log(this.props.route.params);
+
+    console.log(this.state);
+
+    const {entryId, id} = this.state;
+    const log = {
+      triggerId: entryId ? entryId : id,
+      trigger: 'rewardEntry',
+      event: 'rewardEntry_hit',
+    };
+
+    this.logUserEvent(log);
   }
+
+  logUserEvent = async log => {
+    const {auth, logUserEvent, metadata} = this.props;
+    const request = {
+      token: auth.token,
+      log,
+      ip: metadata.IP ? metadata.IP.ip : null,
+      userAgent: metadata.userAgent,
+    };
+
+    console.log(request);
+
+    const req = logUserEvent(request);
+  };
 
   componentWillUnmount() {
     const {groupId, directToGroup, prevRoute} = this.state;
@@ -175,6 +203,7 @@ class RewardDetail extends React.Component {
       giftedGroupDisplayName,
       id,
       prevRoute,
+      entryId,
     } = this.state;
     const {auth, getSingleGroupById, navigation} = this.props;
 
@@ -199,17 +228,15 @@ class RewardDetail extends React.Component {
         prevRoute == 'RewardHistory' ||
         prevRoute == 'MyGroupRewards' ||
         prevRoute == 'MyRewards' ||
-        prevRoute == 'RewardList'
+        prevRoute == 'RewardList' ||
+        prevRoute == 'GroupNavigator'
       ) {
         log = {
           effectId: fromId,
           effectIdType: 'group',
-          triggerId: id,
-          trigger: prevRoute == 'RewardList' ? 'rewardEntry' : 'reward',
-          event:
-            prevRoute == 'RewardList'
-              ? 'redirection_rewardEntry_to_group'
-              : 'redirection_reward_to_group',
+          triggerId: entryId ? entryId : id,
+          trigger: 'rewardEntry',
+          event: 'redirection_rewardEntry_to_group',
         };
       }
 
@@ -250,7 +277,12 @@ class RewardDetail extends React.Component {
     return (
       <TouchableWithoutFeedback>
         <ScrollView style={[styles.container, theme.backgroundColor]}>
-          <InputImage image={image} contentKeyboard={false} disabled={true} theme={theme}/>
+          <InputImage
+            image={image}
+            contentKeyboard={false}
+            disabled={true}
+            theme={theme}
+          />
           <View style={[styles.infoContaier]}>
             <View style={styles.infoSubContainer}>
               <Text
@@ -374,7 +406,13 @@ class RewardDetail extends React.Component {
               {prevRoute == 'MyRewards' ||
               prevRoute == 'MyGroupRewards' ||
               prevRoute == 'RewardManagement' ? (
-                <View style={{width: '100%', marginTop: 10, justifyContent: 'center', alignItems: 'center'}}>
+                <View
+                  style={{
+                    width: '100%',
+                    marginTop: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
                   <QRCode
                     value={id}
                     color={theme.textColor.color}
@@ -424,14 +462,15 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {auth, group, reward} = state;
-  return {auth, group, reward};
+  const {auth, group, reward, metadata} = state;
+  return {auth, group, reward, metadata};
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     getRewardEntry: data => dispatch(getRewardEntry(data)),
     getSingleGroupById: data => dispatch(getSingleGroupById(data)),
+    logUserEvent: data => dispatch(logUserEvent(data)),
   };
 };
 

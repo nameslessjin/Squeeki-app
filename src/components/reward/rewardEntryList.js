@@ -290,8 +290,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group, auth} = state;
-  return {group, auth};
+  const {group, auth, metadata} = state;
+  return {group, auth, metadata};
 };
 
 const mapDispatchToProps = dispatch => {

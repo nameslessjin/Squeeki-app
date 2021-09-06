@@ -38,7 +38,7 @@ class GroupDrawerNavigator extends React.Component {
 
   componentDidMount() {
     const {navigation, group, route} = this.props;
-    const {auth, status} = group.group;
+    const {auth, status, id} = group.group;
     const {theme} = this.state;
     navigation.setOptions({
       headerRight: () =>
@@ -61,6 +61,14 @@ class GroupDrawerNavigator extends React.Component {
         this.logUserEvent(route.params.log);
       }
     }
+
+    // create user event log for group visit
+    const log = {
+      triggerId: id,
+      trigger: 'group',
+      event: 'group_visit',
+    };
+    this.logUserEvent(log);
   }
 
   componentDidUpdate(prevProps) {
@@ -121,7 +129,7 @@ class GroupDrawerNavigator extends React.Component {
         prevRoute == 'Chat' ||
         prevRoute == 'PostCard' ||
         prevRoute == 'Comment' ||
-        prevRoute == 'Home' || 
+        prevRoute == 'Home' ||
         prevRoute == 'GroupNavigator'
       ) {
         // MyRewads have no previous group page
@@ -154,11 +162,15 @@ class GroupDrawerNavigator extends React.Component {
   }
 
   logUserEvent = async log => {
-    const {auth, logUserEvent} = this.props;
+    const {auth, logUserEvent, metadata} = this.props;
     const request = {
       token: auth.token,
       log,
+      ip: metadata.IP ? metadata.IP.ip : null,
+      userAgent: metadata.userAgent,
     };
+
+    console.log(request);
 
     const req = logUserEvent(request);
   };
@@ -459,8 +471,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const {group, auth, post} = state;
-  return {group, auth, post};
+  const {group, auth, post, metadata} = state;
+  return {group, auth, post, metadata};
 };
 
 const mapDispatchToProps = dispatch => {

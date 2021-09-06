@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   securityClearance: null,
   location: null,
   IP: null,
+  userAgent: null
 };
 
 export default (metadataReducer = (state = INITIAL_STATE, action) => {
@@ -15,7 +16,11 @@ export default (metadataReducer = (state = INITIAL_STATE, action) => {
         ...state,
         securityClearance: action.i,
       };
-
+    case 'getUserAgent':
+      return {
+        ...state,
+        userAgent: action.i
+      }
     case 'getIpAddress':
       return {
         ...state,

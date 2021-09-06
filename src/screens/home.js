@@ -21,6 +21,7 @@ import {
   getSecurityClearance,
   updateLocationReducer,
   getIpAddress,
+  getUserAgent,
 } from '../actions/security';
 import DeviceInfo from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
@@ -57,11 +58,12 @@ class Home extends React.Component {
       this.getSecurityClearance();
       this.watchId = null;
       this.getLocation();
+      this.props.getUserAgent()
 
       setTimeout(() => {
         this.getGroupRecommendation();
         this.loadFeed(true);
-        // this.logUserEvent({event: 'onScreen'});
+        this.logUserEvent({event: 'onScreen'});
       }, 2500);
     } else {
       navigation.reset({
@@ -166,6 +168,7 @@ class Home extends React.Component {
       token: auth.token,
       log,
       ip: metadata.IP ? metadata.IP.ip : null,
+      userAgent: metadata.userAgent
     };
 
     const req = logUserEvent(request);
@@ -291,17 +294,16 @@ class Home extends React.Component {
       setTimeout(() => {
         this.getGroupRecommendation();
         this.loadFeed(true);
-        // this.logUserEvent({event: 'onScreen'});
+        this.logUserEvent({event: 'onScreen'});
       }, 1000);
-
     } else if (nextAppState !== 'active') {
       if (Platform.OS == 'ios') {
         if (nextAppState == 'inactive') {
-          // this.logUserEvent({event: 'offScreen'});
+          this.logUserEvent({event: 'offScreen'});
         }
       } else {
         if (nextAppState == 'background') {
-          // this.logUserEvent({event: 'offScreen'});
+          this.logUserEvent({event: 'offScreen'});
         }
       }
       this.removeLocationUpdate();
@@ -459,6 +461,7 @@ const mapDispatchToProps = dispatch => {
     getGroupRecommendation: data => dispatch(getGroupRecommendation(data)),
     getIpAddress: data => dispatch(getIpAddress(data)),
     signin: data => dispatch(signin(data)),
+    getUserAgent: data => dispatch(getUserAgent(data)),
   };
 };
 

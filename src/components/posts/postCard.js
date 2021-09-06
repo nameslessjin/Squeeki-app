@@ -79,9 +79,19 @@ class PostCard extends React.Component {
       return;
     }
 
+    // create user event log
+    const log = {
+      trigger: 'post',
+      triggerId: this.state.id,
+      event: id ? 'redirection_post_at_group' : 'redirection_post_from_group',
+      effectIdType: 'group',
+      effectId: id ? id : item.groupId,
+    };
+
     navigation.push('GroupNavigator', {
       prevRoute: 'PostCard',
       groupId: group.group.id,
+      log
     });
   };
 
@@ -401,7 +411,6 @@ class PostCard extends React.Component {
     } else if (priority == 1) {
       backgroundColor = '#b8e999';
     }
-
 
     return (
       <ActionSheetProvider
